@@ -15,19 +15,19 @@
       color: #000;
     }
 
-   .reveal {
-  color: inherit; /* Keeps the text color the same as the surrounding paragraph */
-  font-weight: bold;
-  cursor: pointer;
-  border: none;
-  background-color: #e0e0e0; /* Light grey background - always visible */
-  padding: 0.1em 0.4em; /* Padding around the text inside the box */
-  font: inherit; /* Ensures it inherits the main body font styles */
-  border-radius: 4px; /* Rounded corners for the box */
-  
-  /* Remove any transitions or hover/focus states if they were there */
-  outline: none; /* Good practice if you don't want a default browser outline */
-}
+     .reveal {
+    color: inherit; /* Keeps the text color the same as the surrounding paragraph */
+    /* font-weight: bold; -- REMOVED this line to make text non-bold */
+    font-weight: normal; /* Explicitly set to normal to override any potential bolding */
+    cursor: pointer;
+    border: none;
+    background-color: #f5f5f5; /* Very, very light grey for subtlety */
+    padding: 0.05em 0.2em; /* Reduced padding for a tighter, more inline feel */
+    font: inherit; /* Ensures it inherits the main body font styles */
+    border-radius: 3px; /* Slightly smaller border-radius for less prominence */
+    outline: none; /* Still good to remove the default outline */
+    /* Remove any transition or hover/focus states if they were re-added previously */
+  }
 
 
     .inline-reveal {
