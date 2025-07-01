@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Logos</title>
+  <title>Logos ⚘ </title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
         Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-      max-width: 640px; /* Adjusted for a wider, more spacious 3-column grid */
+      max-width: 640px; /* Kept as per your instruction */
       margin: 40px auto;
       padding: 40px 20px;
       line-height: 1.8;
@@ -22,31 +22,29 @@
 
     .logo-grid {
       display: grid;
-      /* Adjust minmax to ensure 3 columns fit nicely on wider screens, but adapt */
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      /* Forced to 3 columns always, within the max-width of the body */
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px; /* Space between grid items */
       justify-content: center;
     }
 
     .logo-item {
-      /* Removed all card-like styling: background, border, border-radius, padding, box-shadow, min-height */
-      /* These properties are no longer needed to create a "card" effect */
-      display: flex; /* Still useful for centering the image horizontally/vertically within its grid cell */
+      display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
     }
 
     .logo-item img {
-      max-width: 100%;
-      height: auto; /* Allow height to adjust naturally while maintaining aspect ratio */
-      display: block; /* Ensures it doesn't leave extra space below */
-      margin: 0 auto; /* Center image if it's smaller than its container */
-      transition: opacity 0.2s ease-in-out; /* Smooth transition for hover effect */
+      max-width: 100%; /* Image will scale down to fit the smaller column width */
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      transition: opacity 0.2s ease-in-out;
     }
 
     .logo-item img:hover {
-      opacity: 0.8; /* Subtle dimming on hover, like the reference site */
+      opacity: 0.8;
     }
 
     a {
@@ -56,9 +54,15 @@
       cursor: pointer;
     }
 
+    /* Removed the after hover option as per your instruction for all pages henceforth */
+    /*
     a::after {
       content: '';
     }
+    a:hover::after {
+      content: ' ↗';
+    }
+    */
 
     .back-link {
       margin-top: 3em;
@@ -67,23 +71,13 @@
       border-top: 1px solid #eee;
     }
 
-    /* Media Queries for Responsiveness */
-    @media (max-width: 992px) { /* When screen is smaller, adjust grid for 2 columns */
-      .logo-grid {
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 20px;
-      }
-    }
-
-    @media (max-width: 600px) { /* On small mobile screens, go to a single column */
-      .logo-grid {
-        grid-template-columns: 1fr;
-        gap: 15px;
-      }
-    }
+    /* All @media queries related to logo-grid responsiveness have been removed */
+    /* This ensures a consistent 3-column layout across all screen sizes */
   </style>
 </head>
 <body>
+  <h1>Logos & Branding</h1>
+
   <div class="logo-grid">
     <div class="logo-item">
       <img src="images/logos/curious.png" alt="Curious People logo">
