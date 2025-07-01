@@ -27,7 +27,6 @@
 
     .inline-reveal {
       display: none;
-      font-weight: bold;
     }
 
     .inline-reveal.visible {
@@ -48,6 +47,13 @@
     a:hover::after {
       content: ' ↗'; /* Appears on hover */
     }
+
+    .note {
+  color: #777;
+  margin-top: 1.5em;
+  font-size: 0.95em;
+}
+
   </style>
 </head>
 <body>
@@ -66,12 +72,13 @@
     <button class="reveal" onclick="toggle('ads')">advertising</button>
     <span id="ads" class="inline-reveal"> — building <a href="https://singh.work/graphic" target="_blank">brands</a> out of companies for over five years</span>.
     <br>I am an alumnus of the National Institute of Design, India and California College of the Arts, San Francisco. 
-    <br>Born in India, currently based in Stockholm.
-  </p>
+    </p>
+    
+    <p class="note">Born in India, currently based in Stockholm.
+    Contact me at <a href="25.shivanisingh@gmail.com">25.shivanisingh@gmail.com</a>
+    or find my on <a href="https://www.linkedin.com/in/shivanidotsingh/" target="_blank">linkedin</a>.
+    </p>
 
-  <p>
-    Contact: <a href="mailto:me@singh.work">me@singh.work</a>
-  </p>
 
   <script>
     function toggle(id) {
