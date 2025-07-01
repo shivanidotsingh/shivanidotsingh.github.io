@@ -29,10 +29,8 @@
 
     .reveal.no-bg {
       background-color: transparent;
-      /* Optional: You could add a different cursor here if you want to visually signify it's no longer clickable, e.g., cursor: default; */
     }
 
-    /* Style for a disabled button (to make it look less interactive after click) */
     .reveal:disabled {
       cursor: default; /* Change cursor to default arrow */
       opacity: 0.8; /* Slightly dim it to show it's inactive, adjust as needed */
@@ -70,24 +68,20 @@
   </style>
 </head>
 <body>
-  <h1> Hi, I'm Shivani.</h1>
+  <h1>Hi, I'm Shivani.</h1>
   <p>
-    A designer with an aptitude for analytical thinking and an appetite for 
-    <button class="reveal" onclick="expandOnce(this, 'play')">play</button>
-    <span id="play" class="inline-reveal"> — experiments in progress and rejected ideas live <a href="https://shivaniest.com" target="_blank">here</a></span>.
-    Currently working at 
-    <button class="reveal" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button>
-    <span id="unicef" class="inline-reveal"> where we shape tech for social impact</span>, 
+    A designer with an aptitude for analytical thinking and an appetite for
+    <button class="reveal" onclick="expandOnce(this, 'play')">play</button><span id="play" class="inline-reveal"> — experiments in progress and rejected ideas live <a href="https://shivaniest.com" target="_blank">here</a></span>.
+    Currently working at
+    <button class="reveal" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where we shape tech for social impact</span>,
     I see my work as a way to bridge intention and outcome.
     Before this, I worked with the Innovation team at
-    <button class="reveal" onclick="expandOnce(this, 'sf')"> Salesforce.</button><span id="sf" class="inline-reveal"> — <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank"> an overview</a> of work from my time there. 
-</span> 
+    <button class="reveal" onclick="expandOnce(this, 'sf')">Salesforce</button><span id="sf" class="inline-reveal"> — <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank"> an overview</a> of work from my time there
+</span>.
     With a background in graphic design, I’ve also previously worked in
-    <button class="reveal" onclick="expandOnce(this, 'ads')">advertising</button>
-    <span id="ads" class="inline-reveal">, building <a href="https://singh.work/graphic" target="_blank">brands</a> out of companies for over five years</span>.
+    <button class="reveal" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, building <a href="https://singh.work/graphic" target="_blank">brands</a> out of companies for over five years</span>.
     <br><br>I am an alumnus of the National Institute of Design, India and
-    <button class="reveal" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>, San Francisco. 
-     <span id="CCA" class="inline-reveal">During my time as a student, I'm particularly fond of <a href="https://singh.work/portfolio/a-west-oakland-story/" target="_blank">this project</a> for which we collaborated with an industrial art school in Oakland called The Crucicble. </span>
+    <button class="reveal" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>,<span id="CCA" class="inline-reveal">During my time as a student, I'm particularly fond of <a href="https://singh.work/portfolio/a-west-oakland-story/" target="_blank">this project</a> for which we collaborated with an industrial art school in Oakland called The Crucicble. </span> San Francisco.
     </p>
 
     <p class="note">Born in India, I'm currently based in Stockholm.<br>
@@ -99,13 +93,8 @@
     function expandOnce(buttonElement, contentId) {
       const contentEl = document.getElementById(contentId);
       
-      // 1. Show the content (add 'visible' class)
       contentEl.classList.add('visible');
-      
-      // 2. Remove the background from the button (add 'no-bg' class)
       buttonElement.classList.add('no-bg');
-      
-      // 3. Make the button unclickable/disabled
       buttonElement.disabled = true;
     }
   </script>
