@@ -54,19 +54,9 @@
       cursor: pointer;
     }
 
-    /* Removed the after hover option as per your instruction for all pages henceforth */
-    /*
-    a::after {
-      content: '';
-    }
-    a:hover::after {
-      content: ' ↗';
-    }
-    */
-
     .back-link {
       margin-top: 3em;
-      text-align: center;
+      text-align: left; /* Changed from center to left */
       padding-top: 1.5em;
       border-top: 1px solid #eee;
     }
@@ -76,9 +66,11 @@
   </style>
 </head>
 <body>
+  <h1>Logos & Branding</h1>
+
   <div class="logo-grid">
-     <div class="logo-item">
-    <a href="https://www.ambassador88.com/" target="_blank"> <img src="images/logos/ambassador88.png" alt="Ambassador 88 logo"></a>
+    <div class="logo-item">
+      <a href="https://www.ambassador88.com/" target="_blank"> <img src="images/logos/ambassador88.png" alt="Ambassador 88 logo"></a>
     </div>
     <div class="logo-item">
       <img src="images/logos/bawarchi.jpg" alt="Bawarchi Books Co. logo">
@@ -158,8 +150,8 @@
 
   </div>
 
-  <div class="back-link" align="left">
-    <a href="./" align="left">← Back to Main Page</a>
+  <div class="back-link">
+    <a href="./">← Back to Main Page</a>
   </div>
 
 </body>
