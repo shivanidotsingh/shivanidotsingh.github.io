@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A West Oakland Story - Shivani Singh</title>
+  <style>
+    /* --- Core Styles from your index.html --- */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 40px 20px;
+      line-height: 1.8;
+      color: #000;
+    }
+
+    a {
+      color: #4c8aff;
+      text-decoration: none;
+      position: relative;
+      cursor: pointer;
+    }
+
+    a::after {
+      content: '';
+    }
+
+    a:hover::after {
+      content: ' ↗'; /* Appears on hover */
+    }
+
+    /* --- Styles for Project Page Content --- */
+    h1, h2 {
+        line-height: 1.3;
+    }
+
+    h2 {
+        margin-top: 2em;
+        border-top: 1px solid #eee;
+        padding-top: 1.5em;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px; /* Optional: adds a slight curve to image corners */
+      margin-top: 1em;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      height: 0;
+      overflow: hidden;
+      max-width: 100%;
+      background: #000;
+      margin: 1.5em 0;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .note {
+      color: #777;
+      margin-top: 3em;
+      font-size: 0.95em;
+      border-top: 1px solid #eee;
+      padding-top: 1.5em;
+    }
+  </style>
+</head>
+<body>
+  
+  <p><a href="index.html">&larr; Back to home</a></p>
+
+  <h1>A West Oakland Story</h1>
+
+  <p>
+    <strong>Context:</strong> West Oakland is going through urban development that's causing a significant impact on the existing population. The Crucible, a nonprofit industrial arts school at the heart of it, collaborated with us to visualize the impact of upcoming changes and build a story from the numbers to inform their five-year strategy.
+  </p>
+
+  <h2>1. Discovery</h2>
+  <p>
+    We started with secondary research to understand the wide scope of changes coming to West Oakland. The proposed developments promised new opportunities but also threatened the neighborhood's identity as a center for the arts and affordable living. One project alone, the Panoramic, was expected to bring over 2,000 new residents, posing a challenge to The Crucible's mission of serving an underserved community now at risk of displacement.
+  </p>
+  <img src="images/skyline.jpg" alt="A comparison of skylines. 2020 vs projected render for 2025">
+
+  <h2>2. Development</h2>
+  <p>
+    We brainstormed various mediums to tell this story, from Legos and drones to podcasts. After much deliberation, we presented three core ideas to The Crucible: a layered map, a storyboard, and a playful game. The client was most drawn to the game idea, which could make complex, high-stakes information more approachable.
+  </p>
+  <div class="video-container">
+      <iframe src="https://player.vimeo.com/video/397552520" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <h2>3. Delivery</h2>
+  <p>
+    We developed a prototype based on Monopoly, a fitting metaphor for the real-estate gentrification West Oakland was facing. Feedback on our first version was invaluable; we learned the gravity of the situation was being lost. We iterated by placing a rendering of the future 7th street at the center of the board and redesigned our "impact cards" to visually emphasize the hard-hitting consequences of gentrification.
+  </p>
+   <img src="images/monopoly.jpg" alt="A screenshot from the digital version of West Oakland Monopoly.">
+
+  <h2>4. Digital Extension</h2>
+  <p>To expand the reach of our prototype, we also designed a digital version of the game. Below is a video of the interaction with the digital prototype.</p>
+  <div class="video-container">
+      <iframe src="https://player.vimeo.com/video/397552909" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <p class="note">
+    <a href="index.html">&larr; Back to home</a>
+  </p>
+
+</body>
+</html>
