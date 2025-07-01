@@ -6,12 +6,14 @@
   <title>shivani singh</title>
   <style>
     body {
-      font-family: serif;
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 40px 20px;
-      line-height: 1.6;
-    }
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 40px 20px;
+  line-height: 1.6;
+}
+
     .reveal {
       color: #0077cc;
       cursor: pointer;
@@ -21,39 +23,32 @@
       font: inherit;
       text-decoration: underline;
     }
-    .hidden-text {
+    .inline-reveal {
       display: none;
-      margin-top: 0.5em;
     }
-    .visible {
-      display: block;
+    .inline-reveal.visible {
+      display: inline;
     }
   </style>
 </head>
 <body>
 
-  <h1> Hi, I’m Shivani. </h1>
+  <h1>Hi, I’m Shivani.</h1>
 
   <p>
-    A designer with an aptitude for analytical thinking and an appetite for  <button class="reveal" onclick="toggle('play')">play</button>.
-    Currently working at  <button class="reveal" onclick="toggle('UNICEF')">UNICEF Innovation</button> I see my work as a way to bridge intention and outcome.
-    As a graphic designer, I’ve previously worked in visual communication and <button class="reveal" onclick="toggle('ads')">advertising</button>.
+    A designer with an aptitude for analytical thinking and an appetite for 
+    <button class="reveal" onclick="toggle('play')">play</button>
+    <span id="play" class="inline-reveal"> — most failed experiments and rejected ideas live <a href="https://shivaniest.com">here</a>.</span>.
+    Currently working at 
+    <button class="reveal" onclick="toggle('unicef')">UNICEF Innovation</button>
+    <span id="unicef" class="inline-reveal"> — where we shape tech for social impact</span>, 
+    I see my work as a way to bridge intention and outcome.
+    As a graphic designer, I’ve previously worked in visual communication and 
+    <button class="reveal" onclick="toggle('ads')">advertising</button>
+    <span id="ads" class="inline-reveal"> — building <a href="https://singh.work/graphic">brands</a> out of companies for over five years</span>.
     <br>I am an alumnus of the National Institute of Design, India and California College of the Arts, San Francisco. 
     <br>Born in India, and currently based in Stockholm.
-
   </p>
-
-  <div id="play" class="hidden-text">
-     Most failed expriements and rejected ideas live <a href="shivaniest.com"> here</a>.
-  </div>
-
-  <div id="UNICEF" class="hidden-text">
-     where we shape tech for social impact,
-  </div>
-
-  <div id="ads" class="hidden-text">
-    building <a href="singh.work/graphic">brands</a> out of companies for over five years.
-  </div>
 
   <p>
     Contact: <a href="mailto:me@singh.work">me@singh.work</a>
@@ -67,4 +62,3 @@
   </script>
 </body>
 </html>
-
