@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Graphic Design & Logos – Shivani Singh</title>
+  <title>Logos</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
         Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-      max-width: 900px; /* Adjusted for wider grid, can be changed */
+      max-width: 640px; /* Adjusted for a wider, more spacious 3-column grid */
       margin: 40px auto;
       padding: 40px 20px;
       line-height: 1.8;
@@ -22,30 +22,31 @@
 
     .logo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
-      gap: 20px; /* Space between grid items */
+      /* Adjust minmax to ensure 3 columns fit nicely on wider screens, but adapt */
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 10px; /* Space between grid items */
       justify-content: center;
     }
 
     .logo-item {
-      background-color: #fff; /* White background for each logo box */
-      border: 1px solid #eee; /* Subtle border */
-      border-radius: 8px; /* Slightly rounded corners */
-      padding: 20px; /* Padding inside the box */
-      display: flex;
+      /* Removed all card-like styling: background, border, border-radius, padding, box-shadow, min-height */
+      /* These properties are no longer needed to create a "card" effect */
+      display: flex; /* Still useful for centering the image horizontally/vertically within its grid cell */
       justify-content: center;
       align-items: center;
-      min-height: 180px; /* Ensure a consistent height for items */
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Very subtle shadow */
-      text-align: center; /* For captions/names below logos if you add them */
+      text-align: center;
     }
 
     .logo-item img {
       max-width: 100%;
-      max-height: 140px; /* Limit image height within the box */
-      width: auto;
-      height: auto;
-      display: block; /* Remove extra space below image */
+      height: auto; /* Allow height to adjust naturally while maintaining aspect ratio */
+      display: block; /* Ensures it doesn't leave extra space below */
+      margin: 0 auto; /* Center image if it's smaller than its container */
+      transition: opacity 0.2s ease-in-out; /* Smooth transition for hover effect */
+    }
+
+    .logo-item img:hover {
+      opacity: 0.8; /* Subtle dimming on hover, like the reference site */
     }
 
     a {
@@ -59,10 +60,6 @@
       content: '';
     }
 
-    a:hover::after {
-      content: ' ↗'; /* Appears on hover */
-    }
-
     .back-link {
       margin-top: 3em;
       text-align: center;
@@ -71,30 +68,22 @@
     }
 
     /* Media Queries for Responsiveness */
-    @media (max-width: 768px) {
+    @media (max-width: 992px) { /* When screen is smaller, adjust grid for 2 columns */
       .logo-grid {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* 2 columns on tablets */
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 600px) { /* On small mobile screens, go to a single column */
       .logo-grid {
-        grid-template-columns: 1fr; /* 1 column on mobile */
-      }
-      .logo-item {
-        padding: 15px;
-        min-height: 150px;
-      }
-      .logo-item img {
-        max-height: 120px;
+        grid-template-columns: 1fr;
+        gap: 15px;
       }
     }
   </style>
 </head>
 <body>
-
-  <h1>Logos & Branding</h1>
-
   <div class="logo-grid">
     <div class="logo-item">
       <img src="images/logos/curious.png" alt="Curious People logo">
