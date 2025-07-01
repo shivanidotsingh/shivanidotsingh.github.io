@@ -5,30 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>shivani singh</title>
   <style>
-    body {
+  body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  max-width: 600px;
+  max-width: 650px;
   margin: 40px auto;
   padding: 40px 20px;
-  line-height: 1.6;
+  line-height: 1.5;
+  color: #111;
 }
 
-    .reveal {
-      color: #0077cc;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      font: inherit;
-      text-decoration: underline;
-    }
-    .inline-reveal {
-      display: none;
-    }
-    .inline-reveal.visible {
-      display: inline;
-    }
+.reveal {
+  color: #4a7de3;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  text-decoration: none;
+}
+
+a {
+  color: #4a7de3;
+  text-decoration: underline;
+}
+
+a:hover,
+.reveal:hover {
+  text-decoration: none;
+}
+
+.inline-reveal {
+  display: none;
+}
+
+.inline-reveal.visible {
+  display: inline;
+}
   </style>
 </head>
 <body>
@@ -38,7 +51,7 @@
   <p>
     A designer with an aptitude for analytical thinking and an appetite for 
     <button class="reveal" onclick="toggle('play')">play</button>
-    <span id="play" class="inline-reveal"> — most failed experiments and rejected ideas live <a href="https://shivaniest.com">here</a>.</span>.
+    <span id="play" class="inline-reveal"> — most experiments and rejected ideas live <a href="https://shivaniest.com">here</a></span>.
     Currently working at 
     <button class="reveal" onclick="toggle('unicef')">UNICEF Innovation</button>
     <span id="unicef" class="inline-reveal"> — where we shape tech for social impact</span>, 
