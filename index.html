@@ -15,15 +15,20 @@
       color: #000;
     }
 
-    .reveal {
-      color: inherit;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      background: none;
-      padding: 0;
-      font: inherit;
-    }
+   .reveal {
+  color: inherit; /* Keeps the text color the same as the surrounding paragraph */
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  background-color: #e0e0e0; /* Light grey background - always visible */
+  padding: 0.1em 0.4em; /* Padding around the text inside the box */
+  font: inherit; /* Ensures it inherits the main body font styles */
+  border-radius: 4px; /* Rounded corners for the box */
+  
+  /* Remove any transitions or hover/focus states if they were there */
+  outline: none; /* Good practice if you don't want a default browser outline */
+}
+
 
     .inline-reveal {
       display: none;
@@ -71,7 +76,7 @@
     As a graphic designer, I’ve previously worked in visual communication and 
     <button class="reveal" onclick="toggle('ads')"><b>advertising</b></button>
     <span id="ads" class="inline-reveal">, building <a href="https://singh.work/graphic" target="_blank">brands</a> out of companies for over five years</span>.
-    <br>I am an alumnus of the National Institute of Design, India and California College of the Arts, San Francisco. 
+    <br><br>I am an alumnus of the National Institute of Design, India and California College of the Arts, San Francisco. 
     </p>
     
     <p class="note">Born in India, currently based in Stockholm.<br>
