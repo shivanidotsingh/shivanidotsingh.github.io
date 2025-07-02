@@ -18,13 +18,13 @@
     }
 
     h1 {
-      display: inline-block; /* Allow dots to sit next to it */
+      display: inline-block; /* Default: Allow dots to sit next to it */
       vertical-align: middle; /* Align with dots */
       margin-right: 5px; /* Space between h1 and dots */
     }
 
     #collected-dots {
-      display: inline-flex; /* Use flex for horizontal alignment of dots */
+      display: inline-flex; /* Default: Use flex for horizontal alignment of dots */
       align-items: center; /* Vertically align dots */
       vertical-align: middle; /* Align with h1 */
       margin-left: 5px; /* Space from h1 */
@@ -65,7 +65,7 @@
         background-color: #D6F5FF; /* Very light blue */
     }
     .highlight-yellow::before {
-        background-color: #FFFFCC; /* Soft yellow */
+        background-color: #FDFB8C; /* Soft yellow */
     }
     .highlight-pink::before {
         background-color: #FFDDEE; /* Softer pink */
@@ -145,6 +145,29 @@
         height: auto; /* Allow emoji to take natural height */
         margin-left: 8px; /* More space for the smiley */
     }
+
+    /* Mobile-specific adjustments */
+    @media (max-width: 768px) {
+      h1 {
+        display: block; /* Force h1 to its own line */
+        margin-right: 0; /* Remove right margin */
+        text-align: left; /* Align to left */
+      }
+
+      #collected-dots {
+        display: flex; /* Keep flex for internal dot alignment */
+        flex-wrap: wrap; /* Allow dots to wrap if too many */
+        margin-left: 0; /* Remove left margin */
+        margin-top: 5px; /* Reduced top margin for less padding with header */
+        justify-content: flex-start; /* Align dots to the left */
+      }
+
+      .collected-dot {
+        margin-left: 0; /* Remove left margin on dots */
+        margin-right: 5px; /* Add right margin for spacing between dots */
+        margin-bottom: 5px; /* Add bottom margin for spacing when wrapping */
+      }
+    }
   </style>
 </head>
 <body>
@@ -217,7 +240,7 @@
           // If all highlights are collected, add the smiley dot
           const smileyDot = document.createElement('span');
           smileyDot.classList.add('collected-dot', 'smiley-dot');
-          smileyDot.textContent = '😎'; // Smiley emoji
+          smileyDot.textContent = '😎 yay!'; // Smiley emoji
           dotContainer.appendChild(smileyDot);
       }
     }
