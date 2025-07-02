@@ -17,23 +17,80 @@
       font-size: 1.1em;
     }
 
+    h1 {
+      display: inline-block; /* Allow dots to sit next to it */
+      vertical-align: middle; /* Align with dots */
+      margin-right: 5px; /* Space between h1 and dots */
+    }
+
+    #collected-dots {
+      display: inline-flex; /* Use flex for horizontal alignment of dots */
+      align-items: center; /* Vertically align dots */
+      vertical-align: middle; /* Align with h1 */
+      margin-left: 5px; /* Space from h1 */
+    }
+
     button.reveal {
       color: inherit;
       font-weight: normal;
       cursor: pointer;
       border: none;
-      background-color: #f2f2f2;
-      padding: 0.003em 0.2em;
+      background-color: transparent;
+      padding: 0 0.2em; /* Vertical padding removed completely */
       font: inherit;
+      border-radius: 4px;
       outline: none;
-      border-radius: 5px;
+      position: relative;
+      z-index: 1;
       transition: background-color 0.2s ease-in-out;
+    }
+
+    button.reveal::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 4px;
+      z-index: -1;
+      transform-origin: left;
+      transform: scaleX(0);
+      animation: drawHighlight 1.5s forwards ease-out;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    /* Specific highlight colors applied to the ::before pseudo-element */
+    .highlight-blue::before {
+        background-color: #D6F5FF; /* Very light blue */
+    }
+    .highlight-yellow::before {
+        background-color: #FFFFCC; /* Soft yellow */
+    }
+    .highlight-pink::before {
+        background-color: #FFDDEE; /* Softer pink */
+    }
+    .highlight-green::before {
+        background-color: #DDFFAA; /* Softer, lighter green */
+    }
+    .highlight-purple::before {
+        background-color: #EEDDFF; /* Softer lavender/purple */
+    }
+
+    @keyframes drawHighlight {
+      to {
+        transform: scaleX(1);
+      }
     }
 
     button.reveal:disabled {
       cursor: default;
       opacity: 0.8;
-      background-color: transparent;
+    }
+
+    button.reveal:disabled::before {
+      transform: scaleX(0);
+      opacity: 0;
     }
 
     span.inline-reveal {
@@ -47,35 +104,66 @@
       display: inline;
     }
 
+    /* Styling for external links */
+    a[target="_blank"] {
+      color: #000;
+      text-decoration: underline;
+      cursor: ne-resize;
+      text-underline-offset: 0.2em;
+    }
+
+    /* General link styling for any other internal links that might exist */
     a {
       color: #4c8aff;
       text-decoration: none;
       position: relative;
-      cursor: ne-resize;
     }
 
     .note {
       color: #777;
       margin-top: 1.5em;
     }
+
+    /* Styles for the collected dots */
+    .collected-dot {
+        display: inline-block;
+        width: 12px; /* Size of the dot */
+        height: 12px;
+        border-radius: 50%;
+        margin-left: 5px; /* Space between dots */
+        vertical-align: middle; /* Align with text */
+        transition: background-color 0.3s ease-in-out;
+        flex-shrink: 0; /* Prevent shrinking in flex container */
+    }
+
+    .smiley-dot {
+        font-size: 1.2em; /* Make smiley slightly larger than dots */
+        line-height: 1; /* Adjust line height for emoji */
+        text-align: center;
+        background-color: transparent; /* No background for smiley */
+        width: auto; /* Allow emoji to take natural width */
+        height: auto; /* Allow emoji to take natural height */
+        margin-left: 8px; /* More space for the smiley */
+    }
   </style>
 </head>
 <body>
   <h1>Hi, I'm Shivani.</h1>
+  <div id="collected-dots"></div>
   <p>
     A designer with an aptitude for analytical thinking and an appetite for
-    <button class="reveal" onclick="expandOnce(this, 'play')">play</button><span id="play" class="inline-reveal"> — experiments in progress and rejected ideas live <a href="https://shivaniest.com" target="_blank">here</a></span>.
+    <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">play</button><span id="play" class="inline-reveal"> — experiments in progress and rejected ideas live <a href="https://shivaniest.com" target="_blank">here</a></span>.
     Currently shaping tech for social impact at
-    <button class="reveal" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I <a href="https://vimeo.com/1037416323" target="_blank"> mentor</a> early-stage startups in the practice of digital design,
-    and facilitate <button class="reveal" onclick="expandOnce(this, 'collab')">collaboration</button> with internal stakeholders<span id="collab" class="inline-reveal"> — such as this <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a>
+    <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I <a href="https://vimeo.com/1037416323" target="_blank"> mentor</a> early-stage startups in the practice of digital design,
+    and facilitate <button class="reveal highlight-green" onclick="expandOnce(this, 'collab')">collaboration</button> with internal stakeholders<span id="collab" class="inline-reveal"> — such as this <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a>
     we ran to improve a needs assessment process recently</span></span>.
     I think of my practice as a way to bridge intention and outcome.
     Previously, I worked at
-    <button class="reveal" onclick="expandOnce(this, 'sf')">Salesforce</button> in San Francisco<span id="sf" class="inline-reveal"> — see an <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank"> overview</a> of my work</span>.
+    <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button> in San Francisco<span id="sf" class="inline-reveal"> — see an <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank"> overview</a> of my work</span>.
     With a background in graphic design, I’ve also worked in
-    <button class="reveal" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, building <a href="https://singh.work/graphic" target="_blank">brands</a> out of businesses for over five years</span>.
+    <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, building <a href="https://singh.work/graphic" target="_blank">brands</a> out of businesses for over five years</span>.
     <br><br>I am an alumnus of the National Institute of Design, India and
-    <button class="reveal" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>, San Francisco.
+    <button class="reveal highlight-green" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>, San Francisco.
     <span id="CCA" class="inline-reveal">During my time as a student, I'm particularly fond of <a href="https://singh.work/case-study.html" target="_blank">this project</a> for which we collaborated with an industrial art school in West Oakland. </span>
   </p>
 
@@ -84,12 +172,54 @@
     </p>
 
   <script>
+    // Set to track the IDs of the content sections that have been revealed
+    let clickedContentIds = new Set();
+    const totalHighlights = 6; // Total number of unique clickable highlights
+
+    // Map highlight class names to their actual colors for dot creation
+    const highlightColors = {
+        'highlight-yellow': '#FFFFCC',
+        'highlight-blue': '#D6F5FF',
+        'highlight-green': '#DDFFAA',
+        'highlight-pink': '#FFDDEE',
+        'highlight-purple': '#EEDDFF'
+    };
+
     function expandOnce(buttonElement, contentId) {
       const contentEl = document.getElementById(contentId);
       
+      // Reveal the content
       contentEl.classList.add('visible');
-      buttonElement.classList.add('no-bg');
+      // Disable the button, which also hides its highlight via CSS
       buttonElement.disabled = true;
+
+      // Add the contentId to our set of clicked highlights
+      clickedContentIds.add(contentId);
+
+      // Create and append the color dot
+      const dotContainer = document.getElementById('collected-dots');
+      const dot = document.createElement('span');
+      dot.classList.add('collected-dot');
+
+      // Determine the color based on the button's highlight class
+      let highlightColorClass = '';
+      for (const className of buttonElement.classList) {
+          if (className.startsWith('highlight-')) {
+              highlightColorClass = className;
+              break;
+          }
+      }
+      dot.style.backgroundColor = highlightColors[highlightColorClass];
+      dotContainer.appendChild(dot);
+
+      // Check if all highlights have been clicked
+      if (clickedContentIds.size === totalHighlights) {
+          // If all highlights are collected, add the smiley dot
+          const smileyDot = document.createElement('span');
+          smileyDot.classList.add('collected-dot', 'smiley-dot');
+          smileyDot.textContent = '😎'; // Smiley emoji
+          dotContainer.appendChild(smileyDot);
+      }
     }
   </script>
 </body>
