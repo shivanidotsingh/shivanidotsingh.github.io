@@ -127,8 +127,8 @@
     /* Styles for the collected dots */
     .collected-dot {
         display: inline-block;
-        width: 12px; /* Size of the dot */
-        height: 12px;
+        width: 16px; /* Size of the dot */
+        height: 16px;
         border-radius: 50%;
         margin-left: 5px; /* Space between dots */
         vertical-align: middle; /* Align with text */
@@ -240,7 +240,7 @@
           // If all highlights are collected, add the smiley dot
           const smileyDot = document.createElement('span');
           smileyDot.classList.add('collected-dot', 'smiley-dot');
-          smileyDot.textContent = '😎 yay!'; // Smiley emoji
+          smileyDot.textContent = '😎'; // Smiley emoji
           dotContainer.appendChild(smileyDot);
       }
     }
