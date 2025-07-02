@@ -18,16 +18,16 @@
     }
 
     h1 {
-      display: inline-block; /* Default: Allow dots to sit next to it */
-      vertical-align: middle; /* Align with dots */
-      margin-right: 5px; /* Space between h1 and dots */
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 5px;
     }
 
     #collected-dots {
-      display: inline-flex; /* Default: Use flex for horizontal alignment of dots */
-      align-items: center; /* Vertically align dots */
-      vertical-align: middle; /* Align with h1 */
-      margin-left: 5px; /* Space from h1 */
+      display: inline-flex;
+      align-items: center;
+      vertical-align: middle;
+      margin-left: 5px;
     }
 
     button.reveal {
@@ -36,7 +36,7 @@
       cursor: pointer;
       border: none;
       background-color: transparent;
-      padding: 0 0.2em; /* Vertical padding removed completely */
+      padding: 0 0.2em;
       font: inherit;
       border-radius: 4px;
       outline: none;
@@ -55,33 +55,29 @@
       border-radius: 4px;
       z-index: -1;
       transform-origin: left;
-      transform: scaleX(0);
-      animation: drawHighlight 1.5s forwards ease-out;
-      transition: transform 0.3s ease-in-out;
+      transform: scaleX(1); /* Highlight is fully visible on load */
+      /* Removed animation: drawHighlight */
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out; /* Smooth transition for disappearing */
     }
 
     /* Specific highlight colors applied to the ::before pseudo-element */
     .highlight-blue::before {
-        background-color: #D6F5FF; /* Very light blue */
+        background-color: #D6F5FF;
     }
     .highlight-yellow::before {
-        background-color: #FDFB8C; /* Soft yellow */
+        background-color: #FDFB8C; /* Updated yellow */
     }
     .highlight-pink::before {
-        background-color: #FFDDEE; /* Softer pink */
+        background-color: #FFDDEE;
     }
     .highlight-green::before {
-        background-color: #DDFFAA; /* Softer, lighter green */
+        background-color: #DDFFAA;
     }
     .highlight-purple::before {
-        background-color: #EEDDFF; /* Softer lavender/purple */
+        background-color: #EEDDFF;
     }
 
-    @keyframes drawHighlight {
-      to {
-        transform: scaleX(1);
-      }
-    }
+    /* Removed @keyframes drawHighlight as it's no longer needed */
 
     button.reveal:disabled {
       cursor: default;
@@ -89,7 +85,7 @@
     }
 
     button.reveal:disabled::before {
-      transform: scaleX(0);
+      transform: scaleX(0); /* Highlight disappears on click */
       opacity: 0;
     }
 
@@ -127,45 +123,45 @@
     /* Styles for the collected dots */
     .collected-dot {
         display: inline-block;
-        width: 16px; /* Size of the dot */
+        width: 16px;
         height: 16px;
         border-radius: 50%;
-        margin-left: 5px; /* Space between dots */
-        vertical-align: middle; /* Align with text */
+        margin-left: 5px;
+        vertical-align: middle;
         transition: background-color 0.3s ease-in-out;
-        flex-shrink: 0; /* Prevent shrinking in flex container */
+        flex-shrink: 0;
     }
 
     .smiley-dot {
-        font-size: 1.2em; /* Make smiley slightly larger than dots */
-        line-height: 1; /* Adjust line height for emoji */
+        font-size: 1.2em;
+        line-height: 1;
         text-align: center;
-        background-color: transparent; /* No background for smiley */
-        width: auto; /* Allow emoji to take natural width */
-        height: auto; /* Allow emoji to take natural height */
-        margin-left: 8px; /* More space for the smiley */
+        background-color: transparent;
+        width: auto;
+        height: auto;
+        margin-left: 8px;
     }
 
     /* Mobile-specific adjustments */
     @media (max-width: 768px) {
       h1 {
-        display: block; /* Force h1 to its own line */
-        margin-right: 0; /* Remove right margin */
-        text-align: left; /* Align to left */
+        display: block;
+        margin-right: 0;
+        text-align: left;
       }
 
       #collected-dots {
-        display: flex; /* Keep flex for internal dot alignment */
-        flex-wrap: wrap; /* Allow dots to wrap if too many */
-        margin-left: 0; /* Remove left margin */
-        margin-top: 5px; /* Reduced top margin for less padding with header */
-        justify-content: flex-start; /* Align dots to the left */
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: 0;
+        margin-top: 5px;
+        justify-content: flex-start;
       }
 
       .collected-dot {
-        margin-left: 0; /* Remove left margin on dots */
-        margin-right: 5px; /* Add right margin for spacing between dots */
-        margin-bottom: 5px; /* Add bottom margin for spacing when wrapping */
+        margin-left: 0;
+        margin-right: 5px;
+        margin-bottom: 5px;
       }
     }
   </style>
@@ -201,7 +197,7 @@
 
     // Map highlight class names to their actual colors for dot creation
     const highlightColors = {
-        'highlight-yellow': '#FDFB8C',
+        'highlight-yellow': '#FDFB8C', // Updated yellow
         'highlight-blue': '#D6F5FF',
         'highlight-green': '#DDFFAA',
         'highlight-pink': '#FFDDEE',
