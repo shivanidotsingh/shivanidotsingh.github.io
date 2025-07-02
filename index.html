@@ -15,6 +15,8 @@
       line-height: 1.8;
       color: #000;
       font-size: 1.1em;
+      position: relative;
+      min-height: 100vh;
     }
 
     h1 {
@@ -23,11 +25,9 @@
       margin-right: 5px;
     }
 
+    /* This container is no longer used for dots or smiley */
     #collected-dots {
-      display: inline-flex;
-      align-items: center;
-      vertical-align: middle;
-      margin-left: 5px;
+      display: none;
     }
 
     button.reveal {
@@ -42,7 +42,7 @@
       outline: none;
       position: relative;
       z-index: 1;
-      transition: background-color 0.2s ease-in-out;
+      /* Removed transition */
     }
 
     button.reveal::before {
@@ -54,7 +54,8 @@
       bottom: 0;
       border-radius: 4px;
       z-index: -1;
-      
+      opacity: 1; /* Highlight is fully visible on load */
+      /* Removed transform and transition */
     }
 
     /* Specific highlight colors applied to the ::before pseudo-element */
@@ -74,16 +75,13 @@
         background-color: #EEDDFF;
     }
 
-    /* Removed @keyframes drawHighlight as it's no longer needed */
-
     button.reveal:disabled {
       cursor: default;
       opacity: 0.8;
     }
 
     button.reveal:disabled::before {
-      transform: scaleX(0); /* Highlight disappears on click */
-      opacity: 0;
+      opacity: 0; /* Highlight disappears instantly on click */
     }
 
     span.inline-reveal {
@@ -97,67 +95,63 @@
       display: inline;
     }
 
-    /* Styling for external links */
-    a {
+    a[target="_blank"] {
       color: #000;
       text-decoration: underline;
       text-underline-offset: 0.2em;
       cursor: ne-resize;
     }
 
-    .note {
-      color: #777;
+    a {
+      color: #4c8aff;
+      text-decoration: none;
+      position: relative;
     }
 
-    /* Styles for the collected dots */
+    .note {
+      color: #777;
+      margin-top: 1.5em;
+    }
+
+    #random-dots-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+      overflow: hidden;
+    }
+
     .collected-dot {
         display: inline-block;
         width: 16px;
         height: 16px;
         border-radius: 50%;
-        margin-left: 5px;
-        vertical-align: middle;
-        transition: background-color 0.3s ease-in-out;
-        flex-shrink: 0;
+        position: absolute;
+        opacity: 1; /* No fade-in animation for dots */
+        /* Removed animation */
     }
 
-    .smiley-dot {
-        font-size: 1.2em;
-        line-height: 1;
-        text-align: center;
-        background-color: transparent;
-        width: auto;
-        height: auto;
-        margin-left: 8px;
+    /* Styles for the smiley emoji (as plain text next to header) */
+    #smiley-placeholder {
+        font-size: 0.8em; /* Smaller font size for the emoji */
+        margin-left: 5px; /* Space from "Shivani." */
+        vertical-align: middle; /* Align with header text */
+        display: inline-block; /* Ensures it sits in line */
+        opacity: 0; /* Initially hidden */
+        /* Removed transition for instant reveal */
     }
 
-    /* Mobile-specific adjustments */
-    @media (max-width: 768px) {
-      h1 {
-        display: block;
-        margin-right: 0;
-        text-align: left;
-      }
-
-      #collected-dots {
-        display: flex;
-        flex-wrap: wrap;
-        margin-left: 0;
-        margin-top: 5px;
-        justify-content: flex-start;
-      }
-
-      .collected-dot {
-        margin-left: 0;
-        margin-right: 5px;
-        margin-bottom: 5px;
-      }
+    #smiley-placeholder.visible {
+        opacity: 1; /* Visible when all highlights are clicked */
     }
+
   </style>
 </head>
 <body>
-  <h1>Hi, I'm Shivani.</h1>
-  <div id="collected-dots"></div>
+  <h1>Hi, I'm Shivani<span id="smiley-placeholder">😎</span>.</h1>
   <p>
     A designer with an aptitude for analytical thinking and an appetite for
     <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">play</button><span id="play" class="inline-reveal"> — experiments in progress and rejected ideas live <a href="https://shivaniest.com" target="_blank">here</a></span>.
@@ -177,19 +171,18 @@
 
     <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more or connect, you can find me on <a href="https://bento.me/singhshivani" target="_blank">bento</a>, shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>,
     or reach out on <a href="https://www.linkedin.com/in/shivanidotsingh/" target="_blank">Linkedin</a>.
-   </p>
-  
+    </p>
+
   <p class="note" style="opacity: 0.5;"> ——— <br>This website was last updated on July 2, 2025 • Built on GitHub </p>
-    
+  
+  <div id="random-dots-container"></div>
 
   <script>
-    // Set to track the IDs of the content sections that have been revealed
     let clickedContentIds = new Set();
-    const totalHighlights = 6; // Total number of unique clickable highlights
+    const totalHighlights = 6;
 
-    // Map highlight class names to their actual colors for dot creation
     const highlightColors = {
-        'highlight-yellow': '#FDFB8C', // Updated yellow
+        'highlight-yellow': '#FDFB8C',
         'highlight-blue': '#D6F5FF',
         'highlight-green': '#DDFFAA',
         'highlight-pink': '#FFDDEE',
@@ -199,20 +192,15 @@
     function expandOnce(buttonElement, contentId) {
       const contentEl = document.getElementById(contentId);
       
-      // Reveal the content
       contentEl.classList.add('visible');
-      // Disable the button, which also hides its highlight via CSS
       buttonElement.disabled = true;
 
-      // Add the contentId to our set of clicked highlights
       clickedContentIds.add(contentId);
 
-      // Create and append the color dot
-      const dotContainer = document.getElementById('collected-dots');
+      const randomDotsContainer = document.getElementById('random-dots-container');
       const dot = document.createElement('span');
       dot.classList.add('collected-dot');
 
-      // Determine the color based on the button's highlight class
       let highlightColorClass = '';
       for (const className of buttonElement.classList) {
           if (className.startsWith('highlight-')) {
@@ -221,15 +209,22 @@
           }
       }
       dot.style.backgroundColor = highlightColors[highlightColorClass];
-      dotContainer.appendChild(dot);
 
-      // Check if all highlights have been clicked
+      const dotSize = 16;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      const randomX = Math.random() * (viewportWidth - dotSize);
+      const randomY = Math.random() * (viewportHeight - dotSize);
+
+      dot.style.left = `${randomX}px`;
+      dot.style.top = `${randomY}px`;
+      
+      randomDotsContainer.appendChild(dot);
+
       if (clickedContentIds.size === totalHighlights) {
-          // If all highlights are collected, add the smiley dot
-          const smileyDot = document.createElement('span');
-          smileyDot.classList.add('collected-dot', 'smiley-dot');
-          smileyDot.textContent = '😎'; // Smiley emoji
-          dotContainer.appendChild(smileyDot);
+          const smileyPlaceholder = document.getElementById('smiley-placeholder');
+          smileyPlaceholder.classList.add('visible');
       }
     }
   </script>
