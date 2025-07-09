@@ -1,151 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Logos ⚘ </title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-      max-width: 720px; /* Kept as per your instruction */
-      margin: 60px auto;
-      padding: 50px 20px;
-      line-height: 1.8;
-      color: #000;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Logos ⚘</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+                Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            max-width: 720px; /* Kept as per your instruction */
+            margin: 60px auto;
+            padding: 50px 20px; 
+            line-height: 1.8;
+            color: #000;
+        }
 
-    h1 {
-      text-align: center;
-      margin-bottom: 2em;
-    }
+        .logo-grid {
+            display: grid;
+            /* Forced to 3 columns always, within the max-width of the body */
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px; /* Increased gap for more even spacing between logos */
+            justify-content: center;
+        }
 
-    .logo-grid {
-      display: grid;
-      /* Forced to 3 columns always, within the max-width of the body */
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px; /* Space between grid items */
-      justify-content: center;
-    }
+        .logo-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
 
-    .logo-item {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
+        .logo-item img {
+            max-width: 100%; /* Image will scale down to fit the smaller column width */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            transition: opacity 0.2s ease-in-out;
+        }
 
-    .logo-item img {
-      max-width: 100%; /* Image will scale down to fit the smaller column width */
-      height: auto;
-      display: block;
-      margin: 0 auto;
-      transition: opacity 0.2s ease-in-out;
-    }
+        .logo-item img:hover {
+            opacity: 0.8;
+        }
 
-    .logo-item img:hover {
-      opacity: 0.8;
-    }
-
-    a {
-      color: #4c8aff;
-      text-decoration: none;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .back-link {
-      margin-top: 3em;
-      text-align: left; /* Changed from center to left */
-      padding-top: 1.5em;
-      border-top: 1px solid #eee;
-    }
-
-    /* All @media queries related to logo-grid responsiveness have been removed */
-    /* This ensures a consistent 3-column layout across all screen sizes */
-  </style>
+        a {
+            color: #4c8aff;
+            text-decoration: none;
+            position: relative;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-  <div class="logo-grid">
-    
-     <div class="logo-item">
-      <a href="https://www.filmcriticsguild.com/" target="_blank"><img src="images/logos/fcg.png" alt="Film Critics Guild logo"></a>
-    </div>
-    <div class="logo-item">
-      <a href="https://elemenopy.in/about-us/" target="_blank"><img src="images/logos/lmnop.png" alt="ELEMENOPY logo"></a>
-    </div>
-    <div class="logo-item">
-      <a href="https://daakroom.com" target="_blank"><img src="images/logos/daakroom.png" alt="Daakroom logo"></a>
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/mill-dental.png" alt="Mill Dental Clinic logo">
-    </div>
-    
-    <div class="logo-item">
-      <img src="images/logos/apcrda.png" alt="APCRDA logo">
-    </div>
-    <div class="logo-item">
-      <a href="https://shivaniest.wordpress.com/portfolio/cultural-edutainment-for-the-south-asian-diaspora/" target="_blank"> <img src="images/logos/ambassador88.png" alt="Ambassador 88 logo"></a>
+    <div class="logo-grid">
+        <div class="logo-item">
+            <a href="https://www.filmcriticsguild.com/" target="_blank">
+                <img src="images/logos/fcg.png" alt="Film Critics Guild logo">
+            </a>
+        </div>
+        <div class="logo-item">
+            <a href="https://elemenopy.in/about-us/" target="_blank">
+                <img src="images/logos/lmnop.png" alt="ELEMENOPY logo">
+            </a>
+        </div>
+        <div class="logo-item">
+            <a href="https://daakroom.com" target="_blank">
+                <img src="images/logos/daakroom.png" alt="Daakroom logo">
+            </a>
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/mill-dental.png" alt="Mill Dental Clinic logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/apcrda.png" alt="APCRDA logo">
+        </div>
+        <div class="logo-item">
+            <a href="https://shivaniest.wordpress.com/portfolio/cultural-edutainment-for-the-south-asian-diaspora/" target="_blank">
+                <img src="images/logos/ambassador88.png" alt="Ambassador 88 logo">
+            </a>
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/nsrcel.png" alt="NSRCEL logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/digital-india.png" alt="Digital India logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/firki.jpg" alt="Firki logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/claystation.png" alt="Claystation logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/bawarchi.jpg" alt="Bawarchi Books Co. logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/parallel.png" alt="Parallel logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/aevam.png" alt="Aevam yoga studio logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/fools-rush-in.png" alt="Fools Rush In logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/ambassador.png" alt="Ambassador Culture Club logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/sharpiesesh.png" alt="Sharpie Sessions logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/yolo.png" alt="YOLO logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/bridging.png" alt="Bridging The Gap logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/bawarchi-opt.png" alt="Bawarchi Books Alternate logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/confined-escape.png" alt="Confined Escape logo">
+        </div>
+        <div class="logo-item">
+            <img src="images/logos/chizzle.png" alt="Chizzle logo">
+        </div>
     </div>
 
-    <div class="logo-item">
-      <img src="images/logos/nsrcel.png" alt="NSRCEL logo">
+    <div class="back-link" style="margin-top: 3em; text-align: left; padding-top: 1.5em; border-top: 1px solid #eee;">
+        <a href="./">← Back to Main Page</a>
     </div>
-    <div class="logo-item">
-      <img src="images/logos/digital-india.png" alt="Digital India logo">
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/firki.jpg" alt="Firki logo">
-    </div>
-      
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/claystation.png" alt="Claystation logo">
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/bawarchi.jpg" alt="Bawarchi Books Co. logo">
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/parallel.png" alt="Parallel logo">
-    </div>
-
-    <div class="logo-item">
-      <img src="images/logos/aevam.png" alt="Aevam yoga studio logo">
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/fools-rush-in.png" alt="Fools Rush In logo">
-    </div>   
-    <div class="logo-item">
-      <img src="images/logos/ambassador.png" alt="Ambassador Culture Club logo">
-    </div>
-  
-  <div class="logo-item">
-      <img src="images/logos/sharpiesesh.png" alt="Sharpie Sessions logo">
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/yolo.png" alt="YOLO logo">
-    </div>
-    <div class="logo-item">
-      <img src="images/logos/bridging.png" alt="Bridging The Gap logo">
-    </div>
-  
-    <div class="logo-item">
-      <img src="images/logos/bawarchi-opt.png" alt="Bawarchi Books Alternate logo">
-    </div>
-     <div class="logo-item">
-      <img src="images/logos/confined-escape.png" alt="Confined Escape logo">
-    </div> 
-    <div class="logo-item">
-      <img src="images/logos/chizzle.png" alt="Chizzle logo">
-    </div>
-
-
-
-  </div>
-
-  <div class="back-link">
-    <a href="./">← Back to Main Page</a>
-  </div>
-
 </body>
 </html>
