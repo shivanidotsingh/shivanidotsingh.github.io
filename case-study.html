@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A West Oakland Story - Shivani Singh</title>
   <style>
-    /* --- Core Styles from your index.html --- */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
         Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -27,7 +26,6 @@
       content: '';
     }
 
-    /* --- Styles for Project Page Content --- */
     h1, h2 {
         line-height: 1.3;
     }
@@ -40,14 +38,14 @@
 
     img {
       max-width: 100%;
-      height: auto; /* Ensures aspect ratio is maintained */
-      border-radius: 4px; /* Optional: adds a slight curve to image corners */
-      margin-top: 1em; /* Default margin for single images */
+      height: auto;
+      border-radius: 4px;
+      margin-top: 1em;
     }
 
     .video-container {
       position: relative;
-      padding-bottom: 56.25%; /* 16:9 aspect ratio */
+      padding-bottom: 56.25%;
       height: 0;
       overflow: hidden;
       max-width: 100%;
@@ -71,21 +69,33 @@
       padding-top: 1.5em;
     }
 
-    /* --- New Styles for Side-by-Side Images (Pair) --- */
     .image-pair-container {
-      display: flex; /* Arranges children in a row */
-      flex-wrap: wrap; /* Allows images to wrap onto the next line on smaller screens */
-      gap: 20px; /* Space between the images */
-      justify-content: center; /* Centers the images horizontally */
-      margin-top: 1em; /* Adjust spacing as needed */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: 1em;
     }
 
     .image-pair-container img {
-      /* Flex properties for the images within the container */
-      flex: 0 1 calc(50% - 10px); /* Don't grow, can shrink, basis of 50% minus half the gap */
-      max-width: 100%; /* Ensures images don't exceed container width */
-      height: auto; /* Crucial for maintaining aspect ratio */
-      margin-top: 0; /* Override default img margin for items in this specific container */
+      width: calc(50% - 10px);
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    @media (max-width: 600px) {
+        .image-pair-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .image-pair-container img {
+            width: 100%;
+            margin-bottom: 1em;
+        }
     }
 
   </style>
@@ -97,7 +107,7 @@
   <h1>A West Oakland Story</h1>
 
   <p>
-    When we took on this project, West Oakland was going through significant urban development — causing an impact to the existing population. An Industrial Art school at the heart of it was trying to make sense of what this means for who they will be in the the next five years. The Crucible is a nonprofit organization and art school dedicated to making the fine and industrial arts accessible for all ages, backgrounds, and abilities. Their work is centred in Oakland and the East Bay, where they provide high-quality classes and workshops to over 8,000 people each year.
+    When we took on this project, West Oakland was going through significant urban urban development — causing an impact to the existing population. An Industrial Art school at the heart of it was trying to make sense of what this means for who they will be in the the next five years. The Crucible is a nonprofit organization and art school dedicated to making the fine and industrial arts accessible for all ages, backgrounds, and abilities. Their work is centred in Oakland and the East Bay, where they provide high-quality classes and workshops to over 8,000 people each year.
 <br><br>
 They collaborated with us to visualize the impact and nature of the upcoming changes in their neighbourhood, estimating demographic changes and building a story from data.
   </p>
@@ -119,13 +129,17 @@ They collaborated with us to visualize the impact and nature of the upcoming cha
   <p>
     We developed a prototype based on Monopoly, a fitting metaphor for the real-estate facelift that West Oakland was going through. Feedback on our first version was invaluable; we learned the gravity of the situation was being lost. We iterated by placing a rendering of the future 7th street at the center of the board and redesigned our "impact cards" to visually emphasize the hard-hitting consequences of gentrification.
   </p>
-  <img src="images/the-board.png" alt="The game board."> <div class="image-pair-container"> <img src="images/with-client.png" alt="Working with the client.">
+  <img src="images/wo-monopoly.png" alt="West Oakland Monopoly screenshot.">
+
+  <div class="image-pair-container">
+    <img src="images/with-client.png" alt="Working with the client.">
     <img src="images/presentation.jpg" alt="Our final presentation.">
   </div>
     
 
   <h2>4. Digital Extension</h2>
   <p>To expand the reach of our prototype, we also designed a digital version of the game. Below is a video of the interaction with the digital prototype.</p>
+  <img src="images/the-board.png" alt="The game board.">
   <img src="images/monopoly.png" alt="A screenshot from the digital version of West Oakland Monopoly.">
   <div class="video-container"><iframe src="https://player.vimeo.com/video/412429694?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" title="Play West Oakland-O-Poly"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
