@@ -42,7 +42,7 @@
       max-width: 100%;
       height: auto;
       border-radius: 4px; /* Optional: adds a slight curve to image corners */
-      margin-top: 1em;
+      margin-top: 1em; /* Keep existing margin for single images */
     }
 
     .video-container {
@@ -70,6 +70,22 @@
       border-top: 1px solid #eee;
       padding-top: 1.5em;
     }
+
+    /* --- New Styles for Side-by-Side Images --- */
+    .image-grid {
+      display: flex; /* Makes the children (images) flex items */
+      flex-wrap: wrap; /* Allows images to wrap to the next line on smaller screens */
+      gap: 20px; /* Adds space between images */
+      justify-content: center; /* Centers the images horizontally */
+      margin-top: 1.5em; /* Add some space above the grid */
+    }
+
+    .image-grid img {
+      flex: 1; /* Allows images to grow and shrink */
+      min-width: 250px; /* Ensures images don't get too small before wrapping */
+      margin-top: 0; /* Remove top margin from individual images within the grid */
+    }
+
   </style>
 </head>
 <body>
@@ -96,20 +112,20 @@ They collaborated with us to visualize the impact and nature of the upcoming cha
   </p>
     <img src="images/whiteboard.jpg">
   <img src="images/team.jpg">
-  </div>
 
   <h2>3. Delivery</h2>
   <p>
     We developed a prototype based on Monopoly, a fitting metaphor for the real-estate facelift that West Oakland was going through. Feedback on our first version was invaluable; we learned the gravity of the situation was being lost. We iterated by placing a rendering of the future 7th street at the center of the board and redesigned our "impact cards" to visually emphasize the hard-hitting consequences of gentrification.
   </p>
-  <img src="images/the-board.png" alt="The game board.">
-  <img src="images/presentation.jpg" alt="Our final presentation.">
-   
+  <div class="image-grid"> <img src="images/the-board.png" alt="The game board.">
+    <img src="images/presentation.jpg" alt="Our final presentation.">
+  </div>
+    
 
   <h2>4. Digital Extension</h2>
   <p>To expand the reach of our prototype, we also designed a digital version of the game. Below is a video of the interaction with the digital prototype.</p>
   <img src="images/monopoly.png" alt="A screenshot from the digital version of West Oakland Monopoly.">
-  <div style="padding:62.28% 0 0 0;position:relative;"><iframe src="https://player.vimeo.com/video/412429694?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" style="position:absolute;top:0;left:0;width:100%;height:100%;" title="Play West Oakland-O-Poly"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>  </div>
+  <div class="video-container"><iframe src="https://player.vimeo.com/video/412429694?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" title="Play West Oakland-O-Poly"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
   <p class="note">
     <a href="shivanidotsingh.github.io">Back to home</a>
