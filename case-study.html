@@ -80,9 +80,9 @@
 
     .image-pair-container img {
       width: calc(50% - 10px);
+      height: 200px; /* Set a fixed height here */
       max-width: 100%;
-      height: auto;
-      object-fit: contain;
+      object-fit: cover; /* This makes the image fill the specified height, cropping if necessary */
       margin-top: 0;
       margin-bottom: 0;
     }
@@ -94,6 +94,7 @@
         }
         .image-pair-container img {
             width: 100%;
+            height: auto; /* Allow height to adjust when stacked */
             margin-bottom: 1em;
         }
     }
