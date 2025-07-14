@@ -40,9 +40,9 @@
 
     img {
       max-width: 100%;
-      height: auto;
+      height: auto; /* Ensures aspect ratio is maintained */
       border-radius: 4px; /* Optional: adds a slight curve to image corners */
-      margin-top: 1em; /* Keep existing margin for single images */
+      margin-top: 1em; /* Default margin for single images */
     }
 
     .video-container {
@@ -71,19 +71,21 @@
       padding-top: 1.5em;
     }
 
-    /* --- New Styles for Side-by-Side Images --- */
-    .image-grid {
-      display: flex; /* Makes the children (images) flex items */
-      flex-wrap: wrap; /* Allows images to wrap to the next line on smaller screens */
-      gap: 20px; /* Adds space between images */
+    /* --- New Styles for Side-by-Side Images (Pair) --- */
+    .image-pair-container {
+      display: flex; /* Arranges children in a row */
+      flex-wrap: wrap; /* Allows images to wrap onto the next line on smaller screens */
+      gap: 20px; /* Space between the images */
       justify-content: center; /* Centers the images horizontally */
-      margin-top: 1.5em; /* Add some space above the grid */
+      margin-top: 1em; /* Adjust spacing as needed */
     }
 
-    .image-grid img {
-      flex: 1; /* Allows images to grow and shrink */
-      min-width: 250px; /* Ensures images don't get too small before wrapping */
-      margin-top: 0; /* Remove top margin from individual images within the grid */
+    .image-pair-container img {
+      /* Flex properties for the images within the container */
+      flex: 0 1 calc(50% - 10px); /* Don't grow, can shrink, basis of 50% minus half the gap */
+      max-width: 100%; /* Ensures images don't exceed container width */
+      height: auto; /* Crucial for maintaining aspect ratio */
+      margin-top: 0; /* Override default img margin for items in this specific container */
     }
 
   </style>
@@ -117,7 +119,7 @@ They collaborated with us to visualize the impact and nature of the upcoming cha
   <p>
     We developed a prototype based on Monopoly, a fitting metaphor for the real-estate facelift that West Oakland was going through. Feedback on our first version was invaluable; we learned the gravity of the situation was being lost. We iterated by placing a rendering of the future 7th street at the center of the board and redesigned our "impact cards" to visually emphasize the hard-hitting consequences of gentrification.
   </p>
-  <div class="image-grid"> <img src="images/the-board.png" alt="The game board.">
+  <img src="images/the-board.png" alt="The game board."> <div class="image-pair-container"> <img src="images/with-client.png" alt="Working with the client.">
     <img src="images/presentation.jpg" alt="Our final presentation.">
   </div>
     
