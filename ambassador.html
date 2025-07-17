@@ -5,25 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Case Study: Cultural Edutainment</title>
     <style>
+        /* Base styles for the main content column */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
             line-height: 1.6;
             color: #333;
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 0 20px;
+            max-width: 800px; /* Main text content remains narrow */
+            margin: 40px auto; /* Center the narrow text column */
+            padding: 0 20px; /* Padding for the narrow text column */
+            box-sizing: border-box; /* Ensures padding is included in width calculation */
         }
+
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
         h1, h2 {
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
             margin-top: 40px;
         }
+
+        /* Default image styling for images within the main content flow (e.g., in columns) */
         img {
             max-width: 100%;
             height: auto;
             display: block;
             margin: 20px 0;
+            border-radius: 4px;
         }
+
         figure {
             margin: 20px 0;
         }
@@ -33,36 +48,71 @@
             text-align: center;
             margin-top: 5px;
         }
-        a {
-            color: #0366d6;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
+
+        /* Wrapper for elements that should break out to full viewport width */
+        .full-width-element {
+            width: 100vw; /* Take full viewport width */
+            margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+            margin-right: calc(50% - 50vw);
+            padding: 0 10px; /* Reduced padding on the sides for full-width elements */
+            box-sizing: border-box;
         }
 
-        /* Default gallery grid style */
-        .gallery-grid {
+        /* Specific style for the 8x2 circular image gallery (Mood Board) */
+        .mood-board-gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin: 20px 0;
-        }
-
-        /* Specific style for the 8x2 circular image gallery */
-        .gallery-grid-circles {
             grid-template-columns: repeat(8, 1fr); /* 8 columns */
-            gap: 10px; /* Smaller gap for smaller images */
+            gap: 5px; /* Very small gap between images */
+            max-width: 600px; /* Keeps the grid itself relatively narrow */
+            margin: 1em auto; /* Center the grid within its full-width wrapper */
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .gallery-grid-circles img {
+        .mood-board-gallery img {
             width: 100%;
-            aspect-ratio: 1 / 1; /* Creates a square */
+            aspect-ratio: 1 / 1; /* Creates a square container for the image */
             object-fit: cover; /* Ensures the image fills the square, cropping as needed */
             border-radius: 50%; /* Makes the square a circle */
             margin: 0; /* Resets any default margin */
         }
-        
+
+        /* General gallery grid style (used for 3x3 explorations and other general grids) */
+        .general-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive columns */
+            gap: 5px; /* Reduced gap */
+            margin: 0; /* Handled by full-width-element */
+            padding: 0; /* Handled by full-width-element */
+        }
+
+        .general-gallery-grid img {
+            width: 100%;
+            height: 180px; /* Consistent height for square-like proportion */
+            object-fit: cover; /* Ensure image fills the space */
+            border-radius: 4px;
+            margin: 0; /* Remove default img margin */
+        }
+
+        /* Specific style for the Prototype Activity Pack gallery (all images same height) */
+        .prototype-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive columns */
+            gap: 5px; /* Reduced gap */
+            margin: 0; /* Handled by full-width-element */
+            padding: 0; /* Handled by full-width-element */
+        }
+
+        .prototype-gallery-grid img {
+            width: 100%;
+            height: 200px; /* Set a fixed height for all images in this gallery */
+            object-fit: cover; /* Ensures the image fills the specified height, cropping as needed */
+            border-radius: 4px;
+            margin: 0; /* Remove default img margin */
+        }
+
+
+        /* Video container styling */
         .video-container {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
@@ -79,12 +129,33 @@
             width: 100%;
             height: 100%;
         }
-        .note {
-            color: #777;
-            margin-top: 3em;
-            font-size: 0.95em;
-            border-top: 1px solid #eee;
-            padding-top: 1.5em;
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px; /* Adjust body padding for smaller screens */
+            }
+            .mood-board-gallery {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns on small screens */
+                max-width: 100%;
+                padding: 0 10px; /* Adjust padding for mobile */
+            }
+            .mood-board-gallery img {
+                width: 60px; /* Smaller size for circular on mobile */
+                height: 60px;
+            }
+
+            .general-gallery-grid, .prototype-gallery-grid {
+                grid-template-columns: 1fr; /* Stack images on small screens */
+            }
+            .general-gallery-grid img, .prototype-gallery-grid img {
+                height: auto; /* Auto height on mobile for better stacking */
+            }
+
+            .full-width-element {
+                padding-left: 10px; /* Adjust padding for full-width sections on mobile */
+                padding-right: 10px;
+            }
         }
     </style>
 </head>
@@ -115,36 +186,38 @@
     <h2>1. Branding</h2>
     <p>We started out as a small team of three, finding alignment on <strong>what being south asian meant to us.</strong> We created collective a mood board which defined the aesthetics we aspired to achieve. This exercise was challenging because of the breadth of things that could be classified as cultural association to me; It also brought up discussions around representation vs appropriation, which led to some decisions in terms of what the brand needs to stand for.</p>
 
-    <div class="gallery-grid gallery-grid-circles">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-21-at-1.21.59-pm.png">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-09-17-at-10.38.30-am.png">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/img_0b92e4b315f8-1.jpeg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/mysore.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/colors.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/geometric-mehndi-designs-vector.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-4.54.34-pm.png">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-5.28.48-pm.png">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/bombay.png">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/rangole.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/il_570xn.1842359231_4czo.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/firework.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/aadarsh-balak.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/sameer.jpg">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-20-at-1.38.49-pm.png">
-        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/jasjyot.jpg">
+    <div class="full-width-element">
+        <div class="mood-board-gallery">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-21-at-1.21.59-pm.png">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-09-17-at-10.38.30-am.png">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/img_0b92e4b315f8-1.jpeg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/mysore.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/colors.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/geometric-mehndi-designs-vector.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-4.54.34-pm.png">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-5.28.48-pm.png">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/bombay.png">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/rangole.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/il_570xn.1842359231_4czo.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/firework.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/aadarsh-balak.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/sameer.jpg">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-20-at-1.38.49-pm.png">
+            <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/jasjyot.jpg">
+        </div>
     </div>
     
     <p>Thus began the journey of defining the visual mark by which to identify the brand with. We went through a few rounds of iteration with the abstraction of a car–highlighting some of the features that were unique to this model, or subtle nods to south asia in the visual metaphors.</p>
     <p><strong>Note:</strong> In the beginning, the brand wasn't solely predestined as a children's brand, and thus the explorations took on a broader scope.</p>
     
-    <div class="gallery-grid">
+    <div class="general-gallery-grid">
         <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.30.52-pm-1.png?w=1000" alt="Logo exploration 1">
         <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.31.06-pm-1.png?w=1000" alt="Logo exploration 2">
         <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.30.33-pm-2.png?w=1000" alt="Logo exploration 3">
     </div>
 
-    <figure>
-        <div class="gallery-grid">
+    <div class="full-width-element">
+        <figure class="general-gallery-grid">
             <img src="https://shivaniest.files.wordpress.com/2020/10/yellow-windows.png" alt="Visual language exploration">
             <img src="https://shivaniest.files.wordpress.com/2020/10/pink.png" alt="Visual language exploration">
             <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-16-at-1.44.27-pm.png" alt="Visual language exploration">
@@ -154,43 +227,52 @@
             <img src="https://shivaniest.files.wordpress.com/2020/10/corp-1.png" alt="Visual language exploration">
             <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-7.57.26-pm.png" alt="Visual language exploration">
             <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.17.30-pm.png" alt="Visual language exploration">
-        </div>
-        <figcaption>A few of the logo and visual language explorations</figcaption>
-    </figure>
+            <figcaption>A few of the logo and visual language explorations</figcaption>
+        </figure>
+    </div>
 
     <p>The use of patterns with meaningful details was decidedly relevant, but the work on the logo design was paused after this phase, to focus on redefining the strategy of the company from the perspective of a children's brand. The form that these patterns took evolved through the course of the project, but this <strong>diagram</strong> laid the foundations of what was to come:</p>
     
-    <figure>
-        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-7.58.18-pm.png" alt="Diagram of a system of motifs">
-        <figcaption>A system of Motifs</figcaption>
-    </figure>
+    <div class="full-width-element">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-7.58.18-pm.png" alt="Diagram of a system of motifs">
+            <figcaption>A system of Motifs</figcaption>
+        </figure>
+    </div>
     
-    <figure>
-        <img src="https://shivaniest.files.wordpress.com/2020/10/offset-aesthetic.png" alt="Hand block printing style">
-        <figcaption>The misaligned style of a hand-block-printing that we integrated into the brand aesthetic.</figcaption>
-    </figure>
+    <div class="full-width-element">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/10/offset-aesthetic.png" alt="Hand block printing style">
+            <figcaption>The misaligned style of a hand-block-printing that we integrated into the brand aesthetic.</figcaption>
+        </figure>
+    </div>
 
     <p>Once the decision to keep the brand focused towards children was made, a new name for the brand emerged: <strong>ambassador 88</strong>– from the secret society of nannies that took an important meaning in the story of the book itself. We ran a design sprint to define the creative guiding principles for the logomark:<strong> whimsical and joyful.</strong> This became a north star that kept the parallel teams aligned.</p>
     <p><strong>After many a zoom calls and visual system explorations, a logo was born.</strong></p>
     
-    <figure>
-        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-16-at-4.31.31-pm.png" alt="Final brand logo for Ambassador 88">
-        <figcaption>The final name and logo of the Brand</figcaption>
-    </figure>
+    <div class="full-width-element">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-16-at-4.31.31-pm.png" alt="Final brand logo for Ambassador 88">
+            <figcaption>The final name and logo of the Brand</figcaption>
+        </figure>
+    </div>
 
-    <figure>
-        <img src="https://shivaniest.files.wordpress.com/2020/10/ambassador88-brand-design-wip-01.png" alt="Logo application">
-        <figcaption>Application</figcaption>
-    </figure>
+    <div class="full-width-element">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/10/ambassador88-brand-design-wip-01.png" alt="Logo application">
+            <figcaption>Application</figcaption>
+        </figure>
+    </div>
 
-    <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-14-at-11.44.28-am.png?w=1024" alt="Brand visual elements">
-    
-    <figure>
-        <img src="https://shivaniest.files.wordpress.com/2020/11/brand-book-88.png" alt="Building a brand book remotely">
-        <figcaption>The building of a brand book remotely</figcaption>
-    </figure>
+    <div class="full-width-element">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/11/brand-book-88.png" alt="Building a brand book remotely">
+            <figcaption>The building of a brand book remotely</figcaption>
+        </figure>
+    </div>
 
-    <div class="gallery-grid">
+    <div class="general-gallery-grid">
+        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-14-at-11.44.28-am.png?w=1024" alt="Brand visual elements">
         <img src="https://shivaniest.files.wordpress.com/2020/10/four-circles-1.png?w=750" alt="Brand pattern animation still">
         <img src="https://shivaniest.files.wordpress.com/2020/10/four-2.gif?w=1024" alt="Brand pattern animation">
     </div>
@@ -198,36 +280,45 @@
     <h2>2. The Product</h2>
     <p>The experience of unpacking this product on arrival was a key milestone in the user journey. We started to <strong>visualized this customer journey</strong>. While the book remained the hero in this package, there were other interactive elements which completed the learning experience. These supplementary activities related either to the characters or place of the story, to the family members of the child, or to the brand itself.</p>
 
-    <figure>
-        <img src="https://shivaniest.files.wordpress.com/2023/01/exploded-view.png?w=1024" alt="Isometric sketch of package contents">
-        <figcaption>An early isometric sketch of the contents of the package</figcaption>
-    </figure>
+    <div class="full-width-element">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2023/01/exploded-view.png?w=1024" alt="Isometric sketch of package contents">
+            <figcaption>An early isometric sketch of the contents of the package</figcaption>
+        </figure>
+    </div>
 
-    <figure>
-        <img src="https://shivaniest.files.wordpress.com/2020/11/activity-center.001.png?w=1024" alt="Final visual render of package contents">
-        <figcaption>Final visual render of contents of the package</figcaption>
-    </figure>
+    <div class="full-width-element">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/11/activity-center.001.png?w=1024" alt="Final visual render of package contents">
+            <figcaption>Final visual render of contents of the package</figcaption>
+        </figure>
+    </div>
 
     <p>At this point we reached a challenging question about the visual language of the rest of the pieces, outside the book. We were working with an illustrator for the book whose style could either spill over into these touchpoints, or we could decide to let them take on a new language in the brand's tone of voice. This brought us to identify an opportunity–</p>
     
-    <img src="https://shivaniest.files.wordpress.com/2020/10/zoom-packaging.png" alt="Packaging design meeting on Zoom">
+    <div class="full-width-element">
+        <img src="https://shivaniest.files.wordpress.com/2020/10/zoom-packaging.png" alt="Packaging design meeting on Zoom">
+    </div>
 
     <p>To marry together the contrast of these aesthetics, we conceptualized an<strong> 'outside-in'</strong> idea–where the packaging and pieces would have a subdued outer covering, but bursting with all the pattern, colorful joy within. A way to bring in the <strong>magical and whimsical</strong> ethos of the brand.</p>
     
-    <div class="video-container">
-        <iframe src="https://player.vimeo.com/video/483790634" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+    <div class="full-width-element">
+        <div class="video-container">
+            <iframe src="https://player.vimeo.com/video/483790634" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        </div>
     </div>
 
     <p>Printed prototypes of the activity pack–</p>
 
-    <div class="gallery-grid">
-        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/10/dsc00293_301b9e97-fd70-45db-a657-76e364aad24a_1080x1080.jpg">
-        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00258_4f295f83-b9a1-439a-af69-64543fa5f343_1080x1080.jpg">
-        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/sq2.jpg?w=1024" alt="Print samples">
-        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00264_32e64fe8-5fa5-4b65-8e89-8a068e6c8c4f_1080x1080.jpg">
-        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00275_ffff9d92-1b57-4295-9b87-fcecf1ba7826_1080x1080.jpg">
-        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/img_5778-3.jpg?w=1024" alt="Prize Amulet">
-
+    <div class="full-width-element">
+        <div class="prototype-gallery-grid">
+            <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/10/dsc00293_301b9e97-fd70-45db-a657-76e364aad24a_1080x1080.jpg">
+            <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00258_4f295f83-b9a1-439a-af69-64543fa5f343_1080x1080.jpg">
+            <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/sq2.jpg?w=1024" alt="Print samples">
+            <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00264_32e64fe8-5fa5-4b65-8e89-8a068e6c8c4f_1080x1080.jpg">
+            <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00275_ffff9d92-1b57-4295-9b87-fcecf1ba7826_1080x1080.jpg">
+            <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/img_5778-3.jpg?w=1024" alt="Prize Amulet">
+        </div>
     </div>
 
     <p>Following this, we worked alongside the digital team, and used Shopify to translate the brand experience onto the <a href="https://ambassador88.com" target="_blank" rel="noopener noreferrer">website</a>.</p>
