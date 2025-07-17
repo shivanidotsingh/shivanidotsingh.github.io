@@ -40,12 +40,29 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* Default gallery grid style */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 15px;
             margin: 20px 0;
         }
+
+        /* Specific style for the 8x2 circular image gallery */
+        .gallery-grid-circles {
+            grid-template-columns: repeat(8, 1fr); /* 8 columns */
+            gap: 10px; /* Smaller gap for smaller images */
+        }
+
+        .gallery-grid-circles img {
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Creates a square */
+            object-fit: cover; /* Ensures the image fills the square, cropping as needed */
+            border-radius: 50%; /* Makes the square a circle */
+            margin: 0; /* Resets any default margin */
+        }
+        
         .video-container {
             position: relative;
             padding-bottom: 56.25%; /* 16:9 aspect ratio */
@@ -98,7 +115,7 @@
     <h2>Phase I: Branding</h2>
     <p>We started out as a small team of three, finding alignment on <strong>what being south asian meant to us.</strong> We created collective a mood board which defined the aesthetics we aspired to achieve. This exercise was challenging because of the breadth of things that could be classified as cultural association to me; It also brought up discussions around representation vs appropriation, which led to some decisions in terms of what the brand needs to stand for.</p>
 
-    <div class="gallery-grid">
+    <div class="gallery-grid gallery-grid-circles">
         <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-21-at-1.21.59-pm.png">
         <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-09-17-at-10.38.30-am.png">
         <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/img_0b92e4b315f8-1.jpeg">
