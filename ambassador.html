@@ -1,309 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cultural Edutainment for the South-Asian Diaspora - Shivani Singh</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 40px 20px;
-      line-height: 1.8;
-      color: #000;
-    }
-
-    a {
-      color: #4c8aff;
-      text-decoration: none;
-      position: relative;
-      cursor: pointer;
-    }
-
-    a::after {
-      content: '';
-    }
-
-    h1, h2 {
-        line-height: 1.3;
-    }
-
-    h2 {
-        margin-top: 2em;
-        border-top: 1px solid #eee;
-        padding-top: 1.5em;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-      margin-top: 1em;
-    }
-
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      max-width: 100%;
-      background: #000;
-      margin: 1.5em 0;
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    
-    .note {
-      color: #777;
-      margin-top: 3em;
-      font-size: 0.95em;
-      border-top: 1px solid #eee;
-      padding-top: 1.5em;
-    }
-
-    /* Custom styles for columns from original page */
-    .columns-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* Adjust as needed */
-        margin-top: 1em;
-    }
-
-    .column {
-        flex: 1; /* Allow columns to grow and shrink */
-        min-width: 280px; /* Minimum width before wrapping */
-    }
-
-    .column.align-top {
-        align-self: flex-start;
-    }
-
-    /* Custom styles for gallery layouts */
-    .image-gallery {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Default for galleries */
-        gap: 16px;
-        margin-top: 1em;
-    }
-
-    .image-gallery img {
-        width: 100%;
-        height: 180px; /* Fixed height for consistent gallery images */
-        object-fit: cover;
-        border-radius: 4px; /* Maintain existing image border-radius */
-    }
-
-    /* Specific style for circular gallery */
-    .image-gallery.style-circle img {
-        border-radius: 50%; /* Make images circular */
-    }
-
-    /* Specific style for rectangular tiled gallery */
-    .tiled-gallery-rectangular {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px; /* Smaller gap for tiled */
-        margin-top: 1em;
-    }
-
-    .tiled-gallery-rectangular .tiled-col {
-        flex: 1; /* Make columns flexible */
-        display: flex;
-        flex-direction: column;
-        gap: 8px; /* Gap between stacked images in a column */
-    }
-
-    .tiled-gallery-rectangular img {
-        width: 100%;
-        height: auto; /* Auto height for rectangular tiles */
-        object-fit: cover;
-        border-radius: 4px;
-    }
-
-    /* Removed .cover-section and related styles as per request */
-
-    @media (max-width: 600px) {
-        .columns-container {
-            flex-direction: column;
-            align-items: center;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Case Study: Cultural Edutainment</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
         }
-        .column {
+        h1, h2 {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px 0;
+        }
+        figure {
+            margin: 20px 0;
+        }
+        figcaption {
+            font-size: 0.9em;
+            color: #777;
+            text-align: center;
+            margin-top: 5px;
+        }
+        a {
+            color: #0366d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            margin: 20px 0;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            flex-basis: auto !important; /* Override explicit flex-basis on smaller screens */
+            height: 100%;
         }
-        .columns-container img {
-            width: 100%;
+        .note {
+            color: #777;
+            margin-top: 3em;
+            font-size: 0.95em;
+            border-top: 1px solid #eee;
+            padding-top: 1.5em;
         }
-
-        .image-gallery {
-            grid-template-columns: 1fr; /* Stack images in galleries on small screens */
-        }
-
-        .tiled-gallery-rectangular .tiled-col {
-            flex-direction: column;
-        }
-    }
-
-    .font-large { font-size: 1.25em; }
-    .font-medium { font-size: 1.1em; }
-    .font-normal { font-size: 1em; }
-    .text-theme-blue { color: #4c8aff; } /* Assuming theme-1 is a shade of blue for links */
-
-
-  </style>
+    </style>
 </head>
 <body>
-  
-  <p><a href="index.html">&larr; Back to home</a></p>
 
-  <!-- Image that was previously the cover background, now a regular image -->
-  <img src="https://shivaniest.files.wordpress.com/2020/11/screen-shot-2020-11-25-at-2.37.26-pm-1.png" alt="Cultural Edutainment Header Image">
+    <p><a href="https://singh.work/logofolio">&larr; Back to logowall</a></p>
 
-  <h1>Cultural edutainment for the south-asian diaspora</h1>
+    <h1>Cultural edutainment for the south-asian diaspora</h1>
 
-  <div class="columns-container">
-    <div class="column align-top" style="flex-basis:66.66%">
-      <p class="font-large">How might we equip American born South-Asian children to learn their origin stories in a way that is enjoyable and engaging?</p>
-      <p class="font-medium"><strong>Target Group:</strong> 6-9 year old children, eager to learn about South Asian history and culture.</p>
-      <p class="font-medium"></p>
+    <p><strong>How might we equip American born South-Asian children to learn their origin stories in a way that is enjoyable and engaging?</strong></p>
+    <p><strong>Target Group:</strong> 6-9 year old children, eager to learn about South Asian history and culture.</p>
+    <p><strong>Team:</strong><br>
+        <a href="https://www.linkedin.com/in/paul-thorogood-282b5714" target="_blank" rel="noopener noreferrer">Paul Thorogood</a><br>
+        <a href="https://www.linkedin.com/in/katelyn-stetler-ab633753" target="_blank" rel="noopener noreferrer">Katelyn Stetler</a><br>
+        <a href="https://twitter.com/caberwal?lang=en" target="_blank" rel="noopener noreferrer">Sonny Caberwal</a><br>
+        <a href="https://www.linkedin.com/in/sam-broe-7159225" target="_blank" rel="noopener noreferrer">Sam Broe</a>
+    </p>
+    <p><strong>Duration:</strong><br>4 Months</p>
+
+    <p>This opportunity took the shape of a <strong>culture club</strong>. A monthly subscription box–with an adventure story book at the heart of it–accompanied by things to do. We defined the activities in a way that relate to the characters and story from the book, as well as interactions with other real world stakeholders like the kid's family, broader community and other club members.</p>
+    <p>The physical nature of the box was essential. To be one of those things you look forward to outside of your screen, and thus <strong>paper</strong>, as a medium, was decidedly the backbone of this package.</p>
+
+    <h2>The Metaphor</h2>
+    <p>An ambassador represents a country, culture, brand or an idea. In south asia, there is a popular vehicle by the same name–which is both ubiquitous and extremely versatile. It only takes the difference of a fixed-top accessory for it to represent for either a ‘very important person’ or a pedestrian’s taxi.</p>
+    <p>Built in 1958, he car has shut down manufacturing in the last few years, but <strong>it embodies something iconic, that we decided to tap into, and incorporate into the building of the brand.</strong></p>
+    <img src="https://shivaniest.files.wordpress.com/2020/10/2-copy-1.jpg?w=696" alt="Iconic Ambassador car">
+
+    <h2>Phase I: Branding</h2>
+    <p>We started out as a small team of three, finding alignment on <strong>what being south asian meant to us.</strong> We created collective a mood board which defined the aesthetics we aspired to achieve. This exercise was challenging because of the breadth of things that could be classified as cultural association to me; It also brought up discussions around representation vs appropriation, which led to some decisions in terms of what the brand needs to stand for.</p>
+
+    <div class="gallery-grid">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-21-at-1.21.59-pm.png">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-09-17-at-10.38.30-am.png">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/img_0b92e4b315f8-1.jpeg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/mysore.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/colors.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/geometric-mehndi-designs-vector.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-4.54.34-pm.png">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-5.28.48-pm.png">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/bombay.png">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/rangole.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/il_570xn.1842359231_4czo.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/firework.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/aadarsh-balak.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/sameer.jpg">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-20-at-1.38.49-pm.png">
+        <img alt="" src="https://shivaniest.files.wordpress.com/2020/10/jasjyot.jpg">
     </div>
-    <div class="column align-top" style="flex-basis:33.33%">
-      <p class="font-medium"><strong>Team</strong>:<br><a rel="noreferrer noopener" href="https://www.linkedin.com/in/paul-thorogood-282b5714" target="_blank">Paul Thorogood<br></a><a rel="noreferrer noopener" href="https://www.linkedin.com/in/katelyn-stetler-ab633753" target="_blank">Katelyn Stetler<br></a><a rel="noreferrer noopener" href="https://twitter.com/caberwal?lang=en" target="_blank">Sonny Caberwal<br></a><a rel="noreferrer noopener" href="https://www.linkedin.com/in/sam-broe-7159225" target="_blank">Sam Broe</a></p>
-      <p class="font-medium"><strong>Duration</strong>:<br>4 Months</p>
+    
+    <p>Thus began the journey of defining the visual mark by which to identify the brand with. We went through a few rounds of iteration with the abstraction of a car–highlighting some of the features that were unique to this model, or subtle nods to south asia in the visual metaphors.</p>
+    <p><strong>Note:</strong> In the beginning, the brand wasn't solely predestined as a children's brand, and thus the explorations took on a broader scope.</p>
+    
+    <div class="gallery-grid">
+        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.30.52-pm-1.png?w=1000" alt="Logo exploration 1">
+        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.31.06-pm-1.png?w=1000" alt="Logo exploration 2">
+        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.30.33-pm-2.png?w=1000" alt="Logo exploration 3">
     </div>
-  </div>
 
-  <p class="font-medium">This opportunity took the shape of a <strong>culture club</strong>. A monthly subscription box–with an adventure story book at the heart of it–accompanied by things to do. We defined the activities in a way that relate to the characters and story from the book, as well as interactions with other real world stakeholders like the kid's family, broader community and other club members.</p>
-  <p class="font-medium">The physical nature of the box was essential. To be one of those things you look forward to outside of your screen, and thus <strong>paper</strong>, as a medium, was decidedly the backbone of this package.</p>
+    <figure>
+        <div class="gallery-grid">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/yellow-windows.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/pink.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-16-at-1.44.27-pm.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.09.52-pm.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.11.59-pm.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.11.55-pm.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/corp-1.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-7.57.26-pm.png" alt="Visual language exploration">
+            <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.17.30-pm.png" alt="Visual language exploration">
+        </div>
+        <figcaption>A few of the logo and visual language explorations</figcaption>
+    </figure>
 
-  <h2>The Metaphor</h2>
-  <div class="columns-container">
-    <div class="column" style="flex-basis:66.66%">
-      <p class="font-normal">An ambassador represents a country, culture, brand or an idea. In south asia, there is a popular vehicle by the same name–which is both ubiquitous and extremely versatile. It only takes the difference of a fixed-top accessory for it to represent for either a ‘very important person’ or a pedestrian’s taxi.</p>
-      <p class="font-normal">Built in 1958, he car has shut down manufacturing in the last few years, but <strong>it embodies something iconic, that we decided to tap into, and incorporate into the building of the brand.</strong></p>
+    <p>The use of patterns with meaningful details was decidedly relevant, but the work on the logo design was paused after this phase, to focus on redefining the strategy of the company from the perspective of a children's brand. The form that these patterns took evolved through the course of the project, but this <strong>diagram</strong> laid the foundations of what was to come:</p>
+    
+    <figure>
+        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-7.58.18-pm.png" alt="Diagram of a system of motifs">
+        <figcaption>A system of Motifs</figcaption>
+    </figure>
+    
+    <figure>
+        <img src="https://shivaniest.files.wordpress.com/2020/10/offset-aesthetic.png" alt="Hand block printing style">
+        <figcaption>The misaligned style of a hand-block-printing that we integrated into the brand aesthetic.</figcaption>
+    </figure>
+
+    <p>Once the decision to keep the brand focused towards children was made, a new name for the brand emerged: <strong>ambassador 88</strong>– from the secret society of nannies that took an important meaning in the story of the book itself. We ran a design sprint to define the creative guiding principles for the logomark:<strong> whimsical and joyful.</strong> This became a north star that kept the parallel teams aligned.</p>
+    <p><strong>After many a zoom calls and visual system explorations, a logo was born.</strong></p>
+    
+    <figure>
+        <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-16-at-4.31.31-pm.png" alt="Final brand logo for Ambassador 88">
+        <figcaption>The final name and logo of the Brand</figcaption>
+    </figure>
+
+    <figure>
+        <img src="https://shivaniest.files.wordpress.com/2020/10/ambassador88-brand-design-wip-01.png" alt="Logo application">
+        <figcaption>Application</figcaption>
+    </figure>
+
+    <img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-14-at-11.44.28-am.png?w=1024" alt="Brand visual elements">
+    
+    <figure>
+        <img src="https://shivaniest.files.wordpress.com/2020/11/brand-book-88.png" alt="Building a brand book remotely">
+        <figcaption>The building of a brand book remotely</figcaption>
+    </figure>
+
+    <div class="gallery-grid">
+        <img src="https://shivaniest.files.wordpress.com/2020/10/four-circles-1.png?w=750" alt="Brand pattern animation still">
+        <img src="https://shivaniest.files.wordpress.com/2020/10/four-2.gif?w=1024" alt="Brand pattern animation">
     </div>
-    <div class="column" style="flex-basis:33.33%">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/2-copy-1.jpg?w=696" alt="" class="image-large" /></figure>
+
+    <h2>Phase II: The Product</h2>
+    <p>The experience of unpacking this product on arrival was a key milestone in the user journey. We started to <strong>visualized this customer journey</strong>. While the book remained the hero in this package, there were other interactive elements which completed the learning experience. These supplementary activities related either to the characters or place of the story, to the family members of the child, or to the brand itself.</p>
+
+    <figure>
+        <img src="https://shivaniest.files.wordpress.com/2023/01/exploded-view.png?w=1024" alt="Isometric sketch of package contents">
+        <figcaption>An early isometric sketch of the contents of the package</figcaption>
+    </figure>
+
+    <figure>
+        <img src="https://shivaniest.files.wordpress.com/2020/11/activity-center.001.png?w=1024" alt="Final visual render of package contents">
+        <figcaption>Final visual render of contents of the package</figcaption>
+    </figure>
+
+    <p>At this point we reached a challenging question about the visual language of the rest of the pieces, outside the book. We were working with an illustrator for the book whose style could either spill over into these touchpoints, or we could decide to let them take on a new language in the brand's tone of voice. This brought us to identify an opportunity–</p>
+    
+    <img src="https://shivaniest.files.wordpress.com/2020/10/zoom-packaging.png" alt="Packaging design meeting on Zoom">
+
+    <p>To marry together the contrast of these aesthetics, we conceptualized an<strong> 'outside-in'</strong> idea–where the packaging and pieces would have a subdued outer covering, but bursting with all the pattern, colorful joy within. A way to bring in the <strong>magical and whimsical</strong> ethos of the brand.</p>
+    
+    <div class="video-container">
+        <iframe src="https://player.vimeo.com/video/483790634" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
     </div>
-  </div>
 
-  <h2>Phase I: Branding</h2>
-  <p class="font-medium">We started out as a small team of three, finding alignment on <strong>what being south asian meant to us. </strong>We created collective a mood board which defined the aesthetics we aspired to achieve. This exercise was challenging because of the breadth of things that could be classified as cultural association to me; It also brought up discussions around representation vs appropriation, which led to some decisions in terms of what the brand needs to stand for. </p>
-  <p></p>
-  <div class="image-gallery style-circle">
-    <figure class="gallery-item"><img alt="" data-height="1432" data-id="3549" data-link="https://singh.work/screen-shot-2020-08-21-at-1-21-59-pm/" data-url="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-21-at-1.21.59-pm.png" data-width="2850" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-21-at-1.21.59-pm.png?resize=1432%2C1432" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="1194" data-id="3552" data-link="https://singh.work/screen-shot-2020-09-17-at-10-38-30-am/" data-url="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-09-17-at-10.38.30-am.png" data-width="1192" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-09-17-at-10.38.30-am.png?resize=1192%2C1192" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="486" data-id="3553" data-link="https://singh.work/img_0b92e4b315f8-1/" data-url="https://shivaniest.files.wordpress.com/2020/10/img_0b92e4b315f8-1.jpeg" data-width="741" src="https://shivaniest.files.wordpress.com/2020/10/img_0b92e4b315f8-1.jpeg?resize=486%2C486" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="726" data-id="3554" data-link="https://singh.work/mysore/" data-url="https://shivaniest.files.wordpress.com/2020/10/mysore.jpg" data-width="514" src="https://shivaniest.files.wordpress.com/2020/10/mysore.jpg?resize=514%2C514" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="530" data-id="3555" data-link="https://singh.work/colors/" data-url="https://shivaniest.files.wordpress.com/2020/10/colors.jpg" data-width="527" src="https://shivaniest.files.wordpress.com/2020/10/colors.jpg?resize=527%2C527" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="467" data-id="3556" data-link="https://singh.work/geometric-mehndi-designs-vector/" data-url="https://shivaniest.files.wordpress.com/2020/10/geometric-mehndi-designs-vector.jpg" data-width="496" src="https://shivaniest.files.wordpress.com/2020/10/geometric-mehndi-designs-vector.jpg?resize=467%2C467" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="856" data-id="3561" data-link="https://singh.work/screen-shot-2020-08-01-at-4-54-34-pm/" data-url="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-4.54.34-pm.png" data-width="1178" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-4.54.34-pm.png?resize=856%2C856" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="932" data-id="3563" data-link="https://singh.work/screen-shot-2020-08-01-at-5-28-48-pm/" data-url="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-5.28.48-pm.png" data-width="1170" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-01-at-5.28.48-pm.png?resize=932%2C932" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="868" data-id="3568" data-link="https://singh.work/bombay/" data-url="https://shivaniest.files.wordpress.com/2020/10/bombay.png" data-width="1041" src="https://shivaniest.files.wordpress.com/2020/10/bombay.png?resize=868%2C868" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="600" data-id="3570" data-link="https://singh.work/rangole/" data-url="https://shivaniest.files.wordpress.com/2020/10/rangole.jpg" data-width="900" src="https://shivaniest.files.wordpress.com/2020/10/rangole.jpg?resize=600%2C600" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="458" data-id="3572" data-link="https://singh.work/il_570xn-1842359231_4czo/" data-url="https://shivaniest.files.wordpress.com/2020/10/il_570xn.1842359231_4czo.jpg" data-width="570" src="https://shivaniest.files.wordpress.com/2020/10/il_570xn.1842359231_4czo.jpg?resize=458%2C458" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="398" data-id="3564" data-link="https://singh.work/firework/" data-url="https://shivaniest.files.wordpress.com/2020/10/firework.jpg" data-width="600" src="https://shivaniest.files.wordpress.com/2020/10/firework.jpg?resize=398%2C398" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="720" data-id="3566" data-link="https://singh.work/aadarsh-balak/" data-url="https://shivaniest.files.wordpress.com/2020/10/aadarsh-balak.jpg" data-width="508" src="https://shivaniest.files.wordpress.com/2020/10/aadarsh-balak.jpg?resize=508%2C508" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="816" data-id="3571" data-link="https://singh.work/sameer/" data-url="https://shivaniest.files.wordpress.com/2020/10/sameer.jpg" data-width="600" src="https://shivaniest.files.wordpress.com/2020/10/sameer.jpg?resize=600%2C600" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="1444" data-id="3573" data-link="https://singh.work/screen-shot-2020-08-20-at-1-38-49-pm/" data-url="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-20-at-1.38.49-pm.png" data-width="1428" src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-20-at-1.38.49-pm.png?resize=1428%2C1428" /></figure>
-    <figure class="gallery-item"><img alt="" data-height="3518" data-id="3577" data-link="https://singh.work/jasjyot/" data-url="https://shivaniest.files.wordpress.com/2020/10/jasjyot.jpg" data-width="2500" src="https://shivaniest.files.wordpress.com/2020/10/jasjyot.jpg?resize=2000%2C2000" /></figure>
-  </div>
-
-  <p></p>
-  <p class="font-medium">Thus began the journey of defining the visual mark by which to identify the brand with. We went through a few rounds of iteration with the abstraction of a car–highlighting some of the features that were unique to this model, or subtle nods to south asia in the visual metaphors.</p>
-  <p class="font-medium"><strong>Note</strong>: In the beginning, the brand wasn't solely predestined as a children's brand, and thus the explorations took on a broader scope.</p>
-
-  <div class="columns-container">
-    <div class="column">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.30.52-pm-1.png?w=1000" alt="" class="image-large" /></figure>
+    <div class="gallery-grid">
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/11/sq2.jpg?w=1024" alt="Print samples">
+            <figcaption>Print Samples</figcaption>
+        </figure>
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/11/img_3083.jpg?w=1024" alt="Color Speccing">
+            <figcaption>Color Speccing</figcaption>
+        </figure>
+        <figure>
+            <img src="https://shivaniest.files.wordpress.com/2020/11/img_5778-3.jpg?w=1024" alt="Prize Amulet">
+            <figcaption>The Prize Amulet</figcaption>
+        </figure>
     </div>
-    <div class="column">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.31.06-pm-1.png?w=1000" alt="" class="image-large" /></figure>
+
+    <p>Printed prototypes of the activity pack–</p>
+
+    <div class="gallery-grid">
+        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/10/dsc00293_301b9e97-fd70-45db-a657-76e364aad24a_1080x1080.jpg">
+        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00258_4f295f83-b9a1-439a-af69-64543fa5f343_1080x1080.jpg">
+        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00280_560119fa-a45a-4158-91f1-481ffdfe3234_1080x1080.jpg">
+        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00264_32e64fe8-5fa5-4b65-8e89-8a068e6c8c4f_1080x1080.jpg">
+        <img alt="Prototype photo" src="https://shivaniest.files.wordpress.com/2020/11/dsc00275_ffff9d92-1b57-4295-9b87-fcecf1ba7826_1080x1080.jpg">
     </div>
-    <div class="column">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-4.30.33-pm-2.png?w=1000" alt="" class="image-large" /></figure>
-    </div>
-  </div>
 
-  <figure class="image-gallery">
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/yellow-windows.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/pink.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-08-16-at-1.44.27-pm.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.09.52-pm.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.11.59-pm.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.11.55-pm.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/corp-1.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-7.57.26-pm.png" alt="" class="image-full" /></figure>
-    <figure class="gallery-item"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-5.17.30-pm.png" alt="" class="image-full" /></figure>
-    <figcaption class="gallery-caption">A few of the logo and visual language explorations</figcaption>
-  </figure>
+    <p>Following this, we worked alongside the digital team, and used Shopify to translate the brand experience onto the <a href="https://ambassador88.com" target="_blank" rel="noopener noreferrer">website</a>.</p>
 
-  <p class="font-medium">The use of patterns with meaningful details was decidedly relevant, but the work on the logo design was paused after this phase, to focus on redefining the  strategy of the company from the perspective of a children's brand. The form that these patterns took evolved through the course of the project, but this <strong>diagram</strong> laid the foundations of what was to come:</p>
-  <figure class="image-figure align-wide"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-06-at-7.58.18-pm.png" alt="" class="image-full" /><figcaption class="image-caption">A system of Motifs</figcaption></figure>
-  <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/offset-aesthetic.png" alt="" class="image-full" /><figcaption class="image-caption">The misaligned style of a hand-block-printing that we integrated into the brand aesthetic.</figcaption></figure>
-  <p class="font-medium">Once the decision to keep the brand focused towards children was made, a new name for the brand emerged: <strong>ambassador 88</strong>– from the secret society of nannies that took an important meaning in the story of the book itself. We ran a design sprint to define the creative guiding principles for the logomark:<strong> whimsical and joyful.</strong> This became a north star that kept the parallel teams aligned.</p>
-  <p class="font-medium"><strong>After many a zoom calls and visual system explorations, a logo was born.</strong></p>
-  <figure class="image-figure align-wide"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-16-at-4.31.31-pm.png" alt="" class="image-full" /><figcaption class="image-caption">The final name and logo of the Brand</figcaption></figure>
-  <figure class="image-figure align-wide"><img src="https://shivaniest.files.wordpress.com/2020/10/ambassador88-brand-design-wip-01.png" alt="" class="image-full" /><figcaption class="image-caption">Application</figcaption></figure>
-  <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/screen-shot-2020-10-14-at-11.44.28-am.png?w=1024" alt="" class="image-large" /></figure>
-  <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/11/brand-book-88.png" alt="" class="image-full" /><figcaption class="image-caption">The building of a brand book remotely</figcaption></figure>
-
-  <div class="columns-container align-center">
-    <div class="column align-center" style="flex-basis:66.66%">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/four-circles-1.png?w=750" alt="" class="image-large" /></figure>
-    </div>
-    <div class="column align-center" style="flex-basis:33.33%">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/four-2.gif?w=1024" alt="" class="image-large" /></figure>
-    </div>
-  </div>
-
-  <h2>Phase II: The Product</h2>
-  <p class="font-medium">The experience of unpacking this product on arrival was a key milestone in the user journey. We started to <strong>visualized this customer journey</strong>. While the book remained the hero in this package, there were other interactive elements which completed the learning experience. These supplementary activities related either to the characters or place of the story, to the family members of the child, or to the brand itself.</p>
-  <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2023/01/exploded-view.png?w=1024" alt="" class="image-large" /><figcaption class="image-caption">An early isometric sketch of the contents of the package</figcaption></figure>
-  <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/11/activity-center.001.png?w=1024" alt="" class="image-large" /><figcaption class="image-caption">Final visual render of contents of the package</figcaption></figure>
-  <p class="font-medium">At this point we reached a challenging question about the visual language of the rest of the pieces, outside the book. We were working with an illustrator for the book whose style could either spill over into these touchpoints, or we could decide to let them take on a new language in the brand's tone of voice. This brought us to identify an opportunity–</p>
-  <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/10/zoom-packaging.png" alt="" class="image-full" /></figure>
-  <p class="font-medium">To marry together the contrast of these aesthetics, we conceptualized an<strong> 'outside-in'</strong> idea–where the packaging and pieces would have a subdued outer covering, but bursting with all the pattern, colorful joy within. A way to bring in the <strong>magical and whimsical</strong> ethos of the brand.</p>
-
-  <div class="video-container"><iframe src="https://player.vimeo.com/video/483790634" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-share" title="Vimeo video"></iframe></div>
-
-  <div class="columns-container">
-    <div class="column">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/11/sq2.jpg?w=1024" alt="" class="image-large" /><figcaption class="image-caption">Print Samples</figcaption></figure>
-    </div>
-    <div class="column">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/11/img_3083.jpg?w=1024" alt="" class="image-large" /><figcaption class="image-caption">Color Speccing</figcaption></figure>
-    </div>
-    <div class="column">
-      <figure class="image-figure"><img src="https://shivaniest.files.wordpress.com/2020/11/img_5778-3.jpg?w=1024" alt="" class="image-large" /><figcaption class="image-caption">The Prize Amulet</figcaption></figure>
-    </div>
-  </div>
-
-  <p class="font-medium">Printed prototypes of the activity pack–</p>
-  <div class="tiled-gallery-rectangular">
-    <div class="tiled-col" style="flex-basis:66.75347%"><figure class="gallery-item"><img alt="" data-height="1080" data-id="4223" data-link="https://singh.work/dsc00293_301b9e97-fd70-45db-a657-76e364aad24a_1080x1080/" data-url="https://shivaniest.files.wordpress.com/2020/10/dsc00293_301b9e97-fd70-45db-a657-76e364aad24a_1080x1080.jpg" data-width="1080" src="https://shivaniest.files.wordpress.com/2020/10/dsc00293_301b9e97-fd70-45db-a657-76e364aad24a_1080x1080.jpg" /></figure></div>
-    <div class="tiled-col" style="flex-basis:33.24653%"><figure class="gallery-item"><img alt="" data-height="1080" data-id="4069" data-link="https://singh.work/dsc00258_4f295f83-b9a1-439a-af69-64543fa5f343_1080x1080/" data-url="https://shivaniest.files.wordpress.com/2020/11/dsc00258_4f295f83-b9a1-439a-af69-64543fa5f343_1080x1080.jpg" data-width="1080" src="https://shivaniest.files.wordpress.com/2020/11/dsc00258_4f295f83-b9a1-439a-af69-64543fa5f343_1080x1080.jpg" /></figure><figure class="gallery-item"><img alt="" data-height="1080" data-id="4071" data-link="https://singh.work/dsc00280_560119fa-a45a-4158-91f1-481ffdfe3234_1080x1080/" data-url="https://shivaniest.files.wordpress.com/2020/11/dsc00280_560119fa-a45a-4158-91f1-481ffdfe3234_1080x1080.jpg" data-width="1080" src="https://shivaniest.files.wordpress.com/2020/11/dsc00280_560119fa-a45a-4158-91f1-481ffdfe3234_1080x1080.jpg" /></figure></div>
-      </div>
-      <div class="tiled-gallery-rectangular">
-        <div class="tiled-col" style="flex-basis:50%"><figure class="gallery-item"><img alt="" data-height="1080" data-id="4070" data-link="https://singh.work/dsc00264_32e64fe8-5fa5-4b65-8e89-8a068e6c8c4f_1080x1080/" data-url="https://shivaniest.files.wordpress.com/2020/11/dsc00264_32e64fe8-5fa5-4b65-8e89-8a068e6c8c4f_1080x1080.jpg" data-width="1080" src="https://shivaniest.files.wordpress.com/2020/11/dsc00264_32e64fe8-5fa5-4b65-8e89-8a068e6c8c4f_1080x1080.jpg" /></figure></div>
-        <div class="tiled-col" style="flex-basis:50%"><figure class="gallery-item"><img alt="" data-height="1080" data-id="4067" data-link="https://singh.work/dsc00275_ffff9d92-1b57-4295-9b87-fcecf1ba7826_1080x1080/" data-url="https://shivaniest.files.wordpress.com/2020/11/dsc00275_ffff9d92-1b57-4295-9b87-fcecf1ba7826_1080x1080.jpg" data-width="1080" src="https://shivaniest.files.wordpress.com/2020/11/dsc00275_ffff9d92-1b57-4295-9b87-fcecf1ba7826_1080x1080.jpg" /></figure></div>
-      </div>
-  </div>
-
-  <p></p>
-  <p class="font-medium">Following this, we worked alongside the digital team, and used Shopify to translate the brand experience onto the <a href="https://ambassador88.com" target="_blank" rel="noreferrer noopener">website</a>.</p>
-
-  <p class="note">
-  <a href="index.html">&larr; Back to home</a>
-  </p>
+    <p class="note"><a href="https://singh.work/logofolio">&larr; Back to logowall</a></p>
 
 </body>
 </html>
