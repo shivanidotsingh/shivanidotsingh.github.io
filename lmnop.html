@@ -42,6 +42,18 @@
       border-radius: 4px;
       margin-top: 1em;
     }
+    
+    .full-width-image {
+        width: 100vw; /* Take full viewport width */
+        margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+        margin-right: calc(50% - 50vw);
+        max-width: 100vw; /* Ensure it doesn't exceed viewport width */
+        border-radius: 0; /* Remove border-radius for full-width image if desired, or keep 4px */
+        margin-top: 0; /* Remove extra top margin */
+        margin-bottom: 2em; /* Add some space below it */
+        display: block; /* Ensure it behaves as a block element */
+        box-sizing: border-box; /* Include padding in width calculation */
+    }
 
     .video-container {
       position: relative;
@@ -88,6 +100,15 @@
     }
 
     @media (max-width: 600px) {
+      body {
+            padding: 20px 15px; /* Adjust body padding for smaller screens */
+        }
+        .full-width-image {
+            margin-left: calc(50% - 50vw); /* Ensure full width on mobile */
+            margin-right: calc(50% - 50vw);
+            padding-left: 15px; /* Adjust padding for mobile */
+            padding-right: 15px;
+        }
         .image-pair-container {
             flex-direction: column;
             align-items: center;
@@ -110,7 +131,7 @@
   <p>
 When a friend decided to start her own preschool out of a bungalow in Chennai, she reached out to us (Jyothi and me) to work on the name and brand design. We set out to visually define what learning looks like for two to five year olds. The opportunity statement we worked with was, 'How might we design the identity of a preschool to reflect an inclusive learning experience?'
 <br>
-<img src="images/lmnop/naming.png" alt="Naming">
+<img class="full-width-image" src="images/lmnop/naming.png" alt="Naming">
 The naming went through one iteration with the stakeholders, and we all resonated with the phonetic and cultural relevance of a cheeky name like Elemenopy (L-M-N-O-P).
 For the logo and identity, we presented the 3 routes, and ultimately picked one that was a simple play of shapes derived from the alphabet, since it perfectly complemented the ‘learning basics’ philosophy that the name intended.
 We were all on the same page about creating a sense of belonging and comfort for the children, with all the brand communication - and these shapes allowed the flexibility for that.
@@ -130,7 +151,10 @@ We were all on the same page about creating a sense of belonging and comfort for
     <img src="images/lmnop/space.png" alt="WIP">
 
     <img src="images/lmnop/digital.png" alt="website">
-  <p>Overall it has been one of the more fulfilling projects that I have helped bring to life, and I enjoy watching it grow.</p>
+  
+  <p>Overall it has been one of the more fulfilling projects that I have helped bring to life, and I enjoy watching it grow. <a href="https://www.instagram.com/elemenopyschool/">Go to their instagram → </a></p>
+  <img src="images/lmnop/end.png" alt="website">
+  
   <p class="note">
   <a href="https://singh.work/logofolio">&larr; Back to logowall</a>
   </p>
