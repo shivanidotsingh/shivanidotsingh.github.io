@@ -152,6 +152,7 @@ a[target="_blank"] {
     object-fit: cover;
     border-radius: 50%;
     margin: 0;
+    height: auto; /* Override fixed height to allow aspect-ratio to work */
 }
 
 .full-width-gallery {
