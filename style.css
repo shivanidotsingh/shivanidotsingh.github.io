@@ -83,7 +83,7 @@ a[target="_blank"] {
 
 .pdf-container {
     position: relative;
-    width: 100vw;
+    width: 90vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
     padding-bottom: 75%;
@@ -156,7 +156,7 @@ a[target="_blank"] {
 }
 
 .full-width-gallery {
-    width: 100vw;
+    width: 90vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
     max-width: 100vw;
@@ -192,7 +192,7 @@ a[target="_blank"] {
 }
 
 .full-width-image {
-    width: 100vw;
+    width: 90vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
     max-width: 100vw;
