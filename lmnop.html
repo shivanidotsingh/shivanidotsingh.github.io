@@ -4,127 +4,37 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The ABC’s of designing a preschool</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-      max-width: 720px;
-      margin: 40px auto;
-      padding: 40px 20px;
-      line-height: 1.8;
-      color: #000;
-    }
-
-    a {
-      color: #4c8aff;
-      text-decoration: none;
-      position: relative;
-      cursor: pointer;
-    }
-
-    a::after {
-      content: '';
-    }
-
-    h1, h2 {
-        line-height: 1.3;
-    }
-
-    h2 {
-        margin-top: 2em;
-        border-top: 1px solid #eee;
-        padding-top: 1.5em;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-      margin-top: 1em;
-    }
-    
+    /* Page-specific styles for lmnop.html */
     .full-width-image {
-        width: 100vw; /* Take full viewport width */
-        margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
         margin-right: calc(50% - 50vw);
-        max-width: 100vw; /* Ensure it doesn't exceed viewport width */
-        border-radius: 0; /* Remove border-radius for full-width image if desired, or keep 4px */
-        margin-top: 0; /* Remove extra top margin */
-        margin-bottom: 2em; /* Add some space below it */
-        display: block; /* Ensure it behaves as a block element */
-        box-sizing: border-box; /* Include padding in width calculation */
-    }
-
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      max-width: 100%;
-      background: #000;
-      margin: 1.5em 0;
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    
-    .note {
-      color: #777;
-      margin-top: 3em;
-      font-size: 0.95em;
-      border-top: 1px solid #eee;
-      padding-top: 1.5em;
-    }
-
-    .image-pair-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      align-items: flex-start;
-      margin-top: 1em;
-    }
-
-    .image-pair-container img {
-      width: calc(50% - 10px);
-      height: 200px; /* Set a fixed height here */
-      max-width: 100%;
-      object-fit: cover; /* This makes the image fill the specified height, cropping if necessary */
-      margin-top: 0;
-      margin-bottom: 0;
+        max-width: 100vw;
+        border-radius: 0;
+        margin-top: 0;
+        margin-bottom: 2em;
+        display: block;
+        box-sizing: border-box;
     }
 
     @media (max-width: 600px) {
       body {
-            padding: 20px 15px; /* Adjust body padding for smaller screens */
+            padding: 20px 15px;
         }
         .full-width-image {
-            margin-left: calc(50% - 50vw); /* Ensure full width on mobile */
+            margin-left: calc(50% - 50vw);
             margin-right: calc(50% - 50vw);
-            padding-left: 15px; /* Adjust padding for mobile */
+            padding-left: 15px;
             padding-right: 15px;
         }
-        .image-pair-container {
-            flex-direction: column;
-            align-items: center;
-        }
-        .image-pair-container img {
-            width: 100%;
-            height: auto; /* Allow height to adjust when stacked */
-            margin-bottom: 1em;
-        }
     }
-
   </style>
 </head>
 <body>
   
-  <p><a href="https://singh.work/logofolio">&larr; Back to logowall</a></p>
+  <p><a href="https://singh.work/logofolio" class="blue-link">&larr; Back to logowall</a></p>
 
   <h1>The ABC’s of designing a preschool</h1>
 
@@ -156,7 +66,7 @@ We wanted to create a sense of belonging and comfort for the children, across al
   <img src="images/lmnop/end.png" alt="shapes">
   
   <p class="note">
-  <a href="https://singh.work/logofolio">&larr; Back to logowall</a>
+  <a href="https://singh.work/logofolio" class="blue-link">&larr; Back to logowall</a>
   </p>
 
 </body>
