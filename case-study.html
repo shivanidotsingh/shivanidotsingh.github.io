@@ -4,71 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A West Oakland Story - Shivani Singh</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-        Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-      max-width: 650px;
-      margin: 40px auto;
-      padding: 40px 20px;
-      line-height: 1.8;
-      color: #000;
-    }
-
-    a {
-      color: #4c8aff;
-      text-decoration: none;
-      position: relative;
-      cursor: pointer;
-    }
-
-    a::after {
-      content: '';
-    }
-
-    h1, h2 {
-        line-height: 1.3;
-    }
-
-    h2 {
-        margin-top: 2em;
-        border-top: 1px solid #eee;
-        padding-top: 1.5em;
-    }
-
-    img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 4px;
-      margin-top: 1em;
-    }
-
-    .video-container {
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      max-width: 100%;
-      background: #000;
-      margin: 1.5em 0;
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    
-    .note {
-      color: #777;
-      margin-top: 3em;
-      font-size: 0.95em;
-      border-top: 1px solid #eee;
-      padding-top: 1.5em;
-    }
-
+    /* Page-specific styles for case-study.html */
     .image-pair-container {
       display: flex;
       flex-wrap: wrap;
@@ -80,9 +18,9 @@
 
     .image-pair-container img {
       width: calc(50% - 10px);
-      height: 200px; /* Set a fixed height here */
+      height: 200px;
       max-width: 100%;
-      object-fit: cover; /* This makes the image fill the specified height, cropping if necessary */
+      object-fit: cover;
       margin-top: 0;
       margin-bottom: 0;
     }
@@ -94,16 +32,15 @@
         }
         .image-pair-container img {
             width: 100%;
-            height: auto; /* Allow height to adjust when stacked */
+            height: auto;
             margin-bottom: 1em;
         }
     }
-
   </style>
 </head>
 <body>
   
-  <p><a href="index.html">&larr; Back to home</a></p>
+  <p><a href="index.html" class="blue-link">&larr; Back to home</a></p>
 
   <h1>A West Oakland Story</h1>
 
@@ -146,7 +83,7 @@ They collaborated with us to visualize the impact and nature of the upcoming cha
   <div class="video-container"><iframe src="https://player.vimeo.com/video/412429694?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share" title="Play West Oakland-O-Poly"></iframe></div><script src="https://player.vimeo.com/api/player.js"></script>
 
   <p class="note">
-  <a href="index.html">&larr; Back to home</a>
+  <a href="index.html" class="blue-link">&larr; Back to home</a>
   </p>
 
 </body>
