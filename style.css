@@ -2,7 +2,7 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  max-width: 640px; /* Consistent max-width */
+  max-width: 640px; /* Adjusted for better accessibility */
   margin: 40px auto; /* Consistent top margin and horizontal centering */
   padding: 40px 20px; /* Consistent padding */
   line-height: 1.8;
@@ -68,7 +68,7 @@ a[target="_blank"] {
   text-decoration: none; /* No underline for these specific blue links */
 }
 
-/* Video Container Styles */
+/* Video Container Styles (kept general as it might be used for videos too) */
 .video-container {
   position: relative;
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
@@ -86,6 +86,31 @@ a[target="_blank"] {
   width: 100%;
   height: 100%;
 }
+
+/* PDF Embed Container Styles (new, similar to full-width-image) */
+.pdf-container {
+    position: relative;
+    width: 100vw; /* Take full viewport width */
+    margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+    margin-right: calc(50% - 50vw);
+    padding-bottom: 75%; /* 4:3 aspect ratio for PDF, adjust as needed */
+    height: 0;
+    overflow: hidden;
+    max-width: 100vw; /* Ensure it doesn't exceed viewport width */
+    margin-top: 2em; /* Add some space above */
+    margin-bottom: 2em; /* Add some space below */
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.pdf-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 
 /* Note Section Style */
 .note {
@@ -187,7 +212,6 @@ button.reveal {
   outline: none;
   position: relative;
   z-index: 1;
-  /* No transition here */
 }
 
 button.reveal::before {
@@ -200,7 +224,6 @@ button.reveal::before {
   border-radius: 4px;
   z-index: -1;
   opacity: 1; /* Highlight is fully visible on load */
-  /* No transform or transition properties here */
 }
 
 /* Specific highlight colors applied to the ::before pseudo-element */
@@ -252,6 +275,7 @@ span.inline-reveal.visible {
 
 /* Styles for the smiley emoji (as plain text next to header) */
 #smiley-placeholder {
+    font-size: 0.8em; /* Smaller font size for the emoji */
     margin-left: 5px; /* Space from "Shivani." */
     vertical-align: middle; /* Align with header text */
     display: inline-block; /* Ensures it sits in line */
@@ -267,7 +291,8 @@ span.inline-reveal.visible {
   body {
     padding: 20px 15px; /* Adjust body padding for smaller screens */
   }
-  .full-width-image {
+  .full-width-image,
+  .pdf-container { /* Apply full-width behavior to PDF container on mobile too */
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
     padding-left: 15px;
