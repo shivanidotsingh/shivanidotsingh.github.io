@@ -1,8 +1,7 @@
-/* General Body and Typography */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  max-width: 640px; /* Adjusted for better accessibility */
+  max-width: 640px; 
   margin: 40px auto; /* Consistent top margin and horizontal centering */
   padding: 40px 20px; /* Consistent padding */
   line-height: 1.8;
@@ -89,7 +88,7 @@ a[target="_blank"] {
   height: 100%;
 }
 
-/* PDF Embed Container Styles (similar to full-width-image) */
+/* PDF Embed Container Styles (new, similar to full-width-image) */
 .pdf-container {
     position: relative;
     width: 100vw; /* Take full viewport width */
@@ -149,6 +148,12 @@ a[target="_blank"] {
     margin: 20px 0;
 }
 
+/* All images within a standard gallery grid will now have fixed height */
+.gallery-grid img {
+    height: 300px; /* Set a fixed height for images in all general galleries */
+    object-fit: cover; /* Ensure images cover the area without distortion */
+}
+
 .gallery-grid-circles {
     grid-template-columns: repeat(8, 1fr); /* 8 columns for circular images */
     gap: 10px;
@@ -162,7 +167,7 @@ a[target="_blank"] {
     margin: 0; /* Resets any default margin */
 }
 
-/* Full-Width Gallery Style */
+/* New: Full-Width Gallery Style */
 .full-width-gallery {
     width: 100vw; /* Take full viewport width */
     margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
@@ -180,11 +185,6 @@ a[target="_blank"] {
     height: auto; /* Maintain aspect ratio */
 }
 
-/* Specific style for galleries where images should have fixed height */
-.gallery-fixed-height img {
-    height: 300px; /* Set a taller fixed height for images in this specific gallery */
-    object-fit: cover; /* Ensure images cover the area without distortion */
-}
 
 /* Action Items Grid */
 .action-items-grid {
