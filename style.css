@@ -273,39 +273,6 @@ span.inline-reveal.visible {
   display: inline;
 }
 
-#random-dots-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 999;
-  overflow: hidden;
-}
-
-.collected-dot {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    position: absolute;
-    opacity: 1; /* No fade-in animation for dots */
-}
-
-/* Styles for the smiley emoji (as plain text next to header) */
-#smiley-placeholder {
-    font-size: 0.8em; /* Smaller font size for the emoji */
-    margin-left: 5px; /* Space from "Shivani." */
-    vertical-align: middle; /* Align with header text */
-    display: inline-block; /* Ensures it sits in line */
-    opacity: 0; /* Initially hidden */
-}
-
-#smiley-placeholder.visible {
-    opacity: 1; /* Visible when all highlights are clicked */
-}
-
 /* Mobile-specific adjustments (consolidated) */
 @media (max-width: 768px) {
   body {
