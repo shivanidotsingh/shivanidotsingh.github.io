@@ -1,14 +1,14 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  max-width: 640px; 
-  margin: 40px auto; /* Consistent top margin and horizontal centering */
-  padding: 40px 20px; /* Consistent padding */
+  max-width: 640px;
+  margin: 40px auto;
+  padding: 40px 20px;
   line-height: 1.8;
-  color: #000; /* Default text color */
+  color: #000;
   font-size: 1.1em;
-  position: relative; /* For random dots container */
-  min-height: 100vh; /* Ensure body covers full viewport height for random dots */
+  position: relative;
+  min-height: 100vh;
 }
 
 h1, h2 {
@@ -16,9 +16,9 @@ h1, h2 {
 }
 
 h1 {
-  display: inline-block; /* Allows smiley to sit next to it */
-  vertical-align: middle; /* Align with smiley */
-  margin-right: 5px; /* Space between h1 and smiley */
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
 }
 
 h2 {
@@ -27,18 +27,16 @@ h2 {
     padding-top: 1.5em;
 }
 
-/* Image Styles */
 img {
   max-width: 100%;
-  height: auto;
   display: block;
-  border-radius: 4px; /* Consistent border-radius */
-  margin-top: 1em; /* Consistent top margin */
-  margin-bottom: 0; /* Reset bottom margin for general img */
+  border-radius: 4px;
+  margin-top: 1em;
+  margin-bottom: 0;
 }
 
 figure {
-    margin: 20px 0; /* Consistent figure margin */
+    margin: 20px 0;
 }
 
 figcaption {
@@ -48,35 +46,31 @@ figcaption {
     margin-top: 5px;
 }
 
-/* Link Styles */
 a {
-  color: inherit; /* Links inherit parent text color (black) */
-  text-decoration: underline; /* Only underline */
-  text-underline-offset: 0.2em; /* Consistent underline offset */
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
   position: relative;
-  cursor: pointer; /* Default pointer for all links */
+  cursor: pointer;
 }
 
 a[target="_blank"] {
-  cursor: ne-resize;
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="black" d="M19 19H5V5h14v14zM17 7L7 17M17 7v10h-2V9H7V7h10z"/></svg>') 12 12, ne-resize;
 }
 
-
-/* Specific blue link style */
 .blue-link {
-  color: #4c8aff; /* Blue color for specific "back" links */
-  text-decoration: none; /* No underline for these specific blue links */
+  color: #4c8aff;
+  text-decoration: none;
 }
 
-/* Video Container Styles (kept general as it might be used for videos too) */
 .video-container {
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
   max-width: 100%;
   background: #000;
-  margin: 1.5em 0; /* Consistent margin */
+  margin: 1.5em 0;
 }
 
 .video-container iframe {
@@ -87,19 +81,18 @@ a[target="_blank"] {
   height: 100%;
 }
 
-/* PDF Embed Container Styles (new, similar to full-width-image) */
 .pdf-container {
     position: relative;
-    width: 100vw; /* Take full viewport width */
-    margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-    padding-bottom: 75%; /* 4:3 aspect ratio for PDF, adjust as needed */
+    padding-bottom: 75%;
     height: 0;
     overflow: hidden;
-    max-width: 100vw; /* Ensure it doesn't exceed viewport width */
-    margin-top: 2em; /* Add some space above */
-    margin-bottom: 2em; /* Add some space below */
-    box-sizing: border-box; /* Include padding in width calculation */
+    max-width: 100vw;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    box-sizing: border-box;
 }
 
 .pdf-container iframe {
@@ -111,17 +104,14 @@ a[target="_blank"] {
     border: none;
 }
 
-
-/* Note Section Style */
 .note {
   color: #777;
-  margin-top: 1.5em; /* Consistent margin-top for notes */
+  margin-top: 1.5em;
   font-size: 0.95em;
   border-top: 1px solid #eee;
   padding-top: 1.5em;
 }
 
-/* Image Pair Container */
 .image-pair-container {
   display: flex;
   flex-wrap: wrap;
@@ -132,104 +122,89 @@ a[target="_blank"] {
 }
 
 .image-pair-container img {
-  width: calc(50% - 10px); /* Two columns with gap */
-  height: 350px; /* Taller height for images in image-pair-container */
-  object-fit: cover; /* Ensure images fill the space */
-  margin-top: 0; /* Override general img margin-top */
-  margin-bottom: 0; /* Override general img margin-bottom */
+  width: calc(50% - 10px);
+  height: 350px;
+  object-fit: cover;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
-/* Gallery Grid Styles */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Default grid for non-full-width */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 15px;
     margin: 20px 0;
 }
 
-/* All images within a standard gallery grid will now have fixed height */
 .gallery-grid img {
-    height: 300px; /* Set a fixed height for images in all general galleries */
-    object-fit: cover; /* Ensure images cover the area without distortion */
+    height: 300px;
+    object-fit: cover;
 }
 
 .gallery-grid-circles {
-    grid-template-columns: repeat(8, 1fr); /* 8 columns for circular images */
+    grid-template-columns: repeat(8, 1fr);
     gap: 10px;
 }
 
 .gallery-grid-circles img {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Creates a square */
-    object-fit: cover; /* Ensures the image fills the square, cropping as needed */
-    border-radius: 50%; /* Makes the square a circle */
-    margin: 0; /* Resets any default margin */
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0;
 }
 
-/* New: Full-Width Gallery Style */
 .full-width-gallery {
-    width: 100vw; /* Take full viewport width */
-    margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-    max-width: 100vw; /* Ensure it doesn't exceed viewport width */
-    box-sizing: border-box; /* Include padding in width calculation */
-    padding-left: 20px; /* Add padding to prevent content from touching edges */
+    max-width: 100vw;
+    box-sizing: border-box;
+    padding-left: 20px;
     padding-right: 20px;
-    grid-template-columns: repeat(3, 1fr); /* Now explicitly 3 columns */
+    grid-template-columns: repeat(3, 1fr);
 }
 
-/* Ensure images within a full-width gallery expand */
 .full-width-gallery img {
-    width: 100%; /* Force images to fill their grid cell */
-    height: auto; /* Maintain aspect ratio */
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
 }
 
-
-/* Action Items Grid */
 .action-items-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 columns */
-    gap: 15px; /* Spacing between items */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
     margin-top: 1em;
-    list-style: none; /* Remove default bullet points */
-    padding-left: 0; /* Remove default padding */
+    list-style: none;
+    padding-left: 0;
 }
 
 .action-items-grid li {
-    background-color: #f9f9f9; /* Light background for each item */
+    background-color: #f9f9f9;
     padding: 10px 15px;
     border-radius: 5px;
     font-size: 0.95em;
     line-height: 1.4;
-    display: flex; /* For better alignment of content within each grid item */
+    display: flex;
     align-items: center;
 }
 
-/* Mobile-specific adjustments for action items grid */
-@media (max-width: 768px) {
-    .action-items-grid {
-        grid-template-columns: 1fr; /* Single column on mobile */
-    }
-}
-
-
-/* Full-Width Image Style (now global) */
 .full-width-image {
-    width: 100vw; /* Take full viewport width */
-    margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-    max-width: 100vw; /* Ensure it doesn't exceed viewport width */
-    border-radius: 0; /* Remove border-radius for full-width image */
-    margin-top: 0; /* Remove extra top margin */
-    margin-bottom: 2em; /* Add some space below it */
+    max-width: 100vw;
+    border-radius: 0;
+    margin-top: 0;
+    margin-bottom: 2em;
     display: block;
-    box-sizing: border-box; /* Include padding in width calculation */
+    box-sizing: border-box;
 }
 
-/* Logo Grid (for logofolio.html) */
 .logo-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Forced to 3 columns always */
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     justify-content: center;
 }
@@ -248,17 +223,16 @@ a[target="_blank"] {
     margin: 0 auto;
 }
 
-/* Mobile-specific adjustments (consolidated) */
 @media (max-width: 768px) {
   body {
-    padding: 20px 15px; /* Adjust body padding for smaller screens */
+    padding: 20px 15px;
   }
   .full-width-image,
   .pdf-container,
-  .full-width-gallery { /* Apply full-width behavior to PDF container and gallery on mobile too */
+  .full-width-gallery {
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-    padding-left: 15px; /* Adjust padding for mobile */
+    padding-left: 15px;
     padding-right: 15px;
   }
   .image-pair-container {
@@ -267,7 +241,10 @@ a[target="_blank"] {
   }
   .image-pair-container img {
     width: 100%;
-    height: auto; /* Allow height to adjust when stacked */
+    height: auto;
     margin-bottom: 1em;
   }
+  .action-items-grid {
+        grid-template-columns: 1fr;
+    }
 }
