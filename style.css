@@ -160,7 +160,6 @@ a[target="_blank"] {
     margin: 0; /* Resets any default margin */
 }
 
-/* New: Full-Width Gallery Style */
 .full-width-gallery {
     width: 100vw; /* Take full viewport width */
     margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
@@ -171,8 +170,14 @@ a[target="_blank"] {
     padding-right: 20px;
 }
 
+/* Ensure images within a full-width gallery expand */
+.full-width-gallery img {
+    width: 100%; /* Force images to fill their grid cell */
+    height: auto; /* Maintain aspect ratio */
+}
 
-/* Full-Width Image Style (now global) */
+
+/* Full-Width Image Style */
 .full-width-image {
     width: 100vw; /* Take full viewport width */
     margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
