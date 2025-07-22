@@ -4,22 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Logofolio ⚘</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-                Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-            max-width: 720px; /* Kept as per your instruction */
-            margin: 60px auto;
-            padding: 50px 20px;
-            line-height: 1.8;
-            color: #000;
-        }
-
+        /* Page-specific styles for logofolio.html */
         .logo-grid {
             display: grid;
-            /* Forced to 3 columns always, within the max-width of the body */
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px; /* Increased gap for more even spacing between logos */
+            gap: 20px;
             justify-content: center;
         }
 
@@ -31,28 +22,15 @@
         }
 
         .logo-item img {
-            max-width: 100%; /* Image will scale down to fit the smaller column width */
+            max-width: 100%;
             height: auto;
             display: block;
             margin: 0 auto;
         }
-
-        a {
-            color: #4c8aff;
-            text-decoration: none;
-            position: relative;
-            cursor: pointer; /* Default pointer for all links */
-        }
-
-        a[target="_blank"] {
-            cursor: ne-resize;
-        }
-
-        /* Removed custom cursor rule for links with title="case-study" */
     </style>
 </head>
 <body>
-    <p><a href="index.html">&larr; Back to home</a></p>
+    <p><a href="index.html" class="blue-link">&larr; Back to home</a></p>
     <div class="back-link" style="text-align: left; border-top: 1px solid #eee;">
     </div>
     <div class="logo-grid">
@@ -144,8 +122,8 @@
         </div>
     </div>
 
-    <div class="back-link" style="margin-top: 3em; text-align: left; padding-top: 1.5em; border-top: 1px solid #eee;">
-        <a href="./">← Back to home</a>
-    </div>
+    <p class="note">
+        <a href="./" class="blue-link">← Back to home</a>
+    </p>
 </body>
 </html>
