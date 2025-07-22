@@ -231,15 +231,14 @@ a[target="_blank"] {
   body {
     padding: 20px 15px;
   }
-  /* Ensure full-width elements also adjust padding on smaller screens */
   .full-width-image,
   .pdf-container,
-  .full-width-gallery { /* Merged full-width-gallery rules */
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    padding-left: 15px; /* Apply padding on smaller screens to match body */
-    padding-right: 15px; /* Apply padding on smaller screens to match body */
-    /* Moved grid-template-columns here from the redundant block */
+  .full-width-gallery { 
+    width: 100%; /* This is key for mobile fitting: ensures width includes padding */
+    margin-left: 0; 
+    margin-right: 0; 
+    padding-left: 15px; 
+    padding-right: 15px; 
     grid-template-columns: 1fr; /* Single column on mobile for full-width gallery */
   }
   .image-pair-container {
