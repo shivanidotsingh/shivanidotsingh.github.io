@@ -8,16 +8,10 @@
     <style>
         /* Specific styles for this page only */
 
-        /* Specific style for galleries where images should have fixed height */
-        .gallery-fixed-height img {
-            height: 300px; /* Taller fixed height for images in this specific gallery */
-            object-fit: cover; /* Ensure images cover the area without distortion */
-        }
-
         /* Image Pair Container - specific to this page for taller/narrower images */
         .image-pair-container img {
             width: calc(50% - 10px); /* Two columns with gap */
-            height: 350px; /* Taller height for images in image-pair-container */
+            height: 450px; /* Taller height for images in image-pair-container */
             object-fit: cover; /* Ensure images fill the space */
             margin-top: 0; /* Override general img margin-top */
             margin-bottom: 0; /* Override general img margin-bottom */
@@ -107,7 +101,7 @@
 
     <img src="images/parallel/img_6039-1.jpg" alt="Sketching ideas for the app">
 
-    <div class="gallery-grid gallery-fixed-height">
+    <div class="gallery-grid">
         <img src="images/parallel/sketch3.jpg" alt="Detailed sketch 1">
         <img src="images/parallel/sketch2.jpg" alt="Detailed sketch 2">
         <img src="images/parallel/sketch1.jpg" alt="Detailed sketch 3">
