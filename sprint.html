@@ -5,13 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Value of Influence - Shivani Singh</title>
     <link rel="stylesheet" href="style.css">
-</head>
     <style>
+        /* Specific styles for this page only */
+
+        /* Specific style for galleries where images should have fixed height */
         .gallery-fixed-height img {
-    height: 200px; /* Set a fixed height */
-    object-fit: cover; /* Crop if necessary to fill the space */
-}
+            height: 300px; /* Taller fixed height for images in this specific gallery */
+            object-fit: cover; /* Ensure images cover the area without distortion */
+        }
+
+        /* Image Pair Container - specific to this page for taller/narrower images */
+        .image-pair-container img {
+            width: calc(50% - 10px); /* Two columns with gap */
+            height: 350px; /* Taller height for images in image-pair-container */
+            object-fit: cover; /* Ensure images fill the space */
+            margin-top: 0; /* Override general img margin-top */
+            margin-bottom: 0; /* Override general img margin-bottom */
+        }
+
+        /* Action Items Grid */
+        .action-items-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            gap: 15px; /* Spacing between items */
+            margin-top: 1em;
+            list-style: none; /* Remove default bullet points */
+            padding-left: 0; /* Remove default padding */
+        }
+
+        .action-items-grid li {
+            background-color: #f9f9f9; /* Light background for each item */
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            line-height: 1.4;
+            display: flex; /* For better alignment of content within each grid item */
+            align-items: center;
+        }
+
+        /* Mobile-specific adjustments for action items grid */
+        @media (max-width: 768px) {
+            .action-items-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+            }
+            /* Adjust image pair container for mobile to stack vertically */
+            .image-pair-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .image-pair-container img {
+                width: 100%;
+                height: auto; /* Allow height to adjust when stacked */
+                margin-bottom: 1em;
+            }
+        }
     </style>
+</head>
 <body>
 
     <p><a href="logofolio.html" class="blue-link">&larr; Back to logowall</a></p>
@@ -77,8 +126,6 @@
     <p>The fidelity of the prototype was decided by the amount of detail that would be needed to make the user testing more accurate and useful.</p>
     <p>Following are screenshots that represent the prototype we built on InVision, since the service has since been discontinued.</p>
 
-    <!-- No images in this section as per request -->
-
     <p>We created options for this on-boarding flow, and succeeding homepage and bookings sections, to test the core workflow with local influencers.</p>
 
     <h2>Day 4 + 5 : User Testing</h2>
@@ -98,14 +145,16 @@
 
     <h2>Feedback and Next Steps</h2>
     <p>The product offering broadly resonated with all participants. Our key learning was to establish more trust in the platform. To that end we needed to improve and better the communication details about the exchange and ensure regular usage of platform by adding valuable incentive and engagement.</p>
-    <p>Action items for us in conclusion: <br>
-    • Add an option to choose or customise the barter.<br>
-    • Add more clarity on the specifics being offered by the brand/company. <br>
-    • Spell out terms and agreements more comprehensively. <br>
-    • Reminders to complete and update experience content. <br>
-    • An option to cancel or reschedule a booking.<br>
-    • An option to contact venue or organizers if and when needed.<br>
-    • Have qualitative ratings be visible to the influencers.</p>
+    
+    <ul class="action-items-grid">
+        <li>Add an option to choose or customise the barter.</li>
+        <li>Add more clarity on the specifics being offered by the brand/company.</li>
+        <li>Spell out terms and agreements more comprehensively.</li>
+        <li>Reminders to complete and update experience content.</li>
+        <li>An option to cancel or reschedule a booking.</li>
+        <li>An option to contact venue or organizers if and when needed.</li>
+        <li>Have qualitative ratings be visible to the influencers.</li>
+    </ul>
 
     <hr>
 
