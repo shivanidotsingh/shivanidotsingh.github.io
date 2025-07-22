@@ -1,0 +1,280 @@
+/* General Body and Typography */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  max-width: 720px; /* Consistent max-width */
+  margin: 40px auto; /* Consistent top margin and horizontal centering */
+  padding: 40px 20px; /* Consistent padding */
+  line-height: 1.8;
+  color: #000; /* Default text color */
+  font-size: 1.1em;
+  position: relative; /* For random dots container */
+  min-height: 100vh; /* Ensure body covers full viewport height for random dots */
+}
+
+h1, h2 {
+    line-height: 1.3;
+}
+
+h1 {
+  display: inline-block; /* Allows smiley to sit next to it */
+  vertical-align: middle; /* Align with smiley */
+  margin-right: 5px; /* Space between h1 and smiley */
+}
+
+h2 {
+    margin-top: 2em;
+    border-top: 1px solid #eee;
+    padding-top: 1.5em;
+}
+
+/* Image Styles */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px; /* Consistent border-radius */
+  margin-top: 1em; /* Consistent top margin */
+  margin-bottom: 0; /* Reset bottom margin for general img */
+}
+
+figure {
+    margin: 20px 0; /* Consistent figure margin */
+}
+
+figcaption {
+    font-size: 0.9em;
+    color: #777;
+    text-align: center;
+    margin-top: 5px;
+}
+
+/* Link Styles */
+a {
+  color: inherit; /* Links inherit parent text color (black) */
+  text-decoration: underline; /* Only underline */
+  text-underline-offset: 0.2em; /* Consistent underline offset */
+  position: relative;
+  cursor: pointer; /* Default pointer for all links */
+}
+
+a[target="_blank"] {
+  cursor: ne-resize; /* Specific cursor for external links */
+}
+
+/* Video Container Styles */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background: #000;
+  margin: 1.5em 0; /* Consistent margin */
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Note Section Style */
+.note {
+  color: #777;
+  margin-top: 1.5em; /* Consistent margin-top for notes */
+  font-size: 0.95em;
+  border-top: 1px solid #eee;
+  padding-top: 1.5em;
+}
+
+/* Image Pair Container */
+.image-pair-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 1em;
+}
+
+.image-pair-container img {
+  width: calc(50% - 10px); /* Two columns with gap */
+  height: 200px; /* Fixed height for consistent display */
+  object-fit: cover; /* Ensures image fills the space */
+  margin-top: 0; /* Override general img margin-top */
+  margin-bottom: 0; /* Override general img margin-bottom */
+}
+
+/* Gallery Grid Styles (from ambassador.html) */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.gallery-grid-circles {
+    grid-template-columns: repeat(8, 1fr); /* 8 columns for circular images */
+    gap: 10px;
+}
+
+.gallery-grid-circles img {
+    width: 100%;
+    aspect-ratio: 1 / 1; /* Creates a square */
+    object-fit: cover; /* Ensures the image fills the square, cropping as needed */
+    border-radius: 50%; /* Makes the square a circle */
+    margin: 0; /* Resets any default margin */
+}
+
+/* Full-Width Image Style (for lmnop.html) */
+.full-width-image {
+    width: 100vw; /* Take full viewport width */
+    margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
+    margin-right: calc(50% - 50vw);
+    max-width: 100vw; /* Ensure it doesn't exceed viewport width */
+    border-radius: 0; /* Remove border-radius for full-width image */
+    margin-top: 0; /* Remove extra top margin */
+    margin-bottom: 2em; /* Add some space below it */
+    display: block;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+/* Logo Grid (for logofolio.html) */
+.logo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Forced to 3 columns always */
+    gap: 20px;
+    justify-content: center;
+}
+
+.logo-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.logo-item img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Specific styles for index.html interactive elements */
+#collected-dots {
+  display: none; /* This container is no longer used for dots or smiley */
+}
+
+button.reveal {
+  color: inherit;
+  font-weight: normal;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  padding: 0 0.2em;
+  font: inherit;
+  border-radius: 4px;
+  outline: none;
+  position: relative;
+  z-index: 1;
+  /* No transition here */
+}
+
+button.reveal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 4px;
+  z-index: -1;
+  opacity: 1; /* Highlight is fully visible on load */
+  /* No transform or transition properties here */
+}
+
+/* Specific highlight colors applied to the ::before pseudo-element */
+.highlight-blue::before { background-color: #D6F5FF; }
+.highlight-yellow::before { background-color: #FDFB8C; }
+.highlight-pink::before { background-color: #FFDDEE; }
+.highlight-green::before { background-color: #DDFFAA; }
+.highlight-purple::before { background-color: #EEDDFF; }
+
+button.reveal:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+button.reveal:disabled::before {
+  opacity: 0; /* Highlight disappears instantly on click */
+}
+
+span.inline-reveal {
+  display: none;
+  border-radius: 4px;
+  padding: 0;
+  transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+span.inline-reveal.visible {
+  display: inline;
+}
+
+#random-dots-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.collected-dot {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: absolute;
+    opacity: 1; /* No fade-in animation for dots */
+}
+
+/* Styles for the smiley emoji (as plain text next to header) */
+#smiley-placeholder {
+    font-size: 0.8em; /* Smaller font size for the emoji */
+    margin-left: 5px; /* Space from "Shivani." */
+    vertical-align: middle; /* Align with header text */
+    display: inline-block; /* Ensures it sits in line */
+    opacity: 0; /* Initially hidden */
+}
+
+#smiley-placeholder.visible {
+    opacity: 1; /* Visible when all highlights are clicked */
+}
+
+/* Mobile-specific adjustments (consolidated) */
+@media (max-width: 768px) {
+  body {
+    padding: 20px 15px; /* Adjust body padding for smaller screens */
+  }
+  .full-width-image {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  .image-pair-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .image-pair-container img {
+    width: 100%;
+    height: auto; /* Allow height to adjust when stacked */
+    margin-bottom: 1em;
+  }
+}
