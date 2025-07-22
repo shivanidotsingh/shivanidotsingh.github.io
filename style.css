@@ -142,7 +142,7 @@ a[target="_blank"] {
 /* Gallery Grid Styles */
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Default grid for non-full-width */
     gap: 15px;
     margin: 20px 0;
 }
@@ -160,6 +160,7 @@ a[target="_blank"] {
     margin: 0; /* Resets any default margin */
 }
 
+/* Full-Width Gallery Style */
 .full-width-gallery {
     width: 100vw; /* Take full viewport width */
     margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
@@ -168,6 +169,8 @@ a[target="_blank"] {
     box-sizing: border-box; /* Include padding in width calculation */
     padding-left: 20px; /* Add padding to prevent content from touching edges */
     padding-right: 20px;
+    /* Override grid-template-columns for larger images in full-width */
+    grid-template-columns: repeat(3, 1fr); /* explicitly 3 columns */
 }
 
 /* Ensure images within a full-width gallery expand */
