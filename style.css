@@ -62,6 +62,12 @@ a[target="_blank"] {
   cursor: ne-resize; /* Specific cursor for external links */
 }
 
+/* Specific blue link style */
+.blue-link {
+  color: #4c8aff; /* Blue color for specific "back" links */
+  text-decoration: none; /* No underline for these specific blue links */
+}
+
 /* Video Container Styles */
 .video-container {
   position: relative;
@@ -181,7 +187,6 @@ button.reveal {
   outline: none;
   position: relative;
   z-index: 1;
-  /* No transition here */
 }
 
 button.reveal::before {
@@ -194,7 +199,6 @@ button.reveal::before {
   border-radius: 4px;
   z-index: -1;
   opacity: 1; /* Highlight is fully visible on load */
-  /* No transform or transition properties here */
 }
 
 /* Specific highlight colors applied to the ::before pseudo-element */
