@@ -135,7 +135,7 @@ a[target="_blank"] {
     margin: 0; /* Resets any default margin */
 }
 
-/* Full-Width Image Style (for lmnop.html) */
+/* Full-Width Image Style (now global) */
 .full-width-image {
     width: 100vw; /* Take full viewport width */
     margin-left: calc(50% - 50vw); /* Center by offsetting half viewport width */
@@ -187,6 +187,7 @@ button.reveal {
   outline: none;
   position: relative;
   z-index: 1;
+  /* No transition here */
 }
 
 button.reveal::before {
@@ -199,6 +200,7 @@ button.reveal::before {
   border-radius: 4px;
   z-index: -1;
   opacity: 1; /* Highlight is fully visible on load */
+  /* No transform or transition properties here */
 }
 
 /* Specific highlight colors applied to the ::before pseudo-element */
