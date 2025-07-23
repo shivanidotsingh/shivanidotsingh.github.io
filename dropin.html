@@ -5,55 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Art, Artist, and Context – Shivani Singh</title>
     <link rel="stylesheet" href="style.css">
-
-    <style>
-        /* Specific styles for this page only, overriding or extending style.css */
-
-        /* Image Pair Container - specific to this page for taller/narrower images */
-        .image-pair-container img {
-            width: calc(50% - 10px); /* Two columns with gap */
-            height: 450px; /* Taller height for images in image-pair-container */
-            object-fit: cover; /* Ensure images fill the space */
-            margin-top: 0; /* Override general img margin-top */
-            margin-bottom: 0; /* Override general img margin-bottom */
-        }
-
-        /* Action Items Grid - keeping it here for consistency if needed for this page */
-        .action-items-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr); /* 4 columns */
-            gap: 15px; /* Spacing between items */
-            margin-top: 1em;
-            list-style: none; /* Remove default bullet points */
-            padding-left: 0; /* Remove default padding */
-        }
-
-        .action-items-grid li {
-            background-color: #f9f9f9; /* Light background for each item */
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 0.95em;
-            line-height: 1.4;
-            display: flex; /* For better alignment of content within each grid item */
-            align-items: center;
-        }
-
-        /* Mobile-specific adjustments for action items grid and image pair */
-        @media (max-width: 768px) {
-            .action-items-grid {
-                grid-template-columns: 1fr; /* Single column on mobile */
-            }
-            .image-pair-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            .image-pair-container img {
-                width: 100%;
-                height: auto; /* Allow height to adjust when stacked */
-                margin-bottom: 1em;
-            }
-        }
-    </style>
 </head>
 <body>
 
