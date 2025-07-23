@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Art, Artist, and Context – Shivani Singh</title>
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* Specific styles for this page only, overriding or extending style.css */
+
+        /* Image Pair Container - specific to this page for taller/narrower images */
+        .image-pair-container img {
+            width: calc(50% - 10px); /* Two columns with gap */
+            height: 450px; /* Taller height for images in image-pair-container */
+            object-fit: cover; /* Ensure images fill the space */
+            margin-top: 0; /* Override general img margin-top */
+            margin-bottom: 0; /* Override general img margin-bottom */
+        }
+
+        /* Action Items Grid - keeping it here for consistency if needed for this page */
+        .action-items-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            gap: 15px; /* Spacing between items */
+            margin-top: 1em;
+            list-style: none; /* Remove default bullet points */
+            padding-left: 0; /* Remove default padding */
+        }
+
+        .action-items-grid li {
+            background-color: #f9f9f9; /* Light background for each item */
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.95em;
+            line-height: 1.4;
+            display: flex; /* For better alignment of content within each grid item */
+            align-items: center;
+        }
+
+        /* Mobile-specific adjustments for action items grid and image pair */
+        @media (max-width: 768px) {
+            .action-items-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+            }
+            .image-pair-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .image-pair-container img {
+                width: 100%;
+                height: auto; /* Allow height to adjust when stacked */
+                margin-bottom: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <p><a href="index.html" class="blue-link">&larr; Back to home</a></p>
+
+    <h1>The art, artist and context</h1>
+
+    <p>It all began with a research class prompt — In the context of the Future of Work, which sector or demographic group are you most interested to understand better? Based on our responses, we formed groups — aligned in our love for the arts, but disparate in our skillsets — Larika, Maxime and I worked together for the next 8 weeks on the subject of what the future holds for professional artists and how, in turn, creativity influences the workplace.</p>
+    <p>We wanted to learn about the ways in which artists adapt to emerging technology and how social platforms influence a creative person’s work and discoverability.</p>
+
+    <p><strong>Role:</strong> Research, Visual Design, Prototyping, Presentation<br>
+    <strong>Team:</strong> <a href="http://larikamallier.com/" target="_blank" rel="noreferrer noopener">Larika Mallier</a>, <a href="https://maximestinnett.com/" target="_blank" rel="noreferrer noopener">Maxime Stinett</a><br>
+    <strong>Duration:</strong> 8 weeks<br>
+    <strong>Advisor:</strong> Minnie Bredouw &amp; Dana Ragouzeos</p>
+    <img class="full-width-image" src="images/dropin/ithe.jpg" alt="Art studio with painting and supplies" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+    <p>We set guidelines as a team, scripting a discussion guide for our in depth interviews, and tabulating our timelines. We interviewed an assorted selection of artist with a keen ear for their hopes and fears with respect to the future of work–personal and universal–while taking detailed notes. As the more visually trained eye of the team, I took on the role of monitoring all the graphical aspects of our presentation and prototype.</p>
+
+    <h2>1. Discovery</h2>
+
+    <h1>How might we help artists thrive, (in the context of community and income) in the digital age?</h1>
+
+    <p>We conducted six in depth interviews, and a few surveys. Among the many things we learnt, we found it interesting that while artists often prefer to create independently, their work relies heavily on the inspiration and promotional opportunities afforded by a strong community. Artists appear to recognize the opportunities that social media affords, but would rather spend time working on their craft than in building an online presence.</p>
+
+    <div class="gallery-grid full-width-gallery">
+        <img src="images/dropin/screen-shot-2020-01-19-at-12.34.15-pm.png" alt="Matt, a comic artist and art educator">
+        <img src="images/dropin/screen-shot-2020-01-19-at-12.34.30-pm.png" alt="Sean Stillwell, an installation artist">
+        <img src="images/dropin/kassa-1.jpg" alt="Our interview with Kassa, a musician">
+        <img src="images/dropin/themes.jpg" alt="Themes that emerged from our interviews">
+    </div>
+
+    <h2>A few themes that emerged from our conversations: Community, Automation, Economic Stability, Education and Ethics</h2>
+
+    <p>We also <em>studied the existing networks</em> that were being leveraged– physical and digital, and organizations whose grants and residencies helped artists get their work off the ground. As students at an art college, we took to the hallways to gather some generative thoughts on our assumptions, using <em>surveys.</em></p>
+
+    <div class="image-pair-container">
+        <img src="images/dropin/trans2-2.png" alt="Survey results visualization 1">
+        <img src="images/dropin/trans1-1.png" alt="Survey results visualization 2">
+    </div>
+
+    <div class="gallery-grid">
+        <img src="images/dropin/img_6230.jpg" alt="Workshop image 1">
+        <img src="images/dropin/img_6242.jpg" alt="Workshop image 2">
+        <img src="images/dropin/img_6265.jpg" alt="Workshop image 3">
+        <img src="images/dropin/img_6258.jpg" alt="Workshop image 4">
+        <img src="images/dropin/img_6239.jpg" alt="Workshop image 5">
+        <img src="images/dropin/img_6244.jpg" alt="Workshop image 6">
+        <img src="images/dropin/img_6266.jpg" alt="Workshop image 7">
+        <img src="images/dropin/img_6272.jpg" alt="Workshop image 8">
+    </div>
+
+    <p>Before converging our thoughts and discoveries, we decided to visit the MoMA for some analogous inspiration. We were looking for cues of interactive storytelling which could be employed in the development of our ideas. The influence showed up in one of the ideas that we didn’t ultimately pursue.</p>
+
+    <h2>2. Definition</h2>
+
+    <p>The assignment afforded us an opportunity to reframe our opportunity statement through the lens of a specific brand, and while questioning which brand would be best suited for a challenge like this one, we tried to learn about <em>what differentiates the way artists use their networks.</em></p>
+
+    <ul>
+        <li>We learned that collaboration is often their preferred way to network</li>
+        <li>They prefer to be identified by their work, rather than their resumé</li>
+    </ul>
+    <p>These factors limit their reach to a wider audience, and consequently, intersectional opportunities for work.</p>
+
+    <div class="image-pair-container">
+        <img src="images/dropin/img_7457.jpg" alt="Creating frameworks for surveys">
+        <img src="images/dropin/img_7460.jpg" alt="Identifying tensions">
+    </div>
+
+    <p>This is where Linkedin emerged as a brand with potential.</p>
+
+    <img class="full-width-image" src="images/dropin/screen-shot-2020-03-19-at-6.34.01-pm-1.png" alt="Benefits of the platform" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <ul>
+        <li>Linkedin is visually agnostic</li>
+        <li>It priorities connections over content and does not rely on advertisements</li>
+        <li>Localised network, that focuses on professional proximity</li>
+        <li>With 260 million active users a month, the market size makes it a powerful tool</li>
+    </ul>
+
+    <hr class="wp-block-separator has-alpha-channel-opacity">
+
+    <p>Conversely, what we heard from our participants was that:</p>
+
+    <p><strong>“LinkedIn makes me feel gross.”</strong> – Matt, comic artist and educator</p>
+    <p><strong>“It just feels inauthentic.”</strong><br>– Emily, bassist</p>
+
+    <p>Connecting virtually feels less authentic than meeting in person, because there is often more context in a physical environment.</p>
+
+    <p>How might help artists build networks wherein they feel a sense of belonging?</p>
+
+    <p>As the Largest professional networking platform in the world, LinkedIn offers access to a diverse professional community. We saw an opportunity in this.</p>
+
+    <p>With this new reframe, we began to sketch wireframes for a <em>version</em> of an artist’s LinkedIn profile that not only substituted as a snapshot of their work, but also brought forth the team you worked with, the place you produced that work at, and the tools they used.</p>
+
+    <p>This was a key design decision which represented the patterns of need that emerged from our research.</p>
+
+    <img class="full-width-image" src="images/dropin/untitled_artwork.png" alt="Wireframe sketch for artist profile" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <h6>I. The Profile</h6>
+
+    <img class="full-width-image" src="images/dropin/linkedin-creative.jpg" alt="LinkedIn Creative profile mockup" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <h6>II. The Radar</h6>
+
+    <img class="full-width-image" src="images/dropin/linkedin-radar.jpg" alt="LinkedIn Radar network visualization" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <p>We visualized the artist’s network radially, and map proximity, along with other relevant variables and behave as a matching algorithm. This way creators can finding people who are either meet your needs, or whose needs can be met by you, depending on the filters of their choosing.</p>
+
+    <img class="full-width-image" src="images/dropin/new-phone-frame-5.png" alt="Phone frame showing network" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <h2>3. Development</h2>
+
+    <p>We then conducted a co-design session to review our ideas and revised some aspects of our concept based on the feedback and discussions.</p>
+
+    <div class="gallery-grid full-width-gallery">
+        <img src="images/dropin/screen-shot-2019-12-11-at-10.53.46-pm-1.png" alt="Co-design session image 1">
+        <img src="images/dropin/screen-shot-2019-12-11-at-10.53.58-pm.png" alt="Co-design session image 2">
+        <img src="images/dropin/screen-shot-2019-12-11-at-10.54.40-pm-1.png" alt="Co-design session image 3">
+        <img src="images/dropin/screenshot-2019-12-04-at-5.26.16-pm.png" alt="Co-design session image 4">
+        <img src="images/dropin/screenshot-2019-12-04-at-5.29.39-pm.png" alt="Co-design session image 5">
+        <img src="images/dropin/screenshot-2019-12-04-at-5.42.05-pm.png" alt="Co-design session image 6">
+        <img src="images/dropin/screenshot-2019-12-04-at-5.43.36-pm.png" alt="Co-design session image 7">
+        <img src="images/dropin/screen-shot-2020-01-17-at-4.13.38-pm-2.png" alt="Co-design session image 8">
+    </div>
+
+    <img class="full-width-image" src="images/dropin/screen-shot-2020-02-22-at-7.51.30-pm.png" alt="Co-design session overview" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <p>We divided the co-design session broadly into four parts.</p>
+
+    <p>We began by gathering a sense of everyone’s hopes and fears with respect to the Future of Work. We moved onto the subject of networking and showcasing by conducting a hands-on exercise with a 2X2 grid framework, inviting you to place different platforms within the spectrum. The discussions around this particular exercise grew generative, and has informed much of our final outcome. We then sketched storyboards of how networking works right now, vs what it could potentially be. The co-design session concluded with an opportunity statement that perfectly rephrased our initial findings and research:</p>
+
+    <h1>How might we bring context back into the discovery of art as a means to build networks for artists?</h1>
+
+    <p>Through the co-design session, we uncovered various other expectations that people in the creative field have. There was some affinity towards showcasing one’s work as a potential to professional leads, and thus we began to reshape our idea into the tangible story of Drop In.</p>
+
+    <p>One of the ideas that emerged from our brainstorming, was an augmented<em> reality-esque </em> interaction which allowed a creator to set the context in which their work lived, as opposed to the nondescript backdrop of a traditional ‘gallery’ or ‘gig’ event space.</p>
+
+    <p>We called it ‘Drop In’, and created a few story boards around this. A mobile application that allows you to virtually upload your piece of art, in a media format of your choice, at any public locations. In a similar way, it enables you to discover local artists using augmented reality, an experience not very different from fetching Pokémon on Pokémon Go.</p>
+
+    <img class="full-width-image" src="images/dropin/screen-shot-2020-02-17-at-10.02.22-pm.png" alt="DropIn app concept storyboard" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <h5>4. Delivery</h5>
+
+    <img class="full-width-image" src="images/dropin/new-phone-frame-all-3-2.png" alt="DropIn app screens" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <p>We stitched together the reach of LinkedIn with the function of DropIn. A networking tool for artists to showcase, network and discover other artist.</p>
+
+    <p>We created a quick and funny video to showcase the product’s core flows– the experience of uploading a piece of media, as well as stumbling upon artwork created by someone in your network.</p>
+
+    <div class="video-container">
+        <iframe title="DropIn User Journey" src="https://player.vimeo.com/video/412795116" width="500" height="281" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"></iframe>
+    </div>
+
+    <p>The core user workflows</p>
+
+    <img class="full-width-image" src="images/dropin/new-phone-frame-profile.png" alt="The Profile : Showcase" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <img class="full-width-image" src="images/dropin/new-phone-frame-scan-and-drop.png" alt="Scan your work of art and choose a public space that it could live in" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <img class="full-width-image" src="images/dropin/new-phone-frame-successfully-dropped.png" alt="Successfully dropped artwork notification" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <img class="full-width-image" src="images/dropin/new-phone-frame-discover-art-2.png" alt="Discovering a piece of art" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <img class="full-width-image" src="images/dropin/radar.png" alt="Finding someone on your radar" style="width: 80vw; margin-left: calc(50% - 40vw); margin-right: calc(50% - 40vw);">
+
+    <h2>Learnings</h2>
+
+    <p>I enjoyed the vigor of extracting insights out of a world of information. The greatest learning for me, personally, was around how to strategically involve key stakeholders in the process, to inspire an outcome that works.</p>
+
+    <p>If I were to go back to this project and fix something, I’d push us to spend a little more time and energy in the synthesizing phase of our research. There was a vastness to our challenge statement that didn’t help our outcomes.</p>
+
+    <p>I would love to be able to take the product out to the world and get some more feedback while also figuring out technicalities around intellectual property rights, data security and spam prevention.</p>
+
+    <p class="note"><a href="index.html" class="blue-link">&larr; home</a></p>
+
+</body>
+</html>
