@@ -250,7 +250,7 @@ a[target="_blank"] {
 
 /* Dark Mode styles */
 body.dark-mode {
-    text-color: var(--text-color-dark);
+    color: var(--text-color-dark);
     background-color: var(--background-color-dark);
 }
 
