@@ -254,6 +254,10 @@ body.dark-mode {
     background-color: var(--background-color-dark);
 }
 
+body.dark-mode button.reveal {
+    color: #000; /* Ensures text on highlights remains black */
+}
+
 /* Font Size Variations */
 body.text-small {
     font-size: calc(var(--base-font-size) * 0.9); /* 90% of base */
