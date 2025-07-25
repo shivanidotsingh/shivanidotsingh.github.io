@@ -227,10 +227,101 @@ a[target="_blank"] {
     margin: 0 auto;
 }
 
+
+
+
+
+
+
+:root {
+    --text-color-light: #000;
+    --background-color-light: #fff;
+    --text-color-dark: #eee;
+    --background-color-dark: #333;
+    --blue-link-color: #4c8aff; /* Define blue link color as a variable */
+
+    /* Default to light mode colors */
+    --text-color: var(--text-color-light);
+    --background-color: var(--background-color-light);
+
+    /* Default font size */
+    --base-font-size: 1.1em;
+}
+
+/* Dark Mode styles */
+body.dark-mode {
+    --text-color: var(--text-color-dark);
+    --background-color: var(--background-color-dark);
+}
+
+/* Font Size Variations */
+body.text-small {
+    font-size: calc(var(--base-font-size) * 0.9); /* 90% of base */
+}
+body.text-normal {
+    font-size: var(--base-font-size); /* Default */
+}
+body.text-large {
+    font-size: calc(var(--base-font-size) * 1.1); /* 110% of base */
+}
+
+/* Dark mode specific for action-items-grid li */
+body.dark-mode .action-items-grid li {
+    background-color: #444; /* Darker background for dark mode */
+}
+
+/* --- Styles for controls container and buttons (Moved from index.html) --- */
+#controls-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+    transition: none; /* No transition on background for simpler look */
+}
+
+#controls-container button {
+    background: none;
+    border: none;
+    color: var(--text-color); /* Uses CSS variable */
+    padding: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: color 0.3s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#controls-container button:hover {
+    color: var(--blue-link-color); /* Use a distinct hover color, or just a darker/lighter shade of text-color */
+    background-color: transparent; /* Ensure no background on hover */
+}
+
+/* Dark mode adjustments for highlights */
+body.dark-mode .highlight-blue::before { background-color: #005677; }
+body.dark-mode .highlight-yellow::before { background-color: #777700; }
+body.dark-mode .highlight-pink::before { background-color: #770033; }
+body.dark-mode .highlight-green::before { background-color: #005500; }
+body.dark-mode .highlight-purple::before { background-color: #550077; }
+
 @media (max-width: 768px) {
   body {
     padding: 20px 15px;
   }
+  #controls-container {
+        top: 10px;
+        right: 10px;
+        gap: 5px;
+        padding: 0;
+    }
+    #controls-container button {
+        font-size: 1em;
+        padding: 3px;
+    }
   .full-width-image,
   .pdf-container,
   .full-width-gallery { 
