@@ -258,6 +258,10 @@ body.dark-mode button.reveal {
     color: #000; /* Ensures text on highlights remains black */
 }
 
+body.dark-mode span.inline-reveal {
+    color: #eee; /* Ensures highlighted text turns white after highlight is removed */
+}
+
 /* Font Size Variations */
 body.text-small {
     font-size: calc(var(--base-font-size) * 0.9); /* 90% of base */
