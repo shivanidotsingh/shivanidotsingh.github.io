@@ -250,8 +250,8 @@ a[target="_blank"] {
 
 /* Dark Mode styles */
 body.dark-mode {
-    --text-color: var(--text-color-dark);
-    --background-color: var(--background-color-dark);
+    text-color: var(--text-color-dark);
+    background-color: var(--background-color-dark);
 }
 
 /* Font Size Variations */
@@ -265,10 +265,6 @@ body.text-large {
     font-size: calc(var(--base-font-size) * 1.1); /* 110% of base */
 }
 
-/* Dark mode specific for action-items-grid li */
-body.dark-mode .action-items-grid li {
-    background-color: #444; /* Darker background for dark mode */
-}
 
 /* --- Styles for controls container and buttons (Moved from index.html) --- */
 #controls-container {
@@ -300,14 +296,6 @@ body.dark-mode .action-items-grid li {
     color: var(--blue-link-color); /* Use a distinct hover color, or just a darker/lighter shade of text-color */
     background-color: transparent; /* Ensure no background on hover */
 }
-
-/* Dark mode adjustments for highlights */
-body.dark-mode .highlight-blue::before { background-color: #005677; }
-body.dark-mode .highlight-yellow::before { background-color: #777700; }
-body.dark-mode .highlight-pink::before { background-color: #770033; }
-body.dark-mode .highlight-green::before { background-color: #005500; }
-body.dark-mode .highlight-purple::before { background-color: #550077; }
-
 @media (max-width: 768px) {
   body {
     padding: 20px 15px;
