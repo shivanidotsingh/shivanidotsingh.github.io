@@ -93,12 +93,12 @@
 </head>
 <body>
   <div id="controls-container">
-        <button id="theme-toggle">☀</button> <!-- Simplified to sun symbol -->
-        <button id="font-decrease">—</button> <!-- Simplified to minus symbol -->
-        <button id="font-increase">+</button> <!-- Simplified to plus symbol -->
+        <button id="theme-toggle"> ⏾ </button> <!-- Simplified to sun symbol -->
+        <button id="font-decrease"> - </button> <!-- Simplified to minus symbol -->
+        <button id="font-increase"> + </button> <!-- Simplified to plus symbol -->
     </div>
   
-  <h1>Hi, I'm Shivani<span id="smiley-placeholder"> 👀 </span></h1>
+  <h1>Hi, I'm Shivani<span id="smiley-placeholder"> 🍭 👀 </span></h1>
   <p>
     A designer with an aptitude for analytical thinking and an 
     <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — tinkering with ideas and drawing in the margins <a href="https://shivaniest.com" target="_blank">here</a></span>.
@@ -184,11 +184,11 @@
             if (theme === 'dark') {
                 body.classList.add('dark-mode');
                 localStorage.setItem('theme', 'dark');
-                themeToggle.textContent = '☾'; // Change to moon symbol
+                themeToggle.textContent = '☀ '; // Sun (Make Light)
             } else {
                 body.classList.remove('dark-mode');
                 localStorage.setItem('theme', 'light');
-                themeToggle.textContent = '☀'; // Change to sun symbol
+                themeToggle.textContent = '⏾'; // Moon (Make Dark)
             }
         }
 
