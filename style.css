@@ -254,12 +254,12 @@ body.dark-mode {
     background-color: var(--background-color-dark);
 }
 
-body.dark-mode button.reveal {
-    color: #000; /* Ensures text on highlights remains black */
-}
-
-body.dark-mode span.inline-reveal {
-    color: #eee; /* Ensures highlighted text turns white after highlight is removed */
+body.dark-mode button.reveal:not(:disabled) {
+     color: #000;
+ }
+ 
+body.dark-mode button.reveal:disabled {
+    color: var(--text-color-dark); /* Becomes #eee after click in dark mode */
 }
 
 /* Font Size Variations */
