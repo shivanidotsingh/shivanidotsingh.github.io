@@ -92,13 +92,19 @@
   </style>
 </head>
 <body>
-  <h1>Hi, I'm Shivani<span id="smiley-placeholder"> 🌻 </span></h1>
+  <div id="controls-container">
+        <button id="theme-toggle">☀</button> <!-- Simplified to sun symbol -->
+        <button id="font-decrease">—</button> <!-- Simplified to minus symbol -->
+        <button id="font-increase">+</button> <!-- Simplified to plus symbol -->
+    </div>
+  
+  <h1>Hi, I'm Shivani<span id="smiley-placeholder"> 👀 </span></h1>
   <p>
     A designer with an aptitude for analytical thinking and an 
     <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — tinkering with ideas and drawing in the margins <a href="https://shivaniest.com" target="_blank">here</a></span>.
     Currently shaping tech for social impact at
     <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I <a href="https://unicef-office-of-innovation.gitbook.io/toolkit" target="_blank">mentor</a> early-stage startups in digital product design,
-    and facilitate <button class="reveal highlight-blue" onclick="expandOnce(this, 'collab')">collaboration</button>with internal stakeholders<span id="collab" class="inline-reveal">
+    and facilitate <button class="reveal highlight-blue" onclick="expandOnce(this, 'collab')">collaboration</button>with stakeholders<span id="collab" class="inline-reveal">
     — like in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a> where we reimagined a needs assessment process</span></span>.
     I think of my practice as a way to bridge intention and outcome.
     Previously, I was a designer at
@@ -119,55 +125,132 @@
   <div id="random-dots-container"></div>
 
   <script>
-    let clickedContentIds = new Set();
-    const totalHighlights = 6;
+        let clickedContentIds = new Set();
+        const totalHighlights = 6;
 
-    const highlightColors = {
-        'highlight-yellow': '#FDFB8C',
-        'highlight-blue': '#D6F5FF',
-        'highlight-green': '#DDFFAA',
-        'highlight-pink': '#FFDDEE',
-        'highlight-purple': '#EEDDFF'
-    };
+        const highlightColors = {
+            'highlight-yellow': '#FDFB8C',
+            'highlight-blue': '#D6F5FF',
+            'highlight-pink': '#FFDDEE',
+            'highlight-green': '#DDFFAA',
+            'highlight-purple': '#EEDDFF'
+        };
 
-    function expandOnce(buttonElement, contentId) {
-      const contentEl = document.getElementById(contentId);
-      
-      contentEl.classList.add('visible');
-      buttonElement.disabled = true;
+        function expandOnce(buttonElement, contentId) {
+            const contentEl = document.getElementById(contentId);
+            
+            contentEl.classList.add('visible');
+            buttonElement.disabled = true;
 
-      clickedContentIds.add(contentId);
+            clickedContentIds.add(contentId);
 
-      const randomDotsContainer = document.getElementById('random-dots-container');
-      const dot = document.createElement('span');
-      dot.classList.add('collected-dot');
+            const randomDotsContainer = document.getElementById('random-dots-container');
+            const dot = document.createElement('span');
+            dot.classList.add('collected-dot');
 
-      let highlightColorClass = '';
-      for (const className of buttonElement.classList) {
-          if (className.startsWith('highlight-')) {
-              highlightColorClass = className;
-              break;
-          }
-      }
-      dot.style.backgroundColor = highlightColors[highlightColorClass];
+            let highlightColorClass = '';
+            for (const className of buttonElement.classList) {
+                if (className.startsWith('highlight-')) {
+                    highlightColorClass = className;
+                    break;
+                }
+            }
+            dot.style.backgroundColor = highlightColors[highlightColorClass];
 
-      const dotSize = 16;
-      const viewportWidth = window.innerWidth;
-      const viewportHeight = window.innerHeight;
+            const dotSize = 16;
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
 
-      const randomX = Math.random() * (viewportWidth - dotSize);
-      const randomY = Math.random() * (viewportHeight - dotSize);
+            const randomX = Math.random() * (viewportWidth - dotSize);
+            const randomY = Math.random() * (viewportHeight - dotSize);
 
-      dot.style.left = `${randomX}px`;
-      dot.style.top = `${randomY}px`;
-      
-      randomDotsContainer.appendChild(dot);
+            dot.style.left = `${randomX}px`;
+            dot.style.top = `${randomY}px`;
+            
+            randomDotsContainer.appendChild(dot);
 
-      if (clickedContentIds.size === totalHighlights) {
-          const smileyPlaceholder = document.getElementById('smiley-placeholder');
-          smileyPlaceholder.classList.add('visible');
-      }
-    }
-  </script>
+            if (clickedContentIds.size === totalHighlights) {
+                const smileyPlaceholder = document.getElementById('smiley-placeholder');
+                smileyPlaceholder.classList.add('visible');
+            }
+        }
+
+        // --- Theme Toggle Logic ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Function to set theme
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+                themeToggle.textContent = '☾'; // Change to moon symbol
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+                themeToggle.textContent = '☀'; // Change to sun symbol
+            }
+        }
+
+        // Load theme preference on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light
+            setTheme(savedTheme);
+        });
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark-mode')) {
+                setTheme('light');
+            } else {
+                setTheme('dark');
+            }
+        });
+
+        // --- Font Size Adjustment Logic ---
+        const fontDecreaseBtn = document.getElementById('font-decrease');
+        const fontIncreaseBtn = document.getElementById('font-increase');
+        const fontSizes = ['text-small', 'text-normal', 'text-large']; // Define your font size classes
+        let currentFontSizeIndex = 1; // Default to 'text-normal'
+
+        // Function to apply font size class
+        function applyFontSize(index) {
+            // Remove all existing font size classes
+            fontSizes.forEach(cls => body.classList.remove(cls));
+            // Add the new font size class
+            body.classList.add(fontSizes[index]);
+            localStorage.setItem('fontSize', fontSizes[index]);
+            currentFontSizeIndex = index;
+        }
+
+        // Load font size preference on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedFontSize = localStorage.getItem('fontSize');
+            if (savedFontSize) {
+                const index = fontSizes.indexOf(savedFontSize);
+                if (index !== -1) {
+                    applyFontSize(index);
+                } else {
+                    applyFontSize(currentFontSizeIndex); // Fallback to normal if saved is invalid
+                }
+            } else {
+                applyFontSize(currentFontSizeIndex); // Apply default normal
+            }
+        });
+
+        // Decrease font size
+        fontDecreaseBtn.addEventListener('click', () => {
+            if (currentFontSizeIndex > 0) {
+                applyFontSize(currentFontSizeIndex - 1);
+            }
+        });
+
+        // Increase font size
+        fontIncreaseBtn.addEventListener('click', () => {
+            if (currentFontSizeIndex < fontSizes.length - 1) {
+                applyFontSize(currentFontSizeIndex + 1);
+            }
+        });
+    </script>
 </body>
 </html>
