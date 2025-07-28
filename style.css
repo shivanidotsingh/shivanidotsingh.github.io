@@ -1,17 +1,55 @@
+/* Define CSS Variables for colors */
+:root {
+    --text-color-light: #000;
+    --background-color-light: #fff;
+    --text-color-dark: #eee;
+    --background-color-dark: #333;
+    --blue-link-color: #4c8aff;
+
+    /* Default to light mode colors */
+    --text-color: var(--text-color-light);
+    --background-color: var(--background-color-light);
+
+    /* Default font size */
+    --base-font-size: 1.1em;
+}
+
+/* Dark Mode styles */
+body.dark-mode {
+    color: var(--text-color-dark);
+    background-color: var(--background-color-dark);
+}
+
 body {
-  font-family: -apple-system, BlinkMacMacSystemFont, "Segoe UI", Oxygen, "Helvetica Neue", sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+  font-weight: 400;
   max-width: 640px;
   margin: 40px auto;
   padding: 40px 20px;
   line-height: 1.8;
-  color: #000;
-  font-size: 1.1em;
+  color: var(--text-color); /* Use variable for main body text color */
+  background-color: var(--background-color); /* Use variable for main body background */
+  font-size: var(--base-font-size); /* Use variable */
   position: relative;
   min-height: 100vh;
+  transition: color 0.3s ease, background-color 0.3s ease, font-size 0.3s ease; /* Smooth transitions */
 }
+
+/* Font Size Variations */
+body.text-small {
+    font-size: calc(var(--base-font-size) * 0.9);
+}
+body.text-normal {
+    font-size: var(--base-font-size);
+}
+body.text-large {
+    font-size: calc(var(--base-font-size) * 1.1);
+}
+
 
 h1, h2 {
     line-height: 1.3;
+    color: var(--text-color); /* Ensure headings also follow theme */
 }
 
 h1 {
@@ -22,7 +60,7 @@ h1 {
 
 h2 {
     margin-top: 2em;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--text-color-dark); /* Adjust border for theme */
     padding-top: 1.5em;
 }
 
@@ -40,13 +78,13 @@ figure {
 
 figcaption {
     font-size: 0.9em;
-    color: #777;
+    color: var(--text-color); /* Adjust for theme */
     text-align: center;
     margin-top: 5px;
 }
 
 a {
-  color: inherit;
+  color: inherit; /* Links inherit color from parent */
   text-decoration: underline;
   text-underline-offset: 0.2em;
   position: relative;
@@ -58,7 +96,7 @@ a[target="_blank"] {
 }
 
 .blue-link {
-  color: #4c8aff;
+  color: var(--blue-link-color); /* Use variable */
   text-decoration: none;
 }
 
@@ -78,22 +116,21 @@ a[target="_blank"] {
   left: 0;
   width: 100%;
   height: 100%;
+  border: none;
 }
 
 .pdf-container {
     position: relative;
-    width: 100vw; /* Set to full viewport width */
-    /* Use negative margins to pull it out of the body's max-width container */
+    width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
-    /* Ensure a minimum height for visibility */
-    min-height: 70vh; /* This will make it take up at least 70% of the viewport height */
-    /* Keep padding-bottom for aspect ratio if content fills it, but min-height will dominate initially */
+    min-height: 70vh;
+    padding-bottom: 56.25%;
     overflow: hidden;
-    max-width: 100vw; /* Ensures it doesn't exceed viewport width */
+    max-width: 100vw;
     box-sizing: border-box;
-    padding-left: 5px; /* Added 5px padding on desktop */
-    padding-right: 5px; /* Added 5px padding on desktop */
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .pdf-container iframe {
@@ -106,10 +143,10 @@ a[target="_blank"] {
 }
 
 .note {
-  color: #777;
+  color: var(--text-color);
   margin-top: 1.5em;
   font-size: 0.95em;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--text-color-dark);
   padding-top: 1.5em;
 }
 
@@ -124,7 +161,7 @@ a[target="_blank"] {
 
 .image-pair-container img {
   width: calc(50% - 10px);
-  height: 350px; /* Fixed height, consider aspect-ratio if this should also scale */
+  height: 350px;
   object-fit: cover;
   margin-top: 0;
   margin-bottom: 0;
@@ -138,8 +175,8 @@ a[target="_blank"] {
 }
 
 .gallery-grid img {
-    height: 300px; /* Set a consistent height for gallery images */
-    object-fit: cover; /* Ensures images cover the area, cropping if necessary */
+    height: 250px;
+    object-fit: cover;
 }
 
 .gallery-grid-circles {
@@ -153,24 +190,24 @@ a[target="_blank"] {
     object-fit: cover;
     border-radius: 50%;
     margin: 0;
-    height: auto; /* Override fixed height to allow aspect-ratio to work */
+    height: auto;
 }
 
 .full-width-gallery {
-    width: 100vw; /* Set to full viewport width for consistency */
+    width: 100vw;
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
     max-width: 100vw;
     box-sizing: border-box;
-    padding-left: 5px; /* Added 5px padding on desktop */
-    padding-right: 5px; /* Added 5px padding on desktop */
+    padding-left: 5px;
+    padding-right: 5px;
     grid-template-columns: repeat(3, 1fr);
 }
 
 .full-width-gallery img {
     width: 100%;
-    height: 250px; /* Set a consistent height for full-width gallery images */
-    object-fit: cover; /* Ensures images cover the area, cropping if necessary */
+    height: 250px;
+    object-fit: cover;
 }
 
 .action-items-grid {
@@ -193,17 +230,17 @@ a[target="_blank"] {
 }
 
 .full-width-image {
-    width: 100vw; /* Set to full viewport width for consistency */
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
+    width: 90vw;
+    margin-left: calc(50% - 45vw);
+    margin-right: calc(50% - 45vw);
     max-width: 100vw;
     border-radius: 0;
     margin-top: 0;
     margin-bottom: 2em;
     display: block;
     box-sizing: border-box;
-    padding-left: 5px; /* Added 5px padding on desktop */
-    padding-right: 5px; /* Added 5px padding on desktop */
+    padding-left: 5px;
+    padding-right: 5px;
 }
 
 .logo-grid {
@@ -227,54 +264,7 @@ a[target="_blank"] {
     margin: 0 auto;
 }
 
-
-
-
-
-
-
-:root {
-    --text-color-light: #000;
-    --background-color-light: #fff;
-    --text-color-dark: #eee;
-    --background-color-dark: #333;
-    --blue-link-color: #4c8aff; /* Define blue link color as a variable */
-
-    /* Default to light mode colors */
-    --text-color: var(--text-color-light);
-    --background-color: var(--background-color-light);
-
-    /* Default font size */
-    --base-font-size: 1.1em;
-}
-
-/* Dark Mode styles */
-body.dark-mode {
-    color: var(--text-color-dark);
-    background-color: var(--background-color-dark);
-}
-
-body.dark-mode button.reveal:not(:disabled) {
-     color: #000;
- }
- 
-body.dark-mode button.reveal:disabled {
-    color: var(--text-color-dark); /* Becomes #eee after click in dark mode */
-}
-
-/* Font Size Variations */
-body.text-small {
-    font-size: calc(var(--base-font-size) * 0.9); /* 90% of base */
-}
-body.text-normal {
-    font-size: var(--base-font-size); /* Default */
-}
-body.text-large {
-    font-size: calc(var(--base-font-size) * 1.1); /* 110% of base */
-}
-
-
-/* --- Styles for controls container and buttons (Moved from index.html) --- */
+/* Styles for controls container and buttons */
 #controls-container {
     position: fixed;
     top: 20px;
@@ -282,13 +272,13 @@ body.text-large {
     z-index: 1000;
     display: flex;
     gap: 10px;
-    transition: none; /* No transition on background for simpler look */
+    transition: none;
 }
 
 #controls-container button {
     background: none;
     border: none;
-    color: var(--text-color); /* Uses CSS variable */
+    color: var(--text-color);
     padding: 5px;
     border-radius: 5px;
     cursor: pointer;
@@ -301,32 +291,117 @@ body.text-large {
 }
 
 #controls-container button:hover {
-    color: var(--blue-link-color); /* Use a distinct hover color, or just a darker/lighter shade of text-color */
-    background-color: transparent; /* Ensure no background on hover */
+    color: var(--blue-link-color);
+    background-color: transparent;
 }
+
+/* Styles for the reveal buttons and expanded content */
+button.reveal {
+    color: inherit;
+    font-weight: normal;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    padding: 0 0.2em;
+    font: inherit;
+    border-radius: 4px;
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+
+button.reveal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 4px;
+    z-index: -1;
+    opacity: 1;
+}
+
+.highlight-blue::before { background-color: #D6F5FF; }
+.highlight-yellow::before { background-color: #FDFB8C; }
+.highlight-pink::before { background-color: #FFDDEE; }
+.highlight-green::before { background-color: #DDFFAA; }
+.highlight-purple::before { background-color: #EEDDFF; }
+
+body.dark-mode button.reveal:not(:disabled) {
+    color: #000;
+}
+
+body.dark-mode button.reveal:disabled {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode span.inline-reveal {
+    color: var(--text-color-dark);
+}
+
+button.reveal:disabled {
+    cursor: default;
+    opacity: 0.8;
+}
+
+button.reveal:disabled::before {
+    opacity: 0;
+}
+
+span.inline-reveal {
+    display: none;
+    border-radius: 4px;
+    padding: 0;
+    transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out;
+}
+
+span.inline-reveal.visible {
+    display: inline;
+}
+
+#random-dots-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+}
+
+.collected-dot {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: absolute;
+    opacity: 1;
+}
+
+#smiley-placeholder {
+    opacity: 0;
+}
+
+#smiley-placeholder.visible {
+    opacity: 1;
+}
+
+
 @media (max-width: 768px) {
   body {
     padding: 20px 15px;
   }
-  #controls-container {
-        top: 10px;
-        right: 10px;
-        gap: 5px;
-        padding: 0;
-    }
-    #controls-container button {
-        font-size: 1em;
-        padding: 3px;
-    }
   .full-width-image,
   .pdf-container,
-  .full-width-gallery { 
-    width: 100%; /* This is key for mobile fitting: ensures width includes padding */
-    margin-left: 0; 
-    margin-right: 0; 
-    padding-left: 15px; 
-    padding-right: 15px; 
-    grid-template-columns: 1fr; /* Single column on mobile for full-width gallery */
+  .full-width-gallery {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+    grid-template-columns: 1fr;
   }
   .image-pair-container {
     flex-direction: column;
@@ -339,5 +414,15 @@ body.text-large {
   }
   .action-items-grid {
         grid-template-columns: 1fr;
+    }
+    #controls-container {
+        top: 10px;
+        right: 10px;
+        gap: 5px;
+        padding: 0;
+    }
+    #controls-container button {
+        font-size: 1em;
+        padding: 3px;
     }
 }
