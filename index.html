@@ -1,130 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>shivani singh</title>
-  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* Page-specific styles for index.html interactive elements */
-    /* These styles are kept here as they are unique to this page's functionality */
-    button.reveal {
-      color: inherit;
-      font-weight: normal;
-      cursor: pointer;
-      border: none;
-      background-color: transparent;
-      padding: 0 0.2em;
-      font: inherit;
-      border-radius: 4px;
-      outline: none;
-      position: relative;
-      z-index: 1;
-    }
-
-    button.reveal::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      border-radius: 4px;
-      z-index: -1;
-      opacity: 1;
-    }
-
-    /* Specific highlight colors applied to the ::before pseudo-element */
-    .highlight-blue::before { background-color: #D6F5FF; }
-    .highlight-yellow::before { background-color: #FDFB8C; }
-    .highlight-pink::before { background-color: #FFDDEE; }
-    .highlight-green::before { background-color: #DDFFAA; }
-    .highlight-purple::before { background-color: #EEDDFF; }
-
-    button.reveal:disabled {
-      cursor: default;
-      opacity: 0.8;
-    }
-
-    button.reveal:disabled::before {
-      opacity: 0;
-    }
-
-    span.inline-reveal {
-      display: none;
-      border-radius: 4px;
-      padding: 0;
-      transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out;
-    }
-
-    span.inline-reveal.visible {
-      display: inline;
-    }
-
-    #random-dots-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 999;
-      overflow: hidden;
-    }
-
-    .collected-dot {
-        display: inline-block;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        position: absolute;
-        opacity: 1;
-    }
-
-    #smiley-placeholder {
-        opacity: 0;
-    }
-
-    #smiley-placeholder.visible {
-        opacity: 1;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>shivani singh</title>
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="style.css">
+  
 </head>
 <body>
-  <div id="controls-container">
-        <button id="theme-toggle"> ⏾ </button> <!-- Simplified to sun symbol -->
-        <button id="font-decrease"> - </button> <!-- Simplified to minus symbol -->
-        <button id="font-increase"> + </button> <!-- Simplified to plus symbol -->
+    <div id="controls-container">
+        <button id="theme-toggle"> ⏾ </button>
+        <button id="font-decrease"> - </button>
+        <button id="font-increase"> + </button>
     </div>
-  
-  <h1>Hi, I'm Shivani<span id="smiley-placeholder"> 🍭 👀 </span></h1>
-  <p>
-    A designer with an aptitude for analytical thinking and an 
-    <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — tinkering with ideas and drawing in the margins <a href="https://shivaniest.com" target="_blank">here</a></span>.
-    Currently shaping tech for social impact at
-    <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I <a href="https://unicef-office-of-innovation.gitbook.io/toolkit" target="_blank">mentor</a> early-stage startups in digital product design,
-    and facilitate <button class="reveal highlight-blue" onclick="expandOnce(this, 'collab')">collaboration</button>with stakeholders<span id="collab" class="inline-reveal">
-    — like in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a> where we reimagined a needs assessment process</span></span>.
-    I think of my practice as a way to bridge intention and outcome.
-    Previously, I was a designer at
-    <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button> in San Francisco<span id="sf" class="inline-reveal"> — explore my work in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a></span>.
-    With a background in graphic design, I’ve also worked in visual communication and 
-    <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, building <a href="https://singh.work/logofolio">brand identities</a> for over five years</span>.
-    <br><br>I am an alumnus of the National Institute of Design, India and 
-    <button class="reveal highlight-green" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>, San Francisco.
-    <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of <a href="https://singh.work/case-study.html">this project</a> with an industrial arts school in Oakland. </span>
-  </p>
+    
+    <h1>Hi, I'm Shivani<span id="smiley-placeholder"> 🍭 👀 </span></h1>
+    <p>
+        A designer with an aptitude for analytical thinking and an
+        <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — tinkering with ideas and drawing in the margins <a href="https://shivaniest.com" target="_blank">here</a></span>.
+        Currently shaping tech for social impact at
+        <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I <a href="https://unicef-office-of-innovation.gitbook.io/toolkit" target="_blank">mentor</a> early-stage startups in digital product design,
+        and facilitate <button class="reveal highlight-blue" onclick="expandOnce(this, 'collab')">collaboration</button>with stakeholders<span id="collab" class="inline-reveal">
+        — like in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a> where we reimagined a needs assessment process</span></span>.
+        I think of my practice as a way to bridge intention and outcome.
+        Previously, I was a designer at
+        <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button> in San Francisco<span id="sf" class="inline-reveal"> — explore my work in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a></span>.
+        With a background in graphic design, I’ve also worked in visual communication and
+        <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, building <a href="https://singh.work/logofolio">brand identities</a> for over five years</span>.
+        <br><br>I am an alumnus of the National Institute of Design, India and
+        <button class="reveal highlight-green" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>, San Francisco.
+        <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of <a href="https://singh.work/case-study.html">this project</a> with an industrial arts school in Oakland. </span>
+    </p>
 
     <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more or connect, you can find me on <a href="https://bento.me/singhshivani" target="_blank">bento</a>, shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>,
     or reach out on <a href="https://www.linkedin.com/in/shivanidotsingh/" target="_blank">Linkedin</a>.
     </p>
 
-  <p class="note" style="opacity: 0.5;">This website was last updated on July 20, 2025 • Built on github.com </p>
-  
-  <div id="random-dots-container"></div>
+    <p class="note" style="opacity: 0.5;">This website was last updated on July 20, 2025 • Built on github.com </p>
+    
+    <div id="random-dots-container"></div>
 
-  <script>
+    <script>
         let clickedContentIds = new Set();
         const totalHighlights = 6;
 
@@ -184,7 +101,7 @@
             if (theme === 'dark') {
                 body.classList.add('dark-mode');
                 localStorage.setItem('theme', 'dark');
-                themeToggle.textContent = '☀ '; // Sun (Make Light)
+                themeToggle.textContent = '☀'; // Sun (Make Light)
             } else {
                 body.classList.remove('dark-mode');
                 localStorage.setItem('theme', 'light');
