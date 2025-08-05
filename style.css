@@ -293,6 +293,11 @@ a[target="_blank"] {
     background-color: transparent;
 }
 
+body.dark-mode #controls-container {
+    color: var(--text-color-dark);
+    background-color: transparent;
+}
+
 /* Styles for the reveal buttons and expanded content */
 button.reveal {
     color: inherit;
