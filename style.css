@@ -143,8 +143,10 @@ a[target="_blank"] {
 
 .note {
   margin-top: 1.5em;
-  font-size: 0.8em;
+  font-size: 0.95em;
   border-top: 1px solid var(--text-color-dark);
+  padding-top: 1.5em;
+
 }
 
 .image-pair-container {
