@@ -3,7 +3,7 @@
     --text-color-light: #000;
     --background-color-light: #fff;
     --text-color-dark: #eee;
-    --background-color-dark: #000;
+    --background-color-dark: #111;
     --blue-link-color: #4c8aff;
 
     /* Default to light mode colors */
@@ -143,9 +143,8 @@ a[target="_blank"] {
 
 .note {
   margin-top: 1.5em;
-  font-size: 0.95em;
+  font-size: 0.8em;
   border-top: 1px solid var(--text-color-dark);
-  padding-top: 1.5em;
 }
 
 .image-pair-container {
@@ -293,9 +292,8 @@ a[target="_blank"] {
     background-color: transparent;
 }
 
-body.dark-mode #controls-container {
-    color: var(--text-color-dark);
-    background-color: transparent;
+body.dark-mode #controls-container button {
+    color: #fff;
 }
 
 /* Styles for the reveal buttons and expanded content */
