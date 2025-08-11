@@ -32,7 +32,7 @@ body {
   font-size: var(--base-font-size); /* Use variable */
   position: relative;
   min-height: 100vh;
-  transition: color 0.3s ease, background-color 0.3s ease, font-size 0.3s ease; /* Smooth transitions */
+  /* transition: color 0.3s ease, background-color 0.3s ease, font-size 0.3s ease; Smooth transitions */
 }
 
 /* Font Size Variations */
