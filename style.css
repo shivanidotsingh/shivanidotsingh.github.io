@@ -18,6 +18,7 @@
 body.dark-mode {
     color: var(--text-color-dark);
     background-color: var(--background-color-dark);
+    transition: color 0.3s ease, background-color 0.3s ease, font-size 0.3s ease;  /*  Smooth transitions */
 }
 
 body {
@@ -32,7 +33,6 @@ body {
   font-size: var(--base-font-size); /* Use variable */
   position: relative;
   min-height: 100vh;
-  /* transition: color 0.3s ease, background-color 0.3s ease, font-size 0.3s ease; Smooth transitions */
 }
 
 /* Font Size Variations */
