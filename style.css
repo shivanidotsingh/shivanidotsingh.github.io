@@ -419,10 +419,7 @@ span.inline-reveal.visible {
         grid-template-columns: 1fr;
     }
     #controls-container {
-        top: 10px;
-        right: 10px;
-        gap: 5px;
-        padding: 0;
+        display: none;
     }
     #controls-container button {
         font-size: 1em;
