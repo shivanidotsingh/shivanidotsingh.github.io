@@ -6,6 +6,19 @@
   <title>shivani singh</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
+  <style>
+    #motion-permission {
+      position: fixed; inset: auto 12px 12px auto;
+      z-index: 9999;
+      padding: 10px 14px; border-radius: 999px; border: 1px solid #ddd;
+      background: rgba(255,255,255,.9); backdrop-filter: saturate(120%) blur(6px);
+      font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.08);
+      display: none;
+    }
+    body.dark-mode #motion-permission {
+      background: rgba(24,24,24,.9); color: #eee; border-color: #333;
+    }
+  </style>
 </head>
 <body>
   <div id="controls-container">
@@ -37,22 +50,24 @@
   <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com • Last updated on Aug 02, 2025 </p>
   
   <div id="random-dots-container"></div>
+  <button id="motion-permission">Enable Tilt Control</button>
 
   <script>
-    // Detect mobile
+    // --- environment detect ---
     const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-    // -------------------
-    // Reveal + Dot collect
-    // -------------------
+    // --- reveal + collect ---
     let clickedContentIds = new Set();
     const totalHighlights = 6;
+    const perColorCap = 250;
+    const TOTAL_CAP = 1500;
+    let dotCreateCounter = 0; // for alternating spawn flag
 
     const highlightColors = {
       'highlight-yellow': '#FDFB8C',
-      'highlight-blue': '#D6F5FF',
-      'highlight-pink': '#FFDDEE',
-      'highlight-green': '#DDFFAA',
+      'highlight-blue':   '#D6F5FF',
+      'highlight-pink':   '#FFDDEE',
+      'highlight-green':  '#DDFFAA',
       'highlight-purple': '#EEDDFF'
     };
 
@@ -65,14 +80,16 @@
       const c = document.getElementById('random-dots-container');
       const dot = document.createElement('span');
       dot.classList.add('collected-dot');
-      dot.dataset.isBase = "true"; 
-      dot.dataset.hasMultiplied = "false"; // track for mobile rule
-
+      dot.dataset.isBase = "true";
+      dot.dataset.hasMultiplied = "false"; // for mobile base one-time rule
+      dot.dataset.spawnToggle = (dotCreateCounter++ % 2 === 0) ? "true" : "false"; // alternate
       let colorCls = '';
       for (const cn of buttonElement.classList) {
         if (cn.startsWith('highlight-')) { colorCls = cn; break; }
       }
-      dot.style.backgroundColor = highlightColors[colorCls];
+      const color = highlightColors[colorCls];
+      dot.style.backgroundColor = color;
+      dot.dataset.color = color;
 
       const size = 16;
       const rx = Math.random() * (window.innerWidth - size);
@@ -82,14 +99,10 @@
       dot.style.transform = `translate(${rx}px, ${ry}px)`;
       c.appendChild(dot);
 
-      if (clickedContentIds.size === totalHighlights) {
-        startDots();
-      }
+      if (clickedContentIds.size === totalHighlights) startDots();
     }
 
-    // -------------------
-    // Dots logic
-    // -------------------
+    // --- dots logic ---
     let running = false;
     let dots = [];
     let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
@@ -101,12 +114,12 @@
     const BOUNCE_COOLDOWN = 120;
     const DOT_SIZE = 16;
 
-    const HARD_CAP = 1000;
+    // mobile tilt "gravity"
+    let gx=0, gy=0, tiltEnabled=false;
 
+    // mouse sampling (desktop)
     let pendingMouse = null;
-    if (!isMobile) {
-      window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
-    }
+    if (!isMobile) window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
 
     function startDots() {
       if (running) return;
@@ -121,15 +134,67 @@
           vx: (Math.random()*2-1)*2, vy: (Math.random()*2-1)*2,
           lastBounceAt: 0,
           isBase: el.dataset.isBase === "true",
-          hasMultiplied: el.dataset.hasMultiplied === "true"
+          hasMultiplied: el.dataset.hasMultiplied === "true",
+          color: el.dataset.color,
+          spawnToggle: el.dataset.spawnToggle === "true" // only these are allowed to spawn
         };
       });
+
+      if (isMobile) setupMotionPermission();
       running = true;
       requestAnimationFrame(loop);
     }
 
-    function spawnCloneFrom(d) {
-      if (dots.length >= HARD_CAP) return;
+    function setupMotionPermission() {
+      const btn = document.getElementById('motion-permission');
+      const needPermission = typeof DeviceOrientationEvent !== 'undefined' &&
+                             typeof DeviceOrientationEvent.requestPermission === 'function';
+      btn.style.display = 'inline-block';
+      btn.addEventListener('click', async () => {
+        try {
+          if (needPermission) {
+            const res = await DeviceOrientationEvent.requestPermission();
+            if (res !== 'granted') { alert('Motion access denied'); return; }
+          }
+          enableTilt(); btn.style.display = 'none';
+        } catch { enableTilt(); btn.style.display = 'none'; }
+      }, { once: true });
+    }
+
+    function enableTilt() {
+      tiltEnabled = true;
+      window.addEventListener('deviceorientation', (e) => {
+        const gamma = (e.gamma || 0), beta = (e.beta || 0);
+        const scale = 0.02;
+        gx = Math.max(-0.6, Math.min(0.6, gamma * scale));
+        gy = Math.max(-0.6, Math.min(0.6, beta  * scale));
+      }, { passive: true });
+    }
+
+    function colorCount(color) {
+      let count = 0;
+      for (const d of dots) if (d.color === color) count++;
+      return count;
+    }
+
+    function spawnAllowedForDot(d, mobileCloneOnce=false) {
+      // enforce total and per-color caps
+      if (dots.length >= TOTAL_CAP) return false;
+      if (colorCount(d.color) >= perColorCap) return false;
+
+      // "every alternate dot spawns": must be a spawn-enabled dot
+      if (!d.spawnToggle) return false;
+
+      // mobile: base dots can spawn only once (and only if they are spawn-enabled)
+      if (isMobile && d.isBase && d.hasMultiplied) return false;
+
+      // on mobile, clones never spawn again; they have spawnToggle set by creation rule below
+      return true;
+    }
+
+    function spawnCloneFrom(d, mobileCloneOnce=false) {
+      if (!spawnAllowedForDot(d, mobileCloneOnce)) return;
+
       const el = d.el.cloneNode(true);
       const clone = {
         el,
@@ -138,22 +203,32 @@
         vy: -d.vy + (Math.random()*4 - 2),
         lastBounceAt: 0,
         isBase: false,
-        hasMultiplied: true // clones never multiply further on mobile
+        hasMultiplied: mobileCloneOnce, // on mobile, clones considered "already multiplied"
+        color: d.color,
+        // assign alternating spawn permission by global counter
+        spawnToggle: (dotCreateCounter++ % 2 === 0)
       };
       el.style.position = 'fixed';
       el.style.transform = `translate(${clone.x}px, ${clone.y}px)`;
+      el.dataset.color = d.color;
+      el.dataset.spawnToggle = clone.spawnToggle ? "true" : "false";
       document.getElementById('random-dots-container').appendChild(el);
       dots.push(clone);
+
+      // mark base dot as used once on mobile
+      if (isMobile && d.isBase && !d.hasMultiplied) d.hasMultiplied = true;
     }
 
     function loop(now) {
       if (!running) return;
+
       if (!isMobile && pendingMouse) { mouseX = pendingMouse.clientX; mouseY = pendingMouse.clientY; pendingMouse = null; }
 
       const W = window.innerWidth, H = window.innerHeight;
       for (const d of dots) {
+        // forces
         if (!isMobile) {
-          // desktop allergic physics
+          // desktop "allergic to cursor"
           const cx = d.x + d.w/2, cy = d.y + d.h/2;
           const dx = cx - mouseX, dy = cy - mouseY;
           const dist2 = dx*dx + dy*dy;
@@ -163,14 +238,20 @@
             d.vx += (dx / dist) * force * 0.016;
             d.vy += (dy / dist) * force * 0.016;
           }
+        } else if (tiltEnabled) {
+          // mobile tilt gravity
+          d.vx += gx; d.vy += gy;
         }
 
+        // damping & clamp
         d.vx *= FRICTION; d.vy *= FRICTION;
         const sp = Math.hypot(d.vx, d.vy);
         if (sp > MAX_SPEED) { d.vx = d.vx / sp * MAX_SPEED; d.vy = d.vy / sp * MAX_SPEED; }
 
+        // integrate
         d.x += d.vx; d.y += d.vy;
 
+        // bounce
         let collided = false;
         if (d.x <= 0)            { d.x = 0;       d.vx = Math.abs(d.vx)||1;  collided = true; }
         else if (d.x + d.w >= W) { d.x = W-d.w;   d.vx = -Math.abs(d.vx)||-1; collided = true; }
@@ -183,26 +264,23 @@
           d.y = Math.min(Math.max(d.y, 1), H - d.h - 1);
 
           if (isMobile) {
-            // mobile rule: original 6 multiply once
-            if (d.isBase && !d.hasMultiplied) {
-              d.hasMultiplied = true;
-              spawnCloneFrom(d);
+            // mobile: only base dots spawn once (and only if they are "spawn-enabled")
+            if (d.isBase && !d.hasMultiplied && d.spawnToggle) {
+              spawnCloneFrom(d, true);
             }
           } else {
-            // desktop rule: every bounce spawns +1 dot
-            spawnCloneFrom(d);
+            // desktop: only spawn-enabled dots spawn every time they bounce
+            if (d.spawnToggle) spawnCloneFrom(d, false);
           }
         }
 
+        // render
         d.el.style.transform = `translate(${d.x}px, ${d.y}px)`;
       }
-
       requestAnimationFrame(loop);
     }
 
-    // -------------------
-    // Theme toggle
-    // -------------------
+    // --- theme toggle ---
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     function setTheme(theme) {
@@ -212,9 +290,7 @@
     window.addEventListener('DOMContentLoaded',()=>{setTheme(localStorage.getItem('theme')||'light');});
     themeToggle.addEventListener('click',()=>{setTheme(body.classList.contains('dark-mode')?'light':'dark');});
 
-    // -------------------
-    // Font size controls
-    // -------------------
+    // --- font size controls ---
     const fontDecreaseBtn=document.getElementById('font-decrease');
     const fontIncreaseBtn=document.getElementById('font-increase');
     const fontSizes=['text-small','text-normal','text-large'];
