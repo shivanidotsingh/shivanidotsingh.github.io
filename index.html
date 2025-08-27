@@ -62,6 +62,7 @@
       const c = document.getElementById('random-dots-container');
       const dot = document.createElement('span');
       dot.classList.add('collected-dot');
+      dot.dataset.isBase = "true"; // mark original dots as permanent
 
       let colorCls = '';
       for (const cn of buttonElement.classList) {
@@ -73,7 +74,7 @@
       const rx = Math.random() * (window.innerWidth - size);
       const ry = Math.random() * (window.innerHeight - size);
       dot.style.left = '0px';
-      dot.style.top = '0px';
+      dot.style.top  = '0px';
       dot.style.transform = `translate(${rx}px, ${ry}px)`;
       c.appendChild(dot);
 
@@ -103,13 +104,11 @@
     let cloneTokens = CLONES_PER_SEC;
     let lastTokenRefill = performance.now();
 
-    let lastFrameTime = performance.now();
     let isVisible = true;
     document.addEventListener('visibilitychange', () => {
       isVisible = !document.hidden;
       if (isVisible && running) requestAnimationFrame(loop);
     });
-
     let pendingMouse = null;
     window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
 
@@ -126,7 +125,8 @@
           vx: (Math.random()*2-1)*2, vy: (Math.random()*2-1)*2,
           lastBounceAt: 0,
           bornAt: performance.now(),
-          dyingAt: 0
+          dyingAt: 0,
+          isBase: el.dataset.isBase === "true"
         };
       });
       running = true;
@@ -134,16 +134,12 @@
     }
 
     function tryRefillTokens(now) {
-      const dt = now - lastTokenRefill;
-      if (dt > 1000) {
+      if (now - lastTokenRefill > 1000) {
         cloneTokens = CLONES_PER_SEC;
         lastTokenRefill = now;
       }
     }
-
-    function canSpawn() {
-      return dots.length < HARD_CAP && cloneTokens > 0;
-    }
+    function canSpawn() { return dots.length < HARD_CAP && cloneTokens > 0; }
     function requestSpawn() { cloneTokens = Math.max(0, cloneTokens - 1); }
 
     function spawnCloneFrom(d) {
@@ -155,7 +151,8 @@
         vy: -d.vy + (Math.random()*4 - 2),
         lastBounceAt: 0,
         bornAt: performance.now(),
-        dyingAt: 0
+        dyingAt: 0,
+        isBase: false
       };
       el.style.position = 'fixed';
       el.style.transform = `translate(${clone.x}px, ${clone.y}px)`;
@@ -174,14 +171,12 @@
     function loop(now) {
       if (!running) return;
       if (!isVisible) { requestAnimationFrame(loop); return; }
-
       if (pendingMouse) { mouseX = pendingMouse.clientX; mouseY = pendingMouse.clientY; pendingMouse = null; }
-
       tryRefillTokens(now);
-      const W = window.innerWidth, H = window.innerHeight;
 
+      const W = window.innerWidth, H = window.innerHeight;
       for (const d of dots) {
-        if (!d.dyingAt && (now - d.bornAt > TTL_MS)) scheduleRemoval(d);
+        if (!d.isBase && !d.dyingAt && (now - d.bornAt > TTL_MS)) scheduleRemoval(d);
         if (d.dyingAt) continue;
 
         const cx = d.x + d.w/2, cy = d.y + d.h/2;
@@ -213,10 +208,8 @@
           if (canSpawn()) { requestSpawn(); spawnCloneFrom(d); }
           d.bornAt = now;
         }
-
         d.el.style.transform = `translate(${d.x}px, ${d.y}px)`;
       }
-
       dots = dots.filter(d => !d.dyingAt || (now - d.dyingAt) < (FADE_MS + 80));
       requestAnimationFrame(loop);
     }
@@ -227,30 +220,19 @@
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     function setTheme(theme) {
-      if (theme === 'dark') {
-        body.classList.add('dark-mode');
-        localStorage.setItem('theme', 'dark');
-        themeToggle.textContent = '☀';
-      } else {
-        body.classList.remove('dark-mode');
-        localStorage.setItem('theme', 'light');
-        themeToggle.textContent = '⏾';
-      }
+      if (theme === 'dark') { body.classList.add('dark-mode'); localStorage.setItem('theme','dark'); themeToggle.textContent='☀'; }
+      else { body.classList.remove('dark-mode'); localStorage.setItem('theme','light'); themeToggle.textContent='⏾'; }
     }
-    window.addEventListener('DOMContentLoaded', () => {
-      setTheme(localStorage.getItem('theme') || 'light');
-    });
-    themeToggle.addEventListener('click', () => {
-      if (body.classList.contains('dark-mode')) setTheme('light'); else setTheme('dark');
-    });
+    window.addEventListener('DOMContentLoaded',()=>{setTheme(localStorage.getItem('theme')||'light');});
+    themeToggle.addEventListener('click',()=>{setTheme(body.classList.contains('dark-mode')?'light':'dark');});
 
     // -------------------
     // Font size controls
     // -------------------
-    const fontDecreaseBtn = document.getElementById('font-decrease');
-    const fontIncreaseBtn = document.getElementById('font-increase');
-    const fontSizes = ['text-small','text-normal','text-large'];
-    let currentFontSizeIndex = 1;
+    const fontDecreaseBtn=document.getElementById('font-decrease');
+    const fontIncreaseBtn=document.getElementById('font-increase');
+    const fontSizes=['text-small','text-normal','text-large'];
+    let currentFontSizeIndex=1;
     function applyFontSize(i){fontSizes.forEach(c=>body.classList.remove(c));body.classList.add(fontSizes[i]);localStorage.setItem('fontSize',fontSizes[i]);currentFontSizeIndex=i;}
     window.addEventListener('DOMContentLoaded',()=>{const s=localStorage.getItem('fontSize');if(s&&fontSizes.includes(s))applyFontSize(fontSizes.indexOf(s));else applyFontSize(currentFontSizeIndex);});
     fontDecreaseBtn.addEventListener('click',()=>{if(currentFontSizeIndex>0)applyFontSize(currentFontSizeIndex-1);});
