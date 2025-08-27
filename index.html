@@ -6,7 +6,6 @@
     <title>shivani singh</title>
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="style.css">
-  
 </head>
 <body>
     <div id="controls-container">
@@ -15,7 +14,7 @@
         <button id="font-increase"> + </button>
     </div>
     
-    <h1>Hi, I'm Shivani<span id="smiley-placeholder"> 👾 </span></h1>
+    <h1>Hi, I'm Shivani</h1>
     <p>
         A designer with an aptitude for analytical thinking and an
         <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank">live here</a></span>.
@@ -40,9 +39,9 @@
     <div id="random-dots-container"></div>
 
     <script>
+        // --- Reveal + Dot collect ---
         let clickedContentIds = new Set();
         const totalHighlights = 6;
-
         const highlightColors = {
             'highlight-yellow': '#FDFB8C',
             'highlight-blue': '#D6F5FF',
@@ -53,10 +52,8 @@
 
         function expandOnce(buttonElement, contentId) {
             const contentEl = document.getElementById(contentId);
-            
             contentEl.classList.add('visible');
             buttonElement.disabled = true;
-
             clickedContentIds.add(contentId);
 
             const randomDotsContainer = document.getElementById('random-dots-container');
@@ -73,99 +70,130 @@
             dot.style.backgroundColor = highlightColors[highlightColorClass];
 
             const dotSize = 16;
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
+            const randomX = Math.random() * (window.innerWidth - dotSize);
+            const randomY = Math.random() * (window.innerHeight - dotSize);
 
-            const randomX = Math.random() * (viewportWidth - dotSize);
-            const randomY = Math.random() * (viewportHeight - dotSize);
-
-            dot.style.left = `${randomX}px`;
-            dot.style.top = `${randomY}px`;
-            
+            dot.style.left = '0px';
+            dot.style.top = '0px';
+            dot.dataset.x = randomX;
+            dot.dataset.y = randomY;
+            dot.style.transform = `translate(${randomX}px, ${randomY}px)`;
             randomDotsContainer.appendChild(dot);
 
-            if (clickedContentIds.size === totalHighlights) {
-                const smileyPlaceholder = document.getElementById('smiley-placeholder');
-                smileyPlaceholder.classList.add('visible');
-            }
+            if (clickedContentIds.size === totalHighlights) startAllergicDots();
         }
 
-        // --- Theme Toggle Logic ---
+        // --- Allergic dots with controlled multiplication ---
+        let allergicRunning = false;
+        let dots = [];
+        let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+        const MAX_DOTS = 2000;
+        const BOUNCE_COOLDOWN = 120;
+
+        function startAllergicDots() {
+            if (allergicRunning) return;
+            const els = Array.from(document.querySelectorAll('.collected-dot'));
+            dots = els.map(el => {
+                const rect = el.getBoundingClientRect();
+                return {
+                    el,
+                    x: parseFloat(el.dataset.x || rect.left),
+                    y: parseFloat(el.dataset.y || rect.top),
+                    w: rect.width,
+                    h: rect.height,
+                    vx: (Math.random()*2-1)*2,
+                    vy: (Math.random()*2-1)*2,
+                    canMultiply: true,
+                    lastBounceAt: 0
+                };
+            });
+            window.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; }, {passive:true});
+            allergicRunning = true;
+            requestAnimationFrame(tick);
+        }
+
+        function multiplyDotTransferAbility(d) {
+            if (!d.canMultiply || dots.length >= MAX_DOTS) return;
+            const el = d.el.cloneNode(true);
+            const clone = {
+                el,
+                x: d.x,
+                y: d.y,
+                w: d.w,
+                h: d.h,
+                vx: (-d.vx) + (Math.random()*4-2),
+                vy: (-d.vy) + (Math.random()*4-2),
+                canMultiply: true,
+                lastBounceAt: 0
+            };
+            d.canMultiply = false; // original loses ability
+            el.style.position = 'fixed';
+            el.style.transform = `translate(${clone.x}px, ${clone.y}px)`;
+            el.dataset.x = clone.x; el.dataset.y = clone.y;
+            document.getElementById('random-dots-container').appendChild(el);
+            dots.push(clone);
+        }
+
+        function tick() {
+            const W = window.innerWidth, H = window.innerHeight;
+            const R = 260, STRENGTH = 4200, FRICTION = 0.92, MAX_SPEED = 28;
+            const now = performance.now();
+
+            for (const d of dots) {
+                const cx = d.x + d.w/2, cy = d.y + d.h/2;
+                const dx = cx - mouseX, dy = cy - mouseY;
+                const distSq = dx*dx + dy*dy;
+                if (distSq < R*R && distSq > 1e-4) {
+                    const dist = Math.sqrt(distSq);
+                    const force = STRENGTH * (1 - dist / R) / (dist + 1e-4);
+                    d.vx += (dx / dist) * force * 0.016;
+                    d.vy += (dy / dist) * force * 0.016;
+                }
+
+                d.vx *= FRICTION; d.vy *= FRICTION;
+                const spd = Math.hypot(d.vx, d.vy);
+                if (spd > MAX_SPEED) { d.vx = d.vx/spd*MAX_SPEED; d.vy = d.vy/spd*MAX_SPEED; }
+
+                d.x += d.vx; d.y += d.vy;
+
+                let collided = false;
+                if (d.x <= 0) { d.x=0; d.vx = Math.abs(d.vx)||1; collided=true; }
+                else if (d.x+d.w >= W) { d.x=W-d.w; d.vx = -Math.abs(d.vx)||-1; collided=true; }
+                if (d.y <= 0) { d.y=0; d.vy = Math.abs(d.vy)||1; collided=true; }
+                else if (d.y+d.h >= H) { d.y=H-d.h; d.vy = -Math.abs(d.vy)||-1; collided=true; }
+
+                if (collided && (now - d.lastBounceAt > BOUNCE_COOLDOWN)) {
+                    d.lastBounceAt = now;
+                    d.x = Math.min(Math.max(d.x,1), W-d.w-1);
+                    d.y = Math.min(Math.max(d.y,1), H-d.h-1);
+                    multiplyDotTransferAbility(d);
+                }
+
+                d.el.style.transform = `translate(${d.x}px, ${d.y}px)`;
+                d.el.dataset.x = d.x; d.el.dataset.y = d.y;
+            }
+            if (allergicRunning) requestAnimationFrame(tick);
+        }
+
+        // --- Theme toggle ---
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
-
-        // Function to set theme
         function setTheme(theme) {
-            if (theme === 'dark') {
-                body.classList.add('dark-mode');
-                localStorage.setItem('theme', 'dark');
-                themeToggle.textContent = '☀'; // Sun (Make Light)
-            } else {
-                body.classList.remove('dark-mode');
-                localStorage.setItem('theme', 'light');
-                themeToggle.textContent = '⏾'; // Moon (Make Dark)
-            }
+            if (theme==='dark'){body.classList.add('dark-mode');localStorage.setItem('theme','dark');themeToggle.textContent='☀';}
+            else{body.classList.remove('dark-mode');localStorage.setItem('theme','light');themeToggle.textContent='⏾';}
         }
+        window.addEventListener('DOMContentLoaded',()=>{setTheme(localStorage.getItem('theme')||'light');});
+        themeToggle.addEventListener('click',()=>{setTheme(body.classList.contains('dark-mode')?'light':'dark');});
 
-        // Load theme preference on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme') || 'light'; // Default to light
-            setTheme(savedTheme);
-        });
-
-        // Toggle theme on button click
-        themeToggle.addEventListener('click', () => {
-            if (body.classList.contains('dark-mode')) {
-                setTheme('light');
-            } else {
-                setTheme('dark');
-            }
-        });
-
-        // --- Font Size Adjustment Logic ---
-        const fontDecreaseBtn = document.getElementById('font-decrease');
-        const fontIncreaseBtn = document.getElementById('font-increase');
-        const fontSizes = ['text-small', 'text-normal', 'text-large']; // Define your font size classes
-        let currentFontSizeIndex = 1; // Default to 'text-normal'
-
-        // Function to apply font size class
-        function applyFontSize(index) {
-            // Remove all existing font size classes
-            fontSizes.forEach(cls => body.classList.remove(cls));
-            // Add the new font size class
-            body.classList.add(fontSizes[index]);
-            localStorage.setItem('fontSize', fontSizes[index]);
-            currentFontSizeIndex = index;
-        }
-
-        // Load font size preference on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedFontSize = localStorage.getItem('fontSize');
-            if (savedFontSize) {
-                const index = fontSizes.indexOf(savedFontSize);
-                if (index !== -1) {
-                    applyFontSize(index);
-                } else {
-                    applyFontSize(currentFontSizeIndex); // Fallback to normal if saved is invalid
-                }
-            } else {
-                applyFontSize(currentFontSizeIndex); // Apply default normal
-            }
-        });
-
-        // Decrease font size
-        fontDecreaseBtn.addEventListener('click', () => {
-            if (currentFontSizeIndex > 0) {
-                applyFontSize(currentFontSizeIndex - 1);
-            }
-        });
-
-        // Increase font size
-        fontIncreaseBtn.addEventListener('click', () => {
-            if (currentFontSizeIndex < fontSizes.length - 1) {
-                applyFontSize(currentFontSizeIndex + 1);
-            }
-        });
+        // --- Font size controls ---
+        const fontDecreaseBtn=document.getElementById('font-decrease');
+        const fontIncreaseBtn=document.getElementById('font-increase');
+        const fontSizes=['text-small','text-normal','text-large'];
+        let currentFontSizeIndex=1;
+        function applyFontSize(i){fontSizes.forEach(c=>body.classList.remove(c));body.classList.add(fontSizes[i]);localStorage.setItem('fontSize',fontSizes[i]);currentFontSizeIndex=i;}
+        window.addEventListener('DOMContentLoaded',()=>{const s=localStorage.getItem('fontSize');if(s&&fontSizes.includes(s))applyFontSize(fontSizes.indexOf(s));else applyFontSize(currentFontSizeIndex);});
+        fontDecreaseBtn.addEventListener('click',()=>{if(currentFontSizeIndex>0)applyFontSize(currentFontSizeIndex-1);});
+        fontIncreaseBtn.addEventListener('click',()=>{if(currentFontSizeIndex<fontSizes.length-1)applyFontSize(currentFontSizeIndex+1);});
     </script>
 </body>
 </html>
