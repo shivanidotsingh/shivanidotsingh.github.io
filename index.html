@@ -39,6 +39,9 @@
   <div id="random-dots-container"></div>
 
   <script>
+    // Detect mobile
+    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
     // -------------------
     // Reveal + Dot collect
     // -------------------
@@ -62,7 +65,8 @@
       const c = document.getElementById('random-dots-container');
       const dot = document.createElement('span');
       dot.classList.add('collected-dot');
-      dot.dataset.isBase = "true"; // mark original dots as permanent
+      dot.dataset.isBase = "true"; 
+      dot.dataset.hasMultiplied = "false"; // track for mobile rule
 
       let colorCls = '';
       for (const cn of buttonElement.classList) {
@@ -79,12 +83,12 @@
       c.appendChild(dot);
 
       if (clickedContentIds.size === totalHighlights) {
-        startAllergicDots();
+        startDots();
       }
     }
 
     // -------------------
-    // Allergic dots (+1 per bounce, cap 1000)
+    // Dots logic
     // -------------------
     let running = false;
     let dots = [];
@@ -98,21 +102,13 @@
     const DOT_SIZE = 16;
 
     const HARD_CAP = 1000;
-    const TTL_MS = 20000;
-    const FADE_MS = 600;
-    const CLONES_PER_SEC = 24;
-    let cloneTokens = CLONES_PER_SEC;
-    let lastTokenRefill = performance.now();
 
-    let isVisible = true;
-    document.addEventListener('visibilitychange', () => {
-      isVisible = !document.hidden;
-      if (isVisible && running) requestAnimationFrame(loop);
-    });
     let pendingMouse = null;
-    window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
+    if (!isMobile) {
+      window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
+    }
 
-    function startAllergicDots() {
+    function startDots() {
       if (running) return;
       const els = Array.from(document.querySelectorAll('.collected-dot'));
       dots = els.map(el => {
@@ -124,25 +120,16 @@
           x: r.left, y: r.top, w: r.width||DOT_SIZE, h: r.height||DOT_SIZE,
           vx: (Math.random()*2-1)*2, vy: (Math.random()*2-1)*2,
           lastBounceAt: 0,
-          bornAt: performance.now(),
-          dyingAt: 0,
-          isBase: el.dataset.isBase === "true"
+          isBase: el.dataset.isBase === "true",
+          hasMultiplied: el.dataset.hasMultiplied === "true"
         };
       });
       running = true;
       requestAnimationFrame(loop);
     }
 
-    function tryRefillTokens(now) {
-      if (now - lastTokenRefill > 1000) {
-        cloneTokens = CLONES_PER_SEC;
-        lastTokenRefill = now;
-      }
-    }
-    function canSpawn() { return dots.length < HARD_CAP && cloneTokens > 0; }
-    function requestSpawn() { cloneTokens = Math.max(0, cloneTokens - 1); }
-
     function spawnCloneFrom(d) {
+      if (dots.length >= HARD_CAP) return;
       const el = d.el.cloneNode(true);
       const clone = {
         el,
@@ -150,9 +137,8 @@
         vx: -d.vx + (Math.random()*4 - 2),
         vy: -d.vy + (Math.random()*4 - 2),
         lastBounceAt: 0,
-        bornAt: performance.now(),
-        dyingAt: 0,
-        isBase: false
+        isBase: false,
+        hasMultiplied: true // clones never multiply further on mobile
       };
       el.style.position = 'fixed';
       el.style.transform = `translate(${clone.x}px, ${clone.y}px)`;
@@ -160,33 +146,23 @@
       dots.push(clone);
     }
 
-    function scheduleRemoval(d) {
-      if (d.dyingAt) return;
-      d.dyingAt = performance.now();
-      d.el.style.transition = `opacity ${FADE_MS}ms linear`;
-      d.el.style.opacity = '0';
-      setTimeout(() => d.el.remove(), FADE_MS + 40);
-    }
-
     function loop(now) {
       if (!running) return;
-      if (!isVisible) { requestAnimationFrame(loop); return; }
-      if (pendingMouse) { mouseX = pendingMouse.clientX; mouseY = pendingMouse.clientY; pendingMouse = null; }
-      tryRefillTokens(now);
+      if (!isMobile && pendingMouse) { mouseX = pendingMouse.clientX; mouseY = pendingMouse.clientY; pendingMouse = null; }
 
       const W = window.innerWidth, H = window.innerHeight;
       for (const d of dots) {
-        if (!d.isBase && !d.dyingAt && (now - d.bornAt > TTL_MS)) scheduleRemoval(d);
-        if (d.dyingAt) continue;
-
-        const cx = d.x + d.w/2, cy = d.y + d.h/2;
-        const dx = cx - mouseX, dy = cy - mouseY;
-        const dist2 = dx*dx + dy*dy;
-        if (dist2 < R2 && dist2 > 1e-6) {
-          const dist = Math.sqrt(dist2);
-          const force = STRENGTH * (1 - dist / R) / (dist + 1e-6);
-          d.vx += (dx / dist) * force * 0.016;
-          d.vy += (dy / dist) * force * 0.016;
+        if (!isMobile) {
+          // desktop allergic physics
+          const cx = d.x + d.w/2, cy = d.y + d.h/2;
+          const dx = cx - mouseX, dy = cy - mouseY;
+          const dist2 = dx*dx + dy*dy;
+          if (dist2 < R2 && dist2 > 1e-6) {
+            const dist = Math.sqrt(dist2);
+            const force = STRENGTH * (1 - dist / R) / (dist + 1e-6);
+            d.vx += (dx / dist) * force * 0.016;
+            d.vy += (dy / dist) * force * 0.016;
+          }
         }
 
         d.vx *= FRICTION; d.vy *= FRICTION;
@@ -205,12 +181,22 @@
           d.lastBounceAt = now;
           d.x = Math.min(Math.max(d.x, 1), W - d.w - 1);
           d.y = Math.min(Math.max(d.y, 1), H - d.h - 1);
-          if (canSpawn()) { requestSpawn(); spawnCloneFrom(d); }
-          d.bornAt = now;
+
+          if (isMobile) {
+            // mobile rule: original 6 multiply once
+            if (d.isBase && !d.hasMultiplied) {
+              d.hasMultiplied = true;
+              spawnCloneFrom(d);
+            }
+          } else {
+            // desktop rule: every bounce spawns +1 dot
+            spawnCloneFrom(d);
+          }
         }
+
         d.el.style.transform = `translate(${d.x}px, ${d.y}px)`;
       }
-      dots = dots.filter(d => !d.dyingAt || (now - d.dyingAt) < (FADE_MS + 80));
+
       requestAnimationFrame(loop);
     }
 
