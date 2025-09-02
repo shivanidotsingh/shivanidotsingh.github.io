@@ -28,23 +28,23 @@
 }
 
 .floating-head {
-  position: absolute;
-  top: -80px;
-  left: 50%;
-  transform: translateX(-50%) translateY(60px);
+  position: fixed;
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 1px solid #000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s, transform 0.3s;
   z-index: 1000;
+  transition: opacity 0.3s;
 }
 
 .name-hover:hover .floating-head {
   opacity: 1;
-  transform: translateX(-50%) translateY(0px);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
 }
   </style>
 
@@ -335,6 +335,18 @@
     });
     fontDecreaseBtn.addEventListener('click',()=>{ if(currentFontSizeIndex>0){body.classList.remove(fontSizes[currentFontSizeIndex]); currentFontSizeIndex--; body.classList.add(fontSizes[currentFontSizeIndex]); localStorage.setItem('fontSize',fontSizes[currentFontSizeIndex]); }});
     fontIncreaseBtn.addEventListener('click',()=>{ if(currentFontSizeIndex<fontSizes.length-1){body.classList.remove(fontSizes[currentFontSizeIndex]); currentFontSizeIndex++; body.classList.add(fontSizes[currentFontSizeIndex]); localStorage.setItem('fontSize',fontSizes[currentFontSizeIndex]); }});
+ 
+  // Head
+document.querySelector('.name-hover').addEventListener('mouseenter', function() {
+  const head = document.querySelector('.floating-head');
+  const maxX = window.innerWidth - 60;
+  const maxY = window.innerHeight - 60;
+  const randomX = Math.random() * maxX;
+  const randomY = Math.random() * maxY;
+  
+  head.style.left = randomX + 'px';
+  head.style.top = randomY + 'px';
+});
   </script>
 </body>
 </html>
