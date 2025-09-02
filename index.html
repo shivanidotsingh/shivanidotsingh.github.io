@@ -19,7 +19,6 @@
     body.dark-mode #motion-permission {
       background: rgba(24,24,24,.9); color: #eee; border-color: #333;
     }
-
   </style>
 
 </head>
@@ -309,8 +308,6 @@
     });
     fontDecreaseBtn.addEventListener('click',()=>{ if(currentFontSizeIndex>0){body.classList.remove(fontSizes[currentFontSizeIndex]); currentFontSizeIndex--; body.classList.add(fontSizes[currentFontSizeIndex]); localStorage.setItem('fontSize',fontSizes[currentFontSizeIndex]); }});
     fontIncreaseBtn.addEventListener('click',()=>{ if(currentFontSizeIndex<fontSizes.length-1){body.classList.remove(fontSizes[currentFontSizeIndex]); currentFontSizeIndex++; body.classList.add(fontSizes[currentFontSizeIndex]); localStorage.setItem('fontSize',fontSizes[currentFontSizeIndex]); }});
- 
-});
   </script>
 </body>
 </html>
