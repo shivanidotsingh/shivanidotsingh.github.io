@@ -7,19 +7,17 @@
   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Paint canvas sits behind everything */
     #trail-canvas {
       position: fixed; inset: 0;
       z-index: 0;
-      pointer-events: none;         /* never blocks clicks */
+      pointer-events: none;
     }
-
-    /* Controls */
-    #controls-container { position: fixed; top: 12px; right: 12px; z-index: 3; }
+    #controls-container {
+      position: fixed; top: 12px; right: 12px; z-index: 3;
+    }
   </style>
 </head>
 <body>
-  <!-- Canvas first so it stays behind the content -->
   <canvas id="trail-canvas"></canvas>
 
   <div id="controls-container">
@@ -46,10 +44,12 @@
 
   <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more, peruse my <a href="https://singh.work/resume.html" target="_blank">resume</a> or shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>.</p>
 
-  <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com • Last updated on Sep 18, 2025 </p>
+  <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com with help from ChatGPT • Last updated on Sep 17, 2025 </p>
 
   <script>
-    // 1) Reveal logic, and set the "sticky paint" color
+    // -------------------------
+    // Highlight colors & state
+    // -------------------------
     const highlightColors = {
       'highlight-yellow': '#FDFB8C',
       'highlight-blue':   '#D6F5FF',
@@ -57,49 +57,57 @@
       'highlight-green':  '#DDFFAA',
       'highlight-purple': '#EEDDFF'
     };
-    const clickedContentIds = new Set();
-    const totalHighlights = 6;
 
-    let currentPaint = null;   // hex color that "sticks" to the mouse
-    let paintingOn = false;    // becomes true after first reveal
+    let drawing = false;
+    let currentColor = null;
 
+    // -------------------------
+    // Canvas (DPR-aware)
+    // -------------------------
+    const canvas = document.getElementById('trail-canvas');
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let dpr = Math.max(1, window.devicePixelRatio || 1);
+
+    function resizeCanvas() {
+      // Clear on resize (simpler & faster; can preserve if you want)
+      canvas.width = Math.floor(window.innerWidth * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.scale(dpr, dpr);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      applyBlendMode();
+    }
+    function applyBlendMode() {
+      // Theme-aware blend for natural highlighter look
+      const dark = document.body.classList.contains('dark-mode');
+      ctx.globalCompositeOperation = dark ? 'screen' : 'multiply';
+    }
+    resizeCanvas();
+    window.addEventListener('resize', () => { dpr = Math.max(1, window.devicePixelRatio || 1); resizeCanvas(); });
+
+    // -------------------------
+    // Reveal handler (arms brush)
+    // -------------------------
     function expandOnce(buttonEl, contentId) {
-      // show the content
       const contentEl = document.getElementById(contentId);
       contentEl.classList.add('visible');
       buttonEl.disabled = true;
-      clickedContentIds.add(contentId);
 
-      // pick color from highlight class and make it the sticky paint
-      let colorCls = '';
+      // set color from clicked highlight + start drawing
       for (const cn of buttonEl.classList) {
-        if (cn.startsWith('highlight-')) { colorCls = cn; break; }
+        if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
       }
-      currentPaint = highlightColors[colorCls] || '#000000';
-      paintingOn = true; // from now on, mouse movement paints
-
-      // optional: flash a tiny ring around cursor once (skipped to keep simple)
+      drawing = true;
     }
 
-    // 2) Simple paint trail (draws on mouse move; no need to hold click)
-    const canvas = document.getElementById('trail-canvas');
-    const ctx = canvas.getContext('2d', { alpha: true });
-
-    function sizeCanvas() {
-      // Simple sizing in CSS pixels (keeps code tiny; resizing clears trails)
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    sizeCanvas();
-    window.addEventListener('resize', sizeCanvas);
-
-    // Soft round stroke setup
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    // rAF-driven painter to keep it smooth & lightweight
-    let last = null;           // {x,y}
-    let pending = null;        // latest pointer {x,y}
+    // -------------------------
+    // Painter (soft highlighter)
+    // -------------------------
+    let last = null;
+    let pending = null;
     let paintingScheduled = false;
 
     function schedulePaint() {
@@ -110,66 +118,98 @@
 
     function paintStep() {
       paintingScheduled = false;
-      if (!paintingOn || !currentPaint || !pending) return;
+      if (!drawing || !currentColor || !pending) return;
 
       const { x, y } = pending;
-      if (!last) {
-        last = { x, y };
-        return;
-      }
+      if (!last) { last = { x, y }; return; }
 
-      // draw a soft line from last -> current
-      const dx = x - last.x, dy = y - last.y;
-      const dist = Math.hypot(dx, dy);
-      // thickness & alpha tuned for chalky vibe; tweak to taste
-      ctx.strokeStyle = hexToRgba(currentPaint, 0.20);
-      ctx.lineWidth = 12;
+      // Core stroke: thin + subtle
+      ctx.strokeStyle = hexToRgba(currentColor, 0.14); // lower alpha
+      ctx.lineWidth = 10;                               // slimmer core
       ctx.beginPath();
       ctx.moveTo(last.x, last.y);
       ctx.lineTo(x, y);
       ctx.stroke();
 
-      // add a subtle dusty halo
-      ctx.strokeStyle = hexToRgba(currentPaint, 0.06);
-      ctx.lineWidth = 22;
+      // Soft halo: very faint & wider
+      ctx.strokeStyle = hexToRgba(currentColor, 0.05);
+      ctx.lineWidth = 20;
       ctx.beginPath();
       ctx.moveTo(last.x, last.y);
       ctx.lineTo(x, y);
       ctx.stroke();
+
+      // Micro-speckle for texture (super lightweight)
+      speckle(x, y, currentColor);
 
       last = { x, y };
     }
 
-    // Mouse/pointer tracking — we only need position updates
+    function speckle(x, y, hex) {
+      const rgb = hexToRgb(hex) || {r:0,g:0,b:0};
+      ctx.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},0.03)`;
+      for (let i = 0; i < 6; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const r = Math.random() * 6;
+        const px = x + Math.cos(ang) * r;
+        const py = y + Math.sin(ang) * r;
+        ctx.fillRect(px, py, 1, 1);
+      }
+    }
+
     window.addEventListener('pointermove', (e) => {
       pending = { x: e.clientX, y: e.clientY };
       schedulePaint();
     }, { passive: true });
 
-    // Reset the path anchor if mouse leaves the page, so lines don’t jump
     window.addEventListener('pointerdown', (e) => { last = { x: e.clientX, y: e.clientY }; }, { passive: true });
     window.addEventListener('mouseleave', () => { last = null; });
     window.addEventListener('pointerleave', () => { last = null; });
 
-    // tiny helper
+    // -------------------------
+    // Pause drawing (Esc / click outside highlights & theme toggle ignored)
+    // -------------------------
+    window.addEventListener('click', (e) => {
+      const onHighlight = e.target.closest && e.target.closest('.reveal');
+      const onTheme = e.target.closest && e.target.closest('#theme-toggle');
+      if (!onHighlight && !onTheme) drawing = false;
+    });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
+
+    // -------------------------
+    // Helpers
+    // -------------------------
     function hexToRgba(hex, a=1) {
-      if (!hex) return `rgba(0,0,0,${a})`;
-      const h = hex.replace('#','');
-      const r = parseInt(h.length === 3 ? h[0]+h[0] : h.slice(0,2), 16);
-      const g = parseInt(h.length === 3 ? h[1]+h[1] : h.slice(2,4), 16);
-      const b = parseInt(h.length === 3 ? h[2]+h[2] : h.slice(4,6), 16);
-      return `rgba(${r},${g},${b},${a})`;
+      const rgb = hexToRgb(hex) || { r:0,g:0,b:0 };
+      return `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`;
+    }
+    function hexToRgb(hex) {
+      if (!hex) return null;
+      const h = hex.replace('#','').trim();
+      if (h.length === 3) {
+        return { r: parseInt(h[0]+h[0],16), g: parseInt(h[1]+h[1],16), b: parseInt(h[2]+h[2],16) };
+      }
+      if (h.length === 6) {
+        return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
+      }
+      return null;
     }
 
-    // 3) Theme toggle (unchanged)
+    // -------------------------
+    // Theme toggle (also updates blend mode)
+    // -------------------------
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     function setTheme(theme) {
-      if (theme === 'dark') { body.classList.add('dark-mode'); localStorage.setItem('theme','dark'); themeToggle.textContent='☀'; }
-      else { body.classList.remove('dark-mode'); localStorage.setItem('theme','light'); themeToggle.textContent='⏾'; }
+      if (theme === 'dark') {
+        body.classList.add('dark-mode'); localStorage.setItem('theme','dark'); themeToggle.textContent='☀';
+      } else {
+        body.classList.remove('dark-mode'); localStorage.setItem('theme','light'); themeToggle.textContent='⏾';
+      }
+      applyBlendMode(); // <- reapply correct blending
     }
-    window.addEventListener('DOMContentLoaded',()=>{ setTheme(localStorage.getItem('theme')||'light'); });
-    themeToggle.addEventListener('click',()=>{ setTheme(body.classList.contains('dark-mode')?'light':'dark'); });
+    window.addEventListener('DOMContentLoaded', () => { setTheme(localStorage.getItem('theme') || 'light'); });
+    themeToggle.addEventListener('click', () => { setTheme(body.classList.contains('dark-mode') ? 'light' : 'dark'); });
   </script>
 </body>
 </html>
