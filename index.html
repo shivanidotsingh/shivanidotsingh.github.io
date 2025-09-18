@@ -7,41 +7,20 @@
   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Canvas lives under dots; never steals pointer events */
-    #chalk-canvas {
+    /* Paint canvas sits behind everything */
+    #trail-canvas {
       position: fixed; inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      touch-action: none;
+      z-index: 0;
+      pointer-events: none;         /* never blocks clicks */
     }
-    /* The draggable “pastels” */
-    .collected-dot {
-      position: fixed;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      transform: translate(0,0);
-      z-index: 2;                /* above canvas */
-      cursor: grab;
-      box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset;
-      touch-action: none;        /* prevent scroll/zoom on drag */
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-    .collected-dot:active { cursor: grabbing; }
 
-    /* UI bits */
+    /* Controls */
     #controls-container { position: fixed; top: 12px; right: 12px; z-index: 3; }
-    #chalk-hint {
-      position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
-      background: rgba(255,255,255,.9); color: #222; padding: 8px 12px; border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.08); font-size: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.06);
-      z-index: 3; user-select: none; pointer-events: none; opacity: 0; transition: opacity .3s;
-    }
-    body.dark-mode #chalk-hint { background: rgba(20,20,20,.9); color: #eee; border-color: #333; }
   </style>
 </head>
 <body>
-  <canvas id="chalk-canvas"></canvas>
+  <!-- Canvas first so it stays behind the content -->
+  <canvas id="trail-canvas"></canvas>
 
   <div id="controls-container">
     <button id="theme-toggle"> ⏾ </button>
@@ -67,18 +46,10 @@
 
   <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more, peruse my <a href="https://singh.work/resume.html" target="_blank">resume</a> or shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>.</p>
 
-  <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com • Last updated on Sep 07, 2025 </p>
-  
-  <div id="random-dots-container"></div>
-  <div id="chalk-hint">drag a dot to draw</div>
+  <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com • Last updated on Aug 27, 2025 </p>
 
   <script>
-    // -------------------
-    // reveal -> create 6 colored dots (permanent)
-    // -------------------
-    let clickedContentIds = new Set();
-    const totalHighlights = 6;
-
+    // 1) Reveal logic, and set the "sticky paint" color
     const highlightColors = {
       'highlight-yellow': '#FDFB8C',
       'highlight-blue':   '#D6F5FF',
@@ -86,184 +57,111 @@
       'highlight-green':  '#DDFFAA',
       'highlight-purple': '#EEDDFF'
     };
+    const clickedContentIds = new Set();
+    const totalHighlights = 6;
 
-    function expandOnce(buttonElement, contentId) {
+    let currentPaint = null;   // hex color that "sticks" to the mouse
+    let paintingOn = false;    // becomes true after first reveal
+
+    function expandOnce(buttonEl, contentId) {
+      // show the content
       const contentEl = document.getElementById(contentId);
       contentEl.classList.add('visible');
-      buttonElement.disabled = true;
+      buttonEl.disabled = true;
       clickedContentIds.add(contentId);
 
-      const c = document.getElementById('random-dots-container');
-      const dot = document.createElement('span');
-      dot.classList.add('collected-dot');
-
-      // color from the button's highlight class
+      // pick color from highlight class and make it the sticky paint
       let colorCls = '';
-      for (const cn of buttonElement.classList) { if (cn.startsWith('highlight-')) { colorCls = cn; break; } }
-      const color = highlightColors[colorCls];
-      dot.style.backgroundColor = color;
-      dot.dataset.color = color;
+      for (const cn of buttonEl.classList) {
+        if (cn.startsWith('highlight-')) { colorCls = cn; break; }
+      }
+      currentPaint = highlightColors[colorCls] || '#000000';
+      paintingOn = true; // from now on, mouse movement paints
 
-      // random initial position
-      const size = 16;
-      const rx = Math.random() * (window.innerWidth  - size);
-      const ry = Math.random() * (window.innerHeight - size);
-      dot.style.transform = `translate(${rx}px, ${ry}px)`;
-      c.appendChild(dot);
-
-      if (clickedContentIds.size === totalHighlights) enableChalkMode();
+      // optional: flash a tiny ring around cursor once (skipped to keep simple)
     }
 
-    // -------------------
-    // Chalk pastel drawing (simple & robust)
-    // -------------------
-    let chalkReady = false;
-    let canvas, ctx;
-    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    // 2) Simple paint trail (draws on mouse move; no need to hold click)
+    const canvas = document.getElementById('trail-canvas');
+    const ctx = canvas.getContext('2d', { alpha: true });
 
-    function setupCanvas() {
-      canvas = document.getElementById('chalk-canvas');
-      ctx = canvas.getContext('2d', { alpha: true });
-      resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
+    function sizeCanvas() {
+      // Simple sizing in CSS pixels (keeps code tiny; resizing clears trails)
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    sizeCanvas();
+    window.addEventListener('resize', sizeCanvas);
+
+    // Soft round stroke setup
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    // rAF-driven painter to keep it smooth & lightweight
+    let last = null;           // {x,y}
+    let pending = null;        // latest pointer {x,y}
+    let paintingScheduled = false;
+
+    function schedulePaint() {
+      if (paintingScheduled) return;
+      paintingScheduled = true;
+      requestAnimationFrame(paintStep);
     }
 
-    function resizeCanvas() {
-      // Save current drawing
-      let snapshot = null;
-      if (ctx && canvas && canvas.width && canvas.height) {
-        snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      }
-      // Size to viewport * DPR
-      canvas.width  = Math.floor(window.innerWidth  * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      canvas.style.width  = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      // Reset and scale
-      ctx.setTransform(1,0,0,1,0,0);
-      ctx.scale(dpr, dpr);
-      // Restore
-      if (snapshot) ctx.putImageData(snapshot, 0, 0);
-    }
+    function paintStep() {
+      paintingScheduled = false;
+      if (!paintingOn || !currentPaint || !pending) return;
 
-    function enableChalkMode() {
-      if (chalkReady) return;
-      chalkReady = true;
-
-      setupCanvas();
-
-      // attach drag-to-draw on each dot
-      const dots = Array.from(document.querySelectorAll('.collected-dot'));
-      dots.forEach(attachDragDraw);
-
-      // hint fade-in/out
-      const hint = document.getElementById('chalk-hint');
-      hint.style.opacity = '1';
-      setTimeout(()=> hint.style.opacity = '0', 2200);
-    }
-
-    function attachDragDraw(dot) {
-      const color = dot.dataset.color;
-      let drawing = false;
-      let lastX = 0, lastY = 0;
-
-      function positionDot(x, y) {
-        dot.style.transform = `translate(${x - 8}px, ${y - 8}px)`; // center the 16px dot
+      const { x, y } = pending;
+      if (!last) {
+        last = { x, y };
+        return;
       }
 
-      function onDown(e) {
-        e.preventDefault();
-        dot.setPointerCapture?.(e.pointerId);
-        const p = { x: e.clientX ?? e.pageX, y: e.clientY ?? e.pageY };
-        lastX = p.x; lastY = p.y;
-        drawing = true;
-        positionDot(p.x, p.y);
-        chalkDab(p.x, p.y, color);
-
-        // Listen on the capturing element for Chrome correctness
-        dot.addEventListener('pointermove', onMove, { passive: false });
-        dot.addEventListener('pointerup', onUp, { passive: false, once: true });
-        dot.addEventListener('pointercancel', onUp, { passive: false, once: true });
-      }
-
-      function onMove(e) {
-        if (!drawing) return;
-        e.preventDefault();
-        const p = { x: e.clientX ?? e.pageX, y: e.clientY ?? e.pageY };
-        const dx = p.x - lastX, dy = p.y - lastY;
-        const dist = Math.hypot(dx, dy);
-        const steps = Math.max(1, Math.floor(dist / 2)); // ~2px spacing
-        for (let i = 1; i <= steps; i++) {
-          const t = i / steps;
-          const ix = lastX + dx * t;
-          const iy = lastY + dy * t;
-          chalkDab(ix, iy, color);
-        }
-        lastX = p.x; lastY = p.y;
-        positionDot(p.x, p.y);
-      }
-
-      function onUp(e) {
-        drawing = false;
-        dot.releasePointerCapture?.(e.pointerId);
-        dot.removeEventListener('pointermove', onMove, { passive: false });
-      }
-
-      dot.addEventListener('pointerdown', onDown, { passive: false });
-    }
-
-    // Soft “chalk” brush made from clustered translucent dabs
-    function chalkDab(x, y, color) {
-      const rgb = hexToRgb(color) || { r: 0, g: 0, b: 0 };
-
-      // Soft core
-      for (let i = 0; i < 8; i++) {
-        const r = 3 + Math.random() * 2;
-        const a = 0.10 + Math.random() * 0.07;
-        const jx = (Math.random()-0.5) * 2;
-        const jy = (Math.random()-0.5) * 2;
-        ctx.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`;
-        ctx.beginPath();
-        ctx.arc(x + jx, y + jy, r, 0, Math.PI*2);
-        ctx.fill();
-      }
-
-      // Dusty scatter
-      for (let i = 0; i < 18; i++) {
-        const ang = Math.random() * Math.PI*2;
-        const rad = 2 + Math.random()*7;
-        const px = x + Math.cos(ang)*rad;
-        const py = y + Math.sin(ang)*rad;
-        const r  = 1 + Math.random()*1.6;
-        const a  = 0.03 + Math.random()*0.05;
-        ctx.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`;
-        ctx.beginPath();
-        ctx.arc(px, py, r, 0, Math.PI*2);
-        ctx.fill();
-      }
-
-      // Smudge oval
-      ctx.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},0.03)`;
+      // draw a soft line from last -> current
+      const dx = x - last.x, dy = y - last.y;
+      const dist = Math.hypot(dx, dy);
+      // thickness & alpha tuned for chalky vibe; tweak to taste
+      ctx.strokeStyle = hexToRgba(currentPaint, 0.20);
+      ctx.lineWidth = 12;
       ctx.beginPath();
-      ctx.ellipse(x, y, 9, 6, 0, 0, Math.PI*2);
-      ctx.fill();
+      ctx.moveTo(last.x, last.y);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+
+      // add a subtle dusty halo
+      ctx.strokeStyle = hexToRgba(currentPaint, 0.06);
+      ctx.lineWidth = 22;
+      ctx.beginPath();
+      ctx.moveTo(last.x, last.y);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+
+      last = { x, y };
     }
 
-    function hexToRgb(hex) {
-      if (!hex) return null;
-      const h = hex.replace('#','').trim();
-      if (h.length === 3) { return {
-        r: parseInt(h[0]+h[0],16), g: parseInt(h[1]+h[1],16), b: parseInt(h[2]+h[2],16)
-      }; }
-      if (h.length === 6) { return {
-        r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16)
-      }; }
-      return null;
+    // Mouse/pointer tracking — we only need position updates
+    window.addEventListener('pointermove', (e) => {
+      pending = { x: e.clientX, y: e.clientY };
+      schedulePaint();
+    }, { passive: true });
+
+    // Reset the path anchor if mouse leaves the page, so lines don’t jump
+    window.addEventListener('pointerdown', (e) => { last = { x: e.clientX, y: e.clientY }; }, { passive: true });
+    window.addEventListener('mouseleave', () => { last = null; });
+    window.addEventListener('pointerleave', () => { last = null; });
+
+    // tiny helper
+    function hexToRgba(hex, a=1) {
+      if (!hex) return `rgba(0,0,0,${a})`;
+      const h = hex.replace('#','');
+      const r = parseInt(h.length === 3 ? h[0]+h[0] : h.slice(0,2), 16);
+      const g = parseInt(h.length === 3 ? h[1]+h[1] : h.slice(2,4), 16);
+      const b = parseInt(h.length === 3 ? h[2]+h[2] : h.slice(4,6), 16);
+      return `rgba(${r},${g},${b},${a})`;
     }
 
-    // -------------------
-    // theme toggle
-    // -------------------
+    // 3) Theme toggle (unchanged)
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     function setTheme(theme) {
