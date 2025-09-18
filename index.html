@@ -6,27 +6,10 @@
   <title>shivani singh</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
-  <style>
-    /* Tilt permission pill for mobile/iOS */
-    #motion-permission {
-      position: fixed; inset: auto 12px 12px auto;
-      z-index: 9999;
-      padding: 10px 14px; border-radius: 999px; border: 1px solid #ddd;
-      background: rgba(255,255,255,.9); backdrop-filter: saturate(120%) blur(6px);
-      font-size: 14px; box-shadow: 0 6px 20px rgba(0,0,0,.08);
-      display: none;
-    }
-    body.dark-mode #motion-permission {
-      background: rgba(24,24,24,.9); color: #eee; border-color: #333;
-    }
-  </style>
-
 </head>
 <body>
   <div id="controls-container">
     <button id="theme-toggle"> ⏾ </button>
-    <button id="font-decrease"> - </button>
-    <button id="font-increase"> + </button>
   </div>
 
   <h1>Hi, I'm Shivani</h1>
@@ -47,17 +30,14 @@
     <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of <a href="https://singh.work/case-study.html">this project</a> with an industrial arts school in Oakland. </span>
   </p>
 
-  <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more, peruse my <a href="https://singh.work/resume.html" target="_blank">resume</a> or shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>.</p>
+  <p class="note">Born in <button class="reveal highlight-yellow" onclick="expandOnce(this, 'India')">India</button>,
+    <span id="India" class="inline-reveal">I've called many places <a href="https://singh.work/fromness" target="_blank">home</a> over the years, and</span> I currently reside in Stockholm. If you're curious to know more, peruse my <a href="https://singh.work/resume.html" target="_blank">resume</a> or shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>.</p>
 
   <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com • Last updated on Aug 27, 2025 </p>
   
   <div id="random-dots-container"></div>
-  <button id="motion-permission">Enable Tilt Control</button>
 
   <script>
-    // ---- environment detect ----
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-
     // ---- reveal + collect ----
     let clickedContentIds = new Set();
     const totalHighlights = 6;
@@ -82,11 +62,10 @@
       const c = document.getElementById('random-dots-container');
       const dot = document.createElement('span');
       dot.classList.add('collected-dot');
-      dot.dataset.isBase = "true";             // permanent
-      dot.dataset.hasMultiplied = "false";     // mobile: base can spawn once
-      dot.dataset.spawnToggle = "true";        // start spawn-enabled; alternates on each bounce
+      dot.dataset.isBase = "true";         // permanent
+      dot.dataset.spawnToggle = "true";    // per-bounce spawn alternation starts enabled
 
-      // find color from class
+      // color from class
       let colorCls = '';
       for (const cn of buttonElement.classList) {
         if (cn.startsWith('highlight-')) { colorCls = cn; break; }
@@ -103,7 +82,6 @@
       dot.style.transform = `translate(${rx}px, ${ry}px)`;
       c.appendChild(dot);
 
-      // Start dots after all highlights are opened
       if (clickedContentIds.size === totalHighlights) startDots();
     }
 
@@ -119,12 +97,9 @@
     const BOUNCE_COOLDOWN = 120;
     const DOT_SIZE = 16;
 
-    // Mobile tilt "gravity"
-    let gx = 0, gy = 0, tiltEnabled = false;
-
-    // Mouse sample (desktop)
+    // Mouse sampling (desktop)
     let pendingMouse = null;
-    if (!isMobile) window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
+    window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
 
     function startDots() {
       if (running) return;
@@ -139,43 +114,13 @@
           vx: (Math.random()*2-1)*2, vy: (Math.random()*2-1)*2,
           lastBounceAt: 0,
           isBase: el.dataset.isBase === "true",
-          hasMultiplied: el.dataset.hasMultiplied === "true",
           color: el.dataset.color,
-          spawnToggle: el.dataset.spawnToggle === "true" // per-bounce alternation starts enabled
+          spawnToggle: el.dataset.spawnToggle === "true"
         };
       });
 
-      if (isMobile) setupMotionPermission();
       running = true;
       requestAnimationFrame(loop);
-    }
-
-    function setupMotionPermission() {
-      const btn = document.getElementById('motion-permission');
-      const needPermission = typeof DeviceOrientationEvent !== 'undefined' &&
-                             typeof DeviceOrientationEvent.requestPermission === 'function';
-      btn.style.display = 'inline-block';
-      btn.addEventListener('click', async () => {
-        try {
-          if (needPermission) {
-            const res = await DeviceOrientationEvent.requestPermission();
-            if (res !== 'granted') { alert('Motion access denied'); return; }
-          }
-          enableTilt(); btn.style.display = 'none';
-        } catch {
-          enableTilt(); btn.style.display = 'none';
-        }
-      }, { once: true });
-    }
-
-    function enableTilt() {
-      tiltEnabled = true;
-      window.addEventListener('deviceorientation', (e) => {
-        const gamma = (e.gamma || 0), beta = (e.beta || 0);
-        const scale = 0.02; // gentle gravity
-        gx = Math.max(-0.6, Math.min(0.6, gamma * scale));
-        gy = Math.max(-0.6, Math.min(0.6, beta  * scale));
-      }, { passive: true });
     }
 
     // counts for caps
@@ -189,11 +134,10 @@
       if (dots.length >= TOTAL_CAP) return false;
       if (colorCount(d.color) >= PER_COLOR_CAP) return false;
       if (!d.spawnToggle) return false; // alternate per-bounce
-      if (isMobile && d.isBase && d.hasMultiplied) return false; // base only once on mobile
       return true;
     }
 
-    function spawnCloneFrom(d, markMobileOnce=false) {
+    function spawnCloneFrom(d) {
       if (!spawnAllowedForDot(d)) return;
 
       const el = d.el.cloneNode(true);
@@ -204,9 +148,8 @@
         vy: -d.vy + (Math.random()*4 - 2),
         lastBounceAt: 0,
         isBase: false,
-        hasMultiplied: markMobileOnce,   // mobile clones are "already used"
         color: d.color,
-        spawnToggle: true                // new clones start spawn-enabled; will alternate per bounce
+        spawnToggle: true // new clones start spawn-enabled; will alternate per bounce
       };
       el.style.position = 'fixed';
       el.style.transform = `translate(${clone.x}px, ${clone.y}px)`;
@@ -214,33 +157,25 @@
       el.dataset.spawnToggle = "true";
       document.getElementById('random-dots-container').appendChild(el);
       dots.push(clone);
-
-      // Mobile base: record that it has used its one spawn
-      if (isMobile && d.isBase && !d.hasMultiplied) d.hasMultiplied = true;
     }
 
     function loop(now) {
       if (!running) return;
 
-      if (!isMobile && pendingMouse) { mouseX = pendingMouse.clientX; mouseY = pendingMouse.clientY; pendingMouse = null; }
+      if (pendingMouse) { mouseX = pendingMouse.clientX; mouseY = pendingMouse.clientY; pendingMouse = null; }
 
       const W = window.innerWidth, H = window.innerHeight;
       for (const d of dots) {
-        // Forces
-        if (!isMobile) {
-          // Desktop: allergic to cursor
-          const cx = d.x + d.w/2, cy = d.y + d.h/2;
-          const dx = cx - mouseX, dy = cy - mouseY;
-          const dist2 = dx*dx + dy*dy;
-          if (dist2 < R2 && dist2 > 1e-6) {
-            const dist = Math.sqrt(dist2);
-            const force = STRENGTH * (1 - dist / R) / (dist + 1e-6);
-            d.vx += (dx / dist) * force * 0.016;
-            d.vy += (dy / dist) * force * 0.016;
-          }
-        } else if (tiltEnabled) {
-          // Mobile: tilt gravity
-          d.vx += gx; d.vy += gy;
+        // Desktop: allergic to cursor (works on desktop; on phones with no mouse move,
+        // dots still animate via their initial velocities and bounces)
+        const cx = d.x + d.w/2, cy = d.y + d.h/2;
+        const dx = cx - mouseX, dy = cy - mouseY;
+        const dist2 = dx*dx + dy*dy;
+        if (dist2 < R2 && dist2 > 1e-6) {
+          const dist = Math.sqrt(dist2);
+          const force = STRENGTH * (1 - dist / R) / (dist + 1e-6);
+          d.vx += (dx / dist) * force * 0.016;
+          d.vy += (dy / dist) * force * 0.016;
         }
 
         // Damping & clamp
@@ -263,19 +198,9 @@
           d.x = Math.min(Math.max(d.x, 1), W - d.w - 1);
           d.y = Math.min(Math.max(d.y, 1), H - d.h - 1);
 
-          // Spawn rules:
-          if (isMobile) {
-            // Mobile: only base dots may spawn once, and only on spawn-enabled bounces
-            if (d.isBase && !d.hasMultiplied && d.spawnToggle) {
-              spawnCloneFrom(d, /*markMobileOnce*/ true);
-            }
-          } else {
-            // Desktop: spawn only on spawn-enabled bounces
-            if (d.spawnToggle) spawnCloneFrom(d, false);
-          }
-
-          // Alternate for next bounce (every alternate bounce spawns)
-          d.spawnToggle = !d.spawnToggle;
+          // Spawn only on spawn-enabled bounces (alternate per bounce)
+          if (d.spawnToggle) spawnCloneFrom(d);
+          d.spawnToggle = !d.spawnToggle; // flip for next bounce
         }
 
         // Render
@@ -294,20 +219,6 @@
     }
     window.addEventListener('DOMContentLoaded',()=>{setTheme(localStorage.getItem('theme')||'light');});
     themeToggle.addEventListener('click',()=>{setTheme(body.classList.contains('dark-mode')?'light':'dark');});
-
-    // ---- font size controls ----
-    const fontDecreaseBtn=document.getElementById('font-decrease');
-    const fontIncreaseBtn=document.getElementById('font-increase');
-    const fontSizes=['text-small','text-normal','text-large'];
-    let currentFontSizeIndex=1;
-    function applyFontSize(i){fontSizes.forEach(c=>body.classList.remove(c));body.classList.add(c);localStorage.setItem('fontSize',c);currentFontSizeIndex=i;}
-    window.addEventListener('DOMContentLoaded',()=>{
-      const s=localStorage.getItem('fontSize');
-      if(s&&fontSizes.includes(s)){fontSizes.forEach(c=>body.classList.remove(c));body.classList.add(s);currentFontSizeIndex=fontSizes.indexOf(s);}
-      else { body.classList.add(fontSizes[currentFontSizeIndex]); }
-    });
-    fontDecreaseBtn.addEventListener('click',()=>{ if(currentFontSizeIndex>0){body.classList.remove(fontSizes[currentFontSizeIndex]); currentFontSizeIndex--; body.classList.add(fontSizes[currentFontSizeIndex]); localStorage.setItem('fontSize',fontSizes[currentFontSizeIndex]); }});
-    fontIncreaseBtn.addEventListener('click',()=>{ if(currentFontSizeIndex<fontSizes.length-1){body.classList.remove(fontSizes[currentFontSizeIndex]); currentFontSizeIndex++; body.classList.add(fontSizes[currentFontSizeIndex]); localStorage.setItem('fontSize',fontSizes[currentFontSizeIndex]); }});
   </script>
 </body>
 </html>
