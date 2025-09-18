@@ -6,8 +6,39 @@
   <title>shivani singh</title>
   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* minimal helpers; keep your existing style.css */
+    #chalk-canvas {
+      position: fixed; inset: 0;
+      z-index: 1;          /* below dots (z-index default auto higher via stacking?) */
+      pointer-events: none;/* enabled only when drawing starts */
+      touch-action: none;  /* prevent browser gestures during draw */
+    }
+    .collected-dot {
+      position: fixed;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      transform: translate(0,0);
+      z-index: 2;          /* above canvas so you can grab it */
+      cursor: grab;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset;
+    }
+    .collected-dot:active { cursor: grabbing; }
+    #chalk-hint {
+      position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+      background: rgba(255,255,255,.9);
+      color: #222; padding: 8px 12px; border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.08); font-size: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.06);
+      z-index: 3; user-select: none; pointer-events: none; opacity: 0; transition: opacity .3s;
+    }
+    body.dark-mode #chalk-hint { background: rgba(20,20,20,.9); color: #eee; border-color: #333; }
+    #controls-container { z-index: 4; position: fixed; top: 12px; right: 12px; }
+  </style>
 </head>
 <body>
+  <canvas id="chalk-canvas"></canvas>
+
   <div id="controls-container">
     <button id="theme-toggle"> ⏾ </button>
   </div>
@@ -30,19 +61,19 @@
     <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of <a href="https://singh.work/case-study.html">this project</a> with an industrial arts school in Oakland. </span>
   </p>
 
-  <p class="note">Born in <button class="reveal highlight-yellow" onclick="expandOnce(this, 'India')">India</button>,
-    <span id="India" class="inline-reveal">I've called many places <a href="https://singh.work/fromness" target="_blank">home</a> over the years, and</span> I currently reside in Stockholm. If you're curious to know more, peruse my <a href="https://singh.work/resume.html" target="_blank">resume</a> or shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>.</p>
+  <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more, peruse my <a href="https://singh.work/resume.html" target="_blank">resume</a> or shoot me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>💌.</p>
 
   <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com • Last updated on Aug 27, 2025 </p>
   
   <div id="random-dots-container"></div>
+  <div id="chalk-hint">drag a dot to draw</div>
 
   <script>
-    // ---- reveal + collect ----
+    // -------------------
+    // reveal -> create colored dots (permanent)
+    // -------------------
     let clickedContentIds = new Set();
     const totalHighlights = 6;
-    const PER_COLOR_CAP = 250;
-    const TOTAL_CAP = 1500;
 
     const highlightColors = {
       'highlight-yellow': '#FDFB8C',
@@ -58,18 +89,13 @@
       buttonElement.disabled = true;
       clickedContentIds.add(contentId);
 
-      // Create a base dot for this reveal (permanent)
       const c = document.getElementById('random-dots-container');
       const dot = document.createElement('span');
       dot.classList.add('collected-dot');
-      dot.dataset.isBase = "true";         // permanent
-      dot.dataset.spawnToggle = "true";    // per-bounce spawn alternation starts enabled
 
-      // color from class
+      // pick color from button class
       let colorCls = '';
-      for (const cn of buttonElement.classList) {
-        if (cn.startsWith('highlight-')) { colorCls = cn; break; }
-      }
+      for (const cn of buttonElement.classList) { if (cn.startsWith('highlight-')) { colorCls = cn; break; } }
       const color = highlightColors[colorCls];
       dot.style.backgroundColor = color;
       dot.dataset.color = color;
@@ -77,148 +103,183 @@
       const size = 16;
       const rx = Math.random() * (window.innerWidth - size);
       const ry = Math.random() * (window.innerHeight - size);
-      dot.style.left = '0px';
-      dot.style.top  = '0px';
       dot.style.transform = `translate(${rx}px, ${ry}px)`;
       c.appendChild(dot);
 
-      if (clickedContentIds.size === totalHighlights) startDots();
+      if (clickedContentIds.size === totalHighlights) enableChalkMode();
     }
 
-    // ---- dots logic ----
-    let running = false;
-    let dots = [];
-    let mouseX = window.innerWidth/2, mouseY = window.innerHeight/2;
+    // -------------------
+    // Chalk pastel drawing
+    // -------------------
+    let chalkReady = false;
+    let canvas, ctx;
+    let dpr = Math.max(1, window.devicePixelRatio || 1);
 
-    const R = 260, R2 = R*R;    // mouse influence radius (desktop)
-    const STRENGTH = 4200;
-    const FRICTION = 0.92;
-    const MAX_SPEED = 28;
-    const BOUNCE_COOLDOWN = 120;
-    const DOT_SIZE = 16;
+    function resizeCanvas() {
+      canvas.width  = Math.floor(window.innerWidth  * dpr);
+      canvas.height = Math.floor(window.innerHeight * dpr);
+      canvas.style.width  = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      ctx.scale(dpr, dpr);
+    }
 
-    // Mouse sampling (desktop)
-    let pendingMouse = null;
-    window.addEventListener('mousemove', e => { pendingMouse = e; }, {passive:true});
+    function enableChalkMode() {
+      if (chalkReady) return;
+      chalkReady = true;
 
-    function startDots() {
-      if (running) return;
-      const els = Array.from(document.querySelectorAll('.collected-dot'));
-      dots = els.map(el => {
-        const r = el.getBoundingClientRect();
-        el.style.position = 'fixed';
-        el.style.willChange = 'transform';
-        return {
-          el,
-          x: r.left, y: r.top, w: r.width||DOT_SIZE, h: r.height||DOT_SIZE,
-          vx: (Math.random()*2-1)*2, vy: (Math.random()*2-1)*2,
-          lastBounceAt: 0,
-          isBase: el.dataset.isBase === "true",
-          color: el.dataset.color,
-          spawnToggle: el.dataset.spawnToggle === "true"
-        };
+      canvas = document.getElementById('chalk-canvas');
+      ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
+      // reset transform to avoid double-scaling on resize
+      ctx.setTransform(1,0,0,1,0,0);
+      resizeCanvas();
+      window.addEventListener('resize', () => {
+        // preserve drawing on resize: snapshot -> resize -> draw back
+        const snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ctx.setTransform(1,0,0,1,0,0);
+        resizeCanvas();
+        ctx.putImageData(snapshot, 0, 0);
       });
 
-      running = true;
-      requestAnimationFrame(loop);
+      // Make each dot draggable to draw
+      const dots = Array.from(document.querySelectorAll('.collected-dot'));
+      dots.forEach(attachChalkHandlers);
+
+      // hint fade-in
+      const hint = document.getElementById('chalk-hint');
+      hint.style.opacity = '1';
+      setTimeout(()=> hint.style.opacity = '0', 2500);
     }
 
-    // counts for caps
-    function colorCount(color) {
-      let count = 0;
-      for (const d of dots) if (d.color === color) count++;
-      return count;
-    }
+    // Attach mouse/touch handlers to a dot
+    function attachChalkHandlers(dot) {
+      let drawing = false;
+      let lastX = 0, lastY = 0;
+      const color = dot.dataset.color;
 
-    function spawnAllowedForDot(d) {
-      if (dots.length >= TOTAL_CAP) return false;
-      if (colorCount(d.color) >= PER_COLOR_CAP) return false;
-      if (!d.spawnToggle) return false; // alternate per-bounce
-      return true;
-    }
-
-    function spawnCloneFrom(d) {
-      if (!spawnAllowedForDot(d)) return;
-
-      const el = d.el.cloneNode(true);
-      const clone = {
-        el,
-        x: d.x, y: d.y, w: d.w, h: d.h,
-        vx: -d.vx + (Math.random()*4 - 2),
-        vy: -d.vy + (Math.random()*4 - 2),
-        lastBounceAt: 0,
-        isBase: false,
-        color: d.color,
-        spawnToggle: true // new clones start spawn-enabled; will alternate per bounce
-      };
-      el.style.position = 'fixed';
-      el.style.transform = `translate(${clone.x}px, ${clone.y}px)`;
-      el.dataset.color = d.color;
-      el.dataset.spawnToggle = "true";
-      document.getElementById('random-dots-container').appendChild(el);
-      dots.push(clone);
-    }
-
-    function loop(now) {
-      if (!running) return;
-
-      if (pendingMouse) { mouseX = pendingMouse.clientX; mouseY = pendingMouse.clientY; pendingMouse = null; }
-
-      const W = window.innerWidth, H = window.innerHeight;
-      for (const d of dots) {
-        // Desktop: allergic to cursor (works on desktop; on phones with no mouse move,
-        // dots still animate via their initial velocities and bounces)
-        const cx = d.x + d.w/2, cy = d.y + d.h/2;
-        const dx = cx - mouseX, dy = cy - mouseY;
-        const dist2 = dx*dx + dy*dy;
-        if (dist2 < R2 && dist2 > 1e-6) {
-          const dist = Math.sqrt(dist2);
-          const force = STRENGTH * (1 - dist / R) / (dist + 1e-6);
-          d.vx += (dx / dist) * force * 0.016;
-          d.vy += (dy / dist) * force * 0.016;
-        }
-
-        // Damping & clamp
-        d.vx *= FRICTION; d.vy *= FRICTION;
-        const sp = Math.hypot(d.vx, d.vy);
-        if (sp > MAX_SPEED) { d.vx = d.vx / sp * MAX_SPEED; d.vy = d.vy / sp * MAX_SPEED; }
-
-        // Integrate
-        d.x += d.vx; d.y += d.vy;
-
-        // Bounce
-        let collided = false;
-        if (d.x <= 0)            { d.x = 0;       d.vx = Math.abs(d.vx)||1;  collided = true; }
-        else if (d.x + d.w >= W) { d.x = W-d.w;   d.vx = -Math.abs(d.vx)||-1; collided = true; }
-        if (d.y <= 0)            { d.y = 0;       d.vy = Math.abs(d.vy)||1;  collided = true; }
-        else if (d.y + d.h >= H) { d.y = H-d.h;   d.vy = -Math.abs(d.vy)||-1; collided = true; }
-
-        if (collided && (now - d.lastBounceAt > BOUNCE_COOLDOWN)) {
-          d.lastBounceAt = now;
-          d.x = Math.min(Math.max(d.x, 1), W - d.w - 1);
-          d.y = Math.min(Math.max(d.y, 1), H - d.h - 1);
-
-          // Spawn only on spawn-enabled bounces (alternate per bounce)
-          if (d.spawnToggle) spawnCloneFrom(d);
-          d.spawnToggle = !d.spawnToggle; // flip for next bounce
-        }
-
-        // Render
-        d.el.style.transform = `translate(${d.x}px, ${d.y}px)`;
+      // helper: get pointer coords and keep the dot under finger
+      function positionDot(x, y) {
+        dot.style.transform = `translate(${x - 8}px, ${y - 8}px)`; // center the 16px dot
       }
 
-      requestAnimationFrame(loop);
+      function pointerDown(e) {
+        e.preventDefault();
+        const p = getPoint(e);
+        lastX = p.x; lastY = p.y;
+        drawing = true;
+        canvas.style.pointerEvents = 'auto'; // capture moves cleanly
+        positionDot(p.x, p.y);
+        // initial dab
+        chalkDab(p.x, p.y, color);
+        window.addEventListener('pointermove', pointerMove, { passive: false });
+        window.addEventListener('pointerup', pointerUp, { once: true });
+        window.addEventListener('pointercancel', pointerUp, { once: true });
+      }
+
+      function pointerMove(e) {
+        if (!drawing) return;
+        e.preventDefault();
+        const p = getPoint(e);
+
+        // draw along the path with interpolation for smoothness
+        const dx = p.x - lastX, dy = p.y - lastY;
+        const dist = Math.hypot(dx, dy);
+        const steps = Math.max(1, Math.floor(dist / 2)); // spacing ~2px
+        for (let i = 1; i <= steps; i++) {
+          const t = i / steps;
+          const ix = lastX + dx * t;
+          const iy = lastY + dy * t;
+          chalkDab(ix, iy, color);
+        }
+        lastX = p.x; lastY = p.y;
+
+        // keep the dot with the pointer
+        positionDot(p.x, p.y);
+      }
+
+      function pointerUp(e) {
+        drawing = false;
+        canvas.style.pointerEvents = 'none';
+        window.removeEventListener('pointermove', pointerMove, { passive: false });
+      }
+
+      dot.addEventListener('pointerdown', pointerDown);
     }
 
-    // ---- theme toggle ----
+    function getPoint(e) {
+      const touchLike = e.touches && e.touches.length;
+      if (touchLike) {
+        return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      } else {
+        return { x: (e.clientX ?? e.pageX), y: (e.clientY ?? e.pageY) };
+      }
+    }
+
+    // Chalk pastel brush: many soft, jittered dabs with varied alpha/size
+    function chalkDab(x, y, color) {
+      // convert hex to rgba base
+      const rgba = hexToRgb(color) || { r: 0, g: 0, b: 0 };
+
+      // center core (soft circle)
+      ctx.globalCompositeOperation = 'source-over';
+      for (let i = 0; i < 10; i++) {
+        const r = 3 + Math.random() * 2;             // radius
+        const a = 0.08 + Math.random() * 0.07;       // alpha
+        const jx = (Math.random()-0.5) * 2;          // slight jitter
+        const jy = (Math.random()-0.5) * 2;
+        ctx.fillStyle = `rgba(${rgba.r},${rgba.g},${rgba.b},${a})`;
+        ctx.beginPath();
+        ctx.arc(x + jx, y + jy, r, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      // dusty scatter around
+      for (let i = 0; i < 24; i++) {
+        const ang = Math.random() * Math.PI*2;
+        const rad = 2 + Math.random()*8;             // scatter radius
+        const px = x + Math.cos(ang)*rad;
+        const py = y + Math.sin(ang)*rad;
+        const r  = 1 + Math.random()*1.8;
+        const a  = 0.02 + Math.random()*0.06;
+        ctx.fillStyle = `rgba(${rgba.r},${rgba.g},${rgba.b},${a})`;
+        ctx.beginPath();
+        ctx.arc(px, py, r, 0, Math.PI*2);
+        ctx.fill();
+      }
+
+      // light smudge pass
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = `rgba(${rgba.r},${rgba.g},${rgba.b},0.03)`;
+      ctx.beginPath();
+      ctx.ellipse(x, y, 9, 6, 0, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    function hexToRgb(hex) {
+      if (!hex) return null;
+      const h = hex.replace('#','').trim();
+      if (h.length === 3) {
+        const r = parseInt(h[0]+h[0],16), g = parseInt(h[1]+h[1],16), b = parseInt(h[2]+h[2],16);
+        return { r, g, b };
+      }
+      if (h.length === 6) {
+        const r = parseInt(h.slice(0,2),16), g = parseInt(h.slice(2,4),16), b = parseInt(h.slice(4,6),16);
+        return { r, g, b };
+      }
+      return null;
+    }
+
+    // -------------------
+    // theme toggle
+    // -------------------
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
     function setTheme(theme) {
       if (theme === 'dark') { body.classList.add('dark-mode'); localStorage.setItem('theme','dark'); themeToggle.textContent='☀'; }
       else { body.classList.remove('dark-mode'); localStorage.setItem('theme','light'); themeToggle.textContent='⏾'; }
     }
-    window.addEventListener('DOMContentLoaded',()=>{setTheme(localStorage.getItem('theme')||'light');});
-    themeToggle.addEventListener('click',()=>{setTheme(body.classList.contains('dark-mode')?'light':'dark');});
+    window.addEventListener('DOMContentLoaded',()=>{ setTheme(localStorage.getItem('theme')||'light'); });
+    themeToggle.addEventListener('click',()=>{ setTheme(body.classList.contains('dark-mode')?'light':'dark'); });
   </script>
 </body>
 </html>
