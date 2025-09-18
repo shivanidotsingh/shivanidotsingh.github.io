@@ -11,7 +11,7 @@
     #chalk-canvas {
       position: fixed; inset: 0;
       z-index: 1;
-      pointer-events: none; /* only toggled to auto while drawing */
+      pointer-events: none; /* stays none; we don't rely on it for events */
       touch-action: none;
     }
     /* Draggable pastel "dots" */
@@ -23,7 +23,7 @@
       z-index: 2;               /* above canvas so you can grab it */
       cursor: grab;
       box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset;
-      touch-action: none;       /* <- key for mobile dragging */
+      touch-action: none;       /* prevent panning/zoom */
       user-select: none;
       -webkit-user-drag: none;
     }
@@ -69,8 +69,7 @@
 
   <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website was built on github.com • Last updated on Aug 27, 2025 </p>
   
-  <div id="random-dots-container"></div>
-  <div id="chalk-hint">drag a dot to draw</div>
+ 
 
   <script>
     // -------------------
@@ -120,7 +119,7 @@
     let dpr = Math.max(1, window.devicePixelRatio || 1);
 
     function resizeCanvas() {
-      // preserve existing drawing:
+      // preserve drawing:
       let snapshot = null;
       if (ctx && canvas) snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
@@ -129,10 +128,8 @@
       canvas.style.width  = window.innerWidth + 'px';
       canvas.style.height = window.innerHeight + 'px';
 
-      const old = ctx.getTransform();
       ctx.setTransform(1,0,0,1,0,0);
       ctx.scale(dpr, dpr);
-
       if (snapshot) ctx.putImageData(snapshot, 0, 0);
     }
 
@@ -142,7 +139,6 @@
 
       canvas = document.getElementById('chalk-canvas');
       ctx = canvas.getContext('2d', { alpha: true, desynchronized: true });
-      ctx.setTransform(1,0,0,1,0,0);
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
 
@@ -161,26 +157,26 @@
       let lastX = 0, lastY = 0;
       const color = dot.dataset.color;
 
+      // helper: position the dot under pointer
       function positionDot(x, y) {
-        dot.style.transform = `translate(${x - 8}px, ${y - 8}px)`; // center 16px dot
+        dot.style.transform = `translate(${x - 8}px, ${y - 8}px)`;
       }
 
       function pointerDown(e) {
         e.preventDefault();
         dot.setPointerCapture?.(e.pointerId);
+
         const p = getPoint(e);
         lastX = p.x; lastY = p.y;
         drawing = true;
 
-        // Let canvas receive move events for smooth strokes
-        canvas.style.pointerEvents = 'auto';
-
         positionDot(p.x, p.y);
         chalkDab(p.x, p.y, color);
 
-        window.addEventListener('pointermove', pointerMove, { passive: false });
-        window.addEventListener('pointerup', pointerUp, { once: true });
-        window.addEventListener('pointercancel', pointerUp, { once: true });
+        // LISTEN ON THE DOT (the capturing element), not window
+        dot.addEventListener('pointermove', pointerMove, { passive: false });
+        dot.addEventListener('pointerup', pointerUp, { passive: false, once: true });
+        dot.addEventListener('pointercancel', pointerUp, { passive: false, once: true });
       }
 
       function pointerMove(e) {
@@ -204,16 +200,14 @@
 
       function pointerUp(e) {
         drawing = false;
-        canvas.style.pointerEvents = 'none';
         dot.releasePointerCapture?.(e.pointerId);
-        window.removeEventListener('pointermove', pointerMove, { passive: false });
+        dot.removeEventListener('pointermove', pointerMove, { passive: false });
       }
 
       dot.addEventListener('pointerdown', pointerDown, { passive: false });
     }
 
     function getPoint(e) {
-      // Pointer Events: clientX/Y always present
       return { x: e.clientX ?? e.pageX, y: e.clientY ?? e.pageY };
     }
 
