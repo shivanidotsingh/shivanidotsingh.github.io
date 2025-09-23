@@ -4,7 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>shivani singh</title>
-  <link rel="icon" href="images/favicon.gif" type="image/gif">
+
+  <!-- Animated favicon: will swap images via JS -->
+  <link id="dynamic-favicon" rel="icon" href="images/favicon.png" type="image/png">
+
   <link rel="stylesheet" href="style.css">
   <style>
     #trail-canvas {
@@ -12,17 +15,11 @@
       z-index: 0;
       pointer-events: none;
     }
-    #controls-container {
-      position: fixed; top: 12px; right: 12px; z-index: 3;
-    }
+    body > *:not(#trail-canvas) { position: relative; z-index: 1; }
   </style>
 </head>
 <body>
   <canvas id="trail-canvas"></canvas>
-
-  <div id="controls-container">
-    <button id="theme-toggle"> ⏾ </button>
-  </div>
 
   <h1>Hi, I'm Shivani</h1>
   <p>
@@ -47,9 +44,7 @@
   <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Sep 17, 2025 </p>
 
   <script>
-    // -------------------------
-    // Highlight colors & state
-    // -------------------------
+    // --- Highlight colors & state ---
     const highlightColors = {
       'highlight-yellow': '#FDFB8C',
       'highlight-blue':   '#D6F5FF',
@@ -57,159 +52,78 @@
       'highlight-green':  '#DDFFAA',
       'highlight-purple': '#EEDDFF'
     };
-
     let drawing = false;
     let currentColor = null;
 
-    // -------------------------
-    // Canvas (DPR-aware)
-    // -------------------------
-    const canvas = document.getElementById('trail-canvas');
-    const ctx = canvas.getContext('2d', { alpha: true });
-    let dpr = Math.max(1, window.devicePixelRatio || 1);
-
-    function resizeCanvas() {
-      // Clear on resize (simpler & faster; can preserve if you want)
-      canvas.width = Math.floor(window.innerWidth * dpr);
-      canvas.height = Math.floor(window.innerHeight * dpr);
-      canvas.style.width = window.innerWidth + 'px';
-      canvas.style.height = window.innerHeight + 'px';
-      ctx.setTransform(1,0,0,1,0,0);
-      ctx.scale(dpr, dpr);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      applyBlendMode();
-    }
-    function applyBlendMode() {
-      // Theme-aware blend for natural highlighter look
-      const dark = document.body.classList.contains('dark-mode');
-      ctx.globalCompositeOperation = dark ? 'screen' : 'multiply';
-    }
-    resizeCanvas();
-    window.addEventListener('resize', () => { dpr = Math.max(1, window.devicePixelRatio || 1); resizeCanvas(); });
-
-    // -------------------------
-    // Reveal handler (arms brush)
-    // -------------------------
     function expandOnce(buttonEl, contentId) {
       const contentEl = document.getElementById(contentId);
       contentEl.classList.add('visible');
       buttonEl.disabled = true;
-
-      // set color from clicked highlight + start drawing
       for (const cn of buttonEl.classList) {
-        if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
+        if (cn.startsWith('highlight-')) {
+          currentColor = highlightColors[cn]; break;
+        }
       }
       drawing = true;
     }
 
-    // -------------------------
-    // Painter (soft highlighter)
-    // -------------------------
-    let last = null;
-    let pending = null;
-    let paintingScheduled = false;
-
-    function schedulePaint() {
-      if (paintingScheduled) return;
-      paintingScheduled = true;
-      requestAnimationFrame(paintStep);
+    // --- Canvas setup ---
+    const canvas = document.getElementById('trail-canvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.globalCompositeOperation = 'multiply';
     }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-    function paintStep() {
-      paintingScheduled = false;
-      if (!drawing || !currentColor || !pending) return;
-
-      const { x, y } = pending;
-      if (!last) { last = { x, y }; return; }
-
-      // Core stroke: thin + subtle
-      ctx.strokeStyle = hexToRgba(currentColor, 0.14); // lower alpha
-      ctx.lineWidth = 10;                               // slimmer core
-      ctx.beginPath();
-      ctx.moveTo(last.x, last.y);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-
-      // Soft halo: very faint & wider
-      ctx.strokeStyle = hexToRgba(currentColor, 0.05);
-      ctx.lineWidth = 20;
-      ctx.beginPath();
-      ctx.moveTo(last.x, last.y);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-
-      // Micro-speckle for texture (super lightweight)
-      speckle(x, y, currentColor);
-
-      last = { x, y };
+    // --- Painter ---
+    let last = null, pending = null, paintingScheduled = false;
+    function schedulePaint(){ if(!paintingScheduled){paintingScheduled=true; requestAnimationFrame(paintStep);} }
+    function paintStep(){
+      paintingScheduled=false;
+      if(!drawing||!currentColor||!pending) return;
+      const {x,y}=pending;
+      if(!last){ last={x,y}; return; }
+      ctx.strokeStyle=hexToRgba(currentColor,0.14);
+      ctx.lineWidth=10;
+      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
+      ctx.strokeStyle=hexToRgba(currentColor,0.05);
+      ctx.lineWidth=20;
+      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
+      last={x,y};
     }
+    window.addEventListener('pointermove',e=>{pending={x:e.clientX,y:e.clientY};schedulePaint();},{passive:true});
+    window.addEventListener('pointerdown',e=>{last={x:e.clientX,y:e.clientY};},{passive:true});
+    window.addEventListener('mouseleave',()=>{last=null;});
+    window.addEventListener('pointerleave',()=>{last=null;});
 
-    function speckle(x, y, hex) {
-      const rgb = hexToRgb(hex) || {r:0,g:0,b:0};
-      ctx.fillStyle = `rgba(${rgb.r},${rgb.g},${rgb.b},0.03)`;
-      for (let i = 0; i < 6; i++) {
-        const ang = Math.random() * Math.PI * 2;
-        const r = Math.random() * 6;
-        const px = x + Math.cos(ang) * r;
-        const py = y + Math.sin(ang) * r;
-        ctx.fillRect(px, py, 1, 1);
-      }
-    }
-
-    window.addEventListener('pointermove', (e) => {
-      pending = { x: e.clientX, y: e.clientY };
-      schedulePaint();
-    }, { passive: true });
-
-    window.addEventListener('pointerdown', (e) => { last = { x: e.clientX, y: e.clientY }; }, { passive: true });
-    window.addEventListener('mouseleave', () => { last = null; });
-    window.addEventListener('pointerleave', () => { last = null; });
-
-    // -------------------------
-    // Pause drawing (Esc / click outside highlights & theme toggle ignored)
-    // -------------------------
-    window.addEventListener('click', (e) => {
-      const onHighlight = e.target.closest && e.target.closest('.reveal');
-      const onTheme = e.target.closest && e.target.closest('#theme-toggle');
-      if (!onHighlight && !onTheme) drawing = false;
+    // --- Pause drawing ---
+    window.addEventListener('click',e=>{
+      const onHighlight=e.target.closest&&e.target.closest('.reveal');
+      if(!onHighlight) drawing=false;
     });
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
+    window.addEventListener('keydown',e=>{if(e.key==='Escape') drawing=false;});
 
-    // -------------------------
-    // Helpers
-    // -------------------------
-    function hexToRgba(hex, a=1) {
-      const rgb = hexToRgb(hex) || { r:0,g:0,b:0 };
-      return `rgba(${rgb.r},${rgb.g},${rgb.b},${a})`;
-    }
-    function hexToRgb(hex) {
-      if (!hex) return null;
-      const h = hex.replace('#','').trim();
-      if (h.length === 3) {
-        return { r: parseInt(h[0]+h[0],16), g: parseInt(h[1]+h[1],16), b: parseInt(h[2]+h[2],16) };
-      }
-      if (h.length === 6) {
-        return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
-      }
-      return null;
+    // --- Helper ---
+    function hexToRgba(hex,a=1){
+      const h=hex.replace('#','');
+      const r=parseInt(h.length===3?h[0]+h[0]:h.slice(0,2),16);
+      const g=parseInt(h.length===3?h[1]+h[1]:h.slice(2,4),16);
+      const b=parseInt(h.length===3?h[2]+h[2]:h.slice(4,6),16);
+      return `rgba(${r},${g},${b},${a})`;
     }
 
-    // -------------------------
-    // Theme toggle (also updates blend mode)
-    // -------------------------
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
-    function setTheme(theme) {
-      if (theme === 'dark') {
-        body.classList.add('dark-mode'); localStorage.setItem('theme','dark'); themeToggle.textContent='☀';
-      } else {
-        body.classList.remove('dark-mode'); localStorage.setItem('theme','light'); themeToggle.textContent='⏾';
-      }
-      applyBlendMode(); // <- reapply correct blending
-    }
-    window.addEventListener('DOMContentLoaded', () => { setTheme(localStorage.getItem('theme') || 'light'); });
-    themeToggle.addEventListener('click', () => { setTheme(body.classList.contains('dark-mode') ? 'light' : 'dark'); });
+    // --- Animated favicon ---
+    const favicons=["images/favicon.png","images/favicon-1.png"];
+    let fi=0;
+    setInterval(()=>{
+      fi=(fi+1)%favicons.length;
+      document.getElementById("dynamic-favicon").href=favicons[fi];
+    },1000);
   </script>
 </body>
 </html>
