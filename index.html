@@ -79,7 +79,7 @@
     <!-- Hidden resume appendix -->
     <section id="resume-appendix" hidden aria-hidden="true">
       <div class="collapse-bar">
-        <button aria-label="Close resume"> close </button>
+        <button id="resume-close" aria-label="Close resume"> close </button>
       </div>
 
       <!-- EXPERIENCE -->
@@ -295,7 +295,7 @@
     // --- Resume appendix logic ---
     const resumeLink = document.getElementById('resume-link');
     const resume = document.getElementById('resume-appendix');
-    const resumeClose = document.getElementById('resume-close');
+    const resumeClose = document.getElementById('');
     const resumeExperience = document.getElementById('resume-experience');
 
     if (resumeLink && resume && resumeClose) {
