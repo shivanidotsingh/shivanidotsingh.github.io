@@ -1,288 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shivani Singh CV</title>
-    <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i" rel="stylesheet">
-    <style>
-        /* Base styles */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Helvetica', sans-serif;
-            font-size: 16px;
-            font-weight: 300;
-            color: #BFBFBF;
-            line-height: 50px;
-            /* background-color: snow; (commented out in original) */
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shivani Singh · Resume</title>
 
-        h1, h2, h3, h4 {
-            margin: 0;
-            padding: 0;
-            font-family: 'Helvetica', sans-serif; /* Ensuring consistency with body font */
-            font-weight: 300;
-        }
+  <!-- Use the same site styles -->
+  <link rel="stylesheet" href="style.css"/>
 
-        /* Links */
-        .container a {
-            color: #fff;
-            text-decoration: none;
-        }
-
-        .item a {
-            color: #BFBFBF;
-            text-decoration: none;
-        }
-
-        /* Header Rectangle */
-        #rectangle {
-            position: sticky;
-            top: 0;
-            background: #0057FF;
-            color: #FFF;
-            font-weight: 700;
-            font-size: 25px;
-            z-index: 99;
-            padding: 15px; /* Moved from .container inside #rectangle */
-            display: flex; /* Use flexbox for alignment */
-            justify-content: space-between; /* Space out content and print icon */
-            align-items: center; /* Center items vertically */
-        }
-
-        /* Print icon styling */
-        #print-icon {
-            cursor: pointer;
-            width: 24px; /* Adjust size as needed */
-            height: 24px; /* Adjust size as needed */
-            fill: white; /* Color of the icon */
-            margin-right: 15px; /* Add some right margin */
-        }
-
-        /* Footer Rectangle */
-        #footrect {
-            background: #0057FF;
-            color: #FFF;
-            font-weight: 700;
-            font-size: 25px;
-            padding: 20px;
-        }
-
-        /* General Container for content */
-        .container {
-            padding: 15px;
-        }
-
-        /* Item blocks */
-        .item {
-            margin: 20px 0;
-        }
-
-        /* Headings */
-        h2 {
-            color: #0057FF;
-            font-weight: 700;
-            display: inline-block;
-            line-height: 40px;
-            margin-top: 28px;
-        }
-
-        /* Rule/Divider */
-        .rule {
-            box-sizing: border-box;
-            height: 1px;
-            background: #0057FF;
-        }
-
-        h3 {
-            color: #979797;
-            font-weight: 700;
-            margin-top: 20px;
-        }
-
-        /* 'of' text style */
-        .of {
-            font-weight: 300;
-            font-family: 'Georgia', serif;
-            font-style: italic;
-        }
-
-        h3, h4 {
-            line-height: 28px;
-        }
-
-        h5 {
-            font-size: 10px;
-            color: #6096FF;
-            margin-top: 8px; /* Space between h3/h4 and h5 */
-            line-height: 1.4;
-            margin-bottom: 0;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        p {
-            font-size: 16px;
-            color: grey;
-            line-height: 1.5;
-            margin-top: 8px; /* Reduced top margin to bring p closer to h5 */
-        }
-
-        /* Media Queries */
-
-        /* Styles for screens wider than 645px */
-        @media (min-width: 645px) {
-            body, h1, h2, h3, h4 {
-                font-size: 24px;
-            }
-
-            #rectangle {
-                font-size: 32px;
-            }
-
-            .container {
-                width: 85%;
-                margin: auto;
-            }
-
-            h5 {
-                font-size: 12px;
-                line-height: 1.4;
-            }
-
-            h3, h4 {
-                display: inline-block;
-                vertical-align: top;
-                margin-top: 20px;
-            }
-
-            h4 ul {
-                list-style: none;
-                margin: 0;
-                padding: 0;
-                margin-right: 48px;
-            }
-
-            h4 li {
-                padding: 0 0 12px 0;
-            }
-        }
-
-        /* Styles for screens wider than 820px */
-        @media (min-width: 820px) {
-            .container {
-                width: 820px;
-                margin: 0 auto;
-            }
-        }
-    </style>
+  <style>
+    /* Small, page-local additions matching your site */
+    .resume-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .resume-print {
+      font-size: 0.9em;
+      text-decoration: none;
+      border: 1px solid #111;
+      border-radius: 4px;
+      padding: 4px 8px;
+      line-height: 1.2;
+      cursor: pointer;
+    }
+    .rule {
+      height: 1px;
+      background: #111;
+      margin: 8px 0 20px;
+    }
+    /* Section heading uses your site’s h2 border-top already.
+       If you prefer the thin rule instead, you can remove that h2 border in style.css. */
+    h2 { margin-top: 2em; } /* keep consistent spacing */
+    a { color: inherit; }   /* no blue: links inherit body color */
+    /* Tighten small meta lines under titles without adding new classes */
+    h5 {
+      font-size: 0.9em;
+      margin: 6px 0 0;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: #333;
+      line-height: 1.4;
+      font-weight: 400;
+    }
+    /* Compact item spacing */
+    .item { margin: 18px 0; }
+  </style>
 </head>
 <body>
-    <div id="rectangle">
-        <div class="container">
-            <a href="https://bento.me/singhshivani" target="_blank">Shivani Singh</a>
-        </div>
-        <!-- Print Icon SVG -->
-        <svg id="print-icon" onclick="window.print()" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19 8H5C3.34 8 2 9.34 2 11V17H6V21H18V17H22V11C22 9.34 20.66 8 19 8ZM16 19H8V14H16V19ZM19 12C18.45 12 18 11.55 18 11C18 10.45 18.45 10 19 10C19.55 10 20 10.45 20 11C20 11.55 19.55 12 19 12ZM18 3H6V7H18V3Z"/>
-        </svg>
-    </div>
+  <main id="page">
+    <header class="resume-header">
+      <h1>Shivani Singh</h1>
+      <a class="resume-print" href="#" onclick="window.print()">Print</a>
+    </header>
 
-    <div class="container">
-        <div class="tooltip">
-            <h2>Experience</h2>
-        </div>
+    <!-- EXPERIENCE -->
+    <h2>Experience</h2>
+    <div class="rule"></div>
 
-        <div class="rule"></div>
+    <section class="item">
+      <h3>Design Specialist,&nbsp;</h3>
+      <h4><a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF (Office of Innovation)</a></h4>
+      <h5>2023—Present · Stockholm, Sweden</h5>
+      <p>Driving digital experience design for both in-house products and investee ventures (40% prototyping). I also facilitate collaborative workshops to build cross-functional consensus and achieve alignment (30% strategic). Additionally, I contribute to visual communication design to improve brand presence and clarity (30% graphic).</p>
+    </section>
 
-        <div class="item">
-            <h3>Design Specialist,&nbsp;</h3>
-            <h4><a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF (Office of Innovation)</a></h4>
-            <h5>2023-Present | Stockholm, Sweden</h5>
-            <p>Driving digital experience design for both in-house products and investee ventures (40% prototyping). I also facilitate collaborative workshops to build cross-functional consensus and achieve alignment (30% strategic). Additionally, I contribute to visual communication design to improve brand presence and clarity (30% graphic).</p>
-        </div>
+    <section class="item">
+      <h3>Senior Designer,&nbsp;</h3>
+      <h4><a href="https://www.salesforce.com/ignite/offer-ings/" target="_blank">Salesforce</a></h4>
+      <h5>2021—2023 · San Francisco, USA</h5>
+      <p>Combined strategy, storytelling and technology to create compelling narratives and visions for digital transformation with clients. Our stories helped customers simplify complexity, identify opportunities, and build conviction in the platform. Notable clients — 3M, Verizon, HBS, HPE, Amazon.</p>
+    </section>
 
-        <div class="item">
-            <h3>Senior Designer,&nbsp;</h3>
-            <h4><a href="https://www.salesforce.com/ignite/offer-ings/" target="_blank">Salesforce</a></h4>
-            <h5>2021-2023 | San Francisco, USA</h5>
-            <p>Combined strategy, storytelling and technology to create compelling narratives and visions for the digital transformation efforts with our clients. Our stories helped customers simplify complexity, identify opportunities, and build conviction in the platform.
+    <section class="item">
+      <h3>UX Designer,&nbsp;</h3>
+      <h4><a href="https://parallelhq.com" target="_blank">Parallel Labs</a></h4>
+      <h5>2018—2019 · Bangalore, India</h5>
+      <p>Applied design sprints to align business goals with consumer needs. Ran design jams with Facebook’s TTC Labs across Singapore, Hyderabad and Bangalore to bring policy makers and entrepreneurs together on data privacy and AI.</p>
+    </section>
 
-Notable Clients—3M, Verizon, HBS, HPE, Amazon.</p>
-        </div>
+    <section class="item">
+      <h3>Graphic Designer,&nbsp;</h3>
+      <h4>Happy mcgarrybowen</h4>
+      <h5>2016—2018 · Bangalore, India</h5>
+      <p>Developed brand communication strategies and visual identities for regional brands such as Cultfit, Chaipoint, Marine Kingdom, and NSRCEL.</p>
+    </section>
 
-        <div class="item">
-            <h3>UX Designer,&nbsp;</h3>
-            <h4><a href="https://parallelhq.com" target="_blank">Parallel Labs</a></h4>
-            <h5>2018-2019 | Bangalore, India</h5>
-            <p>Applied the framework of design sprints to align business goals with consumer needs. Ran design jams with Facebook's TTC Labs across Singapore, Hyderabad and Bangalore to bring policy makers and entrepreneurs together on the subjects of data privacy and A.I</p>
-        </div>
+    <section class="item">
+      <h3>Brand Designer,&nbsp;</h3>
+      <h4>Brand Union</h4>
+      <h5>2015—2016 · Bangalore, India</h5>
+      <p>Part of a small design team, ideating and implementing brand systems and packaging for clients including Yardley, Team Indus and Airtel.</p>
+    </section>
 
-        <div class="item">
-            <h3>Graphic Designer,&nbsp;</h3>
-            <h4>Happy mcgarrybowen</h4>
-            <h5>2016—2018 | Bangalore, India</h5>
-            <p>Developed brand communication strategies and visual identities for many locally relevant brands in the region such as Cultfit, Chaipoint, Marine Kingdom, and NSRCEL among others.</p>
-        </div>
+    <section class="item">
+      <h3>Graphic Design Intern,&nbsp;</h3>
+      <h4>Wolff Olins</h4>
+      <h5>2015 · Dubai, UAE</h5>
+    </section>
 
-        <div class="item">
-            <h3>Brand Designer,&nbsp;</h3>
-            <h4>Brand Union</h4>
-            <h5>2015—2016 | Bangalore, India</h5>
-            <p>I was part of a small and competent design team, ideating and implementing brand communication systems, and product packaging for a variety of clients including Yardley, Team Indus and Airtel.</p>
-        </div>
+    <section class="item">
+      <h3>Art Director,&nbsp;</h3>
+      <h4>DDB Mudra</h4>
+      <h5>2015 · Mumbai, India</h5>
+      <p>Represented India as a Young Lion at Cannes Lions. Designed advertisements and brand collaterals for HBO India, Volkswagen and others.</p>
+    </section>
 
-        <div class="item">
-            <h3>Graphic Design Intern,&nbsp;</h3>
-            <h4>Wolff Olins</h4>
-            <h5>2015 | Dubai, UAE</h5>
-        </div>
+    <!-- EDUCATION -->
+    <h2>Education</h2>
+    <div class="rule"></div>
 
-        <div class="item">
-            <h3>Art Director,&nbsp;</h3>
-            <h4>DDB Mudra</h4>
-            <h5>2015 | Mumbai, India</h5>
-            <p>Earned the opportunity to represent India as a Young Lion at the Cannes Lions Festival of Creativity. Designed advertisements and brand collaterals for various clients including HBO India and Volkswagen among others.</p>
-        </div>
+    <section class="item">
+      <h3>Master of Design,&nbsp;</h3>
+      <h4><a href="http://www.ixd.cca.edu/" target="_blank">California College of the Arts</a></h4>
+      <h5>2019—2020 · Interaction Design · San Francisco, USA</h5>
+    </section>
 
-        <h2>Education</h2>
-        <div class="rule"></div>
+    <section class="item">
+      <h3>Bachelor of Design,&nbsp;</h3>
+      <h4>National Institute of Design</h4>
+      <h5>2010—2014 · Graphic Design · Ahmedabad, India</h5>
+    </section>
 
-        <div class="item">
-            <h3>Master <span class="of">of</span> Design,&nbsp;</h3>
-            <h4><a href="http://www.ixd.cca.edu/" target="_blank">California College of the Arts</a></h4>
-            <h5>2019-2020 | Interaction Design | San Francisco, USA</h5>
-        </div>
+    <section class="item">
+      <h3>ISC Graduation,&nbsp;</h3>
+      <h4>Welham Girls’ School</h4>
+      <h5>2002—2010 · Dehradun, India</h5>
+    </section>
 
-        <div class="item">
-            <h3>Bachelor <span class="of">of</span> Design,&nbsp;</h3>
-            <h4>National Institute of Design</h4>
-            <h5>2010—2014 | Graphic Design | Ahmedabad, India</h5>
-        </div>
+    <!-- SKILLS -->
+    <h2>Skills</h2>
+    <div class="rule"></div>
 
-        <div class="item">
-            <h3>ISC Graduation,&nbsp;</h3>
-            <h4>Welham Girls' School</h4>
-            <h5>2002—2010 | Dehradun, India</h5>
-        </div>
-        
-        <h2>Skills</h2>
-        <div class="rule"></div>
+    <section class="item">
+      <p><strong>Visual Design</strong> — Brand, Presentation, Packaging. <br/>
+         <strong>UX & Service Design</strong> — Research, Synthesis, Prototyping. <br/>
+         <strong>Tools</strong> — Miro, Figma, Notion, Procreate, Keynote, MS Suite, Adobe Photoshop & Illustrator. <br/>
+         <strong>AI</strong> — Prompt-based production with ChatGPT, Gemini, Claude, Perplexity.</p>
+    </section>
 
-        <div class="item">
-            <p>Visual Design — Brand, Presentation, Packaging. User Experience and Service Design — Research, Synthesis, Prototyping. Tools — Miro, Figma, Notion, Procreate, Keynote, MS Suite, Adobe Photoshop and Illustrator. Prompt based production with Open AI's ChatGPT, Google Gemini, Anthropic Claude and Perplexity. </p>
-           
-        </div>
-        
-    </div>
-    
-      
-
-    <div id="footrect">
-        <div class="container">
-            <span class="of">say hello</span> at 25.shivanisingh@gmail.com or +46 76 885 66 09
-        </div>
-    </div>
+    <p class="note" style="font-size:.9em; opacity:.7;">
+      say hello: 25.shivanisingh@gmail.com · +46 76 885 66 09
+    </p>
+  </main>
 </body>
 </html>
