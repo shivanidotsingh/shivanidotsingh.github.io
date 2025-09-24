@@ -5,145 +5,163 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shivani Singh · Resume</title>
 
-  <!-- Use the same site styles -->
+  <!-- Use the site’s main CSS -->
   <link rel="stylesheet" href="style.css"/>
 
   <style>
-    /* Small, page-local additions matching your site */
-    .resume-header {
+    /* Resume-specific tweaks */
+    .resume-section {
+      font-size: 0.9em;      /* smaller, like notes */
+      font-weight: 500;
+      margin: 2em 0 0.5em;
+      opacity: 0.7;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .item {
+      margin: 1.2em 0;
+    }
+
+    .item-header {
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5em;
       align-items: baseline;
-      gap: 12px;
-      margin-bottom: 8px;
+      font-weight: 500;
     }
-    .resume-print {
+
+    .item-date {
       font-size: 0.9em;
-      text-decoration: none;
-      border: 1px solid #111;
-      border-radius: 4px;
-      padding: 4px 8px;
-      line-height: 1.2;
-      cursor: pointer;
+      opacity: 0.6;
+      margin-right: 0.5em;
+      white-space: nowrap;
     }
-    .rule {
-      height: 1px;
-      background: #111;
-      margin: 8px 0 20px;
+
+    .item-role {
+      font-weight: 600;
     }
-    /* Section heading uses your site’s h2 border-top already.
-       If you prefer the thin rule instead, you can remove that h2 border in style.css. */
-    h2 { margin-top: 2em; } /* keep consistent spacing */
-    a { color: inherit; }   /* no blue: links inherit body color */
-    /* Tighten small meta lines under titles without adding new classes */
-    h5 {
-      font-size: 0.9em;
-      margin: 6px 0 0;
-      letter-spacing: 0.02em;
-      text-transform: none;
-      color: #333;
-      line-height: 1.4;
+
+    .item-org a, .item-org {
       font-weight: 400;
+      color: inherit;
+      text-decoration: none;
     }
-    /* Compact item spacing */
-    .item { margin: 18px 0; }
+
+    .item p {
+      margin-top: 0.4em;
+    }
   </style>
 </head>
 <body>
   <main id="page">
-    <header class="resume-header">
-      <h1>Shivani Singh</h1>
-      <a class="resume-print" href="#" onclick="window.print()">Print</a>
-    </header>
-
+    <h1>Shivani Singh</h1>
+    <p class="note" style="font-size:.9em; opacity:.7;">
+      email: 25.shivanisingh@gmail.com · phone: +46 76 885 66 09
+    </p>
     <!-- EXPERIENCE -->
-    <h2>Experience</h2>
-    <div class="rule"></div>
+    <div class="resume-section">Experience</div>
 
-    <section class="item">
-      <h3>Design Specialist,&nbsp;</h3>
-      <h4><a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF (Office of Innovation)</a></h4>
-      <h5>2023—Present · Stockholm, Sweden</h5>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2023—Present</span>
+        <span class="item-role">Design Specialist,</span>
+        <span class="item-org"><a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF Office of Innovation</a> · Stockholm, Sweden</span>
+      </div>
       <p>Driving digital experience design for both in-house products and investee ventures (40% prototyping). I also facilitate collaborative workshops to build cross-functional consensus and achieve alignment (30% strategic). Additionally, I contribute to visual communication design to improve brand presence and clarity (30% graphic).</p>
-    </section>
+    </div>
 
-    <section class="item">
-      <h3>Senior Designer,&nbsp;</h3>
-      <h4><a href="https://www.salesforce.com/ignite/offer-ings/" target="_blank">Salesforce</a></h4>
-      <h5>2021—2023 · San Francisco, USA</h5>
-      <p>Combined strategy, storytelling and technology to create compelling narratives and visions for digital transformation with clients. Our stories helped customers simplify complexity, identify opportunities, and build conviction in the platform. Notable clients — 3M, Verizon, HBS, HPE, Amazon.</p>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2021—2023</span>
+        <span class="item-role">Senior Designer,</span>
+        <span class="item-org"><a href="https://www.salesforce.com/ignite/offer-ings/" target="_blank">Salesforce</a> · San Francisco, USA</span>
+      </div>
+      <p>Combined strategy, storytelling and technology to create compelling narratives and visions for digital transformation with clients. Notable clients — 3M, Verizon, HBS, HPE, Amazon.</p>
+    </div>
 
-    <section class="item">
-      <h3>UX Designer,&nbsp;</h3>
-      <h4><a href="https://parallelhq.com" target="_blank">Parallel Labs</a></h4>
-      <h5>2018—2019 · Bangalore, India</h5>
-      <p>Applied design sprints to align business goals with consumer needs. Ran design jams with Facebook’s TTC Labs across Singapore, Hyderabad and Bangalore to bring policy makers and entrepreneurs together on data privacy and AI.</p>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2018—2019</span>
+        <span class="item-role">UX Designer,</span>
+        <span class="item-org"><a href="https://parallelhq.com" target="_blank">Parallel Labs</a> · Bangalore, India</span>
+      </div>
+      <p>Applied design sprints to align business goals with consumer needs. Ran design jams with Facebook’s TTC Labs across Singapore, Hyderabad and Bangalore.</p>
+    </div>
 
-    <section class="item">
-      <h3>Graphic Designer,&nbsp;</h3>
-      <h4>Happy mcgarrybowen</h4>
-      <h5>2016—2018 · Bangalore, India</h5>
-      <p>Developed brand communication strategies and visual identities for regional brands such as Cultfit, Chaipoint, Marine Kingdom, and NSRCEL.</p>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2016—2018</span>
+        <span class="item-role">Graphic Designer,</span>
+        <span class="item-org">Happy mcgarrybowen · Bangalore, India</span>
+      </div>
+      <p>Developed brand communication strategies and visual identities for Cultfit, Chaipoint, Marine Kingdom, and NSRCEL among others.</p>
+    </div>
 
-    <section class="item">
-      <h3>Brand Designer,&nbsp;</h3>
-      <h4>Brand Union</h4>
-      <h5>2015—2016 · Bangalore, India</h5>
-      <p>Part of a small design team, ideating and implementing brand systems and packaging for clients including Yardley, Team Indus and Airtel.</p>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2015—2016</span>
+        <span class="item-role">Brand Designer,</span>
+        <span class="item-org">Brand Union · Bangalore, India</span>
+      </div>
+      <p>Part of a small design team, ideating and implementing brand systems and packaging for Yardley, Team Indus and Airtel.</p>
+    </div>
 
-    <section class="item">
-      <h3>Graphic Design Intern,&nbsp;</h3>
-      <h4>Wolff Olins</h4>
-      <h5>2015 · Dubai, UAE</h5>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2015</span>
+        <span class="item-role">Graphic Design Intern,</span>
+        <span class="item-org">Wolff Olins · Dubai, UAE</span>
+      </div>
+    </div>
 
-    <section class="item">
-      <h3>Art Director,&nbsp;</h3>
-      <h4>DDB Mudra</h4>
-      <h5>2015 · Mumbai, India</h5>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2015</span>
+        <span class="item-role">Art Director,</span>
+        <span class="item-org">DDB Mudra · Mumbai, India</span>
+      </div>
       <p>Represented India as a Young Lion at Cannes Lions. Designed advertisements and brand collaterals for HBO India, Volkswagen and others.</p>
-    </section>
+    </div>
 
     <!-- EDUCATION -->
-    <h2>Education</h2>
-    <div class="rule"></div>
+    <div class="resume-section">Education</div>
 
-    <section class="item">
-      <h3>Master of Design,&nbsp;</h3>
-      <h4><a href="http://www.ixd.cca.edu/" target="_blank">California College of the Arts</a></h4>
-      <h5>2019—2020 · Interaction Design · San Francisco, USA</h5>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2019—2020</span>
+        <span class="item-role">Master of Design,</span>
+        <span class="item-org"><a href="http://www.ixd.cca.edu/" target="_blank">California College of the Arts</a> · San Francisco, USA</span>
+      </div>
+      <p>Interaction Design</p>
+    </div>
 
-    <section class="item">
-      <h3>Bachelor of Design,&nbsp;</h3>
-      <h4>National Institute of Design</h4>
-      <h5>2010—2014 · Graphic Design · Ahmedabad, India</h5>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2010—2014</span>
+        <span class="item-role">Bachelor of Design,</span>
+        <span class="item-org">National Institute of Design · Ahmedabad, India</span>
+      </div>
+      <p>Graphic Design</p>
+    </div>
 
-    <section class="item">
-      <h3>ISC Graduation,&nbsp;</h3>
-      <h4>Welham Girls’ School</h4>
-      <h5>2002—2010 · Dehradun, India</h5>
-    </section>
+    <div class="item">
+      <div class="item-header">
+        <span class="item-date">2002—2010</span>
+        <span class="item-role">ISC Graduation,</span>
+        <span class="item-org">Welham Girls’ School · Dehradun, India</span>
+      </div>
+    </div>
 
     <!-- SKILLS -->
-    <h2>Skills</h2>
-    <div class="rule"></div>
+    <div class="resume-section">Skills</div>
 
-    <section class="item">
-      <p><strong>Visual Design</strong> — Brand, Presentation, Packaging. <br/>
-         <strong>UX & Service Design</strong> — Research, Synthesis, Prototyping. <br/>
-         <strong>Tools</strong> — Miro, Figma, Notion, Procreate, Keynote, MS Suite, Adobe Photoshop & Illustrator. <br/>
+    <div class="item">
+      <p><strong>Visual Design</strong> — Brand, Presentation, Packaging.<br/>
+         <strong>UX & Service Design</strong> — Research, Synthesis, Prototyping.<br/>
+         <strong>Tools</strong> — Miro, Figma, Notion, Procreate, Keynote, MS Suite, Adobe Photoshop & Illustrator.<br/>
          <strong>AI</strong> — Prompt-based production with ChatGPT, Gemini, Claude, Perplexity.</p>
-    </section>
-
-    <p class="note" style="font-size:.9em; opacity:.7;">
-      say hello: 25.shivanisingh@gmail.com · +46 76 885 66 09
-    </p>
+    </div>
   </main>
 </body>
 </html>
