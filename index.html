@@ -21,14 +21,8 @@
 
     /* --- Resume appendix styles (lightweight, matching site) --- */
     #resume-appendix[hidden] { display: none; }
-    #resume-appendix {
-      margin-top: 28px;
-    }
-    #resume-appendix .collapse-bar {
-      display: flex; justify-content: flex-end; align-items: center;
-      margin: 0 0 8px; gap: 8px;
-    }
-    
+    #resume-appendix { margin-top: 28px; }
+
     .resume-section {
       font-size: 0.9em; font-weight: 500; margin: 1.6em 0 0.4em;
       opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em;
@@ -54,7 +48,7 @@
 
   <!-- CONTENT -->
   <main id="page">
-    <h1 style="margin-top:70px;">Hi, I'm Shivani</h1>
+    <h1 style="margin-top:75px;">Hi, I'm Shivani</h1>
     <p>
       A digital designer with an aptitude for analytical thinking and an
       <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank">live here</a></span>.
@@ -78,9 +72,8 @@
 
     <!-- Hidden resume appendix -->
     <section id="resume-appendix" hidden aria-hidden="true">
-      <div class="collapse-bar">
-        <button id="resume-close" aria-label="Close resume"> close </button>
-      </div>
+      <!-- simple close link -->
+      <p><a id="resume-close" class="blue-link" href="#">close</a></p>
 
       <!-- EXPERIENCE -->
       <div id="resume-experience" class="resume-section">Experience</div>
@@ -295,7 +288,7 @@
     // --- Resume appendix logic ---
     const resumeLink = document.getElementById('resume-link');
     const resume = document.getElementById('resume-appendix');
-    const resumeClose = document.getElementById('');
+    const resumeClose = document.getElementById('resume-close');
     const resumeExperience = document.getElementById('resume-experience');
 
     if (resumeLink && resume && resumeClose) {
@@ -305,11 +298,12 @@
         resume.setAttribute('aria-hidden', 'false');
         // Smooth scroll to Experience
         resumeExperience.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // Optional: pause drawing when resume opens
+        // Pause drawing when resume opens
         if (!isMobile) { drawing = false; }
       });
 
-      resumeClose.addEventListener('click', () => {
+      resumeClose.addEventListener('click', (e) => {
+        e.preventDefault();
         resume.hidden = true;
         resume.setAttribute('aria-hidden', 'true');
         // Scroll back to the resume link
