@@ -5,22 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>shivani singh</title>
 
-  <!-- Animated favicon: will swap images via JS -->
+  <!-- Animated favicon: JS swaps these like a gif -->
   <link id="dynamic-favicon" rel="icon" href="images/favicon.png" type="image/png">
 
   <link rel="stylesheet" href="style.css">
   <style>
+    /* Canvas always behind content (desktop only uses it) */
     #trail-canvas {
       position: fixed; inset: 0;
       z-index: 0;
       pointer-events: none;
     }
+    /* Keep all normal content above the canvas */
     body > *:not(#trail-canvas) { position: relative; z-index: 1; }
   </style>
 </head>
 <body>
+  <!-- Canvas for desktop trail (mobile will ignore it) -->
   <canvas id="trail-canvas"></canvas>
 
+  <!-- MOBILE-ONLY dots live here (CSS already in your style.css) -->
+  <div id="random-dots-container"></div>
+
+  <!-- ===== Your content (verbatim) ===== -->
   <h1>Hi, I'm Shivani</h1>
   <p>
     A digital designer with an aptitude for analytical thinking and an
@@ -39,12 +46,16 @@
     <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of <a href="https://singh.work/case-study.html">this project</a> with an industrial arts school in Oakland. </span>
   </p>
 
-  <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more, take a look at my <a href="https://singh.work/resume.html" target="_blank">resume</a> or drop me an <a href="mailto:25.shivanisingh@gmail.com" target="_blank">email</a>.</p>
+  <p class="note">Born in India, I'm currently based in Stockholm. If you're curious to know more, take a look at my <a href="https://singh.work/resume.html" target="_blank">resume</a>.</p>
 
   <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Sep 17, 2025 </p>
+  <!-- ===== end content ===== -->
 
   <script>
-    // --- Highlight colors & state ---
+    // --- Env detect ---
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    // --- Highlight colors ---
     const highlightColors = {
       'highlight-yellow': '#FDFB8C',
       'highlight-blue':   '#D6F5FF',
@@ -52,26 +63,51 @@
       'highlight-green':  '#DDFFAA',
       'highlight-purple': '#EEDDFF'
     };
+
+    // ===== Desktop: highlighter trail =====
     let drawing = false;
     let currentColor = null;
 
     function expandOnce(buttonEl, contentId) {
+      // reveal text
       const contentEl = document.getElementById(contentId);
       contentEl.classList.add('visible');
       buttonEl.disabled = true;
+
+      // color from clicked highlight
       for (const cn of buttonEl.classList) {
-        if (cn.startsWith('highlight-')) {
-          currentColor = highlightColors[cn]; break;
-        }
+        if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
       }
-      drawing = true;
+
+      if (isMobile) {
+        // MOBILE: create a static dot (no movement)
+        spawnStaticDot(currentColor);
+      } else {
+        // DESKTOP: arm the brush
+        drawing = true;
+      }
     }
 
-    // --- Canvas setup ---
+    // ===== Mobile: static dots =====
+    function spawnStaticDot(color) {
+      const cont = document.getElementById('random-dots-container');
+      const dot = document.createElement('span');
+      dot.className = 'collected-dot';
+      dot.style.backgroundColor = color;
+      const size = 16;
+      const x = Math.random() * (window.innerWidth - size);
+      const y = Math.random() * (window.innerHeight - size);
+      dot.style.left = x + 'px';
+      dot.style.top = y + 'px';
+      cont.appendChild(dot);
+    }
+
+    // ===== Desktop: canvas trail behind text =====
     const canvas = document.getElementById('trail-canvas');
     const ctx = canvas.getContext('2d');
+
     function resizeCanvas() {
-      canvas.width = window.innerWidth;
+      canvas.width = window.innerWidth;      // ok to clear on resize
       canvas.height = window.innerHeight;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
@@ -80,36 +116,41 @@
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    // --- Painter ---
     let last = null, pending = null, paintingScheduled = false;
-    function schedulePaint(){ if(!paintingScheduled){paintingScheduled=true; requestAnimationFrame(paintStep);} }
+
+    function schedulePaint(){ if(!paintingScheduled){ paintingScheduled = true; requestAnimationFrame(paintStep); } }
     function paintStep(){
-      paintingScheduled=false;
-      if(!drawing||!currentColor||!pending) return;
-      const {x,y}=pending;
-      if(!last){ last={x,y}; return; }
-      ctx.strokeStyle=hexToRgba(currentColor,0.14);
-      ctx.lineWidth=18;
-      
+      paintingScheduled = false;
+      if (!drawing || !currentColor || !pending || isMobile) return;
+      const { x, y } = pending;
+      if (!last) { last = { x, y }; return; }
+
+      // core
+      ctx.strokeStyle = hexToRgba(currentColor, 0.14);
+      ctx.lineWidth = 10;                     /* make thicker if you like */
       ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
-      ctx.strokeStyle=hexToRgba(currentColor,0.05);
-      ctx.lineWidth=24;
+
+      // halo
+      ctx.strokeStyle = hexToRgba(currentColor, 0.05);
+      ctx.lineWidth = 20;
       ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
-      last={x,y};
+
+      last = { x, y };
     }
-    window.addEventListener('pointermove',e=>{pending={x:e.clientX,y:e.clientY};schedulePaint();},{passive:true});
-    window.addEventListener('pointerdown',e=>{last={x:e.clientX,y:e.clientY};},{passive:true});
-    window.addEventListener('mouseleave',()=>{last=null;});
-    window.addEventListener('pointerleave',()=>{last=null;});
 
-    // --- Pause drawing ---
-    window.addEventListener('click',e=>{
-      const onHighlight=e.target.closest&&e.target.closest('.reveal');
-      if(!onHighlight) drawing=false;
-    });
-    window.addEventListener('keydown',e=>{if(e.key==='Escape') drawing=false;});
+    if (!isMobile) {
+      window.addEventListener('pointermove', e => { pending = {x:e.clientX, y:e.clientY}; schedulePaint(); }, {passive:true});
+      window.addEventListener('pointerdown', e => { last = {x:e.clientX, y:e.clientY}; }, {passive:true});
+      window.addEventListener('mouseleave', () => { last = null; });
+      window.addEventListener('pointerleave', () => { last = null; });
+      // pause drawing except when clicking highlights
+      window.addEventListener('click', (e) => {
+        const onHighlight = e.target.closest && e.target.closest('.reveal');
+        if (!onHighlight) drawing = false;
+      });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
+    }
 
-    // --- Helper ---
     function hexToRgba(hex,a=1){
       const h=hex.replace('#','');
       const r=parseInt(h.length===3?h[0]+h[0]:h.slice(0,2),16);
@@ -118,13 +159,15 @@
       return `rgba(${r},${g},${b},${a})`;
     }
 
-    // --- Animated favicon ---
-    const favicons=["images/favicon.png","images/favicon-1.png"];
-    let fi=0;
-    setInterval(()=>{
-      fi=(fi+1)%favicons.length;
-      document.getElementById("dynamic-favicon").href=favicons[fi];
-    },1000);
+    // ===== Animated favicon (swap PNGs every 1s) =====
+    // Adjust paths if your files aren’t in /images
+    const favicons = ["images/favicon.png","images/favicon-1.png"];
+    let fi = 0;
+    setInterval(() => {
+      fi = (fi + 1) % favicons.length;
+      const link = document.getElementById('dynamic-favicon');
+      if (link) link.href = favicons[fi];
+    }, 1000);
   </script>
 </body>
 </html>
