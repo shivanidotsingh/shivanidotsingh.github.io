@@ -5,18 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>shivani singh</title>
 
-  <!-- Animated favicon -->
-  <link id="dynamic-favicon" rel="icon" href="images/favicon.png" type="image/png">
+  <!-- Emoji/text favicon -->
+  <link rel="icon" 
+        href="data:image/svg+xml,
+        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
+          <text y='0.9em' font-size='90'> * </text>
+        </svg>">
 
   <link rel="stylesheet" href="style.css">
   <style>
     /* Canvas fixed behind the page; doesn’t affect layout */
-    #trail-canvas {
-      position: fixed; inset: 0;
-      z-index: 0;
-      pointer-events: none;
-    }
-    /* Content wrapper sits above the canvas */
+    #trail-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
     main#page { position: relative; z-index: 1; }
   </style>
 </head>
@@ -24,7 +23,7 @@
   <!-- Behind-the-text canvas (desktop) -->
   <canvas id="trail-canvas"></canvas>
 
-  <!-- Mobile dots container (fixed; no layout impact) -->
+  <!-- Mobile dots container -->
   <div id="random-dots-container"></div>
 
   <!-- CONTENT -->
@@ -32,20 +31,41 @@
     <h1 style="margin-top:75px;">Hi, I'm Shivani</h1>
     <p>
       A digital designer with an aptitude for analytical thinking and an
-      <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank">live here</a></span>.
+      <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button>
+      <span id="play" class="inline-reveal"> — side projects and ideas in progress 
+        <a href="https://shivaniest.com" target="_blank">live here</a>
+      </span>.
       Currently shaping technology for social impact at
-      <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I guide the digital <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a> of solutions we invest in,
-      and facilitate creative <button class="reveal highlight-blue" onclick="expandOnce(this, 'collab')">collaboration</button><span id="collab" class="inline-reveal">
-      — like this <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a> where we reimagined a needs assessment process</span></span>.
+      <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button>
+      <span id="unicef" class="inline-reveal"> where I guide the digital 
+        <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a> of solutions we invest in,
+        and facilitate creative 
+        <button class="reveal highlight-blue" onclick="expandOnce(this, 'collab')">collaboration</button>
+        <span id="collab" class="inline-reveal">
+          — like this 
+          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a>
+          where we reimagined a needs assessment process
+        </span>
+      </span>.
       I think of my practice as a way to bridge intention and outcome.
       Previously, I was a designer at
-      <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button> in San Francisco<span id="sf" class="inline-reveal"> — explore my work in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a></span>.
+      <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button>
+      in San Francisco
+      <span id="sf" class="inline-reveal"> — explore my work in this 
+        <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a>
+      </span>.
       With a background in graphic design, I’ve also worked in visual communication and 
-      <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, crafting <a href="https://singh.work/logofolio">brand identities</a> for over five years</span>.
+      <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">advertising</button>
+      <span id="ads" class="inline-reveal">, crafting 
+        <a href="https://singh.work/logofolio">brand identities</a> for over five years
+      </span>.
       
-      <br><br>Born in India, I'm currently based in Stockholm. I'm an alumnus of the National Institute of Design, India and <button class="reveal highlight-green" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>, San Francisco.
-      <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of <a href="https://singh.work/case-study.html">this project</a> with an industrial arts school in Oakland. </span> Find more on my <a href="resume.html" target="_blank">resumé</a>.
-      
+      <br><br>Born in India, I'm currently based in Stockholm. I'm an alumnus of the National Institute of Design, India and 
+      <button class="reveal highlight-green" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>, San Francisco.
+      <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of 
+        <a href="https://singh.work/case-study.html">this project</a> with an industrial arts school in Oakland.
+      </span> Find more on my 
+      <a href="resume.html" target="_blank">resumé</a>.
     </p>
     <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Sep 25, 2025 </p>
   </main>
@@ -73,15 +93,14 @@
       contentEl.classList.add('visible');
       buttonEl.disabled = true;
 
-      // pick color for trail / dot
       for (const cn of buttonEl.classList) {
         if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
       }
 
       if (isMobile) {
-        spawnStaticDot(currentColor);  // mobile: static dot
+        spawnStaticDot(currentColor);
       } else {
-        drawing = true;                // desktop: start trail
+        drawing = true;
       }
     }
 
@@ -103,7 +122,7 @@
     const canvas = document.getElementById('trail-canvas');
     const ctx = canvas.getContext('2d');
     function resizeCanvas() {
-      canvas.width = window.innerWidth;    // clears on resize (acceptable)
+      canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
@@ -138,7 +157,6 @@
       window.addEventListener('pointerdown', e => { last = {x:e.clientX, y:e.clientY}; }, {passive:true});
       window.addEventListener('mouseleave', () => { last = null; });
       window.addEventListener('pointerleave', () => { last = null; });
-      // Pause drawing unless clicking a highlight
       window.addEventListener('click', (e) => {
         const onHighlight = e.target.closest && e.target.closest('.reveal');
         if (!onHighlight) drawing = false;
@@ -153,15 +171,6 @@
       const b=parseInt(h.length===3?h[2]+h[2]:h.slice(4,6),16);
       return `rgba(${r},${g},${b},${a})`;
     }
-
-    // Animated favicon swap (looks like a gif)
-    const favicons = ["images/favicon.png","images/favicon-1.png"];
-    let fi = 0;
-    setInterval(() => {
-      fi = (fi + 1) % favicons.length;
-      const link = document.getElementById('dynamic-favicon');
-      if (link) link.href = favicons[fi];
-    }, 1000);
   </script>
 </body>
 </html>
