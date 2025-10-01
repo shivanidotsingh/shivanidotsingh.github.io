@@ -23,7 +23,6 @@ h1 {
   margin-right: 5px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: 300;       /* Light */
-  font-stretch: condensed; /* Slightly condensed if browser supports it */
   letter-spacing: -0.02em; /* fallback for condensed look */
 }
 h2 { margin-top: 2em; border-top: 1px solid #111; padding-top: 1.5em; }
