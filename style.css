@@ -4,17 +4,28 @@ body {
   font-weight: 400;
   max-width: 640px;
   margin: 40px auto;
-  /*padding: 40px 20px;*/
   line-height: 1.8;
   color: #000;
   background-color: #fff;
   font-size: 1.1em;
   position: relative;
   min-height: 100dvh;
+
+  background-image: radial-gradient(#ccc 0.6px, transparent 0.6px);
+  background-size: 96px 96px; /* ≈1 inch grid */
+  background-position: 0 0;
 }
 
 h1, h2 { line-height: 1.3; }
-h1 { display: inline-block; vertical-align: middle; margin-right: 5px; }
+h1 {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 5px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-weight: 300;       /* Light */
+  font-stretch: condensed; /* Slightly condensed if browser supports it */
+  letter-spacing: -0.02em; /* fallback for condensed look */
+}
 h2 { margin-top: 2em; border-top: 1px solid #111; padding-top: 1.5em; }
 
 img {
