@@ -11,9 +11,8 @@ body {
   position: relative;
   min-height: 100dvh;
 
-  background-image: radial-gradient(#ccc 0.6px, transparent 0.6px);
-  background-size: 96px 96px; /* ≈1 inch grid */
-  background-position: 0 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96' fill='lightgray'><circle cx='2' cy='2' r='1'/></svg>");
+  background-repeat: repeat;
 }
 
 h1, h2 { line-height: 1.3; }
