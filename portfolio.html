@@ -6,38 +6,55 @@
   <title>shivani's portfolio</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* --- Portfolio Grid Overrides --- */
+    /* Standard page width for intro content */
     main#page {
-      max-width: 2400px;
+      max-width: 640px;
       margin: 40px auto;
       padding: 0 20px;
     }
 
-    .portfolio-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
-      margin-top: 2.5em;
+    h1 {
+      margin-bottom: 1.5em;
     }
 
-    /* Each project block */
+    /* --- Wide Portfolio Grid Section --- */
+    .portfolio-section {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      background: #fff;
+      padding: 40px 60px;
+      box-sizing: border-box;
+    }
+
+    .portfolio-grid {
+      max-width: 1800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 60px;
+    }
+
     .project {
       display: flex;
       flex-direction: column;
     }
 
-    /* Uniform image sizes */
     .project img {
       width: 100%;
-      aspect-ratio: 3 / 2; /* ensures consistent proportions */
+      aspect-ratio: 4 / 3;
       object-fit: cover;
-      border-radius: 4px;
+      border-radius: 6px;
       margin-bottom: 0.75em;
     }
 
     .project-title {
       font-weight: 600;
       margin-bottom: 0.4em;
+      line-height: 1.3;
     }
 
     .project-title a {
@@ -60,17 +77,13 @@
       font-weight: normal;
     }
 
-    /* Responsive behavior */
-    @media (max-width: 900px) {
-      .portfolio-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
+    /* Responsive layout */
+    @media (max-width: 1200px) {
+      .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
     }
-
-    @media (max-width: 600px) {
-      .portfolio-grid {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 700px) {
+      .portfolio-section { padding: 20px; }
+      .portfolio-grid { grid-template-columns: 1fr; gap: 30px; }
     }
   </style>
 </head>
@@ -78,24 +91,11 @@
   <main id="page">
     <p><a href="index.html" class="blue-link">&larr; Back to home</a></p>
     <h1>Portfolio</h1>
+  </main>
 
+  <!-- Wide gallery section -->
+  <section class="portfolio-section">
     <div class="portfolio-grid">
-
-       <!-- Project 2 -->
-      <div class="project">
-        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">
-          <img src="images/project2.jpg" alt="Innovation Needs Assessment">
-        </a>
-        <div class="project-title">
-          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">Innovation Needs Assessment</a>
-        </div>
-        <div class="project-desc">
-          How might we showcase our offerings as an innovation team to match the needs of Country Offices?
-        </div>
-        <div class="project-meta">
-          Design Sprint <span>UNICEF Office of Innovation (2023)</span>
-        </div>
-      </div>
 
       <!-- Project 1 -->
       <div class="project">
@@ -110,6 +110,22 @@
         </div>
         <div class="project-meta">
           Information Design <span>The Crucible × CCA (2020)</span>
+        </div>
+      </div>
+
+      <!-- Project 2 -->
+      <div class="project">
+        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">
+          <img src="images/project2.jpg" alt="Innovation Needs Assessment">
+        </a>
+        <div class="project-title">
+          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">Innovation Needs Assessment</a>
+        </div>
+        <div class="project-desc">
+          How might we showcase our offerings as an innovation team to match the needs of Country Offices?
+        </div>
+        <div class="project-meta">
+          Design Sprint <span>UNICEF Office of Innovation (2023)</span>
         </div>
       </div>
 
@@ -170,7 +186,7 @@
           <a href="https://singh.work/sprint.html">The Value of Influence</a>
         </div>
         <div class="project-desc">
-          How might we define the currency between influencers and brands more clearly?
+          How might we define the currency between influencers and venues/brands more clearly?
         </div>
         <div class="project-meta">
           Design Sprint <span>YLabs / Parallel Labs (2018)</span>
@@ -178,6 +194,6 @@
       </div>
 
     </div>
-  </main>
+  </section>
 </body>
 </html>
