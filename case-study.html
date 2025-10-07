@@ -37,7 +37,35 @@
         }
     }
   </style>
-</head>
+  <script>
+  // smart back-link logic
+  const ref = document.referrer;
+  const backLinks = document.querySelectorAll('.blue-link');
+
+  // default values
+  let label = '← Back to home';
+  let href = 'index.html';
+
+  if (ref.includes('/portfolio')) {
+    label = '← Back to portfolio';
+    href = '/portfolio';
+  } else if (ref.includes('/logowall')) {
+    label = '← Back to logowall';
+    href = '/logowall';
+  } else if (ref.includes('/index')) {
+    label = '← Back to home';
+    href = '/index.html';
+  }
+
+  backLinks.forEach(link => {
+    // only update back links, not other blue links inside content
+    if (link.textContent.includes('Back')) {
+      link.textContent = label;
+      link.href = href;
+    }
+  });
+</script>
+</head>  
 <body>
   
   <p><a href="index.html" class="blue-link">&larr; Back to home</a></p>
