@@ -6,41 +6,71 @@
   <title>Portfolio – Shivani Singh</title>
   <link rel="stylesheet" href="style.css">
   <style>
+    /* --- Portfolio Grid Overrides --- */
+    main#page {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
     .portfolio-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 40px;
-      margin-top: 2em;
+      margin-top: 2.5em;
     }
+
+    /* Each project block */
     .project {
       display: flex;
       flex-direction: column;
     }
+
+    /* Uniform image sizes */
     .project img {
       width: 100%;
-      height: auto;
+      aspect-ratio: 3 / 2; /* ensures consistent proportions */
+      object-fit: cover;
       border-radius: 4px;
       margin-bottom: 0.75em;
     }
+
     .project-title {
       font-weight: 600;
       margin-bottom: 0.4em;
     }
+
     .project-title a {
       text-decoration: underline;
       color: inherit;
     }
+
     .project-desc {
       margin-bottom: 0.6em;
     }
+
     .project-meta {
       font-size: 0.9em;
       font-weight: 600;
     }
+
     .project-meta span {
       display: block;
       opacity: 0.8;
       font-weight: normal;
+    }
+
+    /* Responsive behavior */
+    @media (max-width: 900px) {
+      .portfolio-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .portfolio-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -51,10 +81,26 @@
 
     <div class="portfolio-grid">
 
+       <!-- Project 2 -->
+      <div class="project">
+        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">
+          <img src="images/project2.jpg" alt="Innovation Needs Assessment">
+        </a>
+        <div class="project-title">
+          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">Innovation Needs Assessment</a>
+        </div>
+        <div class="project-desc">
+          How might we showcase our offerings as an innovation team to match the needs of Country Offices?
+        </div>
+        <div class="project-meta">
+          Design Sprint <span>UNICEF Office of Innovation (2023)</span>
+        </div>
+      </div>
+
       <!-- Project 1 -->
       <div class="project">
-        <a href="case-study-1.html">
-          <img src="images/project1.jpg" alt="Project 1">
+        <a href="https://singh.work/case-study.html">
+          <img src="images/project1.jpg" alt="A West Oakland Story">
         </a>
         <div class="project-title">
           <a href="https://singh.work/case-study.html">A West Oakland Story</a>
@@ -67,26 +113,10 @@
         </div>
       </div>
 
-      <!-- Project 2 -->
-      <div class="project">
-        <a href="case-study-2.html">
-          <img src="images/project2.jpg" alt="Project 2">
-        </a>
-        <div class="project-title">
-          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">Innovation Needs Assessment</u></a>
-        </div>
-        <div class="project-desc">
-          How might we showcase our offerings as an innovation team to match the needs of Country Offices?
-        </div>
-        <div class="project-meta">
-          Design Sprint <span>UNICEF Office of Innovation (2023)</span>
-        </div>
-      </div>
-
       <!-- Project 3 -->
       <div class="project">
-        <a href="case-study-3.html">
-          <img src="images/project3.jpg" alt="Project 3">
+        <a href="https://singh.work/dropin">
+          <img src="images/project3.jpg" alt="The art, the artist and context">
         </a>
         <div class="project-title">
           <a href="https://singh.work/dropin">The art, the artist and context</a>
@@ -101,14 +131,14 @@
 
       <!-- Project 4 -->
       <div class="project">
-        <a href="case-study-4.html">
-          <img src="images/project4.jpg" alt="Project 4">
+        <a href="https://singh.work/ambassador.html">
+          <img src="images/project4.jpg" alt="Cultural Edutainment">
         </a>
         <div class="project-title">
           <a href="https://singh.work/ambassador.html">Cultural Edutainment</a>
         </div>
         <div class="project-desc">
-          How might we equip American born South-Asian children to learn their origin stories in an engaging way?
+          How might we equip American-born South-Asian children to learn their origin stories in an engaging way?
         </div>
         <div class="project-meta">
           Brand Identity Design <span>Client: Ambassador 88 (2020)</span>
@@ -117,8 +147,8 @@
 
       <!-- Project 5 -->
       <div class="project">
-        <a href="case-study-5.html">
-          <img src="images/project5.jpg" alt="Project 5">
+        <a href="https://singh.work/lmnop">
+          <img src="images/project5.jpg" alt="The ABC's of building a Preschool">
         </a>
         <div class="project-title">
           <a href="https://singh.work/lmnop">The ABC's of building a Preschool</a>
@@ -133,21 +163,19 @@
 
       <!-- Project 6 -->
       <div class="project">
-        <a href="case-study-6.html">
-          <img src="images/project6.jpg" alt="Project 6">
+        <a href="https://singh.work/sprint.html">
+          <img src="images/project6.jpg" alt="The Value of Influence">
         </a>
         <div class="project-title">
           <a href="https://singh.work/sprint.html">The Value of Influence</a>
         </div>
         <div class="project-desc">
-          How might we define the currency between influencers and venues/brands more clearly?
+          How might we define the currency between influencers and brands more clearly?
         </div>
         <div class="project-meta">
           Design Sprint <span>YLabs / Parallel Labs (2018)</span>
         </div>
       </div>
-
-      
 
     </div>
   </main>
