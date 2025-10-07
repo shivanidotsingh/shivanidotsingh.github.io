@@ -7,16 +7,79 @@
 
   <!-- Emoji/text favicon -->
   <link rel="icon" 
-        href="data:image/svg+xml,
-        <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-          <text y='0.9em' font-size='90'> ✐ </text>
-        </svg>">
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>✐</text></svg>">
 
   <link rel="stylesheet" href="style.css">
   <style>
     /* Canvas fixed behind the page; doesn’t affect layout */
     #trail-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
     main#page { position: relative; z-index: 1; }
+
+    /* --- Portfolio appendix (hidden until opened) --- */
+    #portfolio-appendix[hidden] { display: none; }
+
+    /* Full-bleed section while the rest of the page stays narrow */
+    .portfolio-section {
+      width: 100vw;
+      position: relative;
+      left: 50%;
+      right: 50%;
+      margin-left: -50vw;
+      margin-right: -50vw;
+      padding: 40px 60px;
+      box-sizing: border-box;
+      background: #f2f2f2;
+    }
+
+    .portfolio-header {
+      max-width: 1800px;
+      margin: 0 auto 20px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .portfolio-header h2 {
+      margin: 0;
+      border-top: 0;
+      padding-top: 0;
+      font-weight: 600;
+    }
+
+    .portfolio-close {
+      text-decoration: none;
+    }
+
+    .portfolio-grid {
+      max-width: 1800px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 80px;
+    }
+
+    .project { display: flex; flex-direction: column; }
+    .project img {
+      width: 100%;
+      aspect-ratio: 16 / 9;     /* wide, consistent thumbs */
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 0.75em;
+    }
+    .project-title { font-weight: 600; margin-bottom: 0.4em; line-height: 1.3; }
+    .project-title a { text-decoration: underline; color: inherit; }
+    .project-desc { margin-bottom: 0.6em; }
+    .project-meta { font-size: 0.9em; font-weight: 600; }
+    .project-meta span { display: block; opacity: 0.8; font-weight: normal; }
+
+    @media (max-width: 1200px) {
+      .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
+    }
+    @media (max-width: 700px) {
+      .portfolio-section { padding: 20px; }
+      .portfolio-grid { grid-template-columns: 1fr; gap: 30px; }
+    }
   </style>
 </head>
 <body>
@@ -32,7 +95,7 @@
     <p>
       I'm a designer with an aptitude for analytical thinking and an
       <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank">live here</a></span>.
-      Currently shaping technology for social impact at
+       Currently shaping technology for social impact at
       <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I guide the digital <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a> of solutions we invest in,
         and facilitate <button class="reveal highlight-blue" onclick="expandOnce(this, 'collab')">collaboration</button><span id="collab" class="inline-reveal">
           — such as this <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">design sprint</a> where we reimagined a needs assessment process</span></span>.
@@ -53,10 +116,117 @@
       <button class="reveal highlight-green" onclick="expandOnce(this, 'CCA')">California College of the Arts</button>.
       <span id="CCA" class="inline-reveal">From my time as a student, I’m especially fond of 
         <a href="https://singh.work/case-study.html">this project</a> for which we collaborated an industrial arts school in West Oakland.
-      </span> See more on my <a href="resume.html">résumé</a>.
+      </span> View my <a href="#portfolio" id="portfolio-link">portfolio of projects</a> or learn more about the last ten years of my <a href="resume.html">work experience</a>.
+
     </p>
     <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Sep 25, 2025 </p>
   </main>
+
+  <!-- Hidden Portfolio Appendix -->
+  <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
+    <div class="portfolio-header">
+      <h2>Portfolio</h2>
+      <a href="#" id="portfolio-close" class="blue-link">close</a>
+    </div>
+
+    <div class="portfolio-grid">
+      <!-- Project 2 -->
+      <div class="project">
+        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">
+          <img src="images/project2.gif" alt="Innovation Needs Assessment">
+        </a>
+        <div class="project-title">
+          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">Innovation Needs Assessment</a>
+        </div>
+        <div class="project-desc">
+          How might we showcase our offerings as an innovation team to match the needs of Country Offices?
+        </div>
+        <div class="project-meta">
+          Design Sprint <span>UNICEF Office of Innovation (2023)</span>
+        </div>
+      </div>
+
+      <!-- Project 1 -->
+      <div class="project">
+        <a href="https://singh.work/case-study.html">
+          <img src="images/project1.jpg" alt="A West Oakland Story">
+        </a>
+        <div class="project-title">
+          <a href="https://singh.work/case-study.html">A West Oakland Story</a>
+        </div>
+        <div class="project-desc">
+          How might we create a data-informed narrative about the future of a neighbourhood for its residents?
+        </div>
+        <div class="project-meta">
+          Information Design <span>The Crucible × CCA (2020)</span>
+        </div>
+      </div>
+
+      <!-- Project 3 -->
+      <div class="project">
+        <a href="https://singh.work/dropin">
+          <img src="images/project3.jpg" alt="The art, the artist and context">
+        </a>
+        <div class="project-title">
+          <a href="https://singh.work/dropin">The art, the artist and context</a>
+        </div>
+        <div class="project-desc">
+          How might we leverage technology to improve the networking experience of creative professionals?
+        </div>
+        <div class="project-meta">
+          Digital Experience Design <span>CCA Student Project (2020)</span>
+        </div>
+      </div>
+
+      <!-- Project 4 -->
+      <div class="project">
+        <a href="https://singh.work/ambassador.html">
+          <img src="images/project4.jpg" alt="Cultural Edutainment">
+        </a>
+        <div class="project-title">
+          <a href="https://singh.work/ambassador.html">Cultural Edutainment</a>
+        </div>
+        <div class="project-desc">
+          How might we equip American-born South-Asian children to learn their origin stories in an engaging way?
+        </div>
+        <div class="project-meta">
+          Brand Identity Design <span>Client: Ambassador 88 (2020)</span>
+        </div>
+      </div>
+
+      <!-- Project 6 -->
+      <div class="project">
+        <a href="https://singh.work/sprint.html">
+          <img src="images/project6.jpg" alt="The Value of Influence">
+        </a>
+        <div class="project-title">
+          <a href="https://singh.work/sprint.html">The Value of Influence</a>
+        </div>
+        <div class="project-desc">
+          How might we define the currency between influencers and venues/brands more clearly?
+        </div>
+        <div class="project-meta">
+          Design Sprint <span>YLabs / Parallel Labs (2018)</span>
+        </div>
+      </div>
+
+      <!-- Project 5 -->
+      <div class="project">
+        <a href="https://singh.work/lmnop">
+          <img src="images/project5.jpg" alt="The ABC's of building a Preschool">
+        </a>
+        <div class="project-title">
+          <a href="https://singh.work/lmnop">The ABC's of building a Preschool</a>
+        </div>
+        <div class="project-desc">
+          How might we design the identity of a preschool to reflect an inclusive learning experience?
+        </div>
+        <div class="project-meta">
+          Brand Identity Design <span>Client: Elemenopy Preschool (2017)</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <script>
     // Env detect
@@ -75,7 +245,6 @@
     let drawing = false;
     let currentColor = null;
 
-    // Reveal handler
     function expandOnce(buttonEl, contentId) {
       const contentEl = document.getElementById(contentId);
       contentEl.classList.add('visible');
@@ -85,11 +254,8 @@
         if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
       }
 
-      if (isMobile) {
-        spawnStaticDot(currentColor);
-      } else {
-        drawing = true;
-      }
+      if (isMobile) spawnStaticDot(currentColor);
+      else drawing = true;
     }
 
     // Mobile: static dots
@@ -126,17 +292,12 @@
       if (!drawing || !currentColor || !pending || isMobile) return;
       const { x, y } = pending;
       if (!last) { last = { x, y }; return; }
-
-      // core stroke
       ctx.strokeStyle = hexToRgba(currentColor, 0.14);
       ctx.lineWidth = 10;
       ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
-
-      // soft halo
       ctx.strokeStyle = hexToRgba(currentColor, 0.05);
       ctx.lineWidth = 20;
       ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
-
       last = { x, y };
     }
 
@@ -159,6 +320,52 @@
       const b=parseInt(h.length===3?h[2]+h[2]:h.slice(4,6),16);
       return `rgba(${r},${g},${b},${a})`;
     }
+
+    // --- Portfolio open/close + persist state ---
+    const portfolioLink = document.getElementById('portfolio-link');
+    const portfolio = document.getElementById('portfolio-appendix');
+    const portfolioClose = document.getElementById('portfolio-close');
+
+    function openPortfolio(scroll = true) {
+      if (!portfolio) return;
+      portfolio.hidden = false;
+      portfolio.setAttribute('aria-hidden', 'false');
+      localStorage.setItem('portfolioOpen', '1');
+      if (scroll) {
+        // Scroll to the section header smoothly
+        const header = portfolio.querySelector('.portfolio-header') || portfolio;
+        header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function closePortfolio() {
+      if (!portfolio) return;
+      portfolio.hidden = true;
+      portfolio.setAttribute('aria-hidden', 'true');
+      localStorage.removeItem('portfolioOpen');
+      // Optional: scroll back to the intro
+      document.getElementById('page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    if (portfolioLink) {
+      portfolioLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        openPortfolio(true);
+      });
+    }
+    if (portfolioClose) {
+      portfolioClose.addEventListener('click', (e) => {
+        e.preventDefault();
+        closePortfolio();
+      });
+    }
+
+    // Restore open state (e.g., when user comes back from a project)
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('portfolioOpen') === '1') {
+        openPortfolio(false); // open without auto-scroll (prevents jump on load)
+      }
+    });
   </script>
 </body>
 </html>
