@@ -6,19 +6,31 @@
   <title>shivani singh</title>
 
   <!-- Emoji/text favicon -->
-  <link rel="icon" 
+  <link rel="icon"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>✐</text></svg>">
 
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Canvas fixed behind the page; doesn’t affect layout */
-    #trail-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-    main#page { position: relative; z-index: 1; }
+    /* --- Confine scribbles to just the intro area --- */
+    .intro-wrap {
+      position: relative;
+      overflow: hidden;       /* hides trails that would spill outside intro */
+    }
+    .intro-wrap .intro-inner {
+      position: relative;
+      z-index: 1;             /* sits above the canvas */
+    }
+    #trail-canvas {
+      position: absolute;     /* canvas only inside intro, not the whole page */
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
 
-    /* --- Portfolio appendix (hidden until opened) --- */
+    /* Hidden until opened */
     #portfolio-appendix[hidden] { display: none; }
 
-    /* Full-bleed section while the rest of the page stays narrow */
+    /* Full-bleed portfolio section (no forced white bg) */
     .portfolio-section {
       width: 100vw;
       position: relative;
@@ -28,6 +40,9 @@
       margin-right: -50vw;
       padding: 40px 60px;
       box-sizing: border-box;
+      /* no background set here → inherits page bg */
+      /* optional: add a subtle top border to separate from intro */
+      border-top: 1px solid rgba(0,0,0,0.08);
     }
 
     .portfolio-header {
@@ -38,16 +53,11 @@
       align-items: baseline;
       gap: 12px;
     }
-
-    .portfolio-header h2 {
+    .portfolio-header h3 {
       margin: 0;
       border-top: 0;
       padding-top: 0;
       font-weight: 600;
-    }
-
-    .portfolio-close {
-      text-decoration: none;
     }
 
     .portfolio-grid {
@@ -61,7 +71,7 @@
     .project { display: flex; flex-direction: column; }
     .project img {
       width: 100%;
-      aspect-ratio: 16 / 9;     /* wide, consistent thumbs */
+      aspect-ratio: 16 / 9;
       object-fit: cover;
       border-radius: 6px;
       margin-bottom: 0.75em;
@@ -82,39 +92,40 @@
   </style>
 </head>
 <body>
-  <!-- Behind-the-text canvas (desktop) -->
-  <canvas id="trail-canvas"></canvas>
 
-  <!-- Mobile dots container -->
+  <!-- INTRO (scribbles live only inside this wrapper) -->
+  <section class="intro-wrap">
+    <canvas id="trail-canvas"></canvas>
+
+    <main id="page" class="intro-inner">
+      <h1 style="margin-top:75px;">Shivani Singh</h1>
+      <p>
+        I'm a designer with an aptitude for analytical thinking and an
+        <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank">live here</a></span>.
+         Currently shaping technology for social impact at
+        <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I guide the digital <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a> of solutions we invest in,
+          and facilitate collaboration</span>.
+        I think of my practice as a way to bridge intention and outcome.
+        Previously, I was a designer at
+        <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button>
+        in San Francisco
+        <span id="sf" class="inline-reveal"> — explore my work in this 
+          <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a></span>.
+        With a background in graphic design, I've also worked in <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, crafting 
+          <a href="https://singh.work/logofolio">brand identities</a> and visual communication for over five years</span>.
+        
+        <br><br><button class="reveal highlight-green" onclick="expandOnce(this, 'home')">Born in India</button>, I'm currently based in Stockholm.
+        <span id="home" class="inline-reveal"> To visualise the many places I've called home over the years, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank">here</a>.</span>
+        An alumnus of the National Institute of Design and California College of the Arts, see more on my <a href="resume.html">resume</a>, or dive into my <a href="#portfolio" id="portfolio-link">portfolio of projects</a>.
+      </p>
+      <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Oct 07, 2025 </p>
+    </main>
+  </section>
+
+  <!-- Mobile dots container (unchanged) -->
   <div id="random-dots-container"></div>
 
-  <!-- CONTENT -->
-  <main id="page">
-    <h1 style="margin-top:75px;">Shivani Singh</h1>
-    <p>
-      I'm a designer with an aptitude for analytical thinking and an
-      <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank">live here</a></span>.
-       Currently shaping technology for social impact at
-      <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I guide the digital <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a> of solutions we invest in,
-        and facilitate collaboration</span>.
-      I think of my practice as a way to bridge intention and outcome.
-      Previously, I was a designer at
-      <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button>
-      in San Francisco
-      <span id="sf" class="inline-reveal"> — explore my work in this 
-        <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a></span>.
-      With a background in graphic design, I used to be an <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">art director</button> in advertising<span id="ads" class="inline-reveal">, crafting 
-        <a href="https://singh.work/logofolio">brand identities</a> and visual communication for over five years
-      </span>.
-      
-      <br><br><button class="reveal highlight-green" onclick="expandOnce(this, 'home')">Born in India</button>, I'm currently based in Stockholm.
-      <span id="home" class="inline-reveal"> To visualise the many places I've called home over the years, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank">here</a>.</span>
-      An alumnus of the National Institute of Design and California College of the Arts, find more on my <a href="resume.html">resume</a>, or dive into my <a href="#portfolio" id="portfolio-link">portfolio of projects</a>.
-    </p>
-    <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Oct 07, 2025 </p>
-  </main>
-
-  <!-- Hidden Portfolio Appendix -->
+  <!-- PORTFOLIO (no white bg) -->
   <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
     <div class="portfolio-header">
       <h3>Projects</h3>
@@ -122,106 +133,69 @@
     </div>
     
     <div class="portfolio-grid">
-      
-      <!-- Project Playground -->
+      <!-- Playground (Coming Soon) -->
       <div class="project">
-    <a href="#" style="position: relative; display: inline-block;">
-    <img src="images/playground.jpg" alt="Coming Soon" style="width: 100%; opacity: 0.4; display: block;">
-      <span style="position: absolute; top: 50%; left: 50%;
-      transform: translate(-50%, -50%); color: #000;
-      font-weight: 600; font-size: 1.1em; text-align: center;">
-      Coming Soon
-    </span>
-  </a>
-        <div class="project-title">
-          <a href="#">Playground for Prototypes</a>
-        </div>
-        <div class="project-desc">
-         [COMING SOON] <i>a sandbox environment for testing the digital prototypes we build in-house</i>
-        </div>
-        <div class="project-meta">
-          Interface Design <span>UNICEF Office of Innovation (2024)</span>
-        </div>
+        <a href="#" style="position: relative; display: inline-block;">
+          <img src="images/playground.jpg" alt="Coming Soon" style="width: 100%; opacity: 0.4; display: block;">
+          <span style="position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); color: #000;
+            font-weight: 600; font-size: 1.1em; text-align: center;">
+            Coming Soon
+          </span>
+        </a>
+        <div class="project-title"><a href="#">Playground for Prototypes</a></div>
+        <div class="project-desc">[COMING SOON] <i>a sandbox environment for testing the digital prototypes we build in-house</i></div>
+        <div class="project-meta">Interface Design <span>UNICEF Office of Innovation (2024)</span></div>
       </div>
-      
-      <!-- Project Needs Assessment -->
+
+      <!-- Needs Assessment -->
       <div class="project">
         <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000">
           <img src="images/project2.jpg" alt="Innovation Needs Assessment">
         </a>
-        <div class="project-title">
-          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">Value in Venturing</a>
-        </div>
-        <div class="project-desc">
-          How might we asses the innovative tech needs of Country Offices to better support them?
-        </div>
-        <div class="project-meta">
-          Design Sprint <span>UNICEF Office of Innovation (2023)</span>
-        </div>
+        <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">Value in Venturing</a></div>
+        <div class="project-desc">How might we asses the innovative tech needs of Country Offices to better support them?</div>
+        <div class="project-meta">Design Sprint <span>UNICEF Office of Innovation (2023)</span></div>
       </div>
 
-      <!-- Project West Oakland Monopoly -->
+      <!-- West Oakland -->
       <div class="project">
         <a href="https://singh.work/case-study.html">
           <img src="images/project1.jpg" alt="A West Oakland Story">
         </a>
-        <div class="project-title">
-          <a href="https://singh.work/case-study.html">A West Oakland Story</a>
-        </div>
-        <div class="project-desc">
-          How might we create a data-informed narrative about the future of a neighbourhood for its residents?
-        </div>
-        <div class="project-meta">
-          Information Design <span>The Crucible × CCA (2020)</span>
-        </div>
+        <div class="project-title"><a href="https://singh.work/case-study.html">A West Oakland Story</a></div>
+        <div class="project-desc">How might we create a data-informed narrative about the future of a neighbourhood for its residents?</div>
+        <div class="project-meta">Information Design <span>The Crucible × CCA (2020)</span></div>
       </div>
 
-      <!-- Project Dropin -->
+      <!-- Dropin -->
       <div class="project">
         <a href="https://singh.work/dropin">
           <img src="images/project3.jpg" alt="The art, the artist and context">
         </a>
-        <div class="project-title">
-          <a href="https://singh.work/dropin">The art, the artist and context</a>
-        </div>
-        <div class="project-desc">
-          How might we leverage technology to improve the networking experience of creative professionals?
-        </div>
-        <div class="project-meta">
-          Digital Experience Design <span>CCA Student Project (2020)</span>
-        </div>
+        <div class="project-title"><a href="https://singh.work/dropin">The art, the artist and context</a></div>
+        <div class="project-desc">How might we leverage technology to improve the networking experience of creative professionals?</div>
+        <div class="project-meta">Digital Experience Design <span>CCA Student Project (2020)</span></div>
       </div>
 
-      <!-- Project Ambassador88 -->
+      <!-- Ambassador -->
       <div class="project">
         <a href="https://singh.work/ambassador.html">
           <img src="images/project4.jpg" alt="Cultural Edutainment">
         </a>
-        <div class="project-title">
-          <a href="https://singh.work/ambassador.html">Cultural Ambassador</a>
-        </div>
-        <div class="project-desc">
-          How might we equip American-born South-Asian children to learn their origin stories in an engaging way?
-        </div>
-        <div class="project-meta">
-          Brand Identity Design <span>Client: Ambassador 88 (2020)</span>
-        </div>
+        <div class="project-title"><a href="https://singh.work/ambassador.html">Cultural Ambassador</a></div>
+        <div class="project-desc">How might we equip American-born South-Asian children to learn their origin stories in an engaging way?</div>
+        <div class="project-meta">Brand Identity Design <span>Client: Ambassador 88 (2020)</span></div>
       </div>
 
-      <!-- Project Elemenopy -->
+      <!-- Elemenopy -->
       <div class="project">
         <a href="https://singh.work/lmnop">
           <img src="images/project5.jpg" alt="The ABC's of building a Preschool">
         </a>
-        <div class="project-title">
-          <a href="https://singh.work/lmnop">The ABC's of building a Preschool</a>
-        </div>
-        <div class="project-desc">
-          How might we design the identity of a preschool to reflect an inclusive learning experience?
-        </div>
-        <div class="project-meta">
-          Brand Identity Design <span>Client: Elemenopy Preschool (2017)</span>
-        </div>
+        <div class="project-title"><a href="https://singh.work/lmnop">The ABC's of building a Preschool</a></div>
+        <div class="project-desc">How might we design the identity of a preschool to reflect an inclusive learning experience?</div>
+        <div class="project-meta">Brand Identity Design <span>Client: Elemenopy Preschool (2017)</span></div>
       </div>
     </div>
   </section>
@@ -239,7 +213,7 @@
       'highlight-purple': '#EEDDFF'
     };
 
-    // Desktop trail state
+    // Desktop trail state (intro only)
     let drawing = false;
     let currentColor = null;
 
@@ -251,7 +225,6 @@
       for (const cn of buttonEl.classList) {
         if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
       }
-
       if (isMobile) spawnStaticDot(currentColor);
       else drawing = true;
     }
@@ -270,18 +243,27 @@
       cont.appendChild(dot);
     }
 
-    // Desktop: trail canvas
+    // Desktop: trail canvas (sized to intro only)
+    const introWrap = document.querySelector('.intro-wrap');
     const canvas = document.getElementById('trail-canvas');
     const ctx = canvas.getContext('2d');
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+
+    function sizeCanvasToIntro() {
+      if (!introWrap) return;
+      const { width, height } = introWrap.getBoundingClientRect();
+      // Handle high DPI cleanly
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.globalCompositeOperation = 'multiply';
     }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    sizeCanvasToIntro();
+    window.addEventListener('resize', sizeCanvasToIntro);
 
     let last = null, pending = null, paintingScheduled = false;
     function schedulePaint(){ if(!paintingScheduled){ paintingScheduled = true; requestAnimationFrame(paintStep); } }
@@ -299,11 +281,19 @@
       last = { x, y };
     }
 
-    if (!isMobile) {
-      window.addEventListener('pointermove', e => { pending = {x:e.clientX, y:e.clientY}; schedulePaint(); }, {passive:true});
-      window.addEventListener('pointerdown', e => { last = {x:e.clientX, y:e.clientY}; }, {passive:true});
-      window.addEventListener('mouseleave', () => { last = null; });
-      window.addEventListener('pointerleave', () => { last = null; });
+    if (!isMobile && introWrap) {
+      // Pointer coords relative to the intro wrapper
+      introWrap.addEventListener('pointermove', e => {
+        const r = introWrap.getBoundingClientRect();
+        pending = { x: e.clientX - r.left, y: e.clientY - r.top };
+        schedulePaint();
+      }, { passive: true });
+      introWrap.addEventListener('pointerdown', e => {
+        const r = introWrap.getBoundingClientRect();
+        last = { x: e.clientX - r.left, y: e.clientY - r.top };
+      }, { passive: true });
+      introWrap.addEventListener('mouseleave', () => { last = null; });
+      introWrap.addEventListener('pointerleave', () => { last = null; });
       window.addEventListener('click', (e) => {
         const onHighlight = e.target.closest && e.target.closest('.reveal');
         if (!onHighlight) drawing = false;
@@ -330,10 +320,11 @@
       portfolio.setAttribute('aria-hidden', 'false');
       localStorage.setItem('portfolioOpen', '1');
       if (scroll) {
-        // Scroll to the section header smoothly
         const header = portfolio.querySelector('.portfolio-header') || portfolio;
         header.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
+      // mark anchor for back/forward
+      if (location.hash !== '#portfolio') history.replaceState(null, '', '#portfolio');
     }
 
     function closePortfolio() {
@@ -341,8 +332,8 @@
       portfolio.hidden = true;
       portfolio.setAttribute('aria-hidden', 'true');
       localStorage.removeItem('portfolioOpen');
-      // Optional: scroll back to the intro
       document.getElementById('page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (location.hash === '#portfolio') history.replaceState(null, '', ' ');
     }
 
     if (portfolioLink) {
@@ -358,10 +349,10 @@
       });
     }
 
-    // Restore open state (e.g., when user comes back from a project)
+    // Restore open state (e.g., back from a project) OR open if URL has #portfolio
     document.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('portfolioOpen') === '1') {
-        openPortfolio(false); // open without auto-scroll (prevents jump on load)
+      if (location.hash === '#portfolio' || localStorage.getItem('portfolioOpen') === '1') {
+        openPortfolio(false); // open without auto-scroll to avoid jump on load
       }
     });
   </script>
