@@ -11,23 +11,24 @@
 
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Intro container stays as-is */
+    
+    /* --- Canvas spans full width but scrolls with intro --- */
     .intro-wrap {
       position: relative;
     }
     .intro-wrap .intro-inner {
       position: relative;
-      z-index: 1; /* sits above the canvas */
+      z-index: 1;             /* sits above the canvas */
     }
-
-    /* FULL-VIEWPORT CANVAS (behind the whole page) */
     #trail-canvas {
-      position: fixed;       /* was absolute */
-      inset: 0;              /* top/right/bottom/left: 0 */
-      width: 100vw;          /* visual size; actual pixels set in JS for HiDPI */
-      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100vw;
+      height: 100%;
       pointer-events: none;
-      z-index: 0;            /* behind content */
+      z-index: 0;
     }
 
     /* Hidden until opened */
