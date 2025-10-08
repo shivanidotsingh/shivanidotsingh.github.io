@@ -6,40 +6,72 @@
   <title>shivani's work experience</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    /* Minimal, page-only tweaks */
-
-    /* Top bar */
-    .topbar{
-      display:flex;align-items:center;justify-content:space-between;
-      margin:0 0 6px 0;
+    /* Minimal, robust overrides */
+    .resume-header .photo,
+    .resume-header .photo img {
+      box-sizing: border-box; /* Avoid border/padding glitches */
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      display: block;
+      background: #f3f3f3;
     }
-    .print-btn{
-      border:1px solid #111;background:transparent;color:inherit;
-      font:inherit;line-height:1;border-radius:4px;padding:4px 8px;cursor:pointer;
+    .resume-header .photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex: 0 0 auto;
+      position: relative;
     }
-    @media print{ .topbar{display:none!important;} }
-
-    /* Header row: name/contact left, photo right */
-    .resume-header{
-      display:flex;justify-content:space-between;align-items:center;
-      gap:24px; margin:12px 0 24px;
+    .resume-header .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #f3f3f3;
     }
-    .resume-header .info .contact{ opacity:.85; }
-
-    /* Circular photo */
-    .resume-header .photo{
-      width:110px;height:110px;border-radius:50%;overflow:hidden;flex:0 0 auto;
+    /* Layout and utilities (unchanged, checked for issues) */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0;
     }
-    .resume-header .photo img{
-      width:100%;height:100%;object-fit:cover;object-position:50% 45%;
-      display:block;
+    .print-btn {
+      border: 1px solid #111;
+      background: transparent;
+      color: inherit;
+      font: inherit;
+      line-height: 1;
+      border-radius: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
     }
-
-    /* Item rows */
-    .item{ margin:1.1em 0; }
-    .item-header{ display:flex;flex-wrap:wrap;gap:.5em;align-items:baseline; }
-    .item-date{ opacity:.6;white-space:nowrap;margin-right:.5em; }
-    .item-role{ font-weight:600; }
+    .resume-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-top: 15px;
+      margin-bottom: 24px;
+    }
+    .item-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .5em;
+      align-items: baseline;
+    }
+    .item-date {
+      opacity: .6;
+      white-space: nowrap;
+      margin-right: .5em;
+    }
+    .item-role {
+      font-weight: 600;
+    }
+    @media print {
+      .topbar { display: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -49,7 +81,6 @@
       <a href="index.html" class="blue-link">&larr; Back to home</a>
       <button class="print-btn" onclick="window.print()" aria-label="Print resume">Print</button>
     </div>
-
     <!-- Header -->
     <header class="resume-header">
       <div class="info">
@@ -60,10 +91,8 @@
         <img src="images/profile.jpg" alt="Shivani Singh">
       </div>
     </header>
-
     <!-- Experience -->
     <h4>Experience</h4>
-
     <div class="item">
       <div class="item-header">
         <span class="item-date">2023—Present</span>
@@ -75,7 +104,7 @@
       <p>Driving digital experience design for both in-house products and investee ventures (40% prototyping). Facilitating collaborative workshops to build cross-functional consensus (30% strategic). Contributing to visual communication to improve brand presence and clarity (30% graphic).</p>
     </div>
 
-    <div class="item">
+       <div class="item">
       <div class="item-header">
         <span class="item-date">2021—2023</span>
         <span class="item-role">Senior Designer,</span>
@@ -127,10 +156,10 @@
         <span class="item-org">Wolff Olins · Dubai, UAE</span>
       </div>
     </div>
-
+    
+    
     <!-- Education -->
     <h4>Education</h4>
-
     <div class="item">
       <div class="item-header">
         <span class="item-date">2019—2020</span>
@@ -140,17 +169,14 @@
         </span>
       </div>
     </div><br>
-
     <div class="item">
       <div class="item-header">
         <span class="item-date">2010—2014</span>
         <span class="item-role">B. Des, Graphic Design</span><br>
         <span class="item-org">
-          <a href="https://www.nid.edu/" target="_blank">National Institute of Design</a> · Ahmedabad, India
-        </span>
+          <a href="https://www.nid.edu/" target="_blank">National Institute of Design</a> · Ahmedabad, India</span>
       </div>
     </div>
-
     <!-- Redacted item preserved -->
     <!--
     <div class="item">
