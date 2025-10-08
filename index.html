@@ -11,22 +11,23 @@
 
   <link rel="stylesheet" href="style.css">
   <style>
-    /* --- Confine scribbles to just the intro area --- */
+    /* Intro container stays as-is */
     .intro-wrap {
       position: relative;
     }
     .intro-wrap .intro-inner {
       position: relative;
-      z-index: 1;             /* sits above the canvas */
+      z-index: 1; /* sits above the canvas */
     }
+
+    /* FULL-VIEWPORT CANVAS (behind the whole page) */
     #trail-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;   /* Only covers the visible screen area */
+      position: fixed;       /* was absolute */
+      inset: 0;              /* top/right/bottom/left: 0 */
+      width: 100vw;          /* visual size; actual pixels set in JS for HiDPI */
+      height: 100vh;
       pointer-events: none;
-      z-index: 0;
+      z-index: 0;            /* behind content */
     }
 
     /* Hidden until opened */
@@ -92,7 +93,7 @@
 </head>
 <body>
 
-  <!-- INTRO (scribbles live only inside this wrapper) -->
+  <!-- INTRO -->
   <section class="intro-wrap">
     <canvas id="trail-canvas"></canvas>
 
@@ -152,7 +153,7 @@
         <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">
           <img src="images/project2.jpg" alt="Innovation Needs Assessment">
         </a>
-        <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">Value in Venturing</a></div>
+        <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">The Hungry Venturer</a></div>
         <div class="project-desc">How might we asses the innovative tech needs of Country Offices to better support them?</div>
         <div class="project-meta">Design Sprint <span>UNICEF Office of Innovation (2023)</span></div>
       </div>
@@ -212,7 +213,7 @@
       'highlight-purple': '#EEDDFF'
     };
 
-    // Desktop trail state (intro only)
+    // Desktop trail state (now full-viewport)
     let drawing = false;
     let currentColor = null;
 
@@ -242,27 +243,25 @@
       cont.appendChild(dot);
     }
 
-    // Desktop: trail canvas (sized to intro only)
-    const introWrap = document.querySelector('.intro-wrap');
+    // Canvas setup (FULL WINDOW)
     const canvas = document.getElementById('trail-canvas');
     const ctx = canvas.getContext('2d');
 
-    function sizeCanvasToIntro() {
-      if (!introWrap) return;
-      const { width, height } = introWrap.getBoundingClientRect();
-      // Handle high DPI cleanly
+    function sizeCanvasToWindow() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
-      canvas.style.width = width + 'px';
-      canvas.style.height = height + 'px';
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      canvas.width = Math.floor(w * dpr);
+      canvas.height = Math.floor(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.globalCompositeOperation = 'multiply';
     }
-    sizeCanvasToIntro();
-    window.addEventListener('resize', sizeCanvasToIntro);
+    sizeCanvasToWindow();
+    window.addEventListener('resize', sizeCanvasToWindow);
 
     let last = null, pending = null, paintingScheduled = false;
     function schedulePaint(){ if(!paintingScheduled){ paintingScheduled = true; requestAnimationFrame(paintStep); } }
@@ -271,28 +270,32 @@
       if (!drawing || !currentColor || !pending || isMobile) return;
       const { x, y } = pending;
       if (!last) { last = { x, y }; return; }
+      // core stroke
       ctx.strokeStyle = hexToRgba(currentColor, 0.14);
       ctx.lineWidth = 10;
       ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
+      // soft halo
       ctx.strokeStyle = hexToRgba(currentColor, 0.05);
       ctx.lineWidth = 20;
       ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
       last = { x, y };
     }
 
-    if (!isMobile && introWrap) {
-      // Pointer coords relative to the intro wrapper
-      introWrap.addEventListener('pointermove', e => {
-        const r = introWrap.getBoundingClientRect();
-        pending = { x: e.clientX - r.left, y: e.clientY - r.top };
+    if (!isMobile) {
+      // Pointer coords are now global to the window
+      window.addEventListener('pointermove', e => {
+        pending = { x: e.clientX, y: e.clientY };
         schedulePaint();
       }, { passive: true });
-      introWrap.addEventListener('pointerdown', e => {
-        const r = introWrap.getBoundingClientRect();
-        last = { x: e.clientX - r.left, y: e.clientY - r.top };
+
+      window.addEventListener('pointerdown', e => {
+        last = { x: e.clientX, y: e.clientY };
       }, { passive: true });
-      introWrap.addEventListener('mouseleave', () => { last = null; });
-      introWrap.addEventListener('pointerleave', () => { last = null; });
+
+      window.addEventListener('mouseleave', () => { last = null; });
+      window.addEventListener('pointerleave', () => { last = null; });
+
+      // Pause drawing unless clicking a highlight button
       window.addEventListener('click', (e) => {
         const onHighlight = e.target.closest && e.target.closest('.reveal');
         if (!onHighlight) drawing = false;
@@ -308,7 +311,7 @@
       return `rgba(${r},${g},${b},${a})`;
     }
 
-    // --- Portfolio open/close + persist state ---
+    // --- Portfolio open/close + persist state (unchanged) ---
     const portfolioLink = document.getElementById('portfolio-link');
     const portfolio = document.getElementById('portfolio-appendix');
     const portfolioClose = document.getElementById('portfolio-close');
@@ -322,7 +325,6 @@
         const header = portfolio.querySelector('.portfolio-header') || portfolio;
         header.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
-      // mark anchor for back/forward
       if (location.hash !== '#portfolio') history.replaceState(null, '', '#portfolio');
     }
 
@@ -348,10 +350,9 @@
       });
     }
 
-    // Restore open state (e.g., back from a project) OR open if URL has #portfolio
     document.addEventListener('DOMContentLoaded', () => {
       if (location.hash === '#portfolio' || localStorage.getItem('portfolioOpen') === '1') {
-        openPortfolio(false); // open without auto-scroll to avoid jump on load
+        openPortfolio(false);
       }
     });
   </script>
