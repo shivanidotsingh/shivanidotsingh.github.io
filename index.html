@@ -21,10 +21,13 @@
       z-index: 1;             /* sits above the canvas */
     }
     #trail-canvas {
-      position: absolute;     /* canvas only inside intro, not the whole page */
-      inset: 0;
-      z-index: 0;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;   /* Only covers the visible screen area */
       pointer-events: none;
+      z-index: 0;
     }
 
     /* Hidden until opened */
