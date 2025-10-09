@@ -228,6 +228,8 @@
       }
       if (isMobile) spawnStaticDot(currentColor);
       else drawing = true;
+
+      requestAnimationFrame(sizeCanvasToWindow);
     }
 
     // Mobile: static dots
@@ -249,18 +251,25 @@
     const ctx = canvas.getContext('2d');
 
     function sizeCanvasToWindow() {
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.globalCompositeOperation = 'multiply';
-    }
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  const w = Math.ceil(window.innerWidth);
+
+  // 🔑 use the intro container’s actual height, not the viewport
+  const container = document.querySelector('.intro-wrap');
+  const h = Math.ceil(
+    (container ? container.getBoundingClientRect().height : window.innerHeight)
+  );
+
+  canvas.style.width = w + 'px';
+  canvas.style.height = h + 'px';
+  canvas.width  = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.globalCompositeOperation = 'multiply';
+}
     sizeCanvasToWindow();
     window.addEventListener('resize', sizeCanvasToWindow);
 
