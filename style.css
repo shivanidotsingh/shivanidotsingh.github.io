@@ -9,7 +9,7 @@ body {
   background-color: #fff;
   font-size: 1.1em;
   position: relative;
-  min-height: 100dvh;
+  min-height: calc(100dvh - 80px);
 }
 :root {
   --h1-size: clamp(32px, 4.5vw, 44px); /* adjust max/min to taste */
