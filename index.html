@@ -11,7 +11,7 @@
 
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Canvas: spans full document, behind everything, doesn’t capture input */
+    /* Global canvas spans the whole document, behind everything, doesn't intercept input */
     #trail-canvas {
       position: absolute;
       top: 0;
@@ -90,7 +90,7 @@
 </head>
 <body>
 
-  <!-- Global canvas lives at the top of the document so it scrolls with everything -->
+  <!-- Global canvas at top so it scrolls with the page -->
   <canvas id="trail-canvas"></canvas>
 
   <!-- INTRO -->
@@ -99,21 +99,21 @@
       <h1 style="margin-top:75px;">Shivani Singh</h1>
       <p>
         I'm a designer with an aptitude for analytical thinking and an
-        <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank">live here</a></span>.
+        <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — side projects and ideas in progress <a href="https://shivaniest.com" target="_blank" rel="noopener noreferrer">live here</a></span>.
          Currently shaping technology for social impact at
-        <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I guide the digital <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a> of solutions we invest in,
+        <button class="reveal highlight-blue" onclick="expandOnce(this, 'unicef')">UNICEF Innovation</button><span id="unicef" class="inline-reveal"> where I guide the digital <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank" rel="noopener noreferrer">product design</a> of solutions we invest in,
           and facilitate collaboration</span>.
         I think of my practice as a way to bridge intention and outcome.
         Previously, I was a designer at
         <button class="reveal highlight-pink" onclick="expandOnce(this, 'sf')">Salesforce</button>
         in San Francisco
         <span id="sf" class="inline-reveal"> — explore my work in this 
-          <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a></span>.
+          <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank" rel="noopener noreferrer">overview</a></span>.
         With a background in graphic design, I've also worked in <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">advertising</button><span id="ads" class="inline-reveal">, crafting 
           <a href="https://singh.work/logofolio">brand identities</a> and visual communication for over five years</span>.
         
         <br><br><button class="reveal highlight-green" onclick="expandOnce(this, 'home')">Born in India</button>, I'm currently based in Stockholm.
-        <span id="home" class="inline-reveal"> To visualise the many places I've called home over the years, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank">here</a>.</span>
+        <span id="home" class="inline-reveal"> To visualise the many places I've called home over the years, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank" rel="noopener noreferrer">here</a>.</span>
         An alumnus of the National Institute of Design and California College of the Arts, see more on my <a href="resume.html">resume</a>, or dive into my <a href="#portfolio" id="portfolio-link">portfolio of projects</a>.
       </p>
       <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Oct 07, 2025 </p>
@@ -148,10 +148,10 @@
 
       <!-- Needs Assessment -->
       <div class="project">
-        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">
+        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank" rel="noopener noreferrer">
           <img src="images/project2.jpg" alt="Innovation Needs Assessment">
         </a>
-        <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">The Hungry Venturer</a></div>
+        <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank" rel="noopener noreferrer">The Hungry Venturer</a></div>
         <div class="project-desc">How might we asses the innovative tech needs of Country Offices to better support them?</div>
         <div class="project-meta">Design Sprint <span>UNICEF Office of Innovation (2023)</span></div>
       </div>
@@ -215,6 +215,13 @@
     let drawing = false;
     let currentColor = null;
 
+    // Canvas + drawing state
+    const canvas = document.getElementById('trail-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Declare rect ONCE here so we can safely assign to it anywhere
+    let rect = canvas.getBoundingClientRect();
+
     function expandOnce(buttonEl, contentId) {
       const contentEl = document.getElementById(contentId);
       contentEl.classList.add('visible');
@@ -226,7 +233,7 @@
       if (isMobile) spawnStaticDot(currentColor);
       else drawing = true;
 
-      // Content height may have changed → resize canvas to full document height (preserves pixels)
+      // Content height may have changed → resize canvas to full document height (preserving pixels)
       requestAnimationFrame(sizeCanvasToDocument);
     }
 
@@ -244,24 +251,20 @@
       cont.appendChild(dot);
     }
 
-    // Canvas setup (full document height, preserved on resize)
-    const canvas = document.getElementById('trail-canvas');
-    const ctx = canvas.getContext('2d');
-
+    // --- Canvas sizing (full document height) with pixel preservation ---
     function measureDocumentHeight() {
       const doc = document.documentElement;
+      const body = document.body || { scrollHeight: 0, offsetHeight: 0 };
       return Math.max(
-        doc.scrollHeight,
-        doc.offsetHeight,
-        doc.clientHeight,
-        document.body ? document.body.scrollHeight : 0
+        doc.scrollHeight, doc.offsetHeight, doc.clientHeight,
+        body.scrollHeight, body.offsetHeight
       );
     }
 
     function sizeCanvasToDocument() {
       const dpr = Math.max(1, window.devicePixelRatio || 1);
 
-      // --- stash current pixels (if any) BEFORE resize ---
+      // Stash pixels BEFORE resize
       const prevW = canvas.width;
       const prevH = canvas.height;
       let stash = null;
@@ -279,7 +282,7 @@
       canvas.style.width = wCss + 'px';
       canvas.style.height = hCss + 'px';
 
-      // Backing store size (clears → we restore from stash)
+      // Backing store (clears → will restore)
       canvas.width  = Math.floor(wCss * dpr);
       canvas.height = Math.floor(hCss * dpr);
 
@@ -289,30 +292,25 @@
       ctx.lineJoin = 'round';
       ctx.globalCompositeOperation = 'multiply';
 
-      // Restore previous pixels (scaled if dimensions changed)
+      // Restore previous pixels (scaled)
       if (stash) {
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.drawImage(stash, 0, 0, prevW, prevH, 0, 0, canvas.width, canvas.height);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
 
-      // Refresh rect for precise pointer mapping
+      // Refresh canvas-local rect AFTER resize
       rect = canvas.getBoundingClientRect();
     }
 
     sizeCanvasToDocument();
     window.addEventListener('resize', sizeCanvasToDocument);
-
-    // Keep rect fresh while scrolling (canvas is absolute and scrolls with document)
-    let rect = canvas.getBoundingClientRect();
     window.addEventListener('scroll', () => { rect = canvas.getBoundingClientRect(); }, { passive: true });
 
-    // Paint loop (rAF) + exact canvas-local pointer mapping
+    // Paint loop
     let last = null, pending = null, paintingScheduled = false;
-    function schedulePaint() {
-      if (!paintingScheduled) { paintingScheduled = true; requestAnimationFrame(paintStep); }
-    }
-    function paintStep() {
+    function schedulePaint(){ if(!paintingScheduled){ paintingScheduled = true; requestAnimationFrame(paintStep); } }
+    function paintStep(){
       paintingScheduled = false;
       if (!drawing || !currentColor || !pending || isMobile) return;
       const { x, y } = pending;
@@ -320,15 +318,16 @@
       // core stroke
       ctx.strokeStyle = hexToRgba(currentColor, 0.14);
       ctx.lineWidth = 10;
-      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
       // soft halo
       ctx.strokeStyle = hexToRgba(currentColor, 0.05);
       ctx.lineWidth = 20;
-      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
       last = { x, y };
     }
 
     if (!isMobile) {
+      // Exact canvas-local mapping for the pointer
       window.addEventListener('pointermove', e => {
         pending = { x: e.clientX - rect.left, y: e.clientY - rect.top };
         schedulePaint();
@@ -349,15 +348,15 @@
       window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
     }
 
-    function hexToRgba(hex, a = 1) {
-      const h = hex.replace('#','');
-      const r = parseInt(h.length === 3 ? h[0]+h[0] : h.slice(0,2), 16);
-      const g = parseInt(h.length === 3 ? h[1]+h[1] : h.slice(2,4), 16);
-      const b = parseInt(h.length === 3 ? h[2]+h[2] : h.slice(4,6), 16);
+    function hexToRgba(hex,a=1){
+      const h=hex.replace('#','');
+      const r=parseInt(h.length===3?h[0]+h[0]:h.slice(0,2),16);
+      const g=parseInt(h.length===3?h[1]+h[1]:h.slice(2,4),16);
+      const b=parseInt(h.length===3?h[2]+h[2]:h.slice(4,6),16);
       return `rgba(${r},${g},${b},${a})`;
     }
 
-    // --- Portfolio open/close + persist state (unchanged, with canvas resize hook) ---
+    // --- Portfolio open/close + persist state (unchanged, with resize hook) ---
     const portfolioLink = document.getElementById('portfolio-link');
     const portfolio = document.getElementById('portfolio-appendix');
     const portfolioClose = document.getElementById('portfolio-close');
