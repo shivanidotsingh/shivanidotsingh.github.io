@@ -18,19 +18,11 @@
   display: flow-root; /* isolates margins so nothing leaks */
 }
 
-.intro-inner {
-  padding-top: 50px;      /* was h1 margin — moved here */
-}
+/*.intro-inner {  padding-top: 50px; }*/
 
-/* — (Optional) remove stray bottom bump that can cause tiny scroll */
-.intro-inner > :last-child {
-  margin-bottom: 0;
-}
-
-/* — Canvas stays at the section’s top */
 #trail-canvas {
   position: absolute;
-  top: 0;                 /* draws from pixel 0 now */
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
