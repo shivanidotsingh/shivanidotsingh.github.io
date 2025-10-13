@@ -13,25 +13,28 @@
   <style>
     
     /* --- Canvas spans full width but scrolls with intro --- */
-    .intro-wrap {
+        
+  .intro-wrap .intro-inner {
+  position: relative;
+  z-index: 1;
+  }
+    
+.intro-wrap {
   position: relative;
   overflow: visible;
-  padding-top: 1px; /* prevents top-margin collapse so canvas covers very top */
+  display: flow-root; 
 }
-    
-    .intro-wrap .intro-inner {
-      position: relative;
-      z-index: 1;
-    }
-   #trail-canvas {
+
+#trail-canvas {
   position: absolute;
-  top: -1px; /* counteracts the padding visually */
+  top: 0;          
   left: 50%;
   transform: translateX(-50%);
   width: 100vw;
   pointer-events: none;
   z-index: 0;
 }
+
 
     /* Hidden until opened */
     #portfolio-appendix[hidden] { display: none; }
