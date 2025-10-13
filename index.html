@@ -14,22 +14,24 @@
     
     /* --- Canvas spans full width but scrolls with intro --- */
     .intro-wrap {
-      position: relative;
-      overflow: visible;
-    }
+  position: relative;
+  overflow: visible;
+  padding-top: 1px; /* prevents top-margin collapse so canvas covers very top */
+}
+    
     .intro-wrap .intro-inner {
       position: relative;
       z-index: 1;
     }
-    #trail-canvas {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      pointer-events: none;
-      z-index: 0;
-    }
+   #trail-canvas {
+  position: absolute;
+  top: -1px; /* counteracts the padding visually */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
+  pointer-events: none;
+  z-index: 0;
+}
 
     /* Hidden until opened */
     #portfolio-appendix[hidden] { display: none; }
