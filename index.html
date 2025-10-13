@@ -258,7 +258,7 @@
       const dpr = Math.max(1, window.devicePixelRatio || 1);
       const w = window.innerWidth;
       // Make height much taller so you can scribble above and below without cutoff
-      const h = Math.max(introInner.offsetHeight * 3, window.innerHeight * 2);
+      const h = Math.max(introInner.offsetHeight, window.innerHeight);
 
       canvas.style.width = w + 'px';
       canvas.style.height = h + 'px';
