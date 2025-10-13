@@ -18,7 +18,7 @@
   display: flow-root; /* isolates margins so nothing leaks */
 }
 
-/*.intro-inner {  padding-top: 50px; }*/
+.intro-inner {  position: relative; z-index: 1; padding-top: 50px; }
 
 #trail-canvas {
   position: absolute;
@@ -53,12 +53,6 @@
       justify-content: space-between;
       align-items: baseline;
       gap: 12px;
-    }
-    .portfolio-header h3 {
-      margin: 0;
-      border-top: 0;
-      padding-top: 0;
-      font-weight: 600;
     }
 
     .portfolio-grid {
@@ -185,7 +179,7 @@
           <img src="images/project4.jpg" alt="Cultural Edutainment">
         </a>
         <div class="project-title"><a href="https://singh.work/ambassador.html">Cultural Ambassador</a></div>
-        <div class="project-desc">How might we equip American-born South-Asian children to learn their origin stories in an engaging way?</div>
+        <div class="project-desc">How might we equip South-Asian American kids with their origin stories in an entertaining way?</div>
         <div class="project-meta">Brand Identity Design <span>Client: Ambassador 88 (2020)</span></div>
       </div>
 
