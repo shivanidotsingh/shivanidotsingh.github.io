@@ -11,15 +11,7 @@
 
   <link rel="stylesheet" href="style.css">
   <style>
-    
-    /* --- Canvas spans full width but scrolls with intro --- */
-    .intro-wrap {
-      position: relative;
-    }
-    .intro-wrap .intro-inner {
-      position: relative;
-      z-index: 1;             /* sits above the canvas */
-    }
+    /* Canvas: spans full document, behind everything, doesn’t capture input */
     #trail-canvas {
       position: absolute;
       top: 0;
@@ -30,6 +22,10 @@
       pointer-events: none;
       z-index: 0;
     }
+
+    /* Intro sits above the canvas */
+    .intro-wrap { position: relative; }
+    .intro-wrap .intro-inner { position: relative; z-index: 1; }
 
     /* Hidden until opened */
     #portfolio-appendix[hidden] { display: none; }
@@ -94,10 +90,11 @@
 </head>
 <body>
 
+  <!-- Global canvas lives at the top of the document so it scrolls with everything -->
+  <canvas id="trail-canvas"></canvas>
+
   <!-- INTRO -->
   <section class="intro-wrap">
-    <canvas id="trail-canvas"></canvas>
-
     <main id="page" class="intro-inner">
       <h1 style="margin-top:75px;">Shivani Singh</h1>
       <p>
@@ -214,7 +211,7 @@
       'highlight-purple': '#EEDDFF'
     };
 
-    // Desktop trail state (now full-viewport)
+    // Desktop trail state (single color at a time, per your preference)
     let drawing = false;
     let currentColor = null;
 
@@ -229,7 +226,8 @@
       if (isMobile) spawnStaticDot(currentColor);
       else drawing = true;
 
-      requestAnimationFrame(sizeCanvasToWindow);
+      // Content height may have changed → resize canvas to full document height (preserves pixels)
+      requestAnimationFrame(sizeCanvasToDocument);
     }
 
     // Mobile: static dots
@@ -246,36 +244,75 @@
       cont.appendChild(dot);
     }
 
-    // Canvas setup (FULL WINDOW)
+    // Canvas setup (full document height, preserved on resize)
     const canvas = document.getElementById('trail-canvas');
     const ctx = canvas.getContext('2d');
 
-    function sizeCanvasToWindow() {
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  const w = Math.ceil(window.innerWidth);
+    function measureDocumentHeight() {
+      const doc = document.documentElement;
+      return Math.max(
+        doc.scrollHeight,
+        doc.offsetHeight,
+        doc.clientHeight,
+        document.body ? document.body.scrollHeight : 0
+      );
+    }
 
-  // 🔑 use the intro container’s actual height, not the viewport
-  const container = document.querySelector('.intro-wrap');
-  const h = Math.ceil(
-    (container ? container.getBoundingClientRect().height : window.innerHeight)
-  );
+    function sizeCanvasToDocument() {
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
 
-  canvas.style.width = w + 'px';
-  canvas.style.height = h + 'px';
-  canvas.width  = Math.floor(w * dpr);
-  canvas.height = Math.floor(h * dpr);
+      // --- stash current pixels (if any) BEFORE resize ---
+      const prevW = canvas.width;
+      const prevH = canvas.height;
+      let stash = null;
+      if (prevW && prevH) {
+        stash = document.createElement('canvas');
+        stash.width = prevW;
+        stash.height = prevH;
+        stash.getContext('2d').drawImage(canvas, 0, 0);
+      }
 
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.globalCompositeOperation = 'multiply';
-}
-    sizeCanvasToWindow();
-    window.addEventListener('resize', sizeCanvasToWindow);
+      const wCss = Math.ceil(window.innerWidth);
+      const hCss = Math.ceil(measureDocumentHeight());
 
+      // CSS size (doesn't clear)
+      canvas.style.width = wCss + 'px';
+      canvas.style.height = hCss + 'px';
+
+      // Backing store size (clears → we restore from stash)
+      canvas.width  = Math.floor(wCss * dpr);
+      canvas.height = Math.floor(hCss * dpr);
+
+      // Drawing state
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.globalCompositeOperation = 'multiply';
+
+      // Restore previous pixels (scaled if dimensions changed)
+      if (stash) {
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(stash, 0, 0, prevW, prevH, 0, 0, canvas.width, canvas.height);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      // Refresh rect for precise pointer mapping
+      rect = canvas.getBoundingClientRect();
+    }
+
+    sizeCanvasToDocument();
+    window.addEventListener('resize', sizeCanvasToDocument);
+
+    // Keep rect fresh while scrolling (canvas is absolute and scrolls with document)
+    let rect = canvas.getBoundingClientRect();
+    window.addEventListener('scroll', () => { rect = canvas.getBoundingClientRect(); }, { passive: true });
+
+    // Paint loop (rAF) + exact canvas-local pointer mapping
     let last = null, pending = null, paintingScheduled = false;
-    function schedulePaint(){ if(!paintingScheduled){ paintingScheduled = true; requestAnimationFrame(paintStep); } }
-    function paintStep(){
+    function schedulePaint() {
+      if (!paintingScheduled) { paintingScheduled = true; requestAnimationFrame(paintStep); }
+    }
+    function paintStep() {
       paintingScheduled = false;
       if (!drawing || !currentColor || !pending || isMobile) return;
       const { x, y } = pending;
@@ -283,23 +320,22 @@
       // core stroke
       ctx.strokeStyle = hexToRgba(currentColor, 0.14);
       ctx.lineWidth = 10;
-      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
       // soft halo
       ctx.strokeStyle = hexToRgba(currentColor, 0.05);
       ctx.lineWidth = 20;
-      ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(x,y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
       last = { x, y };
     }
 
     if (!isMobile) {
-      // Pointer coords are now global to the window
       window.addEventListener('pointermove', e => {
-        pending = { x: e.clientX, y: e.clientY };
+        pending = { x: e.clientX - rect.left, y: e.clientY - rect.top };
         schedulePaint();
       }, { passive: true });
 
       window.addEventListener('pointerdown', e => {
-        last = { x: e.clientX, y: e.clientY };
+        last = { x: e.clientX - rect.left, y: e.clientY - rect.top };
       }, { passive: true });
 
       window.addEventListener('mouseleave', () => { last = null; });
@@ -313,15 +349,15 @@
       window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
     }
 
-    function hexToRgba(hex,a=1){
-      const h=hex.replace('#','');
-      const r=parseInt(h.length===3?h[0]+h[0]:h.slice(0,2),16);
-      const g=parseInt(h.length===3?h[1]+h[1]:h.slice(2,4),16);
-      const b=parseInt(h.length===3?h[2]+h[2]:h.slice(4,6),16);
+    function hexToRgba(hex, a = 1) {
+      const h = hex.replace('#','');
+      const r = parseInt(h.length === 3 ? h[0]+h[0] : h.slice(0,2), 16);
+      const g = parseInt(h.length === 3 ? h[1]+h[1] : h.slice(2,4), 16);
+      const b = parseInt(h.length === 3 ? h[2]+h[2] : h.slice(4,6), 16);
       return `rgba(${r},${g},${b},${a})`;
     }
 
-    // --- Portfolio open/close + persist state (unchanged) ---
+    // --- Portfolio open/close + persist state (unchanged, with canvas resize hook) ---
     const portfolioLink = document.getElementById('portfolio-link');
     const portfolio = document.getElementById('portfolio-appendix');
     const portfolioClose = document.getElementById('portfolio-close');
@@ -336,6 +372,7 @@
         header.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
       if (location.hash !== '#portfolio') history.replaceState(null, '', '#portfolio');
+      requestAnimationFrame(sizeCanvasToDocument);
     }
 
     function closePortfolio() {
@@ -345,6 +382,7 @@
       localStorage.removeItem('portfolioOpen');
       document.getElementById('page').scrollIntoView({ behavior: 'smooth', block: 'start' });
       if (location.hash === '#portfolio') history.replaceState(null, '', ' ');
+      requestAnimationFrame(sizeCanvasToDocument);
     }
 
     if (portfolioLink) {
@@ -363,6 +401,8 @@
     document.addEventListener('DOMContentLoaded', () => {
       if (location.hash === '#portfolio' || localStorage.getItem('portfolioOpen') === '1') {
         openPortfolio(false);
+      } else {
+        sizeCanvasToDocument();
       }
     });
   </script>
