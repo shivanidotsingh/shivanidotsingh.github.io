@@ -258,23 +258,31 @@
     const ctx = canvas.getContext('2d');
 
     function sizeCanvas() {
-      if (!introWrap || !introInner) return;
-      
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      const w = window.innerWidth;
-      // Make height much taller so you can scribble above and below without cutoff
-      const h = Math.max(introInner.offsetHeight, window.innerHeight);
+  if (!introWrap || !introInner) return;
 
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  const w = window.innerWidth;
 
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.globalCompositeOperation = 'multiply';
-    }
+  // Include introInner’s margins so the canvas fully covers the top/bottom gaps
+  const cs = getComputedStyle(introInner);
+  const mt = parseFloat(cs.marginTop)  || 0;
+  const mb = parseFloat(cs.marginBottom) || 0;
+
+  // Use the larger of: (introInner box + margins) vs viewport height
+  const innerHeightWithMargins = introInner.offsetHeight + mt + mb;
+  const h = Math.max(innerHeightWithMargins, window.innerHeight);
+
+  canvas.style.width  = w + 'px';
+  canvas.style.height = h + 'px';
+  canvas.width  = Math.floor(w * dpr);
+  canvas.height = Math.floor(h * dpr);
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.globalCompositeOperation = 'multiply';
+}
+
     sizeCanvas();
     window.addEventListener('resize', sizeCanvas);
 
