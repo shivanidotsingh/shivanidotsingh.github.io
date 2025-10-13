@@ -10,25 +10,38 @@
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>✐</text></svg>">
 
   <link rel="stylesheet" href="style.css">
+
   <style>
-    
-    /* --- Canvas spans full width but scrolls with intro --- */
-    .intro-wrap {
-      position: relative;
-      overflow: visible;
+    /* --- Scoped fixes for this page --- */
+    html, body { overflow-x: hidden; }
+
+    body.no-scroll {
+      margin: 0 !important;
+      max-width: none !important;
+      overflow-y: hidden;
     }
+
+    /* Keep text column styling (previously on body) */
+    .intro-inner {
+      max-width: 640px;
+      margin: 40px auto;
+      line-height: 1.8;
+    }
+
+    /* Trail canvas: full viewport, no dead zones */
+    #trail-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     .intro-wrap .intro-inner {
       position: relative;
       z-index: 1;
-    }
-    #trail-canvas {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100vw;
-      pointer-events: none;
-      z-index: 0;
     }
 
     /* Hidden until opened */
@@ -92,8 +105,8 @@
     }
   </style>
 </head>
-<body>
 
+<body class="no-scroll">
   <!-- INTRO -->
   <section class="intro-wrap">
     <canvas id="trail-canvas"></canvas>
@@ -155,7 +168,7 @@
           <img src="images/project2.jpg" alt="Innovation Needs Assessment">
         </a>
         <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">The Hungry Venturer</a></div>
-        <div class="project-desc">How might we asses the innovative tech needs of Country Offices to better support them?</div>
+        <div class="project-desc">How might we assess the innovative tech needs of Country Offices to better support them?</div>
         <div class="project-meta">Design Sprint <span>UNICEF Office of Innovation (2023)</span></div>
       </div>
 
@@ -169,7 +182,7 @@
         <div class="project-meta">Information Design <span>The Crucible × CCA (2020)</span></div>
       </div>
 
-      <!-- Dropin -->
+      <!-- Drop-in -->
       <div class="project">
         <a href="https://singh.work/dropin">
           <img src="images/project3.jpg" alt="The art, the artist and context">
@@ -202,10 +215,7 @@
   </section>
 
   <script>
-    //Slight Scrolling Exists - but scribble doesn't cut off
     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
-    // Highlight colors
     const highlightColors = {
       'highlight-yellow': '#FDFB8C',
       'highlight-blue':   '#D6F5FF',
@@ -213,164 +223,93 @@
       'highlight-green':  '#DDFFAA',
       'highlight-purple': '#EEDDFF'
     };
-
-    // Desktop trail state
     let drawing = false;
     let currentColor = null;
 
-    function expandOnce(buttonEl, contentId) {
-      const contentEl = document.getElementById(contentId);
-      contentEl.classList.add('visible');
-      buttonEl.disabled = true;
-
-      for (const cn of buttonEl.classList) {
-        if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
-      }
-      if (isMobile) spawnStaticDot(currentColor);
-      else drawing = true;
-
+    function expandOnce(btn,id){
+      const span=document.getElementById(id);
+      span.classList.add('visible');
+      btn.disabled=true;
+      for(const c of btn.classList){if(c.startsWith('highlight-')){currentColor=highlightColors[c];break;}}
+      if(isMobile)spawnStaticDot(currentColor);else drawing=true;
       requestAnimationFrame(sizeCanvas);
     }
 
-    // Mobile: static dots
-    function spawnStaticDot(color) {
-      const cont = document.getElementById('random-dots-container');
-      const dot = document.createElement('span');
-      dot.className = 'collected-dot';
-      dot.style.backgroundColor = color;
-      const size = 16;
-      const x = Math.random() * (window.innerWidth - size);
-      const y = Math.random() * (window.innerHeight - size);
-      dot.style.left = x + 'px';
-      dot.style.top  = y + 'px';
-      cont.appendChild(dot);
+    function spawnStaticDot(color){
+      const c=document.getElementById('random-dots-container');
+      const d=document.createElement('span');
+      d.className='collected-dot';
+      d.style.backgroundColor=color;
+      const s=16;
+      d.style.left=Math.random()*(window.innerWidth-s)+'px';
+      d.style.top=Math.random()*(window.innerHeight-s)+'px';
+      c.appendChild(d);
     }
 
-    // Canvas setup - extra large to allow scribbling anywhere
-    const introWrap = document.querySelector('.intro-wrap');
-    const introInner = document.querySelector('.intro-inner');
-    const canvas = document.getElementById('trail-canvas');
-    const ctx = canvas.getContext('2d');
-
-    function sizeCanvas() {
-      if (!introWrap || !introInner) return;
-      
-      const dpr = Math.max(1, window.devicePixelRatio || 1);
-      const w = window.innerWidth;
-      // Make height much taller so you can scribble above and below without cutoff
-      const h = Math.max(introInner.offsetHeight, window.innerHeight);
-
-      canvas.style.width = w + 'px';
-      canvas.style.height = h + 'px';
-      canvas.width = Math.floor(w * dpr);
-      canvas.height = Math.floor(h * dpr);
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.globalCompositeOperation = 'multiply';
+    const canvas=document.getElementById('trail-canvas');
+    const ctx=canvas.getContext('2d');
+    function sizeCanvas(){
+      const dpr=Math.max(1,window.devicePixelRatio||1);
+      const w=window.innerWidth,h=window.innerHeight;
+      canvas.width=w*dpr;canvas.height=h*dpr;
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      ctx.lineCap='round';ctx.lineJoin='round';
+      ctx.globalCompositeOperation='multiply';
     }
-    sizeCanvas();
-    window.addEventListener('resize', sizeCanvas);
+    sizeCanvas();window.addEventListener('resize',sizeCanvas);
 
-    let last = null, pending = null, paintingScheduled = false;
-    function schedulePaint(){ if(!paintingScheduled){ paintingScheduled = true; requestAnimationFrame(paintStep); } }
-    function paintStep(){
-      paintingScheduled = false;
-      if (!drawing || !currentColor || !pending || isMobile) return;
-      const { x, y } = pending;
-      if (!last) { last = { x, y }; return; }
-      
-      ctx.strokeStyle = hexToRgba(currentColor, 0.14);
-      ctx.lineWidth = 10;
-      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
-      
-      ctx.strokeStyle = hexToRgba(currentColor, 0.05);
-      ctx.lineWidth = 20;
-      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
-      
-      last = { x, y };
+    let last=null,pending=null,scheduled=false;
+    function schedule(){if(!scheduled){scheduled=true;requestAnimationFrame(paint);}}
+    function paint(){
+      scheduled=false;
+      if(!drawing||!currentColor||!pending||isMobile)return;
+      const{x,y}=pending;
+      if(!last){last={x,y};return;}
+      ctx.strokeStyle=hex(currentColor,0.14);
+      ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(x,y);ctx.stroke();
+      ctx.strokeStyle=hex(currentColor,0.05);
+      ctx.lineWidth=20;ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(x,y);ctx.stroke();
+      last={x,y};
+    }
+    if(!isMobile){
+      window.addEventListener('pointermove',e=>{pending={x:e.clientX,y:e.clientY};schedule();},{passive:true});
+      window.addEventListener('pointerdown',e=>{last={x:e.clientX,y:e.clientY};},{passive:true});
+      window.addEventListener('mouseleave',()=>last=null);
+      window.addEventListener('pointerleave',()=>last=null);
+      window.addEventListener('click',e=>{if(!e.target.closest('.reveal'))drawing=false;});
+      window.addEventListener('keydown',e=>{if(e.key==='Escape')drawing=false;});
+    }
+    function hex(hex,a=1){
+      const h=hex.replace('#','');
+      const r=parseInt(h.length===3?h[0]+h[0]:h.slice(0,2),16);
+      const g=parseInt(h.length===3?h[1]+h[1]:h.slice(2,4),16);
+      const b=parseInt(h.length===3?h[2]+h[2]:h.slice(4,6),16);
+      return`rgba(${r},${g},${b},${a})`;
     }
 
-    if (!isMobile) {
-      window.addEventListener('pointermove', e => {
-        const rect = introWrap.getBoundingClientRect();
-        pending = { 
-          x: e.clientX,
-          y: e.clientY - rect.top
-        };
-        schedulePaint();
-      }, { passive: true });
+    const portfolioLink=document.getElementById('portfolio-link');
+    const portfolio=document.getElementById('portfolio-appendix');
+    const portfolioClose=document.getElementById('portfolio-close');
 
-      window.addEventListener('pointerdown', e => {
-        const rect = introWrap.getBoundingClientRect();
-        last = { 
-          x: e.clientX,
-          y: e.clientY - rect.top
-        };
-      }, { passive: true });
-
-      window.addEventListener('mouseleave', () => { last = null; });
-      window.addEventListener('pointerleave', () => { last = null; });
-
-      window.addEventListener('click', (e) => {
-        const onHighlight = e.target.closest && e.target.closest('.reveal');
-        if (!onHighlight) drawing = false;
-      });
-      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
+    function openPortfolio(scroll=true){
+      portfolio.hidden=false;portfolio.setAttribute('aria-hidden','false');
+      localStorage.setItem('portfolioOpen','1');
+      document.body.classList.remove('no-scroll');
+      if(scroll){portfolio.querySelector('.portfolio-header').scrollIntoView({behavior:'smooth',block:'start'});}
+      if(location.hash!=='#portfolio')history.replaceState(null,'','#portfolio');
     }
-
-    function hexToRgba(hex, a=1){
-      const h = hex.replace('#','');
-      const r = parseInt(h.length===3 ? h[0]+h[0] : h.slice(0,2), 16);
-      const g = parseInt(h.length===3 ? h[1]+h[1] : h.slice(2,4), 16);
-      const b = parseInt(h.length===3 ? h[2]+h[2] : h.slice(4,6), 16);
-      return `rgba(${r},${g},${b},${a})`;
-    }
-
-    // Portfolio open/close
-    const portfolioLink = document.getElementById('portfolio-link');
-    const portfolio = document.getElementById('portfolio-appendix');
-    const portfolioClose = document.getElementById('portfolio-close');
-
-    function openPortfolio(scroll = true) {
-      if (!portfolio) return;
-      portfolio.hidden = false;
-      portfolio.setAttribute('aria-hidden', 'false');
-      localStorage.setItem('portfolioOpen', '1');
-      if (scroll) {
-        const header = portfolio.querySelector('.portfolio-header') || portfolio;
-        header.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      if (location.hash !== '#portfolio') history.replaceState(null, '', '#portfolio');
-    }
-
-    function closePortfolio() {
-      if (!portfolio) return;
-      portfolio.hidden = true;
-      portfolio.setAttribute('aria-hidden', 'true');
+    function closePortfolio(){
+      portfolio.hidden=true;portfolio.setAttribute('aria-hidden','true');
       localStorage.removeItem('portfolioOpen');
-      document.getElementById('page').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if (location.hash === '#portfolio') history.replaceState(null, '', ' ');
+      document.getElementById('page').scrollIntoView({behavior:'smooth',block:'start'});
+      document.body.classList.add('no-scroll');
+      if(location.hash==='#portfolio')history.replaceState(null,'',' ');
     }
-
-    if (portfolioLink) {
-      portfolioLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        openPortfolio(true);
-      });
-    }
-    if (portfolioClose) {
-      portfolioClose.addEventListener('click', (e) => {
-        e.preventDefault();
-        closePortfolio();
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (location.hash === '#portfolio' || localStorage.getItem('portfolioOpen') === '1') {
-        openPortfolio(false);
-      }
+    portfolioLink.addEventListener('click',e=>{e.preventDefault();openPortfolio(true);});
+    portfolioClose.addEventListener('click',e=>{e.preventDefault();closePortfolio();});
+    document.addEventListener('DOMContentLoaded',()=>{
+      if(location.hash==='#portfolio'||localStorage.getItem('portfolioOpen')==='1'){openPortfolio(false);}
+      else document.body.classList.add('no-scroll');
     });
   </script>
 </body>
