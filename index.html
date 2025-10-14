@@ -78,8 +78,6 @@
     .project-title { font-weight: 600; margin-bottom: 0.4em; line-height: 1.3; }
     .project-title a { text-decoration: underline; color: inherit; }
     .project-desc { margin-bottom: 0.6em; }
-    .project-meta { font-size: 0.9em; font-weight: 600; }
-    .project-meta span { display: block; opacity: 0.8; font-weight: normal; }
 
     @media (max-width: 1200px) {
       .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
@@ -114,14 +112,14 @@
         in San Francisco
         <span id="sf" class="inline-reveal"> — explore my work in this 
           <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub?start=false&loop=false&delayms=600000" target="_blank">overview</a></span>.
-        With a background in graphic design, I've also worked in <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">visual communication</button><span id="ads" class="inline-reveal">, crafting 
-          <a href="https://singh.work/logofolio">brand identities</a> and art directing ads for over five years</span>.
+        With a background in graphic design, I've also worked in <button class="reveal highlight-purple" onclick="expandOnce(this, 'ads')">art direction</button><span id="ads" class="inline-reveal">, crafting 
+          <a href="https://singh.work/logofolio">brand identities</a> and advertisements for five years</span>.
         
         <br><br><button class="reveal highlight-green" onclick="expandOnce(this, 'home')">Born in India</button>, I'm currently based in Stockholm.
         <span id="home" class="inline-reveal"> To visualise the many places I've called home over the years, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank">here</a>.</span>
         An alumnus of the National Institute of Design and California College of the Arts, see more on my <a href="resume.html">resume</a>, or dive into my <a href="#portfolio" id="portfolio-link">portfolio of projects</a>.
         <span class="hover-text"> ☺ <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif"></span> </p>
-      <p class="note" style="font-size: 0.8em; opacity: 0.5;">This website is built on github.com • Last updated on Oct 07, 2025 </p>
+      <p class="note" style="border-top: 1px solid #111; opacity: 0.5;">This website is built on github.com • Last updated on Oct 07, 2025 </p>
       
     </main>
   </section>
@@ -149,7 +147,7 @@
         </a>
         <div class="project-title"><a href="#">Playground for Prototypes</a></div>
         <div class="project-desc">[COMING SOON] <i>a sandbox environment for testing the digital prototypes we build in-house</i></div>
-        <div class="project-meta">Interface Design <span>UNICEF Office of Innovation (2024)</span></div>
+        <p class="note">Interface Design <span>UNICEF Office of Innovation (2024)</span></p>
       </div>
 
       <!-- Needs Assessment -->
@@ -159,7 +157,7 @@
         </a>
         <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">The Hungry Venturer</a></div>
         <div class="project-desc">How might we asses the innovative tech needs of Country Offices to better support them?</div>
-        <div class="project-meta">Design Sprint <span>UNICEF Office of Innovation (2023)</span></div>
+        <p class="note">Design Sprint <span>UNICEF Office of Innovation (2023)</span></p>
       </div>
 
       <!-- West Oakland -->
@@ -169,7 +167,7 @@
         </a>
         <div class="project-title"><a href="https://singh.work/case-study.html">A West Oakland Story</a></div>
         <div class="project-desc">How might we create a data-informed narrative about the future of a neighbourhood for its residents?</div>
-        <div class="project-meta">Information Design <span>The Crucible × CCA (2020)</span></div>
+        <p class="note">Information Design <span>The Crucible × CCA (2020)</span></p>
       </div>
 
       <!-- Dropin -->
@@ -179,7 +177,7 @@
         </a>
         <div class="project-title"><a href="https://singh.work/dropin">The art, the artist and context</a></div>
         <div class="project-desc">How might we improve the networking experience of creative professionals using interactive technology?</div>
-        <div class="project-meta">Digital Experience Design <span>CCA Student Project (2020)</span></div>
+        <p class="note">Digital Experience Design <span>CCA Student Project (2020)</span></p>
       </div>
 
       <!-- Ambassador -->
@@ -189,7 +187,7 @@
         </a>
         <div class="project-title"><a href="https://singh.work/ambassador.html">Cultural Ambassador</a></div>
         <div class="project-desc">How might we equip South-Asian American kids with their origin stories in an entertaining way?</div>
-        <div class="project-meta">Brand Identity Design <span>Client: Ambassador 88 (2020)</span></div>
+        <p class="note">Brand Identity Design <span>Client: Ambassador 88 (2020)</span></p>
       </div>
 
       <!-- Elemenopy -->
@@ -199,7 +197,7 @@
         </a>
         <div class="project-title"><a href="https://singh.work/lmnop">The ABC's of branding a Preschool</a></div>
         <div class="project-desc">How might we design the identity of a preschool to reflect a playful and inclusive learning experience?</div>
-        <div class="project-meta">Brand Identity Design <span>Client: Elemenopy Preschool (2017)</span></div>
+        <p class="note">Brand Identity Design <span>Client: Elemenopy Preschool (2017)</span></p>
       </div>
     </div>
   </section>
@@ -261,7 +259,7 @@
   const dpr = Math.max(1, window.devicePixelRatio || 1);
   const w = window.innerWidth;
 
-  // Include introInner’s margins so the canvas fully covers the top/bottom gaps
+  // Include introInner's margins so the canvas fully covers the top/bottom gaps
   const cs = getComputedStyle(introInner);
   const mt = parseFloat(cs.marginTop)  || 0;
   const mb = parseFloat(cs.marginBottom) || 0;
