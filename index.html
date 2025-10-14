@@ -304,23 +304,24 @@
         schedulePaint();
       }, { passive: true });
 
-     window.addEventListener('pointermove', e => {
-  const rect = introWrap.getBoundingClientRect();
-  pending = { 
-    x: e.clientX,
-    y: e.clientY 
-  };
-  schedulePaint();
-}, { passive: true });
+      window.addEventListener('pointerdown', e => {
+        const rect = introWrap.getBoundingClientRect();
+        last = { 
+          x: e.clientX,
+          y: e.clientY - rect.top
+        };
+      }, { passive: true });
 
-window.addEventListener('pointerdown', e => {
-  const rect = introWrap.getBoundingClientRect();
-  last = { 
-    x: e.clientX,
-    y: e.clientY 
-  };
-}, { passive: true });
-      
+      window.addEventListener('mouseleave', () => { last = null; });
+      window.addEventListener('pointerleave', () => { last = null; });
+
+      window.addEventListener('click', (e) => {
+        const onHighlight = e.target.closest && e.target.closest('.reveal');
+        if (!onHighlight) drawing = false;
+      });
+      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
+    }
+
     function hexToRgba(hex, a=1){
       const h = hex.replace('#','');
       const r = parseInt(h.length===3 ? h[0]+h[0] : h.slice(0,2), 16);
