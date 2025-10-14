@@ -33,7 +33,7 @@ img {
 }
 
 figure { margin: 20px 0; }
-figcaption { font-size: 0.9em; color: #000; text-align: center; margin-top: 5px; }
+figcaption { text-align: center; margin-top: 5px; }
 
 a {
   color: inherit;
@@ -80,8 +80,14 @@ a[target="_blank"] { cursor: alias; }
 
 .note {
   margin-top: 1.5em;
-  border-top: 1px solid #111;
   padding-top: 1.5em;
+  font-size: 0.8em;
+  font-weight: 600;
+}
+.note span { 
+  display: block; 
+  opacity: 0.8;
+  font-weight: normal;
 }
 
 /* Image pairs and galleries */
