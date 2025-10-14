@@ -296,19 +296,19 @@
 
     if (!isMobile) {
       window.addEventListener('pointermove', e => {
-        /*const rect = introWrap.getBoundingClientRect();*/
+        const rect = introWrap.getBoundingClientRect();
         pending = { 
           x: e.clientX,
-          y: e.clientY 
+          y: e.clientY - rect.top
         };
         schedulePaint();
       }, { passive: true });
 
       window.addEventListener('pointerdown', e => {
-        /*const rect = introWrap.getBoundingClientRect();*/
+        const rect = introWrap.getBoundingClientRect();
         last = { 
           x: e.clientX,
-          y: e.clientY 
+          y: e.clientY - rect.top
         };
       }, { passive: true });
 
