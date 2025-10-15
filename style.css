@@ -76,7 +76,7 @@ a[target="_blank"] { cursor: alias; }
 }
 /* ——— END UPDATED PDF BLOCK ——— */
 
-.note { font-size: 0.8em; opacity: 0.8; }
+.note { font-size: 0.8em; color: #ECECEC; }
 .note span { display:block; font-weight: 600;}
 
 /* Image pairs and galleries */
