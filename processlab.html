@@ -47,7 +47,6 @@
   "images/process/naming systems.png",
   "images/process/ORG.png",
   "images/process/ourresources.png",
-  "images/process/P,P,P.png",
   "images/process/Persona.jpg",
   "images/process/playground UI.png",
   "images/process/Product Partnerships Data Knowledge.png",
@@ -87,17 +86,28 @@ let zCounter = 1000; // global topmost z-index counter
       const img = document.createElement('img');
       img.loading = 'lazy'; img.decoding = 'async';
       img.alt = `artefact ${i+1}`;
-      // If the image is portrait, don't upscale beyond its natural width
+      
       img.onload = () => {
-        const isPortrait = img.naturalHeight > img.naturalWidth;
-        if (isPortrait) {
-          const newW = Math.min(el.clientWidth || img.naturalWidth, img.naturalWidth);
-          el.style.width = newW + 'px';
-          // keep inside viewport after width update
-          el.style.left = clamp(parseFloat(el.style.left)||0, 0, window.innerWidth - el.clientWidth) + 'px';
-          el.style.top  = clamp(parseFloat(el.style.top)||0,  0, window.innerHeight - el.clientHeight) + 'px';
-        }
-      };
+  const isPortrait = img.naturalHeight > img.naturalWidth;
+
+  // portraits: one consistent width (no variation), but never upscale beyond natural
+  const PORTRAIT_WIDTH = 300; // ← set your fixed width
+  if (isPortrait) {
+    const w = Math.min(PORTRAIT_WIDTH, img.naturalWidth);
+    el.style.width = w + 'px';
+  } else {
+    // landscapes: keep your random width but enforce a minimum
+    const MIN_LANDSCAPE = 420; // tweak if you like
+    const current = el.clientWidth; // whatever rand(...) set
+    el.style.width = Math.max(current, MIN_LANDSCAPE) + 'px';
+
+  }
+
+  // keep inside viewport after width update
+  el.style.left = clamp(parseFloat(el.style.left)||0, 0, window.innerWidth - el.clientWidth) + 'px';
+  el.style.top  = clamp(parseFloat(el.style.top)||0,  0, window.innerHeight - el.clientHeight) + 'px';
+};
+
       img.src = encodeURI(src);
       el.appendChild(img);
 
