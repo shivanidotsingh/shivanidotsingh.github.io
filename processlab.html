@@ -12,31 +12,13 @@
     html, body { height: 100%; }
     body {
       margin: 0; background: #ffffff; color: #111; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
-      /* hide system cursor, we draw our own */
-      cursor: none;
     }
 
-    /* full-viewport stage */
     #stage { position: fixed; inset: 0; overflow: hidden; }
 
-    /* minimal, no-card images */
     .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; }
     .tile img { display: block; width: 100%; height: auto; pointer-events: none; }
 
-    /* custom cursor — outline circle with blend-difference (like NØKO) */
-    #cur {
-      position: fixed; top: 0; left: 0; width: 64px; height: 64px; border-radius: 50%;
-      border: 2px solid var(--ring); pointer-events: none; z-index: 9999;
-      mix-blend-mode: difference; /* inverts against background/content */
-      transform: translate(-50%, -50%);
-      transition: width .15s ease, height .15s ease, border-width .15s ease; /* quick, snappy */
-    }
-    #cur.drag { width: 80px; height: 80px; border-width: 2px; }
-
-    @media (max-width: 900px) {
-      #cur { display: none; } /* default cursor on small screens (touch) */
-      body { cursor: auto; }
-    }
   </style>
 </head>
 <body>
