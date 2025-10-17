@@ -11,7 +11,7 @@
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      margin: 0; background: #ffffff; color: #111; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
+      margin: 0; background: #f2f2f2; color: #111; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
     }
 
     #stage { position: fixed; inset: 0; overflow: hidden; }
@@ -71,7 +71,7 @@
       const el = document.createElement('figure');
       el.className = 'tile'; el.dataset.i = i;
       // random width (no card chrome)
-      const w = Math.round(rand(180, 360));
+      const w = Math.round(rand(300, 600));
       el.style.width = w + 'px';
       // random position within viewport
       const maxX = window.innerWidth - w - 20;
