@@ -16,8 +16,13 @@
 
     /* full-viewport stage */
     #stage { position: fixed; inset: 0; overflow: hidden; }
-    .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; box-shadow: 0 0 0 1px #111; border-radius: 6px; }
+    .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; }
     .tile img { display: block; width: 100%; height: auto; pointer-events: none; }
+
+    /* hand cursor */
+    .tile { cursor: grab; cursor: -webkit-grab; }
+    .tile.dragging { cursor: grabbing; cursor: -webkit-grabbing; }
+    
   </style>
 </head>
 <body>
@@ -109,6 +114,7 @@ let zCounter = 1000; // global topmost z-index counter
         id = e.pointerId; sx = e.clientX; sy = e.clientY;
         ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
         el.style.zIndex = (++zCounter).toString();
+        el.classList.add('dragging');
               });
 
       el.addEventListener('pointermove', (e) => {
@@ -119,7 +125,7 @@ let zCounter = 1000; // global topmost z-index counter
         el.style.top  = ny + 'px';
       });
 
-      const end = () => { id = null;  };
+      const end = () => { id = null; el.classList.remove('dragging'); };
       el.addEventListener('pointerup', end);
       el.addEventListener('pointercancel', end);
       el.addEventListener('lostpointercapture', end);
