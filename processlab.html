@@ -11,22 +11,19 @@
     * { box-sizing: border-box; }
     html, body { height: 100%; }
     body {
-      margin: 0; background: #f2f2f2; color: #111; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
+      margin: 0; background: #000; color: #111; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
     }
 
+    /* full-viewport stage */
     #stage { position: fixed; inset: 0; overflow: hidden; }
-
-    .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; }
+    .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; box-shadow: 0 0 0 1px #111; border-radius: 6px; }
     .tile img { display: block; width: 100%; height: auto; pointer-events: none; }
-
   </style>
 </head>
 <body>
   <div id="stage" aria-label="Draggable artefacts"></div>
-  <div id="cur" aria-hidden="true"></div>
-
+  
   <script>
-    // ---- configure your artefacts (30–35 items) ----
     const IMAGES = [
   "images/process/ADT vision.png",
   "images/process/Concentric.png",
@@ -66,6 +63,7 @@
     const rand = (a, b) => Math.random() * (b - a) + a;
 
     const stage = $('#stage');
+let zCounter = 1000; // global topmost z-index counter
 
     function makeTile(src, i) {
       const el = document.createElement('figure');
@@ -83,7 +81,19 @@
 
       const img = document.createElement('img');
       img.loading = 'lazy'; img.decoding = 'async';
-      img.alt = `artefact ${i+1}`; img.src = encodeURI(src);
+      img.alt = `artefact ${i+1}`;
+      // If the image is portrait, don't upscale beyond its natural width
+      img.onload = () => {
+        const isPortrait = img.naturalHeight > img.naturalWidth;
+        if (isPortrait) {
+          const newW = Math.min(el.clientWidth || img.naturalWidth, img.naturalWidth);
+          el.style.width = newW + 'px';
+          // keep inside viewport after width update
+          el.style.left = clamp(parseFloat(el.style.left)||0, 0, window.innerWidth - el.clientWidth) + 'px';
+          el.style.top  = clamp(parseFloat(el.style.top)||0,  0, window.innerHeight - el.clientHeight) + 'px';
+        }
+      };
+      img.src = encodeURI(src);
       el.appendChild(img);
 
       enableDrag(el);
@@ -93,15 +103,13 @@
     // ---- drag (pointer events), minimal ----
     function enableDrag(el) {
       let id = null, sx=0, sy=0, ox=0, oy=0;
-      const cur = document.getElementById('cur');
-
+      
       el.addEventListener('pointerdown', (e) => {
         el.setPointerCapture(e.pointerId);
         id = e.pointerId; sx = e.clientX; sy = e.clientY;
         ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
-        el.style.zIndex = (parseInt(el.style.zIndex||'10') + 1).toString();
-        cur.classList.add('drag');
-      });
+        el.style.zIndex = (++zCounter).toString();
+              });
 
       el.addEventListener('pointermove', (e) => {
         if (id !== e.pointerId) return;
@@ -111,28 +119,13 @@
         el.style.top  = ny + 'px';
       });
 
-      const end = () => { id = null; document.getElementById('cur').classList.remove('drag'); };
+      const end = () => { id = null;  };
       el.addEventListener('pointerup', end);
       el.addEventListener('pointercancel', end);
       el.addEventListener('lostpointercapture', end);
     }
 
-    // ---- simple cursor follower with easing (matches the vibe) ----
-    (function cursorInit(){
-      const cur = document.getElementById('cur');
-      let mx = window.innerWidth/2, my = window.innerHeight/2; // mouse
-      let cx = mx, cy = my; // cursor
-      const ease = 0.18; // small lag
-
-      window.addEventListener('mousemove', (e)=>{ mx = e.clientX; my = e.clientY; });
-      function tick(){
-        cx += (mx - cx) * ease; cy += (my - cy) * ease;
-        cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
-        requestAnimationFrame(tick);
-      }
-      tick();
-    })();
-
+    
     // ---- build ----
     IMAGES.forEach((src, i) => stage.appendChild(makeTile(src, i)));
 
