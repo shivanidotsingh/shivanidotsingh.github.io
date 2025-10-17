@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>process — shivani singh</title>
+  <meta name="description" content="A super‑simple wall of draggable process artefacts." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>✧</text></svg>">
+  <style>
+    :root { --ring: #fff; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; background: #ffffff; color: #111; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
+      /* hide system cursor, we draw our own */
+      cursor: none;
+    }
+
+    /* full-viewport stage */
+    #stage { position: fixed; inset: 0; overflow: hidden; }
+
+    /* minimal, no-card images */
+    .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; }
+    .tile img { display: block; width: 100%; height: auto; pointer-events: none; }
+
+    /* custom cursor — outline circle with blend-difference (like NØKO) */
+    #cur {
+      position: fixed; top: 0; left: 0; width: 64px; height: 64px; border-radius: 50%;
+      border: 2px solid var(--ring); pointer-events: none; z-index: 9999;
+      mix-blend-mode: difference; /* inverts against background/content */
+      transform: translate(-50%, -50%);
+      transition: width .15s ease, height .15s ease, border-width .15s ease; /* quick, snappy */
+    }
+    #cur.drag { width: 80px; height: 80px; border-width: 2px; }
+
+    @media (max-width: 900px) {
+      #cur { display: none; } /* default cursor on small screens (touch) */
+      body { cursor: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="stage" aria-label="Draggable artefacts"></div>
+  <div id="cur" aria-hidden="true"></div>
+
+  <script>
+    // ---- configure your artefacts (30–35 items) ----
+    const IMAGES = [
+  "images/process/ADT vision.png",
+  "images/process/Concentric.png",
+  "images/process/criteriaforintake.png",
+  "images/process/CRM.png",
+  "images/process/cryptotransfer.png",
+  "images/process/curriculum.png",
+  "images/process/Datapoints.png",
+  "images/process/GNC learning.png",
+  "images/process/humaneval.png",
+  "images/process/knowledge sharing.png",
+  "images/process/Laddering Data.jpg",
+  "images/process/manual.png",
+  "images/process/medium is msg.png",
+  "images/process/Name Parameters.png",
+  "images/process/naming systems.png",
+  "images/process/ORG.png",
+  "images/process/ourresources.png",
+  "images/process/P,P,P.png",
+  "images/process/Persona.jpg",
+  "images/process/playground UI.png",
+  "images/process/Product Partnerships Data Knowledge.png",
+  "images/process/Reach.png",
+  "images/process/Rules.png",
+  "images/process/scales of a problem.png",
+  "images/process/timeline.png",
+  "images/process/types of slides.png",
+  "images/process/vendorgrid.png",
+  "images/process/whatwedonose.png",
+  "images/process/why-how.png",
+  "images/process/XCapit.png",
+];
+
+    // ---- util helpers ----
+    const $ = sel => document.querySelector(sel);
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    const rand = (a, b) => Math.random() * (b - a) + a;
+
+    const stage = $('#stage');
+
+    function makeTile(src, i) {
+      const el = document.createElement('figure');
+      el.className = 'tile'; el.dataset.i = i;
+      // random width (no card chrome)
+      const w = Math.round(rand(180, 360));
+      el.style.width = w + 'px';
+      // random position within viewport
+      const maxX = window.innerWidth - w - 20;
+      const maxY = window.innerHeight - 200; // leave a bit of space near bottom
+      const x = Math.max(10, Math.round(rand(10, Math.max(20, maxX))));
+      const y = Math.max(10, Math.round(rand(10, Math.max(20, maxY))));
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+
+      const img = document.createElement('img');
+      img.loading = 'lazy'; img.decoding = 'async';
+      img.alt = `artefact ${i+1}`; img.src = encodeURI(src);
+      el.appendChild(img);
+
+      enableDrag(el);
+      return el;
+    }
+
+    // ---- drag (pointer events), minimal ----
+    function enableDrag(el) {
+      let id = null, sx=0, sy=0, ox=0, oy=0;
+      const cur = document.getElementById('cur');
+
+      el.addEventListener('pointerdown', (e) => {
+        el.setPointerCapture(e.pointerId);
+        id = e.pointerId; sx = e.clientX; sy = e.clientY;
+        ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
+        el.style.zIndex = (parseInt(el.style.zIndex||'10') + 1).toString();
+        cur.classList.add('drag');
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (id !== e.pointerId) return;
+        const nx = clamp(ox + (e.clientX - sx), 0, window.innerWidth - el.clientWidth);
+        const ny = clamp(oy + (e.clientY - sy), 0, window.innerHeight - el.clientHeight);
+        el.style.left = nx + 'px';
+        el.style.top  = ny + 'px';
+      });
+
+      const end = () => { id = null; document.getElementById('cur').classList.remove('drag'); };
+      el.addEventListener('pointerup', end);
+      el.addEventListener('pointercancel', end);
+      el.addEventListener('lostpointercapture', end);
+    }
+
+    // ---- simple cursor follower with easing (matches the vibe) ----
+    (function cursorInit(){
+      const cur = document.getElementById('cur');
+      let mx = window.innerWidth/2, my = window.innerHeight/2; // mouse
+      let cx = mx, cy = my; // cursor
+      const ease = 0.18; // small lag
+
+      window.addEventListener('mousemove', (e)=>{ mx = e.clientX; my = e.clientY; });
+      function tick(){
+        cx += (mx - cx) * ease; cy += (my - cy) * ease;
+        cur.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+        requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+
+    // ---- build ----
+    IMAGES.forEach((src, i) => stage.appendChild(makeTile(src, i)));
+
+    // keep tiles inside viewport if resized
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.tile').forEach(el => {
+        el.style.left = clamp(parseFloat(el.style.left)||0, 0, window.innerWidth - el.clientWidth) + 'px';
+        el.style.top  = clamp(parseFloat(el.style.top)||0,  0, window.innerHeight - el.clientHeight) + 'px';
+      });
+    });
+  </script>
+</body>
+</html>
