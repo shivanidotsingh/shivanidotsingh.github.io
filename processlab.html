@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>making of the sausage</title>
-<meta name="description" content="artefacts from work - out of context." />
+<meta name="description" content="artefacts from work - out of context" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>✧</text></svg>">
 
 <style>
@@ -109,7 +109,7 @@
 
 <body>
   <div class="wrap">
-    <header>making of the sausage</header>
+    <header>screenshots from the desktop, out of context</header>
 
     <main class="stage" id="stage">
       <div class="track" id="track"></div>
@@ -174,8 +174,18 @@
               parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
     };
 
+    // Circular index helpers
+    const N = IMAGES.length;
+    const mod = (n, m) => ((n % m) + m) % m; // proper modulo for negatives
+    const circDelta = (i, c) => {
+      // minimal signed distance on a circle from c to i (can handle fractional c)
+      let d = i - c;
+      d = mod(d + N/2, N) - N/2; // map to (-N/2, N/2]
+      return d;
+    };
+
     // Start at a RANDOM image each load
-    let current = Math.floor(Math.random() * IMAGES.length);
+    let current = Math.floor(Math.random() * N); // can become fractional during drag
     const cards = [];
 
     function createItem(src, i){
@@ -195,48 +205,50 @@
       item.appendChild(card);
 
       // click a side card to focus it
-      item.addEventListener('click', () => {
-        const idx = +item.dataset.i;
-        if (idx !== current) goTo(idx);
-      });
+      item.addEventListener('click', () => goTo(i));
 
       track.appendChild(item);
       cards.push(item);
     }
 
-    // Position items based on current index
+    // Position items based on current (supports fractional for drag peeking)
     function render(){
       const { baseShift, peekGap, scale } = CTRL;
 
       cards.forEach((item, i) => {
-        const d  = i - current;   // distance from center in items
-        const ad = Math.abs(d);   // absolute distance
+        const d  = circDelta(i, current); // minimal circular distance
+        const ad = Math.abs(d);
         let s = 1, x = 0, rY = 0, z = 0, cls = '';
 
-        if (ad === 0){
+        if (ad < 0.5){
           s = 1; x = 0; rY = 0; z = 0; cls = '';
-        } else if (ad === 1){
+        } else if (ad < 1.5){
           s = scale[1]; x = Math.sign(d) * (baseShift + peekGap * 0.0); rY = -Math.sign(d) * 12; z = -80; cls = 'side';
-        } else if (ad === 2){
+        } else if (ad < 2.5){
           s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap * 0.5); rY = -Math.sign(d) * 16; z = -160; cls = 'far';
         } else {
           s = scale[3]; x = Math.sign(d) * (baseShift*2.7 + (ad-2)*90); rY = -Math.sign(d) * 18; z = -260; cls = 'hidden';
         }
 
         item.className = `item ${cls}`.trim();
-        // Center is already top:50%/left:50% with translate(-50%,-50%). Only offset by x.
         item.style.transform =
           `translate3d(${x}px, 0px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
       });
     }
 
     function goTo(i){
-      current = Math.max(0, Math.min(cards.length - 1, i));
+      // snap to the closest equivalent of i on the circle relative to current
+      const target = mod(i, N);
+      // choose the direction with minimal rotation
+      const d = circDelta(target, current);
+      current = current + d;           // move minimally (may become fractional but very close to int)
+      current = Math.round(current);   // snap to exact integer slot
+      current = mod(current, N);
       render();
     }
 
-    function next(){ if (current < cards.length - 1) goTo(current + 1); }
-    function prev(){ if (current > 0) goTo(current - 1); }
+    function next(){ current = mod(Math.round(current) + 1, N); render(); }
+    function prev(){ current = mod(Math.round(current) - 1, N); render(); }
 
     // Input: buttons, keys, wheel, drag/swipe
     nextBtn.addEventListener('click', next);
@@ -252,47 +264,44 @@
     stageEl.addEventListener('wheel', (e) => {
       if (wheelLock) return;
       wheelLock = true;
-      setTimeout(()=>wheelLock=false, 180);
+      setTimeout(()=>wheelLock=false, 160);
       const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       if (delta > 0) next(); else if (delta < 0) prev();
     }, { passive: true });
 
-    // Drag / swipe (bind to STAGE)
+    // Drag / swipe with circular peeking
     (function dragNav(){
-      let down = false, sx = 0, moved = 0;
-      stageEl.addEventListener('pointerdown', (e) => { down = true; sx = e.clientX; moved = 0; });
+      let down = false, sx = 0, moved = 0, start = 0;
+      stageEl.addEventListener('pointerdown', (e) => {
+        down = true; sx = e.clientX; moved = 0; start = current;
+      });
       stageEl.addEventListener('pointermove', (e) => {
         if (!down) return;
         moved = e.clientX - sx;
-        // live-peek while dragging (subtle)
-        const shift = moved / (CTRL.baseShift * 1.25);
-        const tempIndex = current - shift;
-        const prevCurrent = current;
-        current = Math.min(cards.length-1, Math.max(0, tempIndex));
+        const shift = moved / (CTRL.baseShift * 1.25); // how many items worth
+        current = start - shift;                       // fractional, circular
+        current = mod(current, N);
         render();
-        current = prevCurrent;
       });
       const release = () => {
         if (!down) return; down = false;
-        const threshold = 60;
-        if (moved < -threshold) next();
-        else if (moved > threshold) prev();
-        else render(); // snap back
+        // snap to nearest index and wrap
+        current = Math.round(current);
+        current = mod(current, N);
+        render();
       };
       stageEl.addEventListener('pointerup', release);
       stageEl.addEventListener('pointercancel', () => { down = false; render(); });
       stageEl.addEventListener('mouseleave', () => { down = false; });
     })();
 
-    // Build
+    // Build + initial render
     IMAGES.forEach((src, i) => createItem(src, i));
-
-    // Re-render on stage resize
+    // Resize-aware render (if stage changes size)
     const ro = new ResizeObserver(render);
     ro.observe(stageEl);
     window.addEventListener('resize', render);
 
-    // Initial render at a random index
     render();
   </script>
 </body>
