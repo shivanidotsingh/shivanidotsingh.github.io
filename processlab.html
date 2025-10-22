@@ -7,153 +7,130 @@
   <meta name="description" content="artefacts from work - out of context." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>✧</text></svg>">
   <style>
-    :root { --ring: #fff; }
+    :root { --gap: 28px; --pad: 120px; --colw: 420px; /* column width */ }
     * { box-sizing: border-box; }
     html, body { height: 100%; }
-    body {
-      margin: 0; background: #000; color: #111; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial;
-    }
+    body { margin: 0; background: #000; color: #fff; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; }
 
-    /* full-viewport stage */
-    #stage { position: fixed; inset: 0; overflow: hidden; }
+    /* 2D scrollable viewport */
+    #viewport { position: fixed; inset: 0; overflow: auto; }
+    #canvas { position: relative; width: 6000px; height: 4000px; /* will be resized by JS */ }
+
+    /* tiles */
     .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; }
-    .tile img { display: block; width: 100%; height: auto; pointer-events: none; }
-
-    /* hand cursor */
-    .tile { cursor: grab; cursor: -webkit-grab; }
-    .tile.dragging { cursor: grabbing; cursor: -webkit-grabbing; }
-    
+    .tile img { display: block; width: 100%; height: auto; }
   </style>
 </head>
 <body>
-  <div id="stage" aria-label="Draggable artefacts"></div>
-  
+  <div id="viewport" aria-label="Masonry canvas"><div id="canvas"></div></div>
+
   <script>
     const IMAGES = [
-  "images/process/ADT vision.png",
-  "images/process/Concentric.png",
-  "images/process/criteriaforintake.png",
-  "images/process/CRM.png",
-  "images/process/cryptotransfer.png",
-  "images/process/curriculum.png",
-  "images/process/Datapoints.png",
-  "images/process/GNC learning.png",
-  "images/process/humaneval.png",
-  "images/process/knowledge sharing.png",
-  "images/process/Laddering Data.jpg",
-  "images/process/manual.png",
-  "images/process/medium is msg.png",
-  "images/process/Name Parameters.png",
-  "images/process/naming systems.png",
-  "images/process/ORG.png",
-  "images/process/ourresources.png",
-  "images/process/opp.png",
-  "images/process/Persona.jpg",
-  "images/process/playground UI.png",
-  "images/process/Product Partnerships Data Knowledge.png",
-  "images/process/Reach.png",
-  "images/process/Reachout if.png",
-  "images/process/Rules.png",
-  "images/process/scales of a problem.png",
-  "images/process/timeline.png",
-  "images/process/types of slides.png",
-  "images/process/vendorgrid.png",
-  "images/process/whatwedonose.png",
-  "images/process/why-how.png",
-  "images/process/XCapit.png",
-];
+      "images/process/ADT vision.png",
+      "images/process/Concentric.png",
+      "images/process/criteriaforintake.png",
+      "images/process/CRM.png",
+      "images/process/cryptotransfer.png",
+      "images/process/curriculum.png",
+      "images/process/Datapoints.png",
+      "images/process/GNC learning.png",
+      "images/process/humaneval.png",
+      "images/process/knowledge sharing.png",
+      "images/process/Laddering Data.jpg",
+      "images/process/manual.png",
+      "images/process/medium is msg.png",
+      "images/process/Name Parameters.png",
+      "images/process/naming systems.png",
+      "images/process/ORG.png",
+      "images/process/ourresources.png",
+      "images/process/opp.png",
+      "images/process/Persona.jpg",
+      "images/process/playground UI.png",
+      "images/process/Product Partnerships Data Knowledge.png",
+      "images/process/Reach.png",
+      "images/process/Reachout if.png",
+      "images/process/Rules.png",
+      "images/process/scales of a problem.png",
+      "images/process/timeline.png",
+      "images/process/types of slides.png",
+      "images/process/vendorgrid.png",
+      "images/process/whatwedonose.png",
+      "images/process/why-how.png",
+      "images/process/XCapit.png"
+    ];
 
     // ---- util helpers ----
     const $ = sel => document.querySelector(sel);
-    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-    const rand = (a, b) => Math.random() * (b - a) + a;
 
-    const stage = $('#stage');
-let zCounter = 1000; // global topmost z-index counter
+    const viewport = $('#viewport');
+    const canvas = $('#canvas');
 
-    function makeTile(src, i) {
-      const el = document.createElement('figure');
-      el.className = 'tile'; el.dataset.i = i;
-      // random width (no card chrome)
-      const w = Math.round(rand(300, 600));
-      el.style.width = w + 'px';
-      // random position within viewport
-      const maxX = window.innerWidth - w - 20;
-      const maxY = window.innerHeight - 200; // leave a bit of space near bottom
-      const x = Math.max(10, Math.round(rand(10, Math.max(20, maxX))));
-      const y = Math.max(10, Math.round(rand(10, Math.max(20, maxY))));
-      el.style.left = x + 'px';
-      el.style.top  = y + 'px';
+    // Layout settings
+    const GAP = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap')) || 28;
+    const PAD = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pad')) || 120;
+    const COL_W = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--colw')) || 420;
+    const COLS = 14; // make it wide so you can scroll horizontally
 
-      const img = document.createElement('img');
-      img.loading = 'lazy'; img.decoding = 'async';
-      img.alt = `artefact ${i+1}`;
-      
-      img.onload = () => {
-  const isPortrait = img.naturalHeight > img.naturalWidth;
-
-  // portraits: one consistent width (no variation), but never upscale beyond natural
-  const PORTRAIT_WIDTH = 300; // ← set your fixed width
-  if (isPortrait) {
-    const w = Math.min(PORTRAIT_WIDTH, img.naturalWidth);
-    el.style.width = w + 'px';
-  } else {
-    // landscapes: keep your random width but enforce a minimum
-    const MIN_LANDSCAPE = 420; // tweak if you like
-    const current = el.clientWidth; // whatever rand(...) set
-    el.style.width = Math.max(current, MIN_LANDSCAPE) + 'px';
-
-  }
-
-  // keep inside viewport after width update
-  el.style.left = clamp(parseFloat(el.style.left)||0, 0, window.innerWidth - el.clientWidth) + 'px';
-  el.style.top  = clamp(parseFloat(el.style.top)||0,  0, window.innerHeight - el.clientHeight) + 'px';
-};
-
-      img.src = encodeURI(src);
-      el.appendChild(img);
-
-      enableDrag(el);
-      return el;
+    function preload(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.loading = 'eager';
+        img.decoding = 'async';
+        img.onload = () => resolve({ src, w: img.naturalWidth, h: img.naturalHeight });
+        img.onerror = () => resolve(null);
+        img.src = encodeURI(src);
+      });
     }
 
-    // ---- drag (pointer events), minimal ----
-    function enableDrag(el) {
-      let id = null, sx=0, sy=0, ox=0, oy=0;
-      
-      el.addEventListener('pointerdown', (e) => {
-        el.setPointerCapture(e.pointerId);
-        id = e.pointerId; sx = e.clientX; sy = e.clientY;
-        ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
-        el.style.zIndex = (++zCounter).toString();
-        el.classList.add('dragging');
-              });
+    function layout(items) {
+      const heights = new Array(COLS).fill(PAD);
+      let maxRight = PAD, maxBottom = PAD;
 
-      el.addEventListener('pointermove', (e) => {
-        if (id !== e.pointerId) return;
-        const nx = clamp(ox + (e.clientX - sx), 0, window.innerWidth - el.clientWidth);
-        const ny = clamp(oy + (e.clientY - sy), 0, window.innerHeight - el.clientHeight);
-        el.style.left = nx + 'px';
-        el.style.top  = ny + 'px';
+      items.forEach((it, i) => {
+        if (!it) return;
+        const isPortrait = it.h > it.w;
+        const targetW = isPortrait ? Math.min(300, COL_W) : COL_W; // fixed width for portraits
+        const scale = targetW / it.w;
+        const targetH = Math.round(it.h * scale);
+
+        const col = heights.indexOf(Math.min(...heights));
+        const x = PAD + col * (COL_W + GAP);
+        const y = heights[col];
+        heights[col] += targetH + GAP;
+
+        const fig = document.createElement('figure');
+        fig.className = 'tile';
+        fig.style.width = targetW + 'px';
+        fig.style.left = x + 'px';
+        fig.style.top = y + 'px';
+
+        const image = document.createElement('img');
+        image.alt = `artefact ${i+1}`;
+        image.src = encodeURI(it.src);
+        fig.appendChild(image);
+        canvas.appendChild(fig);
+
+        maxRight = Math.max(maxRight, x + targetW);
+        maxBottom = Math.max(maxBottom, y + targetH);
       });
 
-      const end = () => { id = null; el.classList.remove('dragging'); };
-      el.addEventListener('pointerup', end);
-      el.addEventListener('pointercancel', end);
-      el.addEventListener('lostpointercapture', end);
+      canvas.style.width = (maxRight + PAD) + 'px';
+      canvas.style.height = (maxBottom + PAD) + 'px';
+
+      if (!sessionStorage.getItem('masonry-centered')) {
+        const centerX = Math.max(0, (canvas.clientWidth - viewport.clientWidth) / 2);
+        const centerY = 0;
+        viewport.scrollTo({ left: centerX, top: centerY, behavior: 'instant' });
+        sessionStorage.setItem('masonry-centered', '1');
+      }
     }
 
-    
-    // ---- build ----
-    IMAGES.forEach((src, i) => stage.appendChild(makeTile(src, i)));
+    async function init() {
+      const metas = await Promise.all(IMAGES.map(preload));
+      layout(metas);
+    }
 
-    // keep tiles inside viewport if resized
-    window.addEventListener('resize', () => {
-      document.querySelectorAll('.tile').forEach(el => {
-        el.style.left = clamp(parseFloat(el.style.left)||0, 0, window.innerWidth - el.clientWidth) + 'px';
-        el.style.top  = clamp(parseFloat(el.style.top)||0,  0, window.innerHeight - el.clientHeight) + 'px';
-      });
-    });
+    window.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
