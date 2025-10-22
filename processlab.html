@@ -4,23 +4,22 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>making of the sausage</title>
-<meta name="description" content="A clean, coverflow-style gallery: one image centered, neighbors peeking left/right." />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>◧</text></svg>">
+<meta name="description" content="artefacts from work - out of context." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>✧</text></svg>">
 
 <style>
   :root{
     --bg: #fff;
     --fg: #111;
-    --muted: #b5b5b5;
     --accent: #0a84ff;
 
-    --peek-gap: 60px;   /* horizontal gap between items */
-    --base-shift: 380px;/* how far each neighbor sits from center */
+    --peek-gap: 60px;      /* horizontal gap between items */
+    --base-shift: 380px;   /* how far each neighbor sits from center */
     --center-max-w: 80vw;
     --center-max-h: 72vh;
-    --side-scale-1: .78;/* scale for immediate neighbors */
-    --side-scale-2: .62;/* next neighbors */
-    --side-scale-3: .50;/* further neighbors */
+    --side-scale-1: .78;   /* scale for immediate neighbors */
+    --side-scale-2: .62;   /* next neighbors */
+    --side-scale-3: .50;   /* further neighbors */
   }
 
   * { box-sizing: border-box; }
@@ -31,7 +30,8 @@
   }
 
   .wrap {
-    position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto;
+    position: fixed; inset: 0;
+    display: grid; grid-template-rows: auto 1fr; /* header + stage */
   }
 
   header { padding: 14px 18px; color: #777; letter-spacing: .25px; }
@@ -39,8 +39,9 @@
   /* Stage with perspective for subtle depth */
   .stage {
     position: relative;
-    overflow: hidden; /* hide edges during transitions */
+    overflow: hidden;
     perspective: 1600px;
+    background: #fff;
   }
 
   /* Track holds all items centered */
@@ -74,31 +75,26 @@
     object-fit: contain; background: #fff;
   }
 
-  .item.side { opacity: .75; filter: saturate(.9); }
-  .item.far  { opacity: .45; filter: saturate(.8) blur(.2px); }
+  .item.side { opacity: .8; filter: saturate(.95); }
+  .item.far  { opacity: .5; filter: saturate(.85) blur(.2px); }
   .item.hidden { opacity: 0; pointer-events: none; }
 
-  footer {
-    display: flex; align-items: center; justify-content: center;
-    gap: 10px; padding: 10px 16px 18px;
+  /* Side nav buttons */
+  .nav-btn {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    display: grid; place-items: center;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: rgba(255,255,255,.9);
+    border: 1px solid #e6e6e6;
+    box-shadow: 0 6px 20px rgba(0,0,0,.07);
+    cursor: pointer; user-select: none;
+    transition: transform .08s ease, border-color .2s ease, background .2s ease;
   }
-  .btn {
-    appearance: none; border: 1px solid #e6e6e6; background: #fff; color: #111;
-    padding: 8px 12px; border-radius: 10px; cursor: pointer; font: inherit;
-    transition: border-color .2s ease, transform .08s ease;
-  }
-  .btn:hover { border-color: #d0d0d0; }
-  .btn:active { transform: translateY(1px); }
-  .index {
-    color: #7d7d7d; min-width: 80px; text-align: center; font-variant-numeric: tabular-nums;
-  }
-
-  .dots { display: flex; gap: 6px; align-items: center; margin-left: 12px; flex-wrap: wrap; max-width: 60vw; }
-  .dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: #dedede; transition: transform .2s ease, background .2s ease;
-  }
-  .dot.active { background: var(--accent); transform: scale(1.25); }
+  .nav-btn:hover { border-color: #d0d0d0; background: rgba(255,255,255,1); }
+  .nav-btn:active { transform: translateY(-50%) scale(.98); }
+  .nav-left  { left: 14px; }
+  .nav-right { right: 14px; }
+  .nav-btn svg { width: 18px; height: 18px; }
 
   @media (max-width: 900px){
     :root{
@@ -106,25 +102,26 @@
       --peek-gap: 40px;
       --center-max-h: 64vh;
     }
-    footer { padding-bottom: 14px; }
+    .nav-btn { width: 38px; height: 38px; }
   }
 </style>
 </head>
 
 <body>
   <div class="wrap">
-    <header>gallery</header>
+    <header>making of the sausage</header>
 
     <main class="stage" id="stage">
       <div class="track" id="track"></div>
-    </main>
 
-    <footer>
-      <button class="btn" id="prev" aria-label="Previous (←)">← Prev</button>
-      <div class="index" id="idx">1 / 1</div>
-      <button class="btn" id="next" aria-label="Next (→)">Next →</button>
-      <div class="dots" id="dots" aria-hidden="true"></div>
-    </footer>
+      <!-- side nav -->
+      <button class="nav-btn nav-left" id="prev" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="nav-btn nav-right" id="next" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </main>
   </div>
 
   <script>
@@ -165,8 +162,8 @@
 
     const stageEl = document.getElementById('stage');
     const track   = document.getElementById('track');
-    const idxEl   = document.getElementById('idx');
-    const dotsEl  = document.getElementById('dots');
+    const nextBtn = document.getElementById('next');
+    const prevBtn = document.getElementById('prev');
 
     const CTRL = {
       baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 380,
@@ -177,7 +174,8 @@
               parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
     };
 
-    let current = 0; // centered index
+    // Start at a RANDOM image each load
+    let current = Math.floor(Math.random() * IMAGES.length);
     const cards = [];
 
     function createItem(src, i){
@@ -226,14 +224,10 @@
         }
 
         item.className = `item ${cls}`.trim();
-        // ✅ Center is already at top:50%/left:50% with translate(-50%,-50%)
-        //    Only offset horizontally by x; no extra centering math.
+        // Center is already top:50%/left:50% with translate(-50%,-50%). Only offset by x.
         item.style.transform =
           `translate3d(${x}px, 0px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
       });
-
-      idxEl.textContent = `${current+1} / ${cards.length}`;
-      updateDots();
     }
 
     function goTo(i){
@@ -244,31 +238,16 @@
     function next(){ if (current < cards.length - 1) goTo(current + 1); }
     function prev(){ if (current > 0) goTo(current - 1); }
 
-    // Dots
-    function makeDots(){
-      dotsEl.innerHTML = '';
-      IMAGES.forEach((_, i) => {
-        const d = document.createElement('div');
-        d.className = 'dot';
-        d.addEventListener('click', () => goTo(i));
-        dotsEl.appendChild(d);
-      });
-    }
-    function updateDots(){
-      const ds = dotsEl.querySelectorAll('.dot');
-      ds.forEach((d, i) => d.classList.toggle('active', i === current));
-    }
-
     // Input: buttons, keys, wheel, drag/swipe
-    document.getElementById('next').addEventListener('click', next);
-    document.getElementById('prev').addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+    prevBtn.addEventListener('click', prev);
 
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft')  prev();
     });
 
-    // Wheel: horizontal nav (bind to STAGE so page scroll doesn’t fight)
+    // Wheel: horizontal nav (bind to STAGE)
     let wheelLock = false;
     stageEl.addEventListener('wheel', (e) => {
       if (wheelLock) return;
@@ -307,13 +286,13 @@
 
     // Build
     IMAGES.forEach((src, i) => createItem(src, i));
-    makeDots();
 
-    // Re-render on resize of stage
+    // Re-render on stage resize
     const ro = new ResizeObserver(render);
     ro.observe(stageEl);
     window.addEventListener('resize', render);
 
+    // Initial render at a random index
     render();
   </script>
 </body>
