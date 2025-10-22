@@ -1,39 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>making of the sausage</title>
-  <meta name="description" content="artefacts from work - out of context." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>✧</text></svg>">
-  <style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>gallery — coverflow</title>
+<meta name="description" content="A clean, coverflow-style gallery: one image centered, neighbors peeking left/right." />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>◧</text></svg>">
+
+<style>
+  :root{
+    --bg: #fff;
+    --fg: #111;
+    --muted: #b5b5b5;
+    --accent: #0a84ff;
+
+    --peek-gap: 60px;   /* horizontal gap between items */
+    --base-shift: 380px;/* how far each neighbor sits from center */
+    --center-max-w: 80vw;
+    --center-max-h: 72vh;
+    --side-scale-1: .78;/* scale for immediate neighbors */
+    --side-scale-2: .62;/* next neighbors */
+    --side-scale-3: .50;/* further neighbors */
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .wrap {
+    position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto;
+  }
+
+  /* Top bar (optional—title) */
+  header {
+    padding: 14px 18px; color: #777; letter-spacing: .25px;
+  }
+
+  /* Stage with perspective for subtle depth */
+  .stage {
+    position: relative;
+    overflow: hidden; /* hide edges during transitions */
+    perspective: 1600px;
+  }
+
+  /* Track holds all items centered */
+  .track {
+    position: absolute; inset: 0;
+    display: block; transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  /* Each gallery item is absolutely positioned and transformed by JS */
+  .item {
+    position: absolute; top: 50%; left: 50%;
+    transform-origin: center center;
+    transition: transform .35s cubic-bezier(.2,.6,0,1), opacity .35s ease;
+    user-select: none;
+  }
+
+  /* The card that constrains the image size */
+  .card {
+    display: grid; place-items: center;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.08);
+    overflow: hidden;
+    /* Center image box sizing; JS will only transform parent .item */
+    max-width: var(--center-max-w);
+    max-height: var(--center-max-h);
+  }
+  .card img {
+    display: block; width: 100%; height: 100%;
+    object-fit: contain; background: #fff;
+  }
+
+  /* Peek look for side items (opacity & slight blur) */
+  .item.side { opacity: .75; filter: saturate(.9); }
+  .item.far  { opacity: .45; filter: saturate(.8) blur(.2px); }
+  .item.hidden { opacity: 0; pointer-events: none; }
+
+  /* Footer controls */
+  footer {
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; padding: 10px 16px 18px;
+  }
+  .btn {
+    appearance: none; border: 1px solid #e6e6e6; background: #fff; color: #111;
+    padding: 8px 12px; border-radius: 10px; cursor: pointer; font: inherit;
+    transition: border-color .2s ease, transform .08s ease;
+  }
+  .btn:hover { border-color: #d0d0d0; }
+  .btn:active { transform: translateY(1px); }
+  .index {
+    color: #7d7d7d; min-width: 80px; text-align: center; font-variant-numeric: tabular-nums;
+  }
+
+  /* Progress dots (small, subtle) */
+  .dots { display: flex; gap: 6px; align-items: center; margin-left: 12px; flex-wrap: wrap; max-width: 60vw; }
+  .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #dedede; transition: transform .2s ease, background .2s ease;
+  }
+  .dot.active { background: var(--accent); transform: scale(1.25); }
+
+  @media (max-width: 900px){
     :root{
-      --gap: 28px;    /* space between tiles */
-      --pad: 120px;   /* outer padding around the whole field */
-      --colw: 420px;  /* landscape width */
-      --port: 300px;  /* portrait width cap */
-      --cols-each-side: 12; /* columns to the left and to the right of center */
-      --canvas-w: 14000px;  /* generous size; JS will resize down after layout */
-      --canvas-h: 10000px;
+      --base-shift: 280px;
+      --peek-gap: 40px;
+      --center-max-h: 64vh;
     }
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
-    body { margin: 0; background: #000; color: #fff; font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial; }
-
-    /* Two-dimensional scroll */
-    #viewport { position: fixed; inset: 0; overflow: auto; }
-    #canvas   { position: relative; width: var(--canvas-w); height: var(--canvas-h); }
-
-    .tile { position: absolute; user-select: none; -webkit-user-drag: none; touch-action: none; }
-    .tile img { display: block; width: 100%; height: auto; }
-  </style>
+    footer { padding-bottom: 14px; }
+  }
+</style>
 </head>
+
 <body>
-  <div id="viewport" aria-label="2D Masonry">
-    <div id="canvas"></div>
+  <div class="wrap">
+    <header>gallery</header>
+
+    <main class="stage" id="stage">
+      <div class="track" id="track"></div>
+    </main>
+
+    <footer>
+      <button class="btn" id="prev" aria-label="Previous (←)">← Prev</button>
+      <div class="index" id="idx">1 / 1</div>
+      <button class="btn" id="next" aria-label="Next (→)">Next →</button>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+    </footer>
   </div>
 
   <script>
+    /* Your images (spaces supported) */
     const IMAGES = [
       "images/process/ADT vision.png",
       "images/process/Concentric.png",
@@ -68,130 +170,152 @@
       "images/process/XCapit.png"
     ];
 
-    // --- helpers ---
-    const $ = sel => document.querySelector(sel);
-    const encodeSrc = s => encodeURI(s);
+    const $ = s => document.querySelector(s);
+    const track = $('#track');
+    const idxEl = $('#idx');
+    const dotsEl = $('#dots');
 
-    const viewport = $('#viewport');
-    const canvas   = $('#canvas');
+    const CTRL = {
+      baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 380,
+      peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 60,
+      scale: [1, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-1')) || .78,
+                 parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-2')) || .62,
+                 parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
+    };
 
-    const GAP  = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap'))  || 28;
-    const PAD  = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pad'))  || 120;
-    const COLW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--colw')) || 420;
-    const PORT = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--port')) || 300;
-    const COLS_EACH_SIDE = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cols-each-side')) || 12;
+    let current = 0; // centered index
+    const cards = [];
 
-    // preload to know natural sizes
-    function preload(src){
-      return new Promise(res=>{
-        const img = new Image();
-        img.decoding = 'async';
-        img.onload = ()=> res({src, w: img.naturalWidth, h: img.naturalHeight});
-        img.onerror = ()=> res(null);
-        img.src = encodeSrc(src);
-      });
-    }
+    function createItem(src, i){
+      const item = document.createElement('figure');
+      item.className = 'item';
+      item.dataset.i = i;
 
-    // 2D masonry from center:
-    // - columns run from negative to positive (left/right of center)
-    // - each column has two stacks: up (grows upward) and down (grows downward)
-    async function init(){
-      const meta = await Promise.all(IMAGES.map(preload));
-      const items = meta.filter(Boolean);
-      if(!items.length) return;
+      const card = document.createElement('div');
+      card.className = 'card';
 
-      const totalCols = COLS_EACH_SIDE * 2 + 1; // include the center column
-      const centerX   = Math.max(canvas.clientWidth, 6000) / 2; // rough center
-      const centerY   = Math.max(canvas.clientHeight, 4000) / 2;
+      const img = document.createElement('img');
+      img.alt = `image ${i+1}`;
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.src = encodeURI(src);
+      card.appendChild(img);
+      item.appendChild(card);
 
-      // precompute column x positions around center
-      const xs = [];
-      for(let i = -COLS_EACH_SIDE; i <= COLS_EACH_SIDE; i++){
-        const colIndexFromLeft = i + COLS_EACH_SIDE; // 0..N
-        const x = centerX - (COLS_EACH_SIDE * (COLW + GAP)) + colIndexFromLeft * (COLW + GAP);
-        xs.push({i, x});
-      }
-
-      // For each column, maintain downward and upward stack heights
-      const stacks = xs.map(()=>({ down: 0, up: 0 })); // values measured from centerY
-      let maxRight = -Infinity, minLeft = Infinity, maxBottom = -Infinity, minTop = Infinity;
-
-      // To spread volume, interleave placement order across columns
-      // Zig-zag through columns from center outwards
-      const columnOrder = [];
-      for(let d=0; d<=COLS_EACH_SIDE; d++){
-        if(d===0) columnOrder.push(0);
-        else { columnOrder.push(-d, d); }
-      }
-
-      // iterate items and place each in the globally "shortest" stack (among all columns up+down)
-      items.forEach((it, idx)=>{
-        const isPortrait = it.h > it.w;
-        const targetW = isPortrait ? Math.min(PORT, COLW) : COLW;
-        const scale   = targetW / it.w;
-        const targetH = Math.round(it.h * scale);
-
-        // find best spot: look at all columns' up & down stack totals (absolute height)
-        let best = { colIdx: 0, dir: 'down', height: Infinity };
-        for(let c=0; c<stacks.length; c++){
-          const s = stacks[c];
-          const dHeight = s.down;             // below center
-          const uHeight = s.up;               // above center (positive value, we’ll subtract)
-          if(dHeight < best.height){ best = {colIdx:c, dir:'down', height:dHeight}; }
-          if(uHeight < best.height){ best = {colIdx:c, dir:'up', height:uHeight}; }
-        }
-
-        const col = best.colIdx;
-        const x = xs[col].x;
-        let y;
-
-        if(best.dir === 'down'){
-          y = centerY + best.height + (best.height ? GAP : 0);   // space between
-          stacks[col].down += (best.height ? GAP : 0) + targetH;
-          maxBottom = Math.max(maxBottom, y + targetH);
-        }else{
-          // place upward (y decreases)
-          y = centerY - best.height - (best.height ? GAP : 0) - targetH;
-          stacks[col].up += (best.height ? GAP : 0) + targetH;
-          minTop = Math.min(minTop, y);
-        }
-
-        // create node
-        const fig = document.createElement('figure');
-        fig.className = 'tile';
-        fig.style.width = targetW + 'px';
-        fig.style.left  = x + 'px';
-        fig.style.top   = y + 'px';
-
-        const image = document.createElement('img');
-        image.alt = `artefact ${idx+1}`;
-        image.src = encodeSrc(it.src);
-        fig.appendChild(image);
-        canvas.appendChild(fig);
-
-        minLeft  = Math.min(minLeft, x);
-        maxRight = Math.max(maxRight, x + targetW);
+      // click a side card to focus it
+      item.addEventListener('click', () => {
+        const idx = +item.dataset.i;
+        if (idx !== current) goTo(idx);
       });
 
-      // Grow the canvas to exact bounds + padding
-      const leftPad   = Math.max(PAD, centerX - (centerX - minLeft) + PAD);
-      const rightPad  = PAD;
-      const topPad    = Math.max(PAD, centerY - (centerY - minTop) + PAD);
-      const bottomPad = PAD;
-
-      const totalW = (maxRight - minLeft) + leftPad + rightPad;
-      const totalH = (maxBottom - minTop) + topPad + bottomPad;
-
-      canvas.style.width  = Math.max(totalW, viewport.clientWidth + PAD*2) + 'px';
-      canvas.style.height = Math.max(totalH, viewport.clientHeight + PAD*2) + 'px';
-
-      // Center the viewport on the canvas center so you can move in all directions
-      const cx = (canvas.scrollWidth  - viewport.clientWidth ) / 2;
-      const cy = (canvas.scrollHeight - viewport.clientHeight) / 2;
-      viewport.scrollTo({ left: cx, top: cy });
+      track.appendChild(item);
+      cards.push(item);
     }
 
-    window.addEventListener('DOMContentLoaded', init);
+    // Position all items based on current index
+    function render(){
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const centerX = W / 2;
+      const centerY = H / 2;
+
+      const { baseShift, peekGap, scale } = CTRL;
+
+      cards.forEach((item, i) => {
+        const d = i - current; // distance from center in items
+        const ad = Math.abs(d); // absolute distance
+        let s = 1, x = 0, rY = 0, z = 0, cls = '';
+
+        if (ad === 0){
+          s = 1; x = 0; rY = 0; z = 0; cls = '';
+        } else if (ad === 1){
+          s = scale[1]; x = Math.sign(d) * (baseShift + peekGap * 0.0); rY = -Math.sign(d) * 12; z = -80; cls = 'side';
+        } else if (ad === 2){
+          s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap * 0.5); rY = -Math.sign(d) * 16; z = -160; cls = 'far';
+        } else {
+          s = scale[3]; x = Math.sign(d) * (baseShift*2.7 + (ad-2)*90); rY = -Math.sign(d) * 18; z = -260; cls = 'hidden';
+        }
+
+        item.className = `item ${cls}`.trim();
+        item.style.transform =
+          `translate3d(${centerX + x}px, ${centerY}px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
+      });
+
+      idxEl.textContent = `${current+1} / ${cards.length}`;
+      updateDots();
+    }
+
+    function goTo(i){
+      current = Math.max(0, Math.min(cards.length - 1, i));
+      render();
+    }
+
+    function next(){ if (current < cards.length - 1) goTo(current + 1); }
+    function prev(){ if (current > 0) goTo(current - 1); }
+
+    // Dots
+    function makeDots(){
+      dotsEl.innerHTML = '';
+      IMAGES.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot';
+        d.addEventListener('click', () => goTo(i));
+        dotsEl.appendChild(d);
+      });
+    }
+    function updateDots(){
+      const ds = dotsEl.querySelectorAll('.dot');
+      ds.forEach((d, i) => d.classList.toggle('active', i === current));
+    }
+
+    // Input: buttons, keys, wheel, drag/swipe
+    $('#next').addEventListener('click', next);
+    $('#prev').addEventListener('click', prev);
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft')  prev();
+    });
+    // Wheel: horizontal nav (natural scrolling on trackpads)
+    let wheelLock = false;
+    window.addEventListener('wheel', (e) => {
+      if (wheelLock) return;
+      wheelLock = true;
+      setTimeout(()=>wheelLock=false, 180);
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      if (delta > 0) next(); else if (delta < 0) prev();
+    }, { passive: true });
+
+    // Drag / swipe
+    (function dragNav(){
+      let down = false, sx = 0, moved = 0;
+      window.addEventListener('pointerdown', (e) => { down = true; sx = e.clientX; moved = 0; });
+      window.addEventListener('pointermove', (e) => {
+        if (!down) return;
+        moved = e.clientX - sx;
+        // live-peek while dragging (subtle)
+        const shift = moved / (CTRL.baseShift * 1.25);
+        const tempIndex = current - shift;
+        // temporarily render between items (no snap)
+        const prevCurrent = current;
+        current = Math.min(cards.length-1, Math.max(0, tempIndex));
+        render();
+        current = prevCurrent;
+      });
+      window.addEventListener('pointerup', (e) => {
+        if (!down) return; down = false;
+        const threshold = 60;
+        if (moved < -threshold) next();
+        else if (moved > threshold) prev();
+        else render(); // snap back
+      });
+      window.addEventListener('pointercancel', () => { down = false; render(); });
+    })();
+
+    // Build
+    IMAGES.forEach((src, i) => createItem(src, i));
+    makeDots();
+    window.addEventListener('resize', render);
+    render();
   </script>
 </body>
 </html>
