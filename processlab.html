@@ -34,10 +34,7 @@
     position: fixed; inset: 0; display: grid; grid-template-rows: auto 1fr auto;
   }
 
-  /* Top bar (optional—title) */
-  header {
-    padding: 14px 18px; color: #777; letter-spacing: .25px;
-  }
+  header { padding: 14px 18px; color: #777; letter-spacing: .25px; }
 
   /* Stage with perspective for subtle depth */
   .stage {
@@ -69,7 +66,6 @@
     border-radius: 10px;
     box-shadow: 0 15px 40px rgba(0,0,0,.08);
     overflow: hidden;
-    /* Center image box sizing; JS will only transform parent .item */
     max-width: var(--center-max-w);
     max-height: var(--center-max-h);
   }
@@ -78,12 +74,10 @@
     object-fit: contain; background: #fff;
   }
 
-  /* Peek look for side items (opacity & slight blur) */
   .item.side { opacity: .75; filter: saturate(.9); }
   .item.far  { opacity: .45; filter: saturate(.8) blur(.2px); }
   .item.hidden { opacity: 0; pointer-events: none; }
 
-  /* Footer controls */
   footer {
     display: flex; align-items: center; justify-content: center;
     gap: 10px; padding: 10px 16px 18px;
@@ -99,7 +93,6 @@
     color: #7d7d7d; min-width: 80px; text-align: center; font-variant-numeric: tabular-nums;
   }
 
-  /* Progress dots (small, subtle) */
   .dots { display: flex; gap: 6px; align-items: center; margin-left: 12px; flex-wrap: wrap; max-width: 60vw; }
   .dot {
     width: 6px; height: 6px; border-radius: 50%;
@@ -171,16 +164,18 @@
     ];
 
     const $ = s => document.querySelector(s);
-    const track = $('#track');
-    const idxEl = $('#idx');
-    const dotsEl = $('#dots');
+    const stageEl = document.getElementById('stage');
+    const track = document.getElementById('track');
+    const idxEl = document.getElementById('idx');
+    const dotsEl = document.getElementById('dots');
 
     const CTRL = {
       baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 380,
       peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 60,
-      scale: [1, parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-1')) || .78,
-                 parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-2')) || .62,
-                 parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
+      scale: [1,
+              parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-1')) || .78,
+              parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-2')) || .62,
+              parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
     };
 
     let current = 0; // centered index
@@ -214,8 +209,9 @@
 
     // Position all items based on current index
     function render(){
-      const W = window.innerWidth;
-      const H = window.innerHeight;
+      // ✅ Center against the STAGE, not the window
+      const W = stageEl.clientWidth;
+      const H = stageEl.clientHeight;
       const centerX = W / 2;
       const centerY = H / 2;
 
@@ -223,7 +219,7 @@
 
       cards.forEach((item, i) => {
         const d = i - current; // distance from center in items
-        const ad = Math.abs(d); // absolute distance
+        const ad = Math.abs(d);
         let s = 1, x = 0, rY = 0, z = 0, cls = '';
 
         if (ad === 0){
@@ -269,15 +265,17 @@
     }
 
     // Input: buttons, keys, wheel, drag/swipe
-    $('#next').addEventListener('click', next);
-    $('#prev').addEventListener('click', prev);
+    document.getElementById('next').addEventListener('click', next);
+    document.getElementById('prev').addEventListener('click', prev);
+
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft')  prev();
     });
-    // Wheel: horizontal nav (natural scrolling on trackpads)
+
+    // Wheel: horizontal nav (bind to STAGE)
     let wheelLock = false;
-    window.addEventListener('wheel', (e) => {
+    stageEl.addEventListener('wheel', (e) => {
       if (wheelLock) return;
       wheelLock = true;
       setTimeout(()=>wheelLock=false, 180);
@@ -285,36 +283,42 @@
       if (delta > 0) next(); else if (delta < 0) prev();
     }, { passive: true });
 
-    // Drag / swipe
+    // Drag / swipe (bind to STAGE)
     (function dragNav(){
       let down = false, sx = 0, moved = 0;
-      window.addEventListener('pointerdown', (e) => { down = true; sx = e.clientX; moved = 0; });
-      window.addEventListener('pointermove', (e) => {
+      stageEl.addEventListener('pointerdown', (e) => { down = true; sx = e.clientX; moved = 0; });
+      stageEl.addEventListener('pointermove', (e) => {
         if (!down) return;
         moved = e.clientX - sx;
         // live-peek while dragging (subtle)
         const shift = moved / (CTRL.baseShift * 1.25);
         const tempIndex = current - shift;
-        // temporarily render between items (no snap)
         const prevCurrent = current;
         current = Math.min(cards.length-1, Math.max(0, tempIndex));
         render();
         current = prevCurrent;
       });
-      window.addEventListener('pointerup', (e) => {
+      const release = () => {
         if (!down) return; down = false;
         const threshold = 60;
         if (moved < -threshold) next();
         else if (moved > threshold) prev();
         else render(); // snap back
-      });
-      window.addEventListener('pointercancel', () => { down = false; render(); });
+      };
+      stageEl.addEventListener('pointerup', release);
+      stageEl.addEventListener('pointercancel', () => { down = false; render(); });
+      stageEl.addEventListener('mouseleave', () => { down = false; }); // safety
     })();
 
     // Build
     IMAGES.forEach((src, i) => createItem(src, i));
     makeDots();
+
+    // Re-render on resize of stage (more robust than window resize alone)
+    const ro = new ResizeObserver(render);
+    ro.observe(stageEl);
     window.addEventListener('resize', render);
+
     render();
   </script>
 </body>
