@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>gallery — coverflow</title>
+<title>making of the sausage</title>
 <meta name="description" content="A clean, coverflow-style gallery: one image centered, neighbors peeking left/right." />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>◧</text></svg>">
 
@@ -46,7 +46,7 @@
   /* Track holds all items centered */
   .track {
     position: absolute; inset: 0;
-    display: block; transform-style: preserve-3d;
+    transform-style: preserve-3d;
     will-change: transform;
   }
 
@@ -163,11 +163,10 @@
       "images/process/XCapit.png"
     ];
 
-    const $ = s => document.querySelector(s);
     const stageEl = document.getElementById('stage');
-    const track = document.getElementById('track');
-    const idxEl = document.getElementById('idx');
-    const dotsEl = document.getElementById('dots');
+    const track   = document.getElementById('track');
+    const idxEl   = document.getElementById('idx');
+    const dotsEl  = document.getElementById('dots');
 
     const CTRL = {
       baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 380,
@@ -207,19 +206,13 @@
       cards.push(item);
     }
 
-    // Position all items based on current index
+    // Position items based on current index
     function render(){
-      // ✅ Center against the STAGE, not the window
-      const W = stageEl.clientWidth;
-      const H = stageEl.clientHeight;
-      const centerX = W / 2;
-      const centerY = H / 2;
-
       const { baseShift, peekGap, scale } = CTRL;
 
       cards.forEach((item, i) => {
-        const d = i - current; // distance from center in items
-        const ad = Math.abs(d);
+        const d  = i - current;   // distance from center in items
+        const ad = Math.abs(d);   // absolute distance
         let s = 1, x = 0, rY = 0, z = 0, cls = '';
 
         if (ad === 0){
@@ -233,8 +226,10 @@
         }
 
         item.className = `item ${cls}`.trim();
+        // ✅ Center is already at top:50%/left:50% with translate(-50%,-50%)
+        //    Only offset horizontally by x; no extra centering math.
         item.style.transform =
-          `translate3d(${centerX + x}px, ${centerY}px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
+          `translate3d(${x}px, 0px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
       });
 
       idxEl.textContent = `${current+1} / ${cards.length}`;
@@ -273,7 +268,7 @@
       if (e.key === 'ArrowLeft')  prev();
     });
 
-    // Wheel: horizontal nav (bind to STAGE)
+    // Wheel: horizontal nav (bind to STAGE so page scroll doesn’t fight)
     let wheelLock = false;
     stageEl.addEventListener('wheel', (e) => {
       if (wheelLock) return;
@@ -307,14 +302,14 @@
       };
       stageEl.addEventListener('pointerup', release);
       stageEl.addEventListener('pointercancel', () => { down = false; render(); });
-      stageEl.addEventListener('mouseleave', () => { down = false; }); // safety
+      stageEl.addEventListener('mouseleave', () => { down = false; });
     })();
 
     // Build
     IMAGES.forEach((src, i) => createItem(src, i));
     makeDots();
 
-    // Re-render on resize of stage (more robust than window resize alone)
+    // Re-render on resize of stage
     const ro = new ResizeObserver(render);
     ro.observe(stageEl);
     window.addEventListener('resize', render);
