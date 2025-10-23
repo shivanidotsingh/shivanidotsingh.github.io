@@ -184,6 +184,8 @@ button.reveal {
   color: inherit;
   font: inherit;
   cursor: pointer;
+  border: none;
+  outline: none;
   background-color: transparent;
   padding: 0 0.1em;
   position: relative;
