@@ -188,7 +188,7 @@ button.reveal {
   background-color: transparent;
   padding: 0 0.2em;
   font: inherit;
-  border-radius: 4px;
+  border-radius: 0px;
   outline: none;
   position: relative;
   z-index: 1;
@@ -196,7 +196,7 @@ button.reveal {
 button.reveal::before {
   content: '';
   position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 4px;
+  border-radius: 0px;
   z-index: -1;
   opacity: 1;
 }
@@ -211,9 +211,9 @@ button.reveal:disabled::before { opacity: 0; }
 
 span.inline-reveal {
   display: none;
-  border-radius: 4px;
+  border-radius: 0px;
   padding: 0;
-  transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out;
+  /*transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out;*/
 }
 span.inline-reveal.visible { display: inline; }
 
