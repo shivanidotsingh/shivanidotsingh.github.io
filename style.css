@@ -182,14 +182,10 @@ a[target="_blank"] { cursor: alias; }
 /* Reveal buttons */
 button.reveal {
   color: inherit;
-  font-weight: normal;
-  cursor: pointer;
-  border: none;
-  background-color: transparent;
-  padding: 0px;
   font: inherit;
-  border-radius: 0px;
-  outline: none;
+  cursor: pointer;
+  background-color: transparent;
+  padding: 0 0.1em;
   position: relative;
   z-index: 1;
 }
