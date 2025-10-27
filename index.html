@@ -15,6 +15,12 @@
     body {
   padding: 0 40px !important;
 }
+    .h1-img {
+  height: var(--h1-size);  /* matches text h1 height */
+  width: auto;             /* keep aspect ratio */
+  display: inline-block;
+  vertical-align: baseline; /* sits on the text baseline */
+}
     
 .intro-wrap {
   position: relative;
@@ -101,7 +107,8 @@
     <main id="page" class="intro-inner">
     <!-- <span class="hover-text"> ☺ <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif"></span> -->
       
-      <h1>Shivani Singh</h1>
+     <h1><img class="h1-img" src="header.png" alt="Shivani Singh"></h1>
+
       <p>
         I'm a designer with an aptitude for analytical thinking and an
         <button class="reveal highlight-yellow" onclick="expandOnce(this, 'play')">appetite for play</button><span id="play" class="inline-reveal"> — following my curiosities and drawing in the <a href="https://shivaniest.com" target="_blank">margins here</a></span>.
