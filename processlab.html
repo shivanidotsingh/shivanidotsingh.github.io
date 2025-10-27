@@ -9,131 +9,99 @@
 
 <style>
   :root{
-    --bg: #fff;
-    --fg: #111;
-    --accent: #0a84ff;
+    --bg:#fff; --fg:#111; --accent:#0a84ff;
 
     /* desktop defaults */
-    --peek-gap: 60px;        /* horizontal gap between items */
-    --base-shift: 380px;     /* how far each neighbor sits from center */
-    --center-max-w: 80vw;
-    --center-max-h: 72vh;
-    --side-scale-1: .78;     /* scale for immediate neighbors */
-    --side-scale-2: .62;     /* next neighbors */
-    --side-scale-3: .50;     /* further neighbors */
+    --peek-gap:48px;        /* space between items */
+    --base-shift:320px;     /* neighbor offset */
+    --center-max-w:86vw;    /* large since no borders */
+    --center-max-h:76vh;
 
-    /* nav button sizing */
-    --nav-size: 44px;        /* >=44px for touch */
-    --nav-edge: 14px;        /* distance from edge */
+    --nav-size:44px;        /* arrow buttons */
+    --nav-edge:14px;
   }
 
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
-    -webkit-text-size-adjust: 100%;
+  *{ box-sizing:border-box }
+  html,body{ height:100% }
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+    -webkit-text-size-adjust:100%;
   }
 
-  .wrap {
-    position: fixed; inset: 0;
-    display: grid; grid-template-rows: auto 1fr; /* header + stage */
+  .wrap{ position:fixed; inset:0; display:grid; grid-template-rows:auto 1fr }
+  header{
+    padding:14px max(18px, env(safe-area-inset-left)) 10px max(18px, env(safe-area-inset-right));
+    color:#777; letter-spacing:.25px;
   }
 
-  header { padding: 14px max(18px, env(safe-area-inset-left)) 14px max(18px, env(safe-area-inset-right));
-           color: #777; letter-spacing: .25px; }
+  /* ===== Desktop gallery ===== */
+  .stage{
+    position:relative; overflow:hidden; background:#fff;
+    touch-action:pan-y; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
+  }
+  .track{ position:absolute; inset:0; will-change:transform }
 
-  /* Stage */
-  .stage {
-    position: relative;
-    overflow: hidden;
-    perspective: 1600px;
-    background: #fff;
-    /* mobile-friendly interactions */
-    touch-action: pan-y;             /* allow vertical scroll gestures to be interpreted as page scroll if any */
-    -webkit-user-select: none; user-select: none;
-    -webkit-tap-highlight-color: transparent;
+  .item{
+    position:absolute; top:50%; left:50%;
+    transform-origin:center center;
+    transition:transform .22s ease, opacity .22s ease;
+    user-select:none; will-change:transform,opacity;
   }
 
-  .track {
-    position: absolute; inset: 0;
-    transform-style: preserve-3d;
-    will-change: transform;
+  /* Clean card (no rounded edges, borders, shadows) */
+  .card{
+    display:grid; place-items:center;
+    background:#fff;
+    max-width:var(--center-max-w);
+    max-height:var(--center-max-h);
+  }
+  .card img{
+    display:block; width:100%; height:100%; object-fit:contain;
+    -webkit-user-drag:none; user-drag:none; pointer-events:none;
   }
 
-  .item {
-    position: absolute; top: 50%; left: 50%;
-    transform-origin: center center;
-    transition: transform .28s cubic-bezier(.2,.6,0,1), opacity .28s ease;
-    user-select: none;
-    will-change: transform, opacity;
-  }
+  .item.side{ opacity:.9 }
+  .item.far { opacity:.55 }
+  .item.hidden{ opacity:0; pointer-events:none }
 
-  .card {
-    display: grid; place-items: center;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    box-shadow: 0 15px 40px rgba(0,0,0,.08);
-    overflow: hidden;
-    max-width: var(--center-max-w);
-    max-height: var(--center-max-h);
+  /* Side nav buttons */
+  .nav-btn{
+    position:absolute; top:50%; transform:translateY(-50%);
+    display:grid; place-items:center;
+    width:var(--nav-size); height:var(--nav-size); border-radius:50%;
+    background:rgba(255,255,255,.98); border:1px solid #e6e6e6;
+    box-shadow:0 6px 20px rgba(0,0,0,.07);
+    cursor:pointer; user-select:none;
+    transition:transform .08s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
   }
-  .card img {
-    display: block; width: 100%; height: 100%;
-    object-fit: contain; background: #fff;
-    -webkit-user-drag: none; user-drag: none;
-    pointer-events: none; /* avoid accidental image drags */
+  .nav-btn:hover{ border-color:#d0d0d0; background:#fff }
+  .nav-btn:active{ transform:translateY(-50%) scale(.98) }
+  .nav-left{ left:calc(var(--nav-edge) + env(safe-area-inset-left)) }
+  .nav-right{ right:calc(var(--nav-edge) + env(safe-area-inset-right)) }
+  .nav-btn svg{ width:18px; height:18px }
+
+  /* ===== Mobile/tablet: show only message, hide gallery ===== */
+  .mobile-only {
+    display:none;
+    position:fixed; inset:0; display:grid; place-items:center;
+    text-align:center; padding:24px; background:#fff; color:#111;
   }
-
-  .item.side { opacity: .85; filter: saturate(.95); }
-  .item.far  { opacity: .55; filter: saturate(.9) blur(.2px); }
-  .item.hidden { opacity: 0; pointer-events: none; }
-
-  /* Side nav buttons (touch-friendly) */
-  .nav-btn {
-    position: absolute; top: 50%; transform: translateY(-50%);
-    display: grid; place-items: center;
-    width: var(--nav-size); height: var(--nav-size); border-radius: 50%;
-    background: rgba(255,255,255,.98);
-    border: 1px solid #e6e6e6;
-    box-shadow: 0 6px 20px rgba(0,0,0,.07);
-    cursor: pointer; user-select: none;
-    transition: transform .08s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
-  }
-  .nav-btn:hover { border-color: #d0d0d0; background: #fff; }
-  .nav-btn:active { transform: translateY(-50%) scale(.98); }
-  .nav-left  { left: calc(var(--nav-edge) + env(safe-area-inset-left)); }
-  .nav-right { right: calc(var(--nav-edge) + env(safe-area-inset-right)); }
-  .nav-btn svg { width: 18px; height: 18px; }
-
-  /* MOBILE TUNING */
-  @media (max-width: 900px){
-    :root{
-      --base-shift: 260px;   /* pull neighbors closer */
-      --peek-gap: 28px;      /* tighter gap */
-      --center-max-h: 64vh;  /* shorter center box on phones */
-      --center-max-w: 92vw;  /* let it breathe horizontally */
-      --side-scale-1: .76;
-      --side-scale-2: .60;
-      --side-scale-3: .50;
-      --nav-size: 52px;      /* bigger targets on small screens */
-      --nav-edge: 10px;
-    }
-    header { padding-top: max(10px, env(safe-area-inset-top)); }
-    .nav-btn { box-shadow: 0 8px 28px rgba(0,0,0,.09); }
+  @media (max-width: 900px), (hover: none) and (pointer: coarse){
+    .wrap{ display:none; }          /* hide header + gallery */
+    .mobile-only{ display:grid; }   /* show message */
   }
 </style>
 </head>
 
 <body>
+  <!-- Desktop-only wrapper (hidden on mobile/tablet) -->
   <div class="wrap">
     <header>screenshots from the desktop, out of context</header>
 
     <main class="stage" id="stage">
       <div class="track" id="track"></div>
 
-      <!-- side nav -->
       <button class="nav-btn nav-left" id="prev" aria-label="Previous">
         <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -143,8 +111,11 @@
     </main>
   </div>
 
+  <!-- Mobile/tablet message -->
+  <div class="mobile-only">view on desktop</div>
+
   <script>
-    /* Your images (spaces supported) */
+    /* ==== Desktop gallery script (hidden on mobile/tablet) ==== */
     const IMAGES = [
       "images/process/ADT vision.png",
       "images/process/Concentric.png",
@@ -178,154 +149,140 @@
       "images/process/XCapit.png"
     ];
 
-    const stageEl = document.getElementById('stage');
-    const track   = document.getElementById('track');
-    const nextBtn = document.getElementById('next');
-    const prevBtn = document.getElementById('prev');
+    // if we're on mobile/tablet (gallery hidden), skip boot
+    const isMobile = window.matchMedia("(max-width: 900px), (hover: none) and (pointer: coarse)").matches;
+    if (!isMobile) {
+      const stageEl = document.getElementById('stage');
+      const track   = document.getElementById('track');
+      const nextBtn = document.getElementById('next');
+      const prevBtn = document.getElementById('prev');
 
-    const CTRL = {
-      baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 380,
-      peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 60,
-      scale: [1,
-              parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-1')) || .78,
-              parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-2')) || .62,
-              parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
-    };
+      const CTRL = {
+        baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 320,
+        peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 48,
+        scale: [1, .82, .68, .54], // subtle scaling
+      };
 
-    // Circular index helpers
-    const N = IMAGES.length;
-    const mod = (n, m) => ((n % m) + m) % m; // proper modulo (handles negatives)
-    const circDelta = (i, c) => {
-      let d = i - c;
-      d = mod(d + N/2, N) - N/2; // map to (-N/2, N/2]
-      return d;
-    };
+      // circular utils
+      const N = IMAGES.length;
+      const mod = (n, m) => ((n % m) + m) % m;
+      const circDelta = (i, c) => {
+        let d = i - c;
+        d = mod(d + N/2, N) - N/2;
+        return d;
+      };
 
-    // Start at a RANDOM image
-    let current = Math.floor(Math.random() * N); // becomes fractional during drag
-    const cards = [];
+      let current = Math.floor(Math.random() * N);
+      const cards = [];
 
-    function createItem(src, i){
-      const item = document.createElement('figure');
-      item.className = 'item';
-      item.dataset.i = i;
+      function createItem(src, i){
+        const item = document.createElement('figure');
+        item.className = 'item'; item.dataset.i = i;
 
-      const card = document.createElement('div');
-      card.className = 'card';
+        const card = document.createElement('div');
+        card.className = 'card';
 
-      const img = document.createElement('img');
-      img.alt = `image ${i+1}`;
-      img.loading = 'lazy';
-      img.decoding = 'async';
-      img.src = encodeURI(src);
-      card.appendChild(img);
-      item.appendChild(card);
+        const img = document.createElement('img');
+        img.alt = `image ${i+1}`;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.src = encodeURI(src);
 
-      // tap a side card to focus it
-      item.addEventListener('click', () => goTo(i));
+        card.appendChild(img);
+        item.appendChild(card);
+        item.addEventListener('click', () => goTo(i));
 
-      track.appendChild(item);
-      cards.push(item);
-    }
+        track.appendChild(item);
+        cards.push(item);
+      }
 
-    // Position items based on current (supports fractional for drag peeking)
-    function render(){
-      const { baseShift, peekGap, scale } = CTRL;
+      function render(){
+        const { baseShift, peekGap, scale } = CTRL;
 
-      cards.forEach((item, i) => {
-        const d  = circDelta(i, current); // minimal circular distance
-        const ad = Math.abs(d);
-        let s = 1, x = 0, rY = 0, z = 0, cls = '';
+        cards.forEach((item, i) => {
+          const d  = circDelta(i, current);
+          const ad = Math.abs(d);
+          let s=1, x=0, cls='';
 
-        if (ad < 0.5){
-          s = 1; x = 0; rY = 0; z = 0; cls = '';
-        } else if (ad < 1.5){
-          s = scale[1]; x = Math.sign(d) * (baseShift + peekGap * 0.0); rY = -Math.sign(d) * 10; z = -70; cls = 'side';
-        } else if (ad < 2.5){
-          s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap * 0.4); rY = -Math.sign(d) * 14; z = -140; cls = 'far';
-        } else {
-          s = scale[3]; x = Math.sign(d) * (baseShift*2.6 + (ad-2)*80); rY = -Math.sign(d) * 16; z = -240; cls = 'hidden';
-        }
+          if (ad < 0.5) {
+            s = 1; x = 0; cls = '';
+          } else if (ad < 1.5) {
+            s = scale[1]; x = Math.sign(d) * (baseShift + peekGap*0.0); cls = 'side';
+          } else if (ad < 2.5) {
+            s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap*0.5); cls = 'far';
+          } else {
+            s = scale[3]; x = Math.sign(d) * (baseShift*2.6 + (ad-2)*80); cls = 'hidden';
+          }
 
-        item.className = `item ${cls}`.trim();
-        item.style.transform =
-          `translate3d(${x}px, 0px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
+          item.className = `item ${cls}`.trim();
+          // center baseline is 50%/50% with translate(-50%,-50%); only offset horizontally by x
+          item.style.transform = `translate3d(${x}px, 0, 0) translate(-50%, -50%) scale(${s})`;
+        });
+      }
+
+      function goTo(i){
+        const target = mod(i, N);
+        const d = circDelta(target, current);
+        current = Math.round(current + d);
+        current = mod(current, N);
+        render();
+      }
+      const next = () => { current = mod(Math.round(current) + 1, N); render(); };
+      const prev = () => { current = mod(Math.round(current) - 1, N); render(); };
+
+      nextBtn.addEventListener('click', next);
+      prevBtn.addEventListener('click', prev);
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') next();
+        if (e.key === 'ArrowLeft')  prev();
       });
-    }
 
-    function goTo(i){
-      const target = mod(i, N);
-      const d = circDelta(target, current);
-      current = current + d;
-      current = Math.round(current);
-      current = mod(current, N);
+      // wheel → horizontal nav
+      let wheelLock = false;
+      stageEl.addEventListener('wheel', (e) => {
+        if (wheelLock) return;
+        wheelLock = true; setTimeout(()=>wheelLock=false, 150);
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        if (delta > 0) next(); else if (delta < 0) prev();
+      }, { passive:true });
+
+      // drag / swipe (desktop trackpads etc.)
+      (function dragNav(){
+        let down=false, sx=0, moved=0, start=0, pid=null;
+        const onDown = (e) => {
+          down=true; sx=e.clientX; moved=0; start=current; pid=e.pointerId;
+          stageEl.setPointerCapture && stageEl.setPointerCapture(pid);
+          if (e.cancelable) e.preventDefault();
+        };
+        const onMove = (e) => {
+          if (!down || (pid!=null && e.pointerId!==pid)) return;
+          if (e.cancelable) e.preventDefault();
+          moved = e.clientX - sx;
+          const shift = moved / (CTRL.baseShift * 1.25);
+          current = mod(start - shift, N);
+          render();
+        };
+        const onUp = () => {
+          if (!down) return; down=false;
+          current = mod(Math.round(current), N);
+          render();
+        };
+        stageEl.addEventListener('pointerdown', onDown, {passive:false});
+        stageEl.addEventListener('pointermove', onMove, {passive:false});
+        stageEl.addEventListener('pointerup', onUp, {passive:false});
+        stageEl.addEventListener('pointercancel', onUp, {passive:false});
+        stageEl.addEventListener('mouseleave', onUp, {passive:false});
+      })();
+
+      // Build + render
+      IMAGES.forEach((src, i) => createItem(src, i));
+
+      const ro = new ResizeObserver(render);
+      ro.observe(stageEl);
+      window.addEventListener('resize', render);
+
       render();
     }
-
-    function next(){ current = mod(Math.round(current) + 1, N); render(); }
-    function prev(){ current = mod(Math.round(current) - 1, N); render(); }
-
-    // Buttons & Keys
-    nextBtn.addEventListener('click', next);
-    prevBtn.addEventListener('click', prev);
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') next();
-      if (e.key === 'ArrowLeft')  prev();
-    });
-
-    // Wheel: horizontal nav (bind to stage)
-    let wheelLock = false;
-    stageEl.addEventListener('wheel', (e) => {
-      if (wheelLock) return;
-      wheelLock = true;
-      setTimeout(()=>wheelLock=false, 160);
-      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-      if (delta > 0) next(); else if (delta < 0) prev();
-    }, { passive: true });
-
-    // Drag / swipe with circular peeking (mobile-friendly)
-    (function dragNav(){
-      let down = false, sx = 0, moved = 0, start = 0, pid = null;
-
-      const onDown = (e) => {
-        down = true; sx = e.clientX; moved = 0; start = current; pid = e.pointerId;
-        stageEl.setPointerCapture(pid);
-        // Prevent the browser from handling this as a scroll/gesture
-        if (e.cancelable) e.preventDefault();
-      };
-      const onMove = (e) => {
-        if (!down || e.pointerId !== pid) return;
-        if (e.cancelable) e.preventDefault();
-        moved = e.clientX - sx;
-        const shift = moved / (CTRL.baseShift * 1.25); // how many items worth
-        current = start - shift;                       // fractional, circular
-        current = mod(current, N);
-        render();
-      };
-      const onUp = (/*e*/) => {
-        if (!down) return; down = false;
-        current = Math.round(current);
-        current = mod(current, N);
-        render();
-      };
-
-      // IMPORTANT: passive:false so we can preventDefault on touch
-      stageEl.addEventListener('pointerdown', onDown, { passive: false });
-      stageEl.addEventListener('pointermove', onMove, { passive: false });
-      stageEl.addEventListener('pointerup', onUp, { passive: false });
-      stageEl.addEventListener('pointercancel', onUp, { passive: false });
-      stageEl.addEventListener('mouseleave', onUp, { passive: false });
-    })();
-
-    // Build + initial render
-    IMAGES.forEach((src, i) => createItem(src, i));
-
-    // Resize-aware render (if stage changes size)
-    const ro = new ResizeObserver(render);
-    ro.observe(stageEl);
-    window.addEventListener('resize', render);
-
-    render();
   </script>
 </body>
 </html>
