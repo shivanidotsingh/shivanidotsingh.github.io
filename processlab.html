@@ -13,13 +13,18 @@
     --fg: #111;
     --accent: #0a84ff;
 
-    --peek-gap: 60px;      /* horizontal gap between items */
-    --base-shift: 380px;   /* how far each neighbor sits from center */
+    /* desktop defaults */
+    --peek-gap: 60px;        /* horizontal gap between items */
+    --base-shift: 380px;     /* how far each neighbor sits from center */
     --center-max-w: 80vw;
     --center-max-h: 72vh;
-    --side-scale-1: .78;   /* scale for immediate neighbors */
-    --side-scale-2: .62;   /* next neighbors */
-    --side-scale-3: .50;   /* further neighbors */
+    --side-scale-1: .78;     /* scale for immediate neighbors */
+    --side-scale-2: .62;     /* next neighbors */
+    --side-scale-3: .50;     /* further neighbors */
+
+    /* nav button sizing */
+    --nav-size: 44px;        /* >=44px for touch */
+    --nav-edge: 14px;        /* distance from edge */
   }
 
   * { box-sizing: border-box; }
@@ -27,6 +32,7 @@
   body {
     margin: 0; background: var(--bg); color: var(--fg);
     font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
   }
 
   .wrap {
@@ -34,32 +40,35 @@
     display: grid; grid-template-rows: auto 1fr; /* header + stage */
   }
 
-  header { padding: 14px 18px; color: #777; letter-spacing: .25px; }
+  header { padding: 14px max(18px, env(safe-area-inset-left)) 14px max(18px, env(safe-area-inset-right));
+           color: #777; letter-spacing: .25px; }
 
-  /* Stage with perspective for subtle depth */
+  /* Stage */
   .stage {
     position: relative;
     overflow: hidden;
     perspective: 1600px;
     background: #fff;
+    /* mobile-friendly interactions */
+    touch-action: pan-y;             /* allow vertical scroll gestures to be interpreted as page scroll if any */
+    -webkit-user-select: none; user-select: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Track holds all items centered */
   .track {
     position: absolute; inset: 0;
     transform-style: preserve-3d;
     will-change: transform;
   }
 
-  /* Each gallery item is absolutely positioned and transformed by JS */
   .item {
     position: absolute; top: 50%; left: 50%;
     transform-origin: center center;
-    transition: transform .35s cubic-bezier(.2,.6,0,1), opacity .35s ease;
+    transition: transform .28s cubic-bezier(.2,.6,0,1), opacity .28s ease;
     user-select: none;
+    will-change: transform, opacity;
   }
 
-  /* The card that constrains the image size */
   .card {
     display: grid; place-items: center;
     background: #fff;
@@ -73,36 +82,46 @@
   .card img {
     display: block; width: 100%; height: 100%;
     object-fit: contain; background: #fff;
+    -webkit-user-drag: none; user-drag: none;
+    pointer-events: none; /* avoid accidental image drags */
   }
 
-  .item.side { opacity: .8; filter: saturate(.95); }
-  .item.far  { opacity: .5; filter: saturate(.85) blur(.2px); }
+  .item.side { opacity: .85; filter: saturate(.95); }
+  .item.far  { opacity: .55; filter: saturate(.9) blur(.2px); }
   .item.hidden { opacity: 0; pointer-events: none; }
 
-  /* Side nav buttons */
+  /* Side nav buttons (touch-friendly) */
   .nav-btn {
     position: absolute; top: 50%; transform: translateY(-50%);
     display: grid; place-items: center;
-    width: 42px; height: 42px; border-radius: 50%;
-    background: rgba(255,255,255,.9);
+    width: var(--nav-size); height: var(--nav-size); border-radius: 50%;
+    background: rgba(255,255,255,.98);
     border: 1px solid #e6e6e6;
     box-shadow: 0 6px 20px rgba(0,0,0,.07);
     cursor: pointer; user-select: none;
-    transition: transform .08s ease, border-color .2s ease, background .2s ease;
+    transition: transform .08s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
   }
-  .nav-btn:hover { border-color: #d0d0d0; background: rgba(255,255,255,1); }
+  .nav-btn:hover { border-color: #d0d0d0; background: #fff; }
   .nav-btn:active { transform: translateY(-50%) scale(.98); }
-  .nav-left  { left: 14px; }
-  .nav-right { right: 14px; }
+  .nav-left  { left: calc(var(--nav-edge) + env(safe-area-inset-left)); }
+  .nav-right { right: calc(var(--nav-edge) + env(safe-area-inset-right)); }
   .nav-btn svg { width: 18px; height: 18px; }
 
+  /* MOBILE TUNING */
   @media (max-width: 900px){
     :root{
-      --base-shift: 280px;
-      --peek-gap: 40px;
-      --center-max-h: 64vh;
+      --base-shift: 260px;   /* pull neighbors closer */
+      --peek-gap: 28px;      /* tighter gap */
+      --center-max-h: 64vh;  /* shorter center box on phones */
+      --center-max-w: 92vw;  /* let it breathe horizontally */
+      --side-scale-1: .76;
+      --side-scale-2: .60;
+      --side-scale-3: .50;
+      --nav-size: 52px;      /* bigger targets on small screens */
+      --nav-edge: 10px;
     }
-    .nav-btn { width: 38px; height: 38px; }
+    header { padding-top: max(10px, env(safe-area-inset-top)); }
+    .nav-btn { box-shadow: 0 8px 28px rgba(0,0,0,.09); }
   }
 </style>
 </head>
@@ -175,16 +194,15 @@
 
     // Circular index helpers
     const N = IMAGES.length;
-    const mod = (n, m) => ((n % m) + m) % m; // proper modulo for negatives
+    const mod = (n, m) => ((n % m) + m) % m; // proper modulo (handles negatives)
     const circDelta = (i, c) => {
-      // minimal signed distance on a circle from c to i (can handle fractional c)
       let d = i - c;
       d = mod(d + N/2, N) - N/2; // map to (-N/2, N/2]
       return d;
     };
 
-    // Start at a RANDOM image each load
-    let current = Math.floor(Math.random() * N); // can become fractional during drag
+    // Start at a RANDOM image
+    let current = Math.floor(Math.random() * N); // becomes fractional during drag
     const cards = [];
 
     function createItem(src, i){
@@ -203,7 +221,7 @@
       card.appendChild(img);
       item.appendChild(card);
 
-      // click a side card to focus it
+      // tap a side card to focus it
       item.addEventListener('click', () => goTo(i));
 
       track.appendChild(item);
@@ -222,11 +240,11 @@
         if (ad < 0.5){
           s = 1; x = 0; rY = 0; z = 0; cls = '';
         } else if (ad < 1.5){
-          s = scale[1]; x = Math.sign(d) * (baseShift + peekGap * 0.0); rY = -Math.sign(d) * 12; z = -80; cls = 'side';
+          s = scale[1]; x = Math.sign(d) * (baseShift + peekGap * 0.0); rY = -Math.sign(d) * 10; z = -70; cls = 'side';
         } else if (ad < 2.5){
-          s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap * 0.5); rY = -Math.sign(d) * 16; z = -160; cls = 'far';
+          s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap * 0.4); rY = -Math.sign(d) * 14; z = -140; cls = 'far';
         } else {
-          s = scale[3]; x = Math.sign(d) * (baseShift*2.7 + (ad-2)*90); rY = -Math.sign(d) * 18; z = -260; cls = 'hidden';
+          s = scale[3]; x = Math.sign(d) * (baseShift*2.6 + (ad-2)*80); rY = -Math.sign(d) * 16; z = -240; cls = 'hidden';
         }
 
         item.className = `item ${cls}`.trim();
@@ -236,12 +254,10 @@
     }
 
     function goTo(i){
-      // snap to the closest equivalent of i on the circle relative to current
       const target = mod(i, N);
-      // choose the direction with minimal rotation
       const d = circDelta(target, current);
-      current = current + d;           // move minimally (may become fractional but very close to int)
-      current = Math.round(current);   // snap to exact integer slot
+      current = current + d;
+      current = Math.round(current);
       current = mod(current, N);
       render();
     }
@@ -249,16 +265,15 @@
     function next(){ current = mod(Math.round(current) + 1, N); render(); }
     function prev(){ current = mod(Math.round(current) - 1, N); render(); }
 
-    // Input: buttons, keys, wheel, drag/swipe
+    // Buttons & Keys
     nextBtn.addEventListener('click', next);
     prevBtn.addEventListener('click', prev);
-
     window.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowRight') next();
       if (e.key === 'ArrowLeft')  prev();
     });
 
-    // Wheel: horizontal nav (bind to STAGE)
+    // Wheel: horizontal nav (bind to stage)
     let wheelLock = false;
     stageEl.addEventListener('wheel', (e) => {
       if (wheelLock) return;
@@ -268,34 +283,43 @@
       if (delta > 0) next(); else if (delta < 0) prev();
     }, { passive: true });
 
-    // Drag / swipe with circular peeking
+    // Drag / swipe with circular peeking (mobile-friendly)
     (function dragNav(){
-      let down = false, sx = 0, moved = 0, start = 0;
-      stageEl.addEventListener('pointerdown', (e) => {
-        down = true; sx = e.clientX; moved = 0; start = current;
-      });
-      stageEl.addEventListener('pointermove', (e) => {
-        if (!down) return;
+      let down = false, sx = 0, moved = 0, start = 0, pid = null;
+
+      const onDown = (e) => {
+        down = true; sx = e.clientX; moved = 0; start = current; pid = e.pointerId;
+        stageEl.setPointerCapture(pid);
+        // Prevent the browser from handling this as a scroll/gesture
+        if (e.cancelable) e.preventDefault();
+      };
+      const onMove = (e) => {
+        if (!down || e.pointerId !== pid) return;
+        if (e.cancelable) e.preventDefault();
         moved = e.clientX - sx;
         const shift = moved / (CTRL.baseShift * 1.25); // how many items worth
         current = start - shift;                       // fractional, circular
         current = mod(current, N);
         render();
-      });
-      const release = () => {
+      };
+      const onUp = (/*e*/) => {
         if (!down) return; down = false;
-        // snap to nearest index and wrap
         current = Math.round(current);
         current = mod(current, N);
         render();
       };
-      stageEl.addEventListener('pointerup', release);
-      stageEl.addEventListener('pointercancel', () => { down = false; render(); });
-      stageEl.addEventListener('mouseleave', () => { down = false; });
+
+      // IMPORTANT: passive:false so we can preventDefault on touch
+      stageEl.addEventListener('pointerdown', onDown, { passive: false });
+      stageEl.addEventListener('pointermove', onMove, { passive: false });
+      stageEl.addEventListener('pointerup', onUp, { passive: false });
+      stageEl.addEventListener('pointercancel', onUp, { passive: false });
+      stageEl.addEventListener('mouseleave', onUp, { passive: false });
     })();
 
     // Build + initial render
     IMAGES.forEach((src, i) => createItem(src, i));
+
     // Resize-aware render (if stage changes size)
     const ro = new ResizeObserver(render);
     ro.observe(stageEl);
