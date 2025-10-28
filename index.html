@@ -299,7 +299,7 @@
       if (!last) { last = { x, y }; return; }
       
       ctx.strokeStyle = hexToRgba(currentColor, 0.14);
-      ctx.lineWidth = 10;
+      ctx.lineWidth = 16;
       ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
       
       ctx.strokeStyle = hexToRgba(currentColor, 0.05);
