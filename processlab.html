@@ -11,13 +11,16 @@
   :root{
     --bg:#fff; --fg:#111;
 
-    /* desktop defaults */
-    --peek-gap:48px;        /* space between items */
-    --base-shift:320px;     /* neighbor offset */
-    --center-max-w:86vw;    /* large since no borders */
-    --center-max-h:76vh;
+    /* desktop gallery tuning (same feel as the working version) */
+    --peek-gap:60px;
+    --base-shift:380px;
+    --center-max-w:80vw;
+    --center-max-h:72vh;
+    --side-scale-1:.78;
+    --side-scale-2:.62;
+    --side-scale-3:.50;
 
-    --nav-size:44px;        /* arrow buttons */
+    --nav-size:44px;
     --nav-edge:14px;
   }
 
@@ -36,20 +39,27 @@
     color:#777; letter-spacing:.25px;
   }
 
+  /* Stage */
   .stage{
-    position:relative; overflow:hidden; background:#fff;
-    touch-action:pan-y; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
+    position:relative;
+    overflow:hidden;
+    perspective:1600px;
+    background:#fff;
+    touch-action:pan-y;
+    -webkit-user-select:none; user-select:none;
+    -webkit-tap-highlight-color:transparent;
   }
-  .track{ position:absolute; inset:0; will-change:transform }
+  .track{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
 
+  /* Items: baseline centered; JS nudges horizontally only */
   .item{
     position:absolute; top:50%; left:50%;
     transform-origin:center center;
-    transition:transform .22s ease, opacity .22s ease;
-    user-select:none; will-change:transform,opacity;
+    transition:transform .35s cubic-bezier(.2,.6,0,1), opacity .35s ease;
+    user-select:none;
   }
 
-  /* Clean card (no rounded edges/borders/shadows) */
+  /* Card: clean edges (no radius/shadow/border) */
   .card{
     display:grid; place-items:center;
     background:#fff;
@@ -61,9 +71,9 @@
     -webkit-user-drag:none; user-drag:none; pointer-events:none;
   }
 
-  .item.side{ opacity:.9 }
-  .item.far { opacity:.55 }
-  .item.hidden{ opacity:0; pointer-events:none }
+  .item.side { opacity:.8;  filter:saturate(.95); }
+  .item.far  { opacity:.5;  filter:saturate(.85) blur(.2px); }
+  .item.hidden { opacity:0; pointer-events:none; }
 
   /* Side nav buttons */
   .nav-btn{
@@ -73,55 +83,51 @@
     background:rgba(255,255,255,.98); border:1px solid #e6e6e6;
     box-shadow:0 6px 20px rgba(0,0,0,.07);
     cursor:pointer; user-select:none;
-    transition:transform .08s ease, border-color .2s ease, background .2s ease, opacity .2s ease;
+    transition:transform .08s ease, border-color .2s ease, background .2s ease;
+    z-index:2;
   }
-  .nav-btn:hover{ border-color:#d0d0d0; background:#fff }
-  .nav-btn:active{ transform:translateY(-50%) scale(.98) }
-  .nav-left{ left:calc(var(--nav-edge) + env(safe-area-inset-left)) }
-  .nav-right{ right:calc(var(--nav-edge) + env(safe-area-inset-right)) }
-  .nav-btn svg{ width:18px; height:18px }
+  .nav-btn:hover { border-color:#d0d0d0; background:#fff; }
+  .nav-btn:active { transform:translateY(-50%) scale(.98); }
+  .nav-left  { left: calc(var(--nav-edge) + env(safe-area-inset-left)); }
+  .nav-right { right:calc(var(--nav-edge) + env(safe-area-inset-right)); }
+  .nav-btn svg{ width:18px; height:18px; }
 
-  /* ===== Mobile/tablet banner (hidden by default; shown only on touch devices) ===== */
+  /* ===== Mobile/tablet banner (show only on touch devices) ===== */
   .mobile-only{
-    display: none;
-    position: fixed;
-    inset: 0;
-    place-items: center;
-    text-align: center;
-    padding: 24px;
-    background: #fff;
-    color: #111;
+    display:none;
+    position:fixed; inset:0; display:none;
+    place-items:center; text-align:center; padding:24px;
+    background:#fff; color:#111;
   }
-  /* Show banner + hide gallery on touch devices (phones/tablets) */
-  @media (hover: none) and (pointer: coarse){
-    .wrap{ display:none; }
-    .mobile-only{ display:grid; }
+  @media (hover:none) and (pointer:coarse){
+    .wrap{ display:none; }         /* hide gallery */
+    .mobile-only{ display:grid; }  /* show message */
   }
 </style>
 </head>
 
 <body>
-  <!-- Desktop-only wrapper (hidden on touch devices) -->
+  <!-- Desktop-only gallery -->
   <div class="wrap">
     <header>screenshots from the desktop, out of context</header>
 
     <main class="stage" id="stage">
       <div class="track" id="track"></div>
 
-      <button class="nav-btn nav-left" id="prev" aria-label="Previous">
+      <button class="nav-btn nav-left" id="prev" type="button" aria-label="Previous">
         <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button class="nav-btn nav-right" id="next" aria-label="Next">
+      <button class="nav-btn nav-right" id="next" type="button" aria-label="Next">
         <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </main>
   </div>
 
-  <!-- Mobile/tablet message -->
+  <!-- Touch devices: show only this -->
   <div class="mobile-only">view on desktop</div>
 
   <script>
-    /* ==== Desktop gallery script (skipped on touch devices) ==== */
+    /* === Original working gallery logic (desktop only) === */
     const IMAGES = [
       "images/process/ADT vision.png",
       "images/process/Concentric.png",
@@ -155,25 +161,28 @@
       "images/process/XCapit.png"
     ];
 
-    // Skip boot on touch devices (gallery hidden by CSS)
-    const isTouchDevice = matchMedia("(hover: none) and (pointer: coarse)").matches;
-    if (!isTouchDevice) {
+    // If on touch device, don't boot the gallery (CSS already hides it)
+    const isTouch = matchMedia("(hover: none) and (pointer: coarse)").matches;
+    if (!isTouch) {
       const stageEl = document.getElementById('stage');
       const track   = document.getElementById('track');
       const nextBtn = document.getElementById('next');
       const prevBtn = document.getElementById('prev');
 
       const CTRL = {
-        baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 320,
-        peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 48,
-        scale: [1, .82, .68, .54], // subtle scaling only
+        baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 380,
+        peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 60,
+        scale: [1,
+                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-1')) || .78,
+                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-2')) || .62,
+                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
       };
 
-      // circular utils
       const N = IMAGES.length;
       const mod = (n, m) => ((n % m) + m) % m;
       const circDelta = (i, c) => { let d = i - c; return mod(d + N/2, N) - N/2; };
 
+      // Random start each load
       let current = Math.floor(Math.random() * N);
       const cards = [];
 
@@ -192,33 +201,37 @@
 
         card.appendChild(img);
         item.appendChild(card);
+
+        // click a side card to focus it
         item.addEventListener('click', () => goTo(i));
 
         track.appendChild(item);
         cards.push(item);
       }
 
+      // Position items (supports fractional during drag)
       function render(){
         const { baseShift, peekGap, scale } = CTRL;
 
         cards.forEach((item, i) => {
           const d  = circDelta(i, current);
           const ad = Math.abs(d);
-          let s=1, x=0, cls='';
+          let s = 1, x = 0, rY = 0, z = 0, cls = '';
 
-          if (ad < 0.5) {
-            s = 1; x = 0; cls = '';
-          } else if (ad < 1.5) {
-            s = scale[1]; x = Math.sign(d) * (baseShift + peekGap*0.0); cls = 'side';
-          } else if (ad < 2.5) {
-            s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap*0.5); cls = 'far';
+          if (ad < 0.5){
+            s = 1; x = 0; rY = 0; z = 0; cls = '';
+          } else if (ad < 1.5){
+            s = scale[1]; x = Math.sign(d) * (baseShift + peekGap * 0.0); rY = -Math.sign(d) * 12; z = -80; cls = 'side';
+          } else if (ad < 2.5){
+            s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap * 0.5); rY = -Math.sign(d) * 16; z = -160; cls = 'far';
           } else {
-            s = scale[3]; x = Math.sign(d) * (baseShift*2.6 + (ad-2)*80); cls = 'hidden';
+            s = scale[3]; x = Math.sign(d) * (baseShift*2.7 + (ad-2)*90); rY = -Math.sign(d) * 18; z = -260; cls = 'hidden';
           }
 
           item.className = `item ${cls}`.trim();
-          // center baseline is 50%/50% with translate(-50%,-50%); only offset horizontally by x
-          item.style.transform = `translate3d(${x}px, 0, 0) translate(-50%, -50%) scale(${s})`;
+          // ✅ Baseline is top:50%/left:50% with translate(-50%,-50%); only offset horizontally by x
+          item.style.transform =
+            `translate3d(${x}px, 0px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
         });
       }
 
@@ -232,26 +245,28 @@
       const next = () => { current = mod(Math.round(current) + 1, N); render(); };
       const prev = () => { current = mod(Math.round(current) - 1, N); render(); };
 
-      nextBtn.addEventListener('click', next);
-      prevBtn.addEventListener('click', prev);
+      // Buttons / Keys / Wheel
+      nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
+      prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
+
       window.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowRight') next();
         if (e.key === 'ArrowLeft')  prev();
       });
 
-      // wheel → horizontal nav
       let wheelLock = false;
       stageEl.addEventListener('wheel', (e) => {
         if (wheelLock) return;
-        wheelLock = true; setTimeout(()=>wheelLock=false, 150);
+        wheelLock = true; setTimeout(()=>wheelLock=false, 160);
         const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
         if (delta > 0) next(); else if (delta < 0) prev();
       }, { passive:true });
 
-      // drag / swipe (desktop trackpads etc.)
+      // Drag / swipe (desktop trackpads / mice)
       (function dragNav(){
         let down=false, sx=0, moved=0, start=0, pid=null;
         const onDown = (e) => {
+          if (e.target.closest('.nav-btn')) return; // don't hijack arrow clicks
           down=true; sx=e.clientX; moved=0; start=current; pid=e.pointerId;
           stageEl.setPointerCapture && stageEl.setPointerCapture(pid);
           if (e.cancelable) e.preventDefault();
@@ -261,12 +276,12 @@
           if (e.cancelable) e.preventDefault();
           moved = e.clientX - sx;
           const shift = moved / (CTRL.baseShift * 1.25);
-          current = mod(start - shift, N);
+          current = (start - shift + N) % N; // fractional circular
           render();
         };
         const onUp = () => {
           if (!down) return; down=false;
-          current = mod(Math.round(current), N);
+          current = ((Math.round(current) % N) + N) % N;
           render();
         };
         stageEl.addEventListener('pointerdown', onDown, {passive:false});
@@ -276,7 +291,7 @@
         stageEl.addEventListener('mouseleave', onUp, {passive:false});
       })();
 
-      // Build + render
+      // Build + initial render
       IMAGES.forEach((src, i) => createItem(src, i));
 
       const ro = new ResizeObserver(render);
