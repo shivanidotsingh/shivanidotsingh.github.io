@@ -9,7 +9,7 @@
 
 <style>
   :root{
-    --bg:#fff; --fg:#111; --accent:#0a84ff;
+    --bg:#fff; --fg:#111;
 
     /* desktop defaults */
     --peek-gap:48px;        /* space between items */
@@ -29,13 +29,13 @@
     -webkit-text-size-adjust:100%;
   }
 
+  /* ===== Desktop wrapper (hidden on touch devices) ===== */
   .wrap{ position:fixed; inset:0; display:grid; grid-template-rows:auto 1fr }
   header{
     padding:14px max(18px, env(safe-area-inset-left)) 10px max(18px, env(safe-area-inset-right));
     color:#777; letter-spacing:.25px;
   }
 
-  /* ===== Desktop gallery ===== */
   .stage{
     position:relative; overflow:hidden; background:#fff;
     touch-action:pan-y; -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
@@ -49,7 +49,7 @@
     user-select:none; will-change:transform,opacity;
   }
 
-  /* Clean card (no rounded edges, borders, shadows) */
+  /* Clean card (no rounded edges/borders/shadows) */
   .card{
     display:grid; place-items:center;
     background:#fff;
@@ -81,21 +81,27 @@
   .nav-right{ right:calc(var(--nav-edge) + env(safe-area-inset-right)) }
   .nav-btn svg{ width:18px; height:18px }
 
-  /* ===== Mobile/tablet: show only message, hide gallery ===== */
-  .mobile-only {
-    display:none;
-    position:fixed; inset:0; display:grid; place-items:center;
-    text-align:center; padding:24px; background:#fff; color:#111;
+  /* ===== Mobile/tablet banner (hidden by default; shown only on touch devices) ===== */
+  .mobile-only{
+    display: none;
+    position: fixed;
+    inset: 0;
+    place-items: center;
+    text-align: center;
+    padding: 24px;
+    background: #fff;
+    color: #111;
   }
-  @media (max-width: 900px), (hover: none) and (pointer: coarse){
-    .wrap{ display:none; }          /* hide header + gallery */
-    .mobile-only{ display:grid; }   /* show message */
+  /* Show banner + hide gallery on touch devices (phones/tablets) */
+  @media (hover: none) and (pointer: coarse){
+    .wrap{ display:none; }
+    .mobile-only{ display:grid; }
   }
 </style>
 </head>
 
 <body>
-  <!-- Desktop-only wrapper (hidden on mobile/tablet) -->
+  <!-- Desktop-only wrapper (hidden on touch devices) -->
   <div class="wrap">
     <header>screenshots from the desktop, out of context</header>
 
@@ -115,7 +121,7 @@
   <div class="mobile-only">view on desktop</div>
 
   <script>
-    /* ==== Desktop gallery script (hidden on mobile/tablet) ==== */
+    /* ==== Desktop gallery script (skipped on touch devices) ==== */
     const IMAGES = [
       "images/process/ADT vision.png",
       "images/process/Concentric.png",
@@ -149,9 +155,9 @@
       "images/process/XCapit.png"
     ];
 
-    // if we're on mobile/tablet (gallery hidden), skip boot
-    const isMobile = window.matchMedia("(max-width: 900px), (hover: none) and (pointer: coarse)").matches;
-    if (!isMobile) {
+    // Skip boot on touch devices (gallery hidden by CSS)
+    const isTouchDevice = matchMedia("(hover: none) and (pointer: coarse)").matches;
+    if (!isTouchDevice) {
       const stageEl = document.getElementById('stage');
       const track   = document.getElementById('track');
       const nextBtn = document.getElementById('next');
@@ -160,17 +166,13 @@
       const CTRL = {
         baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 320,
         peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 48,
-        scale: [1, .82, .68, .54], // subtle scaling
+        scale: [1, .82, .68, .54], // subtle scaling only
       };
 
       // circular utils
       const N = IMAGES.length;
       const mod = (n, m) => ((n % m) + m) % m;
-      const circDelta = (i, c) => {
-        let d = i - c;
-        d = mod(d + N/2, N) - N/2;
-        return d;
-      };
+      const circDelta = (i, c) => { let d = i - c; return mod(d + N/2, N) - N/2; };
 
       let current = Math.floor(Math.random() * N);
       const cards = [];
