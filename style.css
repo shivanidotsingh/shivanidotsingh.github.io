@@ -17,7 +17,7 @@ body {
 
 h1 {
   font-size: var(--h1-size);
-  line-height: 1em;
+  line-height: 0.5em;
   display: inline-block;
   vertical-align: middle;
 }
