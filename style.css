@@ -199,7 +199,7 @@ button.reveal::before {
   position: absolute;
   left: -0.05em;              /* tiny overhang for a natural marker look */
   right: -0.05em;
-  bottom: 0.1em;             /* <— vertical placement within the line box */
+  bottom: 0.2em;             /* <— vertical placement within the line box */
   height: 1.1em;              /* <— thickness of the highlight */
   border-radius: 2px;
   z-index: -1;
