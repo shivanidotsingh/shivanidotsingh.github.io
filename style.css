@@ -188,7 +188,7 @@ button.reveal {
   border: none;
   outline: none;
   background-color: transparent;
-  padding: 0;                 /* was 0 0.1em — remove extra box height */
+  padding: 0 0.01em;
   position: relative;
   z-index: 1;
   vertical-align: baseline;   /* align with surrounding text */
@@ -200,7 +200,7 @@ button.reveal::before {
   bottom: 0.25em;             /* <— vertical placement within the line box */
   left: 0em;              /* tiny overhang for a natural marker look */
   right: 0em;
-  height: 1.2em;              /* <— thickness of the highlight */
+  height: 1.4em;              /* <— thickness of the highlight */
   z-index: -1;
   opacity: 1;
 }
