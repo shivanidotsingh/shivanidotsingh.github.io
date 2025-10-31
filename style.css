@@ -198,10 +198,11 @@ button.reveal::before {
   content: '';
   position: absolute;
   bottom: 0.25em;             /* <— vertical placement within the line box */
+  left: 0em;              /* tiny overhang for a natural marker look */
+  right: 0em;
   height: 1.2em;              /* <— thickness of the highlight */
   z-index: -1;
   opacity: 1;
-  pointer-events: none;       /* highlight never intercepts clicks */
 }
 
 /* Reveal buttons (old)
