@@ -17,10 +17,11 @@ body {
 
 h1 {
   font-size: var(--h1-size);
+  line-height: 1em;
   display: inline-block;
   vertical-align: middle;
 }
-h2 { margin-top: 2em; border-top: 1px solid #111; padding-top: 1.5em; }
+h2 { margin-top: 2em; border-top: 1px solid #111; padding-top: 1em; }
 
 img {
   max-width: 100%;
