@@ -187,10 +187,13 @@ button.reveal {
   cursor: pointer;
   border: none;
   outline: none;
+  padding: 0px;
   background-color: transparent;
   position: relative;
   z-index: 1;
-  vertical-align: baseline;   /* align with surrounding text */
+  vertical-align: baseline; 
+
+  --hl-tilt: 0deg;
 }
 
 button.reveal::before {
@@ -202,33 +205,15 @@ button.reveal::before {
   height: 1.5em;              /* <— thickness of the highlight */
   z-index: -1;
   opacity: 1;
-}
 
-/* Reveal buttons (old)
-button.reveal {
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  background-color: transparent;
-  padding: 0 0.1em;
-  position: relative;
-  z-index: 1;
+  transform: rotate(var(--hl-tilt));
 }
-button.reveal::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-  border-radius: 0px;
-  z-index: -1;
-  opacity: 1;
-}*/
 
 .highlight-blue::before   { background-color: #D6F5FF; }
-.highlight-yellow::before { background-color: #FDFB8C; }
-.highlight-pink::before   { background-color: #FFDDEE; }
+.highlight-yellow::before { background-color: #FDFB8C; --hl-tilt: 1.0deg; }
+.highlight-pink::before   { background-color: #FFDDEE; --hl-tilt: -1.0deg; }
 .highlight-green::before  { background-color: #DDFFAA; }
-.highlight-purple::before { background-color: #EEDDFF; }
+.highlight-purple::before { background-color: #EEDDFF; --hl-tilt: 1.1deg; }
 
 button.reveal:disabled { cursor: default; opacity: 0.8; }
 button.reveal:disabled::before { opacity: 0; }
