@@ -215,7 +215,7 @@ button.reveal::before {
 .highlight-green::before  { background-color: #DDFFAA; }
 .highlight-purple::before { background-color: #EEDDFF; --hl-tilt: 1.1deg; }
 
-button.reveal:disabled { cursor: default; opacity: 0.8; }
+button.reveal:disabled { cursor: default; }
 button.reveal:disabled::before { opacity: 0; }
 
 span.inline-reveal {
