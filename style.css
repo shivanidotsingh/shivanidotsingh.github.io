@@ -179,7 +179,36 @@ a[target="_blank"] { cursor: alias; }
   margin: 0 auto;
 }
 
-/* Reveal buttons */
+
+/* Reveal buttons (new) */
+button.reveal {
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  padding: 0;                 /* was 0 0.1em — remove extra box height */
+  position: relative;
+  z-index: 1;
+  vertical-align: baseline;   /* align with surrounding text */
+}
+
+button.reveal::before {
+  content: '';
+  position: absolute;
+  left: -0.05em;              /* tiny overhang for a natural marker look */
+  right: -0.05em;
+  height: 0.5em;              /* <— thickness of the highlight */
+  bottom: 0.15em;             /* <— vertical placement within the line box */
+  top: auto;                  /* <— IMPORTANT: don’t stretch full height */
+  border-radius: 2px;
+  z-index: -1;
+  opacity: 1;
+  pointer-events: none;       /* highlight never intercepts clicks */
+}
+
+/* Reveal buttons (old)
 button.reveal {
   color: inherit;
   font: inherit;
@@ -197,7 +226,8 @@ button.reveal::before {
   border-radius: 0px;
   z-index: -1;
   opacity: 1;
-}
+}*/
+
 .highlight-blue::before   { background-color: #D6F5FF; }
 .highlight-yellow::before { background-color: #FDFB8C; }
 .highlight-pink::before   { background-color: #FFDDEE; }
