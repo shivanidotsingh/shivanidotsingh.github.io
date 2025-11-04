@@ -44,53 +44,122 @@
     /* Hidden until opened */
     #portfolio-appendix[hidden] { display: none; }
 
-    /* Full-bleed portfolio section (no forced white bg) */
-    .portfolio-section {
-      width: 100vw;
-      position: relative;
-      left: 50%;
-      right: 50%;
-      margin-left: -50vw;
-      margin-right: -50vw;
-      padding: 40px 60px;
-      box-sizing: border-box;
-    }
+    /* ========= PORTFOLIO (list with hover previews) ========= */
 
-    .portfolio-header {
-      max-width: 1800px;
-      margin: 0 auto 20px auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-    }
+.portfolio-section {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  padding: 40px 60px;
+  box-sizing: border-box;
+}
 
-    .portfolio-grid {
-      max-width: 1800px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 80px;
-    }
+/* header aligned to page width (640px) */
+.portfolio-header {
+  max-width: 640px;                 /* was 1800px */
+  margin: 0 auto 20px auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
 
-    .project { display: flex; flex-direction: column; }
-    .project img {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      object-fit: cover;
-      border-radius: 6px;
-      margin-bottom: 0.75em;
-    }
-    .project-title { font-weight: 600; line-height: 1.3; }
-    .project-title a { text-decoration: underline; color: inherit; }
+/* grid -> centered list at 640px */
+.portfolio-grid {
+  max-width: 640px;                 /* match page width */
+  margin: 0 auto;
+  display: block;                   /* was grid */
+}
 
-    @media (max-width: 1200px) {
-      .portfolio-grid { grid-template-columns: repeat(2, 1fr); gap: 40px; }
-    }
-    @media (max-width: 700px) {
-      .portfolio-section { padding: 20px; }
-      .portfolio-grid { grid-template-columns: 1fr; gap: 30px; }
-    }
+/* list item + thin separator (same as intro hr: 1px black) */
+.project {
+  display: block;                   /* was flex */
+  position: relative;
+  padding: 14px 0 16px;
+  border-top: 1px solid #000;
+}
+.project:first-child { border-top: none; }
+
+/* h1-like titles */
+.project-title {
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.3;
+  font-size: var(--h1-size);
+}
+.project-title a {
+  text-decoration: none;            /* cleaner with marker */
+  color: inherit;
+  position: relative;
+}
+
+/* title hover marker highlight */
+.project-title a::before {
+  content: '';
+  position: absolute;
+  left: -0.05em; right: -0.05em;
+  height: var(--hl-thickness, 0.6em);
+  bottom: var(--hl-offset, 0.18em);
+  background: var(--hl, #FDFB8C);
+  transform: rotate(var(--hl-tilt, 0deg));
+  transform-origin: 0 80%;
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 140ms ease;
+  z-index: -1;
+}
+.project:hover .project-title a::before,
+.project .project-title a:focus-visible::before { opacity: 1; }
+
+/* cycle highlight colors per item */
+.portfolio-grid .project:nth-child(5n+1) { --hl: #FDFB8C; --hl-tilt:  1.1deg; } /* yellow */
+.portfolio-grid .project:nth-child(5n+2) { --hl: #D6F5FF; --hl-tilt:  0.8deg; } /* blue */
+.portfolio-grid .project:nth-child(5n+3) { --hl: #FFDDEE; --hl-tilt: -1.0deg; } /* pink */
+.portfolio-grid .project:nth-child(5n+4) { --hl: #DDFFAA; --hl-tilt:  0.9deg; } /* green */
+.portfolio-grid .project:nth-child(5n+5) { --hl: #EEDDFF; --hl-tilt:  1.0deg; } /* purple */
+
+/* hide images by default; show large floating preview on hover */
+.portfolio-section .project img {
+  position: fixed;                  /* float over page */
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(640px, 55vw);          /* big, capped to page width */
+  height: auto;
+  display: none;
+  opacity: 0;
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.18);
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+  /* neutralize old grid rules */
+  aspect-ratio: auto;
+  margin-bottom: 0;
+}
+.portfolio-section .project:hover img,
+.portfolio-section .project:focus-within img {
+  display: block;
+  opacity: 1;
+}
+
+/* alternate image side: odd -> left, even -> right */
+.portfolio-section .project:nth-child(odd)  img { left: clamp(24px, 6vw, 80px); }
+.portfolio-section .project:nth-child(even) img { right: clamp(24px, 6vw, 80px); }
+
+/* ===== Responsive tweaks ===== */
+@media (max-width: 1200px) {
+  /* no grid needed anymore */
+}
+
+@media (max-width: 700px) {
+  .portfolio-section { padding: 20px; }
+  /* hide floating previews on touch */
+  .portfolio-section .project img { display: none !important; }
+}
+
 
     .hover-text img { display: none; }
     .hover-text:hover img { width: 250px; position: fixed; inset: 0; margin: auto; display: block; z-index: 3; }
