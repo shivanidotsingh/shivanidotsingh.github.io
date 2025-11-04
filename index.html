@@ -12,9 +12,14 @@
   <link rel="stylesheet" href="style.css">
   <style>
     
-    body {
-  padding: 0 40px !important;
+:root { --page-gutter: 40px; }
+@media (max-width:700px){
+  :root { --page-gutter: 20px; }
 }
+
+body { padding: 0 var(--page-gutter) !important; }
+.portfolio-section { padding: 40px var(--page-gutter); } 
+
     .h1-img {
   height: var(--h1-size);  /* matches text h1 height */
   width: auto;             /* keep aspect ratio */
@@ -138,7 +143,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
 .portfolio-section .project:nth-child(even) img { right: clamp(24px, 6vw, 80px); }
 
 @media (max-width: 700px) {
-  .portfolio-section { padding: 20px; }
+  .portfolio-section { padding: 20px var(--page-gutter); }
   .portfolio-section .project img { display: none; }
 }
 
