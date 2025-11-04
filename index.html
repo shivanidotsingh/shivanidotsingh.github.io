@@ -139,8 +139,8 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
 }
 
 /* Alternate sides */
-.portfolio-section .project:nth-child(odd)  img { left: clamp(10px, 6vw, 80px); }
-.portfolio-section .project:nth-child(even) img { right: clamp(10px, 6vw, 80px); }
+.portfolio-section .project:nth-child(odd)  img { left: var(--page-gutter); }
+.portfolio-section .project:nth-child(even) img { right: var(--page-gutter); }
 
 @media (max-width: 700px) {
   .portfolio-section { padding: 20px var(--page-gutter); }
