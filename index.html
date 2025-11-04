@@ -120,6 +120,19 @@
   color: #0000EE; /* “regular internet blue” */
   outline: none;
 }
+
+/* inline [x] close link */
+#portfolio-inline-close {
+  text-decoration: none;
+  color: #0000EE;     /* internet blue */
+  cursor: pointer;
+  display: none;      /* hidden by default */
+}
+#portfolio-inline-close:hover { text-decoration: underline; }
+body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
+  display: inline;
+}
+
 /* Alternate sides */
 .portfolio-section .project:nth-child(odd)  img { left: clamp(24px, 6vw, 80px); }
 .portfolio-section .project:nth-child(even) img { right: clamp(24px, 6vw, 80px); }
@@ -161,7 +174,7 @@
         
         <br><br><button class="reveal highlight-green" onclick="expandOnce(this, 'home')">Born in India</button>, I'm currently based in Stockholm.
         <span id="home" class="inline-reveal"> To visualise the many places I've called home over the years, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank">here</a>.</span>
-        An alumnus of the National Institute of Design and California College of the Arts, see more on my <a href="resume.html">resume</a>, or dive into my <a href="#portfolio" id="portfolio-link">portfolio of projects</a>.
+        An alumnus of the National Institute of Design and California College of the Arts, see more on my <a href="resume.html">resume</a>, or dive into my <a href="#portfolio" id="portfolio-link">portfolio of projects</a>. <a href="#" id="portfolio-inline-close">[x]</a>
         </p>
       
       <hr style="border: none; border-top: 1px solid black; margin: 1em 0;">
@@ -175,11 +188,7 @@
 
   <!-- PORTFOLIO -->
   <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
-    <div class="portfolio-header">
-      <p class="project-title">select projects</p>
-      <a href="#" id="portfolio-close" class="blue-link">close</a>
-    </div>
-    
+
     <div class="portfolio-grid">
       <!-- Playground (Coming Soon) -->
       <div class="project">
@@ -243,185 +252,184 @@
     </div>
   </section>
 
-  <script>
-    //Slight Scrolling Exists - but scribble doesn't cut off
-    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+<script>
+  // --- Device check
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-    // Highlight colors
-    const highlightColors = {
-      'highlight-yellow': '#FDFB8C',
-      'highlight-blue':   '#D6F5FF',
-      'highlight-pink':   '#FFDDEE',
-      'highlight-green':  '#DDFFAA',
-      'highlight-purple': '#EEDDFF'
-    };
+  // --- Highlight colors
+  const highlightColors = {
+    'highlight-yellow': '#FDFB8C',
+    'highlight-blue':   '#D6F5FF',
+    'highlight-pink':   '#FFDDEE',
+    'highlight-green':  '#DDFFAA',
+    'highlight-purple': '#EEDDFF'
+  };
 
-    // Desktop trail state
-    let drawing = false;
-    let currentColor = null;
+  // --- Scribble state
+  let drawing = false;
+  let currentColor = null;
 
-    function expandOnce(buttonEl, contentId) {
-      const contentEl = document.getElementById(contentId);
-      contentEl.classList.add('visible');
-      buttonEl.disabled = true;
+  function expandOnce(buttonEl, contentId) {
+    const contentEl = document.getElementById(contentId);
+    contentEl.classList.add('visible');
+    buttonEl.disabled = true;
 
-      for (const cn of buttonEl.classList) {
-        if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
-      }
-      if (isMobile) spawnStaticDot(currentColor);
-      else drawing = true;
-
-      /*requestAnimationFrame(sizeCanvas);*/
+    for (const cn of buttonEl.classList) {
+      if (cn.startsWith('highlight-')) { currentColor = highlightColors[cn]; break; }
     }
+    if (isMobile) spawnStaticDot(currentColor);
+    else drawing = true;
 
-    // Mobile: static dots
-    function spawnStaticDot(color) {
-      const cont = document.getElementById('random-dots-container');
-      const dot = document.createElement('span');
-      dot.className = 'collected-dot';
-      dot.style.backgroundColor = color;
-      const size = 16;
-      const x = Math.random() * (window.innerWidth - size);
-      const y = Math.random() * (window.innerHeight - size);
-      dot.style.left = x + 'px';
-      dot.style.top  = y + 'px';
-      cont.appendChild(dot);
+    // IMPORTANT: do NOT resize canvas here, to preserve existing strokes
+    // requestAnimationFrame(sizeCanvas);
+  }
+
+  // --- Mobile dots
+  function spawnStaticDot(color) {
+    const cont = document.getElementById('random-dots-container');
+    const dot = document.createElement('span');
+    dot.className = 'collected-dot';
+    dot.style.backgroundColor = color;
+    const size = 16;
+    const x = Math.random() * (window.innerWidth - size);
+    const y = Math.random() * (window.innerHeight - size);
+    dot.style.left = x + 'px';
+    dot.style.top  = y + 'px';
+    cont.appendChild(dot);
+  }
+
+  // --- Canvas setup
+  const introWrap  = document.querySelector('.intro-wrap');
+  const introInner = document.querySelector('.intro-inner');
+  const canvas     = document.getElementById('trail-canvas');
+  const ctx        = canvas.getContext('2d');
+
+  function sizeCanvas() {
+    if (!introWrap || !introInner) return;
+
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const w = window.innerWidth;
+
+    const cs = getComputedStyle(introInner);
+    const mt = parseFloat(cs.marginTop)    || 0;
+    const mb = parseFloat(cs.marginBottom) || 0;
+    const innerHeightWithMargins = introInner.offsetHeight + mt + mb;
+    const h = Math.max(innerHeightWithMargins, window.innerHeight);
+
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width  = Math.floor(w * dpr);
+    canvas.height = Math.floor(h * dpr);
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.globalCompositeOperation = 'multiply';
+  }
+
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+
+  // --- Painting
+  let last = null, pending = null, paintingScheduled = false;
+  function schedulePaint(){
+    if(!paintingScheduled){
+      paintingScheduled = true;
+      requestAnimationFrame(paintStep);
     }
+  }
+  function paintStep(){
+    paintingScheduled = false;
+    if (!drawing || !currentColor || !pending || isMobile) return;
+    const { x, y } = pending;
+    if (!last) { last = { x, y }; return; }
 
-    // Canvas setup - extra large to allow scribbling anywhere
-    const introWrap = document.querySelector('.intro-wrap');
-    const introInner = document.querySelector('.intro-inner');
-    const canvas = document.getElementById('trail-canvas');
-    const ctx = canvas.getContext('2d');
+    ctx.strokeStyle = hexToRgba(currentColor, 0.14);
+    ctx.lineWidth   = 16;
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
-    function sizeCanvas() {
-  if (!introWrap || !introInner) return;
+    ctx.strokeStyle = hexToRgba(currentColor, 0.05);
+    ctx.lineWidth   = 20;
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
-  const dpr = Math.max(1, window.devicePixelRatio || 1);
-  const w = window.innerWidth;
+    last = { x, y };
+  }
 
-  // Include introInner's margins so the canvas fully covers the top/bottom gaps
-  const cs = getComputedStyle(introInner);
-  const mt = parseFloat(cs.marginTop)  || 0;
-  const mb = parseFloat(cs.marginBottom) || 0;
+  if (!isMobile) {
+    window.addEventListener('pointermove', e => {
+      const rect = introWrap.getBoundingClientRect();
+      pending = { x: e.clientX, y: e.clientY - rect.top };
+      schedulePaint();
+    }, { passive: true });
 
-  // Use the larger of: (introInner box + margins) vs viewport height
-  const innerHeightWithMargins = introInner.offsetHeight + mt + mb;
-  const h = Math.max(innerHeightWithMargins, window.innerHeight);
+    window.addEventListener('pointerdown', e => {
+      const rect = introWrap.getBoundingClientRect();
+      last = { x: e.clientX, y: e.clientY - rect.top };
+    }, { passive: true });
 
-  canvas.style.width  = w + 'px';
-  canvas.style.height = h + 'px';
-  canvas.width  = Math.floor(w * dpr);
-  canvas.height = Math.floor(h * dpr);
+    window.addEventListener('mouseleave',    () => { last = null; });
+    window.addEventListener('pointerleave',  () => { last = null; });
 
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.globalCompositeOperation = 'multiply';
-}
-
-    sizeCanvas();
-    window.addEventListener('resize', sizeCanvas);
-
-    let last = null, pending = null, paintingScheduled = false;
-    function schedulePaint(){ if(!paintingScheduled){ paintingScheduled = true; requestAnimationFrame(paintStep); } }
-    function paintStep(){
-      paintingScheduled = false;
-      if (!drawing || !currentColor || !pending || isMobile) return;
-      const { x, y } = pending;
-      if (!last) { last = { x, y }; return; }
-      
-      ctx.strokeStyle = hexToRgba(currentColor, 0.14);
-      ctx.lineWidth = 16;
-      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
-      
-      ctx.strokeStyle = hexToRgba(currentColor, 0.05);
-      ctx.lineWidth = 20;
-      ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
-      
-      last = { x, y };
-    }
-
-    if (!isMobile) {
-      window.addEventListener('pointermove', e => {
-        const rect = introWrap.getBoundingClientRect();
-        pending = { 
-          x: e.clientX,
-          y: e.clientY - rect.top
-        };
-        schedulePaint();
-      }, { passive: true });
-
-      window.addEventListener('pointerdown', e => {
-        const rect = introWrap.getBoundingClientRect();
-        last = { 
-          x: e.clientX,
-          y: e.clientY - rect.top
-        };
-      }, { passive: true });
-
-      window.addEventListener('mouseleave', () => { last = null; });
-      window.addEventListener('pointerleave', () => { last = null; });
-
-      window.addEventListener('click', (e) => {
-        const onHighlight = e.target.closest && e.target.closest('.reveal');
-        if (!onHighlight) drawing = false;
-      });
-      window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
-    }
-
-    function hexToRgba(hex, a=1){
-      const h = hex.replace('#','');
-      const r = parseInt(h.length===3 ? h[0]+h[0] : h.slice(0,2), 16);
-      const g = parseInt(h.length===3 ? h[1]+h[1] : h.slice(2,4), 16);
-      const b = parseInt(h.length===3 ? h[2]+h[2] : h.slice(4,6), 16);
-      return `rgba(${r},${g},${b},${a})`;
-    }
-
-    // Portfolio open/close
-    const portfolioLink = document.getElementById('portfolio-link');
-    const portfolio = document.getElementById('portfolio-appendix');
-    const portfolioClose = document.getElementById('portfolio-close');
-
-    function openPortfolio(scroll = true) {
-      if (!portfolio) return;
-      portfolio.hidden = false;
-      portfolio.setAttribute('aria-hidden', 'false');
-      localStorage.setItem('portfolioOpen', '1');
-      if (scroll) {
-        const header = portfolio.querySelector('.portfolio-header') || portfolio;
-        header.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-      if (location.hash !== '#portfolio') history.replaceState(null, '', '#portfolio');
-    }
-
-    function closePortfolio() {
-      if (!portfolio) return;
-      portfolio.hidden = true;
-      portfolio.setAttribute('aria-hidden', 'true');
-      localStorage.removeItem('portfolioOpen');
-      document.getElementById('page').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      if (location.hash === '#portfolio') history.replaceState(null, '', ' ');
-    }
-
-    if (portfolioLink) {
-      portfolioLink.addEventListener('click', (e) => {
-        e.preventDefault();
-        openPortfolio(true);
-      });
-    }
-    if (portfolioClose) {
-      portfolioClose.addEventListener('click', (e) => {
-        e.preventDefault();
-        closePortfolio();
-      });
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      if (location.hash === '#portfolio' || localStorage.getItem('portfolioOpen') === '1') {
-        openPortfolio(false);
-      }
+    window.addEventListener('click', (e) => {
+      const onHighlight = e.target.closest && e.target.closest('.reveal');
+      if (!onHighlight) drawing = false;
     });
-  </script>
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') drawing = false; });
+  }
+
+  function hexToRgba(hex, a=1){
+    const h = hex.replace('#','');
+    const r = parseInt(h.length===3 ? h[0]+h[0] : h.slice(0,2), 16);
+    const g = parseInt(h.length===3 ? h[1]+h[1] : h.slice(2,4), 16);
+    const b = parseInt(h.length===3 ? h[2]+h[2] : h.slice(4,6), 16);
+    return `rgba(${r},${g},${b},${a})`;
+  }
+
+  // --- Portfolio open/close (uses inline [x] and no header close)
+  const portfolioLink = document.getElementById('portfolio-link');
+  const portfolio     = document.getElementById('portfolio-appendix');
+  const inlineClose   = document.getElementById('portfolio-inline-close');
+
+  function openPortfolio(scroll = true) {
+    if (!portfolio) return;
+    portfolio.hidden = false;
+    portfolio.setAttribute('aria-hidden', 'false');
+    localStorage.setItem('portfolioOpen', '1');
+    if (scroll) {
+      portfolio.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    if (location.hash !== '#portfolio') history.replaceState(null, '', '#portfolio');
+  }
+
+  function closePortfolio() {
+    if (!portfolio) return;
+    portfolio.hidden = true;
+    portfolio.setAttribute('aria-hidden', 'true');
+    localStorage.removeItem('portfolioOpen');
+    document.getElementById('page').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (location.hash === '#portfolio') history.replaceState(null, '', ' ');
+  }
+
+  if (portfolioLink) {
+    portfolioLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openPortfolio(true);
+    });
+  }
+
+  if (inlineClose) {
+    inlineClose.addEventListener('click', (e) => {
+      e.preventDefault();
+      closePortfolio();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (location.hash === '#portfolio' || localStorage.getItem('portfolioOpen') === '1') {
+      openPortfolio(false);
+    }
+  });
+</script>
+
 </body>
 </html>
