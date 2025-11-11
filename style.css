@@ -194,7 +194,6 @@ button.reveal {
   z-index: 1;
   vertical-align: baseline; 
 
-  --hl-tilt: 0deg;
 }
 
 button.reveal::before {
@@ -207,14 +206,13 @@ button.reveal::before {
   z-index: -1;
   opacity: 1;
 
-  transform: rotate(var(--hl-tilt));
 }
 
 .highlight-blue::before   { background-color: #D6F5FF; }
-.highlight-yellow::before { background-color: #FDFB8C; --hl-tilt: 1.0deg; }
-.highlight-pink::before   { background-color: #FFDDEE; --hl-tilt: -1.0deg; }
+.highlight-yellow::before { background-color: #FDFB8C; }
+.highlight-pink::before   { background-color: #FFDDEE; }
 .highlight-green::before  { background-color: #DDFFAA; }
-.highlight-purple::before { background-color: #EEDDFF; --hl-tilt: 1.1deg; }
+.highlight-purple::before { background-color: #EEDDFF; }
 
 button.reveal:disabled { cursor: default; }
 button.reveal:disabled::before { opacity: 0; }
