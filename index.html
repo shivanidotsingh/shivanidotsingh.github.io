@@ -178,7 +178,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
         
         <br><br><button class="reveal highlight-green" onclick="expandOnce(this, 'home')">Born in India</button>, I'm currently based in Stockholm.
         <span id="home" class="inline-reveal"> To visualise the many places I've called home over the years, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank">here</a>.</span>
-        An alumnus of the National Institute of Design and California College of the Arts, see more on my <a href="resume.html">resume</a>, or dive into my process through select <a href="#portfolio" id="portfolio-link">projects</a><a href="#" id="portfolio-inline-close"> [x]</a>.
+        An alumnus of the National Institute of Design and California College of the Arts, see more on my <a href="resume.html">resume</a>, or jump into my process through select <a href="#portfolio" id="portfolio-link">projects</a><a href="#" id="portfolio-inline-close"> [x]</a>.
         </p>
   </main>
   </section>
@@ -262,7 +262,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     </div>
   </section>
   <hr style="border: none; border-top: 1px solid black; margin: 1em 0;">
-  <p class="note">This website is built on github.com • Last updated on Oct 25, 2025 </p>
+  <p class="note">This website is built on github.com • Last updated on Nov 12, 2025 </p>
 <script>
   // --- Device check
   const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -354,7 +354,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     const { x, y } = pending;
     if (!last) { last = { x, y }; return; }
 
-    ctx.strokeStyle = hexToRgba(currentColor, 0.15);
+    ctx.strokeStyle = hexToRgba(currentColor, 0.2);
     ctx.lineWidth   = 18;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
