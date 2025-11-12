@@ -99,7 +99,7 @@ body {
 .portfolio-section .project img {
   display: none;
   opacity: 0;
-  position: absolute;
+  position: fixed;
   top: 50%;
   transform: translateY(-50%);
   width: auto;
@@ -332,8 +332,8 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     canvas.height = Math.floor(h * dpr);
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+    ctx.lineCap = 'butt';
+    ctx.lineJoin = 'miter';
     ctx.globalCompositeOperation = 'multiply';
   }
 
@@ -354,11 +354,11 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     const { x, y } = pending;
     if (!last) { last = { x, y }; return; }
 
-    ctx.strokeStyle = hexToRgba(currentColor, 0.3);
+    ctx.strokeStyle = hexToRgba(currentColor, 0.15);
     ctx.lineWidth   = 18;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
-    ctx.strokeStyle = hexToRgba(currentColor, 0.2);
+    ctx.strokeStyle = hexToRgba(currentColor, 0.1);
     ctx.lineWidth   = 20;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
