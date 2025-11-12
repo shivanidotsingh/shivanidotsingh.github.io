@@ -121,7 +121,10 @@ body {
 }
 .portfolio-grid .project:hover .project-title a,
 .portfolio-grid .project .project-title a:focus-visible {
-  color: #0000EE; /* “regular internet blue” */
+  background-image: linear-gradient(var(--hl), var(--hl));
+  background-size: 100% 1.2em;   /* thickness */
+  background-position: 0 70%;    /* vertical placement */
+  background-repeat: no-repeat;
   outline: none;
 }
 
@@ -201,7 +204,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
       </div>
 
       <!-- Needs Assessment -->
-      <div class="project">
+      <div class="project" style="--hl:#D6F5FF;">
         <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub?start=true&loop=false&delayms=60000" target="_blank">
           <img src="images/project2.jpg" alt="Innovation Needs Assessment">
         </a>
@@ -211,7 +214,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
       </div>
 
       <!-- West Oakland -->
-      <div class="project">
+      <div class="project" style="--hl:#FFDDEE;">
         <a href="https://singh.work/case-study.html">
           <img src="images/project1.jpg" alt="A West Oakland Story">
         </a>
@@ -222,7 +225,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
 
       <!-- Dropin -->
       <div class="project">
-        <a href="https://singh.work/dropin">
+        <a href="https://singh.work/dropin" style="--hl:#DDFFAA;">
           <img src="images/project3.png" alt="The art, the artist and context">
         </a>
         <p class="note">Digital Experience Design • CCA Student Project (2020)</p>
@@ -241,7 +244,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
       </div> -->
 
       <!-- Parallel -->
-      <div class="project">
+      <div class="project" style="--hl:#EEDDFF;">
         <a href="https://singh.work/sprint.html">
           <img src="images/project6.png" alt="Sprint">
         </a>
@@ -251,7 +254,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
       </div>
 
       <!-- Elemenopy -->
-      <div class="project">
+      <div class="project"  style="--hl:#FDFB8C;">
         <a href="https://singh.work/lmnop">
           <img src="images/project7.png" alt="The ABC's of branding a Preschool">
         </a>
