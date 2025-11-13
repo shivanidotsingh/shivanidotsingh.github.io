@@ -9,15 +9,18 @@
 
 <style>
   :root{
-    --bg:#fff; --fg:#111;
+    --bg:#f2f2f2; --fg:#111;
 
-    /* scatter tuning */
-    --page-pad: 24px;   /* side padding */
-    --gap: 18px;        /* space between items (no overlap buffer) */
-    --min-w: 260px;     /* min image width on desktop */
-    --max-w: 560px;     /* max image width on desktop */
+    /* SCATTER KNOBS */
+    --page-pad: 28px;   /* page side padding */
+    --gap: 16px;        /* initial spacing buffer between items */
+    --min-w: 300px;     /* starting width range (desktop)  ⟵ you asked larger */
+    --max-w: 700px;     /* starting width range (desktop)  ⟵ you asked larger */
+    --size-bias: 1.20;  /* global multiplier for default size (1.0 = no change) */
 
-    /* canvas height: JS uses a base "screens" multiplier; this is purely visual vars */
+    /* DRAG/RESIZE */
+    --tile-shadow: 0 10px 28px rgba(0,0,0,.12);
+    --handle-size: 14px; /* resize handle square size */
   }
 
   * { box-sizing: border-box; }
@@ -25,7 +28,6 @@
   body {
     margin: 0; background: var(--bg); color: var(--fg);
     font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
-    -webkit-text-size-adjust: 100%;
   }
 
   /* Desktop-only wrapper */
@@ -45,53 +47,55 @@
     overflow: auto;
     padding: 0 var(--page-pad);
     background: #fff;
+    -webkit-user-select: none; user-select: none;
   }
 
-  /* Giant relative canvas we scatter onto */
+  /* The tall canvas we place tiles on */
   #canvas {
     position: relative;
     width: 100%;
-    /* height set by JS */
+    /* JS sets height */
   }
 
-  /* Each figure is absolutely positioned, clean edges */
+  /* Tiles */
   .tile {
     position: absolute;
     margin: 0;
     user-select: none;
     -webkit-user-drag: none;
-    touch-action: none;
+    touch-action: none; /* so pointer events are precise */
+    cursor: grab;
+    box-shadow: var(--tile-shadow);
+    background: #fff; /* for transparent PNGs */
   }
+  .tile.dragging { cursor: grabbing; }
   .tile img {
-    display: block;
-    width: 100%;
-    height: auto;
-    pointer-events: none;
-    background: #fff; /* in case of transparent PNGs */
+    display: block; width: 100%; height: auto; pointer-events: none;
+  }
+
+  /* Resize handle (bottom-right) */
+  .handle {
+    position: absolute;
+    width: var(--handle-size);
+    height: var(--handle-size);
+    right: -6px; bottom: -6px;
+    border: 1px solid #ccc;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,.12);
+    cursor: nwse-resize;
   }
 
   /* Mobile/tablet: only show the banner */
   .mobile-only {
     display: none;
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     place-items: center;
     text-align: center;
-    padding: 24px;
-    background: #fff;
-    color: #111;
+    padding: 24px; background: #fff; color: #111;
   }
   @media (hover: none) and (pointer: coarse) {
     .wrap { display: none; }
     .mobile-only { display: grid; }
-  }
-
-  @media (max-width: 1200px) {
-    :root{ --min-w: 220px; --max-w: 460px; }
-  }
-  @media (max-width: 900px) {
-    /* not used (mobile shows banner), but keeps things reasonable for narrow desktop windows */
-    :root{ --min-w: 200px; --max-w: 400px; }
   }
 </style>
 </head>
@@ -101,7 +105,7 @@
   <div class="wrap">
     <header>screenshots from the desktop, out of context</header>
     <main class="stage" id="stage">
-      <div id="canvas" aria-label="Scattered artefacts (no overlap)"></div>
+      <div id="canvas" aria-label="Scattered artefacts (draggable & resizable)"></div>
     </main>
   </div>
 
@@ -116,6 +120,7 @@
       "images/process/criteriaforintake.png",
       "images/process/CRM.png",
       "images/process/cryptotransfer.png",
+      "images/process/ideally.jpg",
       "images/process/curriculum.png",
       "images/process/Datapoints.png",
       "images/process/GNC learning.png",
@@ -140,7 +145,6 @@
       "images/process/types of slides.png",
       "images/process/vendorgrid.png",
       "images/process/whatwedonose.png",
-      "images/process/ideally.jpg",
       "images/process/gov.jpg",
       "images/process/XCapit.png"
     ];
@@ -151,21 +155,25 @@
       const stage  = document.getElementById('stage');
       const canvas = document.getElementById('canvas');
 
-      const css     = getComputedStyle(document.documentElement);
-      const GAP     = parseInt(css.getPropertyValue('--gap'))    || 18;
-      const MIN_W_0 = parseInt(css.getPropertyValue('--min-w'))  || 300;
-      const MAX_W_0 = parseInt(css.getPropertyValue('--max-w'))  || 700;
-      const PAD     = parseInt(css.getPropertyValue('--page-pad'))|| 24;
+      const css       = getComputedStyle(document.documentElement);
+      const GAP       = parseInt(css.getPropertyValue('--gap'))        || 16;
+      const MIN_W_0   = parseInt(css.getPropertyValue('--min-w'))      || 300;
+      const MAX_W_0   = parseInt(css.getPropertyValue('--max-w'))      || 700;
+      const PAD       = parseInt(css.getPropertyValue('--page-pad'))   || 28;
+      const SIZE_BIAS = parseFloat(css.getPropertyValue('--size-bias'))|| 1.2;
 
-      // Load all images first to get real aspect ratios
+      const rand   = (a, b) => Math.random() * (b - a) + a;
+      const clamp  = (v, a, b) => Math.max(a, Math.min(b, v));
+
+      // 1) Load images to know aspects
       Promise.all(IMAGES.map(loadMeta)).then(metas => {
-        // Layout once (and on resize)
-        const doLayout = () => layoutScatter(metas);
-        let raf = null;
-        const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(doLayout); };
-
-        doLayout();
-        window.addEventListener('resize', schedule, { passive:true });
+        build(metas);
+        // Relayout on resize (re-randomizes positions to fit new width/height)
+        let rid = null;
+        window.addEventListener('resize', () => {
+          cancelAnimationFrame(rid);
+          rid = requestAnimationFrame(() => build(metas));
+        }, { passive:true });
       });
 
       function loadMeta(src) {
@@ -173,85 +181,161 @@
           const img = new Image();
           img.loading = 'eager';
           img.decoding = 'async';
-          img.onload = () => res({ src, w: img.naturalWidth, h: img.naturalHeight, aspect: img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1 });
-          img.onerror = () => res({ src, w: 1000, h: 600, aspect: 0.6 }); // fallback guess
+          img.onload = () => res({ src, w: img.naturalWidth, h: img.naturalHeight, aspect: img.naturalWidth ? img.naturalHeight / img.naturalWidth : 0.7 });
+          img.onerror = () => res({ src, w: 1200, h: 800, aspect: 800/1200 });
           img.src = encodeURI(src);
         });
       }
 
-      function layoutScatter(metas) {
+      // 2) Initial scatter layout (no overlap), then enable drag+resize
+      function build(metas){
         canvas.innerHTML = "";
-        const W = stage.clientWidth - PAD * 2; // usable inner width
+
+        const W = stage.clientWidth - PAD * 2;           // usable width
+        const Hview = stage.clientHeight || innerHeight; // viewport height
         const MIN_W = Math.min(MIN_W_0, Math.max(160, W * 0.25));
-        const MAX_W = Math.max(MIN_W + 40, Math.min(MAX_W_0, W * 0.8));
+        const MAX_W = Math.max(MIN_W + 40, Math.min(MAX_W_0, W * 0.9));
 
-        // Make the canvas tall: ~6 images per viewport tall; at least 4 screens
-        const Hview   = stage.clientHeight || window.innerHeight;
-        const screens = Math.max(4, Math.ceil(metas.length / 6));
-        let canvasH   = Math.round(screens * Hview);
+        // Make it tall: ~6 images per screen; at least 4 screens
+        const screensBase = Math.max(4, Math.ceil(metas.length / 6));
+        let canvasH = Math.round(screensBase * Hview);
 
-        // Keep placed rects for collision checks
         const rects = [];
-        const figs  = [];
+        let zTop = 10;
 
-        // Utility: overlap check with gap
-        const overlap = (a, b, gap=GAP) => {
+        // place each image
+        metas.forEach((m, i) => {
+          // random width within range, biased larger
+          const w0 = clamp(rand(MIN_W, MAX_W) * SIZE_BIAS, MIN_W, MAX_W);
+          const h0 = Math.round(w0 * (m.aspect || 0.7));
+
+          // find a spot that doesn't overlap earlier rects
+          let x=0, y=0, tries=0, ok=false;
+          while (!ok && tries < 220) {
+            x = Math.round(rand(PAD, Math.max(PAD, W - w0 - PAD)));
+            y = Math.round(rand(GAP, Math.max(GAP, canvasH - h0 - GAP)));
+            const r = { x, y, w:w0, h:h0 };
+            ok = rects.every(prev => !overlap(r, prev, GAP));
+            if (!ok) {
+              tries++;
+              if (tries === 150) canvasH += Math.round(Hview * 0.5); // give more room if crowded
+            } else {
+              rects.push(r);
+            }
+          }
+
+          // DOM
+          const fig = document.createElement('figure');
+          fig.className = 'tile';
+          fig.style.left = x + 'px';
+          fig.style.top  = y + 'px';
+          fig.style.width = w0 + 'px';
+          fig.style.zIndex = (++zTop).toString();
+
+          // content
+          const img = document.createElement('img');
+          img.alt = `artefact ${i+1}`;
+          img.src = encodeURI(m.src);
+          fig.appendChild(img);
+
+          // handle
+          const handle = document.createElement('div');
+          handle.className = 'handle';
+          fig.appendChild(handle);
+
+          // store state on element
+          fig._state = {
+            aspect: m.aspect || 0.7,
+            minW: Math.max(160, MIN_W),  // do not go too tiny
+            maxW: Math.max(MIN_W + 40, Math.min(MAX_W, W * 0.95)), // safety
+          };
+
+          canvas.appendChild(fig);
+
+          enableDrag(fig);
+          enableResize(fig, handle);
+        });
+
+        canvas.style.height = canvasH + 'px';
+
+        // helpers
+        function overlap(a, b, gap){
           return !(
             a.x + a.w + gap <= b.x ||
             b.x + b.w + gap <= a.x ||
             a.y + a.h + gap <= b.y ||
             b.y + b.h + gap <= a.y
           );
-        };
+        }
 
-        // Try to place each image; if it can't fit after many tries, extend canvas height
-        metas.forEach((m, i) => {
-          // Random width, compute height from aspect
-          const w = clamp(rand(MIN_W, MAX_W), MIN_W, MAX_W);
-          const h = Math.round(w * (m.aspect || 0.7));
-          let tries = 0, placed = false, x=0, y=0;
+        function keepInBounds(el){
+          // keep tile within canvas bounds after drag/resize
+          const w = el.offsetWidth;
+          const h = el.offsetHeight;
+          const maxX = Math.max(0, (stage.clientWidth - PAD*2) - w - PAD);
+          const maxY = Math.max(0, (parseInt(canvas.style.height)||canvas.scrollHeight) - h - 8);
+          const x = clamp(parseFloat(el.style.left)||0, PAD, maxX);
+          const y = clamp(parseFloat(el.style.top)||0,  0,   maxY);
+          el.style.left = x + 'px';
+          el.style.top  = y + 'px';
+        }
 
-          while (!placed && tries < 200) {
-            x = Math.round(rand(PAD, Math.max(PAD, W - w - PAD)));
-            y = Math.round(rand(GAP, Math.max(GAP, canvasH - h - GAP)));
+        function enableDrag(el){
+          let pid=null, sx=0, sy=0, ox=0, oy=0;
+          el.addEventListener('pointerdown', (e) => {
+            if (e.target.classList.contains('handle')) return; // resize takes precedence
+            pid = e.pointerId;
+            el.setPointerCapture(pid);
+            sx = e.clientX; sy = e.clientY;
+            ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
+            el.classList.add('dragging');
+            el.style.zIndex = (++zTop).toString();
+            e.preventDefault();
+          });
+          el.addEventListener('pointermove', (e) => {
+            if (e.pointerId !== pid) return;
+            const nx = ox + (e.clientX - sx);
+            const ny = oy + (e.clientY - sy);
+            el.style.left = nx + 'px';
+            el.style.top  = ny + 'px';
+          });
+          const end = () => { pid=null; el.classList.remove('dragging'); keepInBounds(el); };
+          el.addEventListener('pointerup', end);
+          el.addEventListener('pointercancel', end);
+          el.addEventListener('lostpointercapture', end);
+        }
 
-            const r = { x, y, w, h };
-            let ok = true;
-            for (let j = 0; j < rects.length; j++) {
-              if (overlap(r, rects[j])) { ok = false; break; }
-            }
-            if (ok) {
-              rects.push(r);
-              placed = true;
-            } else {
-              tries++;
-              // If struggling a lot, grow the canvas a bit to give room
-              if (tries === 120 || tries === 180) canvasH += Math.round(Hview * 0.5);
-            }
-          }
-
-          // Create DOM
-          const fig = document.createElement('figure');
-          fig.className = 'tile';
-          fig.style.width = w + 'px';
-          fig.style.left  = x + 'px';
-          fig.style.top   = y + 'px';
-
-          const img = document.createElement('img');
-          img.alt = `artefact ${i+1}`;
-          img.src = encodeURI(m.src);
-          fig.appendChild(img);
-          figs.push(fig);
-        });
-
-        // Set final canvas height and append nodes
-        canvas.style.height = canvasH + 'px';
-        figs.forEach(f => canvas.appendChild(f));
+        function enableResize(el, handle){
+          let pid=null, sx=0, sy=0, startW=0, startH=0;
+          handle.addEventListener('pointerdown', (e) => {
+            pid = e.pointerId;
+            handle.setPointerCapture(pid);
+            sx = e.clientX; sy = e.clientY;
+            startW = el.offsetWidth; startH = el.offsetHeight;
+            el.style.zIndex = (++zTop).toString();
+            e.preventDefault();
+            e.stopPropagation();
+          });
+          handle.addEventListener('pointermove', (e) => {
+            if (e.pointerId !== pid) return;
+            const dx = e.clientX - sx;
+            // Resize with aspect lock using width as driver
+            const st = el._state;
+            let w = clamp(startW + dx, st.minW, st.maxW);
+            let h = Math.round(w * st.aspect);
+            el.style.width = w + 'px';
+            el.style.height = h + 'px'; // height will be dictated by image ratio, but set for bounds
+          });
+          const end = () => {
+            if (pid==null) return;
+            pid=null;
+            keepInBounds(el);
+          };
+          handle.addEventListener('pointerup', end);
+          handle.addEventListener('pointercancel', end);
+          handle.addEventListener('lostpointercapture', end);
+        }
       }
-
-      // Helpers
-      function rand(a, b) { return Math.random() * (b - a) + a; }
-      function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     }
   </script>
 </body>
