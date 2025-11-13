@@ -10,11 +10,14 @@
 <style>
   :root{
     --bg:#fff; --fg:#111;
-    --page-pad: 24px;       /* page padding */
-    --min-w: 260px;         /* min image width */
-    --max-w: 560px;         /* max image width */
-    --margin: 18px;         /* keep off the edges */
-    --tilt: 4deg;           /* max random rotation (±) */
+
+    /* scatter tuning */
+    --page-pad: 24px;   /* side padding */
+    --gap: 18px;        /* space between items (no overlap buffer) */
+    --min-w: 260px;     /* min image width on desktop */
+    --max-w: 560px;     /* max image width on desktop */
+
+    /* canvas height: JS uses a base "screens" multiplier; this is purely visual vars */
   }
 
   * { box-sizing: border-box; }
@@ -31,7 +34,6 @@
     grid-template-rows: auto 1fr;
     height: 100vh;
   }
-
   header {
     padding: 14px max(var(--page-pad), env(safe-area-inset-left)) 6px max(var(--page-pad), env(safe-area-inset-right));
     color: #777; letter-spacing: .25px;
@@ -41,27 +43,25 @@
   .stage {
     position: relative;
     overflow: auto;
-    padding-inline: var(--page-pad);
+    padding: 0 var(--page-pad);
+    background: #fff;
   }
 
-  /* Giant absolute-positioned canvas we scatter onto */
+  /* Giant relative canvas we scatter onto */
   #canvas {
     position: relative;
     width: 100%;
-    /* height is set by JS based on count & viewport */
+    /* height set by JS */
   }
 
-  /* Each figure is absolutely positioned */
+  /* Each figure is absolutely positioned, clean edges */
   .tile {
     position: absolute;
     margin: 0;
     user-select: none;
     -webkit-user-drag: none;
     touch-action: none;
-    transform-origin: center;
   }
-
-  /* Clean images, no borders/shadows/rounded */
   .tile img {
     display: block;
     width: 100%;
@@ -70,7 +70,7 @@
     background: #fff; /* in case of transparent PNGs */
   }
 
-  /* Mobile/tablet: show only the banner, hide desktop content */
+  /* Mobile/tablet: only show the banner */
   .mobile-only {
     display: none;
     position: fixed;
@@ -85,6 +85,14 @@
     .wrap { display: none; }
     .mobile-only { display: grid; }
   }
+
+  @media (max-width: 1200px) {
+    :root{ --min-w: 220px; --max-w: 460px; }
+  }
+  @media (max-width: 900px) {
+    /* not used (mobile shows banner), but keeps things reasonable for narrow desktop windows */
+    :root{ --min-w: 200px; --max-w: 400px; }
+  }
 </style>
 </head>
 
@@ -93,7 +101,7 @@
   <div class="wrap">
     <header>screenshots from the desktop, out of context</header>
     <main class="stage" id="stage">
-      <div id="canvas" aria-label="Random scatter of artefacts"></div>
+      <div id="canvas" aria-label="Scattered artefacts (no overlap)"></div>
     </main>
   </div>
 
@@ -101,7 +109,7 @@
   <div class="mobile-only">view on desktop</div>
 
   <script>
-    // Your images
+    // Image list
     const IMAGES = [
       "images/process/ADT vision.png",
       "images/process/Concentric.png",
@@ -122,7 +130,6 @@
       "images/process/ourresources.png",
       "images/process/opp.png",
       "images/process/Persona.jpg",
-      "images/process/ideally.jpg",
       "images/process/playground UI.png",
       "images/process/Product Partnerships Data Knowledge.png",
       "images/process/Reach.png",
@@ -133,101 +140,118 @@
       "images/process/types of slides.png",
       "images/process/vendorgrid.png",
       "images/process/whatwedonose.png",
+      "images/process/ideally.jpg",
       "images/process/gov.jpg",
       "images/process/XCapit.png"
     ];
 
-    // Skip building on touch (mobile banner shows instead)
+    // Skip building on touch devices (banner shows instead)
     const isTouch = matchMedia("(hover: none) and (pointer: coarse)").matches;
     if (!isTouch) {
-      const stage = document.getElementById('stage');
+      const stage  = document.getElementById('stage');
       const canvas = document.getElementById('canvas');
 
-      // CSS vars
-      const css = getComputedStyle(document.documentElement);
-      const MIN_W = parseInt(css.getPropertyValue('--min-w')) || 260;
-      const MAX_W = parseInt(css.getPropertyValue('--max-w')) || 560;
-      const MARGIN = parseInt(css.getPropertyValue('--margin')) || 18;
-      const TILT_DEG = parseFloat(css.getPropertyValue('--tilt')) || 4;
+      const css     = getComputedStyle(document.documentElement);
+      const GAP     = parseInt(css.getPropertyValue('--gap'))    || 18;
+      const MIN_W_0 = parseInt(css.getPropertyValue('--min-w'))  || 300;
+      const MAX_W_0 = parseInt(css.getPropertyValue('--max-w'))  || 700;
+      const PAD     = parseInt(css.getPropertyValue('--page-pad'))|| 24;
 
-      // Helpers
-      const rand = (a, b) => Math.random() * (b - a) + a;
-      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+      // Load all images first to get real aspect ratios
+      Promise.all(IMAGES.map(loadMeta)).then(metas => {
+        // Layout once (and on resize)
+        const doLayout = () => layoutScatter(metas);
+        let raf = null;
+        const schedule = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(doLayout); };
 
-      function layout() {
-        // Clear any previous content
-        canvas.innerHTML = "";
+        doLayout();
+        window.addEventListener('resize', schedule, { passive:true });
+      });
 
-        // Determine canvas height based on count & viewport:
-        // ~ 5–7 images per screen height. Make 4+ screens tall minimum.
-        const H = stage.clientHeight || window.innerHeight;
-        const screens = Math.max(4, Math.ceil(IMAGES.length / 6));
-        const canvasH = Math.round(screens * H);
-        canvas.style.height = canvasH + "px";
-
-        const W = stage.clientWidth;
-
-        // Place images
-        const placed = []; // keep rough positions to avoid extreme overlap
-        IMAGES.forEach((src, i) => {
-          const fig = document.createElement('figure');
-          fig.className = 'tile';
-          fig.dataset.i = i;
-
-          // random width in range (but don’t exceed viewport)
-          const maxAllowed = Math.min(MAX_W, Math.max(MIN_W, W - MARGIN * 2));
-          const w = Math.round(rand(MIN_W, maxAllowed));
-          fig.style.width = w + "px";
-
-          // tiny random rotation
-          const rot = rand(-TILT_DEG, TILT_DEG);
-          fig.style.transform = `rotate(${rot}deg)`;
-
-          const img = document.createElement('img');
-          img.loading = 'lazy';
+      function loadMeta(src) {
+        return new Promise((res) => {
+          const img = new Image();
+          img.loading = 'eager';
           img.decoding = 'async';
-          img.alt = `artefact ${i + 1}`;
+          img.onload = () => res({ src, w: img.naturalWidth, h: img.naturalHeight, aspect: img.naturalWidth ? img.naturalHeight / img.naturalWidth : 1 });
+          img.onerror = () => res({ src, w: 1000, h: 600, aspect: 0.6 }); // fallback guess
           img.src = encodeURI(src);
-          fig.appendChild(img);
-
-          // choose a random position; retry a few times to avoid heavy overlap
-          let x = 0, y = 0, tries = 0;
-          do {
-            x = Math.round(rand(MARGIN, Math.max(MARGIN, W - w - MARGIN)));
-            // height is unknown until load; approximate using width/aspect guess ~16:9..1:1
-            const approxH = w * rand(0.7, 1.1);
-            y = Math.round(rand(MARGIN, Math.max(MARGIN, canvasH - approxH - MARGIN)));
-            tries++;
-          } while (tooClose(x, y, w, 120) && tries < 12);
-
-          fig.style.left = x + "px";
-          fig.style.top  = y + "px";
-
-          canvas.appendChild(fig);
-          placed.push({ x, y, w });
         });
-
-        function tooClose(x, y, w, minDist) {
-          // very loose proximity check so items aren't stacked on exact same spot
-          for (const p of placed) {
-            const dx = (p.x + p.w/2) - (x + w/2);
-            const dy = (p.y) - (y);
-            const d2 = dx*dx + dy*dy;
-            if (d2 < (minDist*minDist)) return true;
-          }
-          return false;
-        }
       }
 
-      // initial layout
-      layout();
+      function layoutScatter(metas) {
+        canvas.innerHTML = "";
+        const W = stage.clientWidth - PAD * 2; // usable inner width
+        const MIN_W = Math.min(MIN_W_0, Math.max(160, W * 0.25));
+        const MAX_W = Math.max(MIN_W + 40, Math.min(MAX_W_0, W * 0.8));
 
-      // Relayout on resize (recomputes positions for the new width/height)
-      let rid = null;
-      window.addEventListener('resize', () => {
-        cancelAnimationFrame(rid);
-        rid = requestAnimationFrame(layout);
-      });
+        // Make the canvas tall: ~6 images per viewport tall; at least 4 screens
+        const Hview   = stage.clientHeight || window.innerHeight;
+        const screens = Math.max(4, Math.ceil(metas.length / 6));
+        let canvasH   = Math.round(screens * Hview);
+
+        // Keep placed rects for collision checks
+        const rects = [];
+        const figs  = [];
+
+        // Utility: overlap check with gap
+        const overlap = (a, b, gap=GAP) => {
+          return !(
+            a.x + a.w + gap <= b.x ||
+            b.x + b.w + gap <= a.x ||
+            a.y + a.h + gap <= b.y ||
+            b.y + b.h + gap <= a.y
+          );
+        };
+
+        // Try to place each image; if it can't fit after many tries, extend canvas height
+        metas.forEach((m, i) => {
+          // Random width, compute height from aspect
+          const w = clamp(rand(MIN_W, MAX_W), MIN_W, MAX_W);
+          const h = Math.round(w * (m.aspect || 0.7));
+          let tries = 0, placed = false, x=0, y=0;
+
+          while (!placed && tries < 200) {
+            x = Math.round(rand(PAD, Math.max(PAD, W - w - PAD)));
+            y = Math.round(rand(GAP, Math.max(GAP, canvasH - h - GAP)));
+
+            const r = { x, y, w, h };
+            let ok = true;
+            for (let j = 0; j < rects.length; j++) {
+              if (overlap(r, rects[j])) { ok = false; break; }
+            }
+            if (ok) {
+              rects.push(r);
+              placed = true;
+            } else {
+              tries++;
+              // If struggling a lot, grow the canvas a bit to give room
+              if (tries === 120 || tries === 180) canvasH += Math.round(Hview * 0.5);
+            }
+          }
+
+          // Create DOM
+          const fig = document.createElement('figure');
+          fig.className = 'tile';
+          fig.style.width = w + 'px';
+          fig.style.left  = x + 'px';
+          fig.style.top   = y + 'px';
+
+          const img = document.createElement('img');
+          img.alt = `artefact ${i+1}`;
+          img.src = encodeURI(m.src);
+          fig.appendChild(img);
+          figs.push(fig);
+        });
+
+        // Set final canvas height and append nodes
+        canvas.style.height = canvasH + 'px';
+        figs.forEach(f => canvas.appendChild(f));
+      }
+
+      // Helpers
+      function rand(a, b) { return Math.random() * (b - a) + a; }
+      function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     }
   </script>
 </body>
