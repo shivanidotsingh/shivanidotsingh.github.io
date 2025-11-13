@@ -10,124 +10,98 @@
 <style>
   :root{
     --bg:#fff; --fg:#111;
-
-    /* desktop gallery tuning (same feel as the working version) */
-    --peek-gap:60px;
-    --base-shift:380px;
-    --center-max-w:80vw;
-    --center-max-h:72vh;
-    --side-scale-1:.78;
-    --side-scale-2:.62;
-    --side-scale-3:.50;
-
-    --nav-size:44px;
-    --nav-edge:14px;
+    --page-pad: 24px;       /* page padding */
+    --min-w: 260px;         /* min image width */
+    --max-w: 560px;         /* max image width */
+    --margin: 18px;         /* keep off the edges */
+    --tilt: 4deg;           /* max random rotation (±) */
   }
 
-  *{ box-sizing:border-box }
-  html,body{ height:100% }
-  body{
-    margin:0; background:var(--bg); color:var(--fg);
-    font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
-    -webkit-text-size-adjust:100%;
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    -webkit-text-size-adjust: 100%;
   }
 
-  /* ===== Desktop wrapper (hidden on touch devices) ===== */
-  .wrap{ position:fixed; inset:0; display:grid; grid-template-rows:auto 1fr }
-  header{
-    padding:14px max(18px, env(safe-area-inset-left)) 10px max(18px, env(safe-area-inset-right));
-    color:#777; letter-spacing:.25px;
+  /* Desktop-only wrapper */
+  .wrap {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
   }
 
-  /* Stage */
-  .stage{
-    position:relative;
-    overflow:hidden;
-    perspective:1600px;
-    background:#fff;
-    touch-action:pan-y;
-    -webkit-user-select:none; user-select:none;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .track{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
-
-  /* Items: baseline centered; JS nudges horizontally only */
-  .item{
-    position:absolute; top:50%; left:50%;
-    transform-origin:center center;
-    transition:transform .35s cubic-bezier(.2,.6,0,1), opacity .35s ease;
-    user-select:none;
+  header {
+    padding: 14px max(var(--page-pad), env(safe-area-inset-left)) 6px max(var(--page-pad), env(safe-area-inset-right));
+    color: #777; letter-spacing: .25px;
   }
 
-  /* Card: clean edges (no radius/shadow/border) */
-  .card{
-    display:grid; place-items:center;
-    background:#fff;
-    max-width:var(--center-max-w);
-    max-height:var(--center-max-h);
-  }
-  .card img{
-    display:block; width:100%; height:100%; object-fit:contain;
-    -webkit-user-drag:none; user-drag:none; pointer-events:none;
+  /* Scrollable stage */
+  .stage {
+    position: relative;
+    overflow: auto;
+    padding-inline: var(--page-pad);
   }
 
-  .item.side { opacity:.8;  filter:saturate(.95); }
-  .item.far  { opacity:.5;  filter:saturate(.85) blur(.2px); }
-  .item.hidden { opacity:0; pointer-events:none; }
-
-  /* Side nav buttons */
-  .nav-btn{
-    position:absolute; top:50%; transform:translateY(-50%);
-    display:grid; place-items:center;
-    width:var(--nav-size); height:var(--nav-size); border-radius:50%;
-    background:rgba(255,255,255,.98); border:1px solid #e6e6e6;
-    box-shadow:0 6px 20px rgba(0,0,0,.07);
-    cursor:pointer; user-select:none;
-    transition:transform .08s ease, border-color .2s ease, background .2s ease;
-    z-index:2;
+  /* Giant absolute-positioned canvas we scatter onto */
+  #canvas {
+    position: relative;
+    width: 100%;
+    /* height is set by JS based on count & viewport */
   }
-  .nav-btn:hover { border-color:#d0d0d0; background:#fff; }
-  .nav-btn:active { transform:translateY(-50%) scale(.98); }
-  .nav-left  { left: calc(var(--nav-edge) + env(safe-area-inset-left)); }
-  .nav-right { right:calc(var(--nav-edge) + env(safe-area-inset-right)); }
-  .nav-btn svg{ width:18px; height:18px; }
 
-  /* ===== Mobile/tablet banner (show only on touch devices) ===== */
-  .mobile-only{
-    display:none;
-    position:fixed; inset:0; display:none;
-    place-items:center; text-align:center; padding:24px;
-    background:#fff; color:#111;
+  /* Each figure is absolutely positioned */
+  .tile {
+    position: absolute;
+    margin: 0;
+    user-select: none;
+    -webkit-user-drag: none;
+    touch-action: none;
+    transform-origin: center;
   }
-  @media (hover:none) and (pointer:coarse){
-    .wrap{ display:none; }         /* hide gallery */
-    .mobile-only{ display:grid; }  /* show message */
+
+  /* Clean images, no borders/shadows/rounded */
+  .tile img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    background: #fff; /* in case of transparent PNGs */
+  }
+
+  /* Mobile/tablet: show only the banner, hide desktop content */
+  .mobile-only {
+    display: none;
+    position: fixed;
+    inset: 0;
+    place-items: center;
+    text-align: center;
+    padding: 24px;
+    background: #fff;
+    color: #111;
+  }
+  @media (hover: none) and (pointer: coarse) {
+    .wrap { display: none; }
+    .mobile-only { display: grid; }
   }
 </style>
 </head>
 
 <body>
-  <!-- Desktop-only gallery -->
+  <!-- Desktop content -->
   <div class="wrap">
     <header>screenshots from the desktop, out of context</header>
-
     <main class="stage" id="stage">
-      <div class="track" id="track"></div>
-
-      <button class="nav-btn nav-left" id="prev" type="button" aria-label="Previous">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-btn nav-right" id="next" type="button" aria-label="Next">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      <div id="canvas" aria-label="Random scatter of artefacts"></div>
     </main>
   </div>
 
-  <!-- Touch devices: show only this -->
+  <!-- Mobile/tablet message -->
   <div class="mobile-only">view on desktop</div>
 
   <script>
-    /* === Original working gallery logic (desktop only) === */
+    // Your images
     const IMAGES = [
       "images/process/ADT vision.png",
       "images/process/Concentric.png",
@@ -148,6 +122,7 @@
       "images/process/ourresources.png",
       "images/process/opp.png",
       "images/process/Persona.jpg",
+      "images/process/ideally.jpg",
       "images/process/playground UI.png",
       "images/process/Product Partnerships Data Knowledge.png",
       "images/process/Reach.png",
@@ -162,144 +137,97 @@
       "images/process/XCapit.png"
     ];
 
-    // If on touch device, don't boot the gallery (CSS already hides it)
+    // Skip building on touch (mobile banner shows instead)
     const isTouch = matchMedia("(hover: none) and (pointer: coarse)").matches;
     if (!isTouch) {
-      const stageEl = document.getElementById('stage');
-      const track   = document.getElementById('track');
-      const nextBtn = document.getElementById('next');
-      const prevBtn = document.getElementById('prev');
+      const stage = document.getElementById('stage');
+      const canvas = document.getElementById('canvas');
 
-      const CTRL = {
-        baseShift: parseInt(getComputedStyle(document.documentElement).getPropertyValue('--base-shift')) || 380,
-        peekGap:   parseInt(getComputedStyle(document.documentElement).getPropertyValue('--peek-gap'))   || 60,
-        scale: [1,
-                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-1')) || .78,
-                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-2')) || .62,
-                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--side-scale-3')) || .50],
-      };
+      // CSS vars
+      const css = getComputedStyle(document.documentElement);
+      const MIN_W = parseInt(css.getPropertyValue('--min-w')) || 260;
+      const MAX_W = parseInt(css.getPropertyValue('--max-w')) || 560;
+      const MARGIN = parseInt(css.getPropertyValue('--margin')) || 18;
+      const TILT_DEG = parseFloat(css.getPropertyValue('--tilt')) || 4;
 
-      const N = IMAGES.length;
-      const mod = (n, m) => ((n % m) + m) % m;
-      const circDelta = (i, c) => { let d = i - c; return mod(d + N/2, N) - N/2; };
+      // Helpers
+      const rand = (a, b) => Math.random() * (b - a) + a;
+      const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
-      // Random start each load
-      let current = Math.floor(Math.random() * N);
-      const cards = [];
+      function layout() {
+        // Clear any previous content
+        canvas.innerHTML = "";
 
-      function createItem(src, i){
-        const item = document.createElement('figure');
-        item.className = 'item'; item.dataset.i = i;
+        // Determine canvas height based on count & viewport:
+        // ~ 5–7 images per screen height. Make 4+ screens tall minimum.
+        const H = stage.clientHeight || window.innerHeight;
+        const screens = Math.max(4, Math.ceil(IMAGES.length / 6));
+        const canvasH = Math.round(screens * H);
+        canvas.style.height = canvasH + "px";
 
-        const card = document.createElement('div');
-        card.className = 'card';
+        const W = stage.clientWidth;
 
-        const img = document.createElement('img');
-        img.alt = `image ${i+1}`;
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.src = encodeURI(src);
+        // Place images
+        const placed = []; // keep rough positions to avoid extreme overlap
+        IMAGES.forEach((src, i) => {
+          const fig = document.createElement('figure');
+          fig.className = 'tile';
+          fig.dataset.i = i;
 
-        card.appendChild(img);
-        item.appendChild(card);
+          // random width in range (but don’t exceed viewport)
+          const maxAllowed = Math.min(MAX_W, Math.max(MIN_W, W - MARGIN * 2));
+          const w = Math.round(rand(MIN_W, maxAllowed));
+          fig.style.width = w + "px";
 
-        // click a side card to focus it
-        item.addEventListener('click', () => goTo(i));
+          // tiny random rotation
+          const rot = rand(-TILT_DEG, TILT_DEG);
+          fig.style.transform = `rotate(${rot}deg)`;
 
-        track.appendChild(item);
-        cards.push(item);
-      }
+          const img = document.createElement('img');
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.alt = `artefact ${i + 1}`;
+          img.src = encodeURI(src);
+          fig.appendChild(img);
 
-      // Position items (supports fractional during drag)
-      function render(){
-        const { baseShift, peekGap, scale } = CTRL;
+          // choose a random position; retry a few times to avoid heavy overlap
+          let x = 0, y = 0, tries = 0;
+          do {
+            x = Math.round(rand(MARGIN, Math.max(MARGIN, W - w - MARGIN)));
+            // height is unknown until load; approximate using width/aspect guess ~16:9..1:1
+            const approxH = w * rand(0.7, 1.1);
+            y = Math.round(rand(MARGIN, Math.max(MARGIN, canvasH - approxH - MARGIN)));
+            tries++;
+          } while (tooClose(x, y, w, 120) && tries < 12);
 
-        cards.forEach((item, i) => {
-          const d  = circDelta(i, current);
-          const ad = Math.abs(d);
-          let s = 1, x = 0, rY = 0, z = 0, cls = '';
+          fig.style.left = x + "px";
+          fig.style.top  = y + "px";
 
-          if (ad < 0.5){
-            s = 1; x = 0; rY = 0; z = 0; cls = '';
-          } else if (ad < 1.5){
-            s = scale[1]; x = Math.sign(d) * (baseShift + peekGap * 0.0); rY = -Math.sign(d) * 12; z = -80; cls = 'side';
-          } else if (ad < 2.5){
-            s = scale[2]; x = Math.sign(d) * (baseShift*2 + peekGap * 0.5); rY = -Math.sign(d) * 16; z = -160; cls = 'far';
-          } else {
-            s = scale[3]; x = Math.sign(d) * (baseShift*2.7 + (ad-2)*90); rY = -Math.sign(d) * 18; z = -260; cls = 'hidden';
-          }
-
-          item.className = `item ${cls}`.trim();
-          // ✅ Baseline is top:50%/left:50% with translate(-50%,-50%); only offset horizontally by x
-          item.style.transform =
-            `translate3d(${x}px, 0px, ${z}px) translate(-50%, -50%) rotateY(${rY}deg) scale(${s})`;
+          canvas.appendChild(fig);
+          placed.push({ x, y, w });
         });
+
+        function tooClose(x, y, w, minDist) {
+          // very loose proximity check so items aren't stacked on exact same spot
+          for (const p of placed) {
+            const dx = (p.x + p.w/2) - (x + w/2);
+            const dy = (p.y) - (y);
+            const d2 = dx*dx + dy*dy;
+            if (d2 < (minDist*minDist)) return true;
+          }
+          return false;
+        }
       }
 
-      function goTo(i){
-        const target = mod(i, N);
-        const d = circDelta(target, current);
-        current = Math.round(current + d);
-        current = mod(current, N);
-        render();
-      }
-      const next = () => { current = mod(Math.round(current) + 1, N); render(); };
-      const prev = () => { current = mod(Math.round(current) - 1, N); render(); };
+      // initial layout
+      layout();
 
-      // Buttons / Keys / Wheel
-      nextBtn.addEventListener('click', (e) => { e.stopPropagation(); next(); });
-      prevBtn.addEventListener('click', (e) => { e.stopPropagation(); prev(); });
-
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight') next();
-        if (e.key === 'ArrowLeft')  prev();
+      // Relayout on resize (recomputes positions for the new width/height)
+      let rid = null;
+      window.addEventListener('resize', () => {
+        cancelAnimationFrame(rid);
+        rid = requestAnimationFrame(layout);
       });
-
-      let wheelLock = false;
-      stageEl.addEventListener('wheel', (e) => {
-        if (wheelLock) return;
-        wheelLock = true; setTimeout(()=>wheelLock=false, 160);
-        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-        if (delta > 0) next(); else if (delta < 0) prev();
-      }, { passive:true });
-
-      // Drag / swipe (desktop trackpads / mice)
-      (function dragNav(){
-        let down=false, sx=0, moved=0, start=0, pid=null;
-        const onDown = (e) => {
-          if (e.target.closest('.nav-btn')) return; // don't hijack arrow clicks
-          down=true; sx=e.clientX; moved=0; start=current; pid=e.pointerId;
-          stageEl.setPointerCapture && stageEl.setPointerCapture(pid);
-          if (e.cancelable) e.preventDefault();
-        };
-        const onMove = (e) => {
-          if (!down || (pid!=null && e.pointerId!==pid)) return;
-          if (e.cancelable) e.preventDefault();
-          moved = e.clientX - sx;
-          const shift = moved / (CTRL.baseShift * 1.25);
-          current = (start - shift + N) % N; // fractional circular
-          render();
-        };
-        const onUp = () => {
-          if (!down) return; down=false;
-          current = ((Math.round(current) % N) + N) % N;
-          render();
-        };
-        stageEl.addEventListener('pointerdown', onDown, {passive:false});
-        stageEl.addEventListener('pointermove', onMove, {passive:false});
-        stageEl.addEventListener('pointerup', onUp, {passive:false});
-        stageEl.addEventListener('pointercancel', onUp, {passive:false});
-        stageEl.addEventListener('mouseleave', onUp, {passive:false});
-      })();
-
-      // Build + initial render
-      IMAGES.forEach((src, i) => createItem(src, i));
-
-      const ro = new ResizeObserver(render);
-      ro.observe(stageEl);
-      window.addEventListener('resize', render);
-
-      render();
     }
   </script>
 </body>
