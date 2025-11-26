@@ -91,10 +91,11 @@
     text-align: center;
     padding: 24px; background: #fff; color: #111;
   }
-  @media (hover: none) and (pointer: coarse) {
-    .wrap { display: none; }
-    .mobile-only { display: grid; }
-  }
+@media (max-width: 767px) {
+  .wrap { display: none; }
+  .mobile-only { display: grid; }
+}
+
 </style>
 </head>
 
@@ -147,9 +148,10 @@
       "images/process/XCapit.png"
     ];
 
-    // Skip building on touch devices (banner shows instead)
-    const isTouch = matchMedia("(hover: none) and (pointer: coarse)").matches;
-    if (!isTouch) {
+    // Phone-only gate (iPad/tablets allowed)
+    const isPhone = matchMedia("(max-width: 767px)").matches;
+    if (!isPhone) {
+
       const stage  = document.getElementById('stage');
       const canvas = document.getElementById('canvas');
 
