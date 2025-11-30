@@ -357,7 +357,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     const { x, y } = pending;
     if (!last) { last = { x, y }; return; }
 
-    ctx.strokeStyle = hexToRgba(currentColor, 0.2);
+    ctx.strokeStyle = hexToRgba(currentColor, 0.5);
     ctx.lineWidth   = 18;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
