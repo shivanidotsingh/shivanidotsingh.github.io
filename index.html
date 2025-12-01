@@ -336,7 +336,8 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.lineCap = 'butt';
-    ctx.lineJoin = 'miter';
+    ctx.lineJoin = 'bevel';
+    ctx.miterLimit = 2;
     ctx.globalCompositeOperation = 'multiply';
   }
 
