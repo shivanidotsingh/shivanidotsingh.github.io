@@ -335,7 +335,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     canvas.height = Math.floor(h * dpr);
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.lineCap = 'butt';
+    ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
     ctx.globalCompositeOperation = 'multiply';
   }
