@@ -42,7 +42,7 @@ a {
 
 a[target="_blank"] { cursor: alias; }
 
-.blue-link { color: #0000EE; }
+.blue-link { color: #0000EE; text-decoration: none; }
 
 .note {  font-size: 0.8em; color: #808080; }
 
