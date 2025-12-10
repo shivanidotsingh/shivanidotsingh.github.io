@@ -151,24 +151,6 @@ a[target="_blank"] { cursor: alias; }
   padding: 0 5px;
 }
 
-/* ——— LOGO GRID ——— */
-.logo-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.logo-item {
-  display: flex;
-  justify-content: center;
-  text-align: center;
-}
-
-.logo-item img {
-  height: auto;
-}
-
-
 /* ——— HIGHLIGHT BUTTONS ——— */
 button.reveal {
   color: inherit;
