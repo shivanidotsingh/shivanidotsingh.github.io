@@ -2,7 +2,7 @@
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   font-weight: 400;
-  max-width: 540px;
+  max-width: 570px;
   margin: 0 auto;
   padding: 40px 40px 0 40px;
   line-height: 1.5;
@@ -12,12 +12,11 @@ body {
   position: relative;
 }
 :root {
-  --h1-size: clamp(16px, 2.5vw, 20px); /* adjust max/min to taste */
+  --h1-size: clamp(20px, 3vw, 30px); /* adjust max/min to taste */
 }
 
 h1 {
   font-size: var(--h1-size);
-  line-height: 1em;
   display: inline-block;
   vertical-align: middle;
   
