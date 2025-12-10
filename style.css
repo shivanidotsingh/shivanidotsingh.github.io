@@ -77,7 +77,6 @@ a[target="_blank"] { cursor: alias; }
 /* ——— END UPDATED PDF BLOCK ——— */
 
 .note { font-size: 0.8em; color: #808080; }
-.note span { display:block; font-weight: 600;}
 
 /* Image pairs and galleries */
 .image-pair-container {
@@ -96,24 +95,18 @@ a[target="_blank"] { cursor: alias; }
   margin-bottom: 0;
 }
 
-.gallery-grid {
+/* ===== UNIFIED GALLERY GRID ===== */
+
+/* Page-width gallery (inside the 640px-ish column) */
+.gallery-grid,
+.full-width-gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 15px;
   margin: 20px 0;
 }
-.gallery-grid img { height: 250px; object-fit: cover; }
 
-.gallery-grid-circles { grid-template-columns: repeat(8, 1fr); gap: 10px; }
-.gallery-grid-circles img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 50%;
-  margin: 0;
-  height: auto;
-}
-
+/* Full-bleed gallery (edge-to-edge like your old full-width-gallery) */
 .full-width-gallery {
   width: 100vw;
   margin-left: calc(50% - 50vw);
@@ -122,9 +115,47 @@ a[target="_blank"] { cursor: alias; }
   box-sizing: border-box;
   padding-left: 5px;
   padding-right: 5px;
-  grid-template-columns: repeat(3, 1fr);
 }
-.full-width-gallery img { width: 100%; height: 250px; object-fit: cover; }
+
+/* Shared image styling: uniform tiles, no stretching */
+.gallery-grid img,
+.full-width-gallery img {
+  width: 100%;
+  aspect-ratio: 4 / 3;   /* controls tile shape */
+  object-fit: cover;      /* fill tile, crop if needed */
+  display: block;
+  margin: 0;
+}
+
+/* Optional: circle gallery variant using the same grid */
+.gallery-grid-circles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 10px;
+  margin: 20px 0;
+}
+.gallery-grid-circles img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 50%;
+  margin: 0;
+}
+
+/* Full width images */
+.full-width-image {
+  width: 90vw;
+  margin-left: calc(50% - 45vw);
+  margin-right: calc(50% - 45vw);
+  max-width: 100vw;
+  border-radius: 0;
+  margin-top: 0;
+  margin-bottom: 2em;
+  display: block;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+}
 
 .action-items-grid {
   display: grid;
@@ -142,21 +173,6 @@ a[target="_blank"] { cursor: alias; }
   line-height: 1.4;
   display: flex;
   align-items: center;
-}
-
-/* Full width images */
-.full-width-image {
-  width: 90vw;
-  margin-left: calc(50% - 45vw);
-  margin-right: calc(50% - 45vw);
-  max-width: 100vw;
-  border-radius: 0;
-  margin-top: 0;
-  margin-bottom: 2em;
-  display: block;
-  box-sizing: border-box;
-  padding-left: 5px;
-  padding-right: 5px;
 }
 
 /* Logo grid */
