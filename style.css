@@ -12,7 +12,7 @@ body {
   position: relative;
 }
 :root {
-  --h1-size: clamp(32px, 4.5vw, 40px); /* adjust max/min to taste */
+  --h1-size: clamp(16px, 2.5vw, 20px); /* adjust max/min to taste */
 }
 
 h1 {
