@@ -151,26 +151,6 @@ a[target="_blank"] { cursor: alias; }
   padding: 0 5px;
 }
 
-
-/* ——— ACTION ITEMS ——— */
-.action-items-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 15px;
-  list-style: none;
-  padding: 0;
-}
-
-.action-items-grid li {
-  background: #f9f9f9;
-  padding: 10px 15px;
-  border-radius: 5px;
-  font-size: 0.95em;
-  line-height: 1.4;
-  display: flex;
-}
-
-
 /* ——— LOGO GRID ——— */
 .logo-grid {
   display: grid;
@@ -257,7 +237,4 @@ button.reveal:disabled::before {
 
   .pdf-container { height: 65vh; }
 
-  .action-items-grid {
-    grid-template-columns: 1fr;
-  }
 }
