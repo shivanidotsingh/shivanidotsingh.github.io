@@ -1,272 +1,249 @@
-/* Base styles */
+/* ——— BASE ——— */
+:root {
+  --h1-size: clamp(20px, 3vw, 30px);
+}
+
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
   font-weight: 400;
   max-width: 570px;
   margin: 0 auto;
-  padding: 40px 40px 0 40px;
+  padding: 40px 40px 0;
+  font-size: 1em;
   line-height: 1.5;
   color: #000;
-  background-color: #fff;
-  font-size: 1em;
-  position: relative;
-}
-:root {
-  --h1-size: clamp(20px, 3vw, 30px); /* adjust max/min to taste */
+  background: #fff;
 }
 
 h1 {
   font-size: var(--h1-size);
   display: inline-block;
-  vertical-align: middle;
-  
 }
-h2 { margin-top: 2em; border-top: 1px solid #111; padding-top: 1em; }
+
+h2 {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #111;
+}
 
 img {
-  max-width: 100%;
+  width: 100%;
   display: block;
   border-radius: 4px;
   margin-top: 1em;
-  margin-bottom: 0;
 }
-
-figure { margin: 20px 0; }
 
 a {
   color: inherit;
+  cursor: pointer;
   text-decoration: underline;
   text-underline-offset: 0.2em;
-  position: relative;
-  cursor: pointer;
 }
+
 a[target="_blank"] { cursor: alias; }
 
-.blue-link { color: #0000EE; text-decoration: none; }
+.blue-link { color: #0000EE; }
 
-/* Video and PDF wrappers */
-.video-container {
-  position: relative;
-  padding-bottom: 56.25%;
-  height: 0;
-  overflow: hidden;
-  max-width: 100%;
-  background: #000;
-  margin: 1.5em 0;
-}
-.video-container iframe {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
-}
+.note {  font-size: 0.8em; color: #808080; }
 
-/* ——— UPDATED PDF BLOCK ——— */
+
+/* ——— VIDEO + PDF ——— */
+.video-container,
 .pdf-container {
   position: relative;
+  overflow: hidden;
+  width: 100%;
+  margin: 1.5em 0;
+  border-radius: 4px;
+}
+
+.video-container {
+  padding-bottom: 56.25%;
+  background: #000;
+}
+
+.video-container iframe,
+.pdf-container iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.pdf-container {
   width: 100vw;
+  height: 75vh;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  max-width: 100vw;
-  height: 75vh;           /* desktop/tablet height */
-  overflow: hidden;
-  box-sizing: border-box;
-  border-radius: 4px;
   background: #f7f7f7;
 }
-.pdf-container iframe {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;
-}
-/* ——— END UPDATED PDF BLOCK ——— */
 
-.note { font-size: 0.8em; color: #808080; }
 
-/* Image pairs and galleries */
+/* ——— IMAGE PAIRS ——— */
 .image-pair-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  justify-content: center;
-  align-items: flex-start;
   margin-top: 1em;
 }
+
 .image-pair-container img {
   width: calc(50% - 10px);
   height: 350px;
   object-fit: cover;
-  margin-top: 0;
-  margin-bottom: 0;
 }
 
-/* ===== UNIFIED GALLERY GRID ===== */
 
-/* Page-width gallery (inside the 640px-ish column) */
+/* ——— UNIFIED GALLERY ——— */
+
+/* Default: page-width gallery */
 .gallery-grid,
-.full-width-gallery {
+.full-width-gallery,
+.gallery-grid-circles {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 15px;
   margin: 20px 0;
 }
 
-/* Full-bleed gallery (edge-to-edge like your old full-width-gallery) */
-.full-width-gallery {
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* bigger columns */
+/* Page-width gallery */
+.gallery-grid {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+}
 
+.gallery-grid img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+/* Full-width gallery (bleeds edge to edge) */
+.full-width-gallery {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  max-width: 100vw;
-  box-sizing: border-box;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-/* Shared image styling: uniform tiles, no stretching */
-.gallery-grid img,
-.full-width-gallery img {
-  width: 100%;
-  aspect-ratio: 4 / 3;   /* controls tile shape */
-  object-fit: cover;      /* fill tile, crop if needed */
-  display: block;
-  margin: 0;
+  padding: 0 5px;
 }
 
 .full-width-gallery img {
-  height: 320px;        /* ⟵ larger image tiles */
-  width: 100%;
+  height: 320px;
   object-fit: cover;
 }
 
-/* Optional: circle gallery variant using the same grid */
+/* Circular gallery */
 .gallery-grid-circles {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-  gap: 10px;
-  margin: 20px 0;
-}
-.gallery-grid-circles img {
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  object-fit: cover;
-  border-radius: 50%;
-  margin: 0;
 }
 
-/* Full width images */
+.gallery-grid-circles img {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+/* ——— FULL-WIDTH IMAGE BLOCK ——— */
 .full-width-image {
   width: 90vw;
   margin-left: calc(50% - 45vw);
   margin-right: calc(50% - 45vw);
-  max-width: 100vw;
-  border-radius: 0;
-  margin-top: 0;
   margin-bottom: 2em;
-  display: block;
-  box-sizing: border-box;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding: 0 5px;
 }
 
+
+/* ——— ACTION ITEMS ——— */
 .action-items-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  margin-top: 1em;
   list-style: none;
-  padding-left: 0;
+  padding: 0;
 }
+
 .action-items-grid li {
-  background-color: #f9f9f9;
+  background: #f9f9f9;
   padding: 10px 15px;
   border-radius: 5px;
   font-size: 0.95em;
   line-height: 1.4;
   display: flex;
-  align-items: top;
 }
 
-/* Logo grid */
+
+/* ——— LOGO GRID ——— */
 .logo-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  justify-content: center;
 }
+
 .logo-item {
   display: flex;
   justify-content: center;
-  align-items: center;
   text-align: center;
 }
+
 .logo-item img {
-  max-width: 100%;
   height: auto;
-  display: block;
-  margin: 0 auto;
 }
 
 
-/* Reveal buttons (new) */
+/* ——— HIGHLIGHT BUTTONS ——— */
 button.reveal {
   color: inherit;
   font: inherit;
   cursor: pointer;
   border: none;
-  outline: none;
-  padding: 0px;
-  background-color: transparent;
+  padding: 0;
+  background: transparent;
   position: relative;
-  z-index: 1;
-  vertical-align: baseline; 
-
+  vertical-align: baseline;
 }
 
 button.reveal::before {
-  content: '';
+  content: "";
   position: absolute;
-  bottom: 0.1em;             /* <— vertical placement within the line box */
-  left: 0em;              /* tiny overhang for a natural marker look */
-  right: 0em;
-  height: 1.25em;              /* <— thickness of the highlight */
+  bottom: 0.1em;
+  left: 0;
+  right: 0;
+  height: 1.25em;
   z-index: -1;
-  opacity: 1;
-
 }
 
-.highlight-blue::before   { background-color: #D6F5FF; }
-.highlight-yellow::before { background-color: #FDFB8C; }
-.highlight-pink::before   { background-color: #FFDDEE; }
-.highlight-green::before  { background-color: #DDFFAA; }
-.highlight-purple::before { background-color: #EEDDFF; }
+.highlight-blue::before   { background: #D6F5FF; }
+.highlight-yellow::before { background: #FDFB8C; }
+.highlight-pink::before   { background: #FFDDEE; }
+.highlight-green::before  { background: #DDFFAA; }
+.highlight-purple::before { background: #EEDDFF; }
 
-button.reveal:disabled { cursor: default; }
-button.reveal:disabled::before { opacity: 0; }
-
-span.inline-reveal {
-  display: none;
-  border-radius: 0px;
-  padding: 0;
-  /*transition: background-color 0.3s ease-in-out, padding 0.3s ease-in-out;*/
+button.reveal:disabled::before {
+  opacity: 0;
 }
-span.inline-reveal.visible { display: inline; }
 
-/* Dots container (mobile) */
+.inline-reveal { display: none; }
+.inline-reveal.visible { display: inline; }
+
+
+/* ——— MOBILE DOTS ——— */
 #random-dots-container {
   position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
   pointer-events: none;
   z-index: 999;
-  overflow: hidden;
 }
+
 .collected-dot {
-  display: inline-block;
   width: 16px;
   height: 16px;
   border-radius: 50%;
   position: absolute;
-  opacity: 1;
 }
 
-/* Responsive tweaks */
+
+/* ——— RESPONSIVE ——— */
 @media (max-width: 768px) {
   body { padding: 20px 15px; }
 
@@ -274,21 +251,13 @@ span.inline-reveal.visible { display: inline; }
   .pdf-container,
   .full-width-gallery {
     width: 100%;
-    margin-left: 0; margin-right: 0;
+    margin: 0;
     grid-template-columns: 1fr;
   }
 
-  /* Mobile PDF height */
   .pdf-container { height: 65vh; }
 
-  .image-pair-container {
-    flex-direction: column;
-    align-items: center;
+  .action-items-grid {
+    grid-template-columns: 1fr;
   }
-  .image-pair-container img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 1em;
-  }
-  .action-items-grid { grid-template-columns: 1fr; }
 }
