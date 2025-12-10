@@ -108,6 +108,8 @@ a[target="_blank"] { cursor: alias; }
 
 /* Full-bleed gallery (edge-to-edge like your old full-width-gallery) */
 .full-width-gallery {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* bigger columns */
+
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
@@ -125,6 +127,12 @@ a[target="_blank"] { cursor: alias; }
   object-fit: cover;      /* fill tile, crop if needed */
   display: block;
   margin: 0;
+}
+
+.full-width-gallery img {
+  height: 320px;        /* ⟵ larger image tiles */
+  width: 100%;
+  object-fit: cover;
 }
 
 /* Optional: circle gallery variant using the same grid */
