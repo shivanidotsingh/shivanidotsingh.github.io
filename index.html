@@ -339,8 +339,7 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.lineCap = 'butt';
     ctx.lineJoin = 'bevel';
-    ctx.miterLimit = 2;
-    ctx.globalCompositeOperation = 'multiply';
+
   }
 
   sizeCanvas();
@@ -361,11 +360,11 @@ body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
     if (!last) { last = { x, y }; return; }
 
     ctx.strokeStyle = hexToRgba(currentColor, 0.5);
-    ctx.lineWidth   = 18;
+    ctx.lineWidth   = 14;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
     ctx.strokeStyle = hexToRgba(currentColor, 0.1);
-    ctx.lineWidth   = 20;
+    ctx.lineWidth   = 16;
     ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(x, y); ctx.stroke();
 
     last = { x, y };
