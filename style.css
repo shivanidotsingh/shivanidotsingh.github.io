@@ -1,6 +1,6 @@
 /* ——— BASE ——— */
 :root {
-  --h1-size: clamp(20px, 3vw, 30px);
+  --h1-size: clamp(30px, 3vw, 32px);
 }
 
 body {
