@@ -16,15 +16,16 @@
 }
 
 body {
-  padding: 0 var(--page-gutter) !important; }
-.portfolio-section { padding: 40px var(--page-gutter); } 
+  
+   padding: 0 var(--page-gutter) !important; }
+  .portfolio-section { padding: 40px var(--page-gutter); } 
 
-    .h1-img {
+  .h1-img {
   height: var(--h1-size);  /* matches text h1 height */
   width: auto;             /* keep aspect ratio */
   display: inline-block;
   vertical-align: baseline; /* sits on the text baseline */
-}
+  }
     
 .intro-wrap {
   position: relative;
@@ -45,8 +46,8 @@ body {
 }
 
 
-    /* Hidden until opened */
-    #portfolio-appendix[hidden] { display: none; }
+/* Hidden until opened */
+#portfolio-appendix[hidden] { display: none; }
 
 .portfolio-section {
   width: 100vw;
@@ -58,12 +59,7 @@ body {
   padding: 40px 60px;
   box-sizing: border-box;
 }
-
-.portfolio-header {
-  max-width: 570px;
-  
-}
-
+    
 /* Centered list */
 .portfolio-grid {
   max-width: 570px;
@@ -91,21 +87,22 @@ body {
 }
 
 /* HOVER */
+/* HOVER – image aligned with its project row */
 .portfolio-section .project img {
   display: none;
   opacity: 0;
-  position: fixed;
-  top: 50%;
+  position: absolute;      /* ⟵ relative to each .project */
+  top: 50%;                /* vertically around the middle of that project */
   transform: translateY(-50%);
   width: auto;
   height: auto;
-  max-width: min(500px, 45vw);
-  max-height: 90vh;
+  max-width: min(360px, 45vw);
+  max-height: 70vh;
   object-fit: contain;
   border-radius: 0;
   box-shadow: none;
   margin: 0;
-  z-index: 9999;
+  z-index: 10;
   pointer-events: none;
 }
 
@@ -114,30 +111,17 @@ body {
   display: block;
   opacity: 1;
 }
-.portfolio-grid .project:hover .project-title a,
-.portfolio-grid .project .project-title a:focus-visible {
-  background-image: linear-gradient(var(--hl), var(--hl));
-  background-size: 100% 1.2em;   /* thickness */
-  background-position: 0 70%;    /* vertical placement */
-  background-repeat: no-repeat;
-  outline: none;
+
+/* Alternate sides: nudge just outside the text column */
+.portfolio-section .project:nth-child(odd) img {
+  left: 100%;
+  margin-left: 24px;
 }
 
-/* inline [x] close link */
-#portfolio-inline-close {
-  text-decoration: none;
-  color: #0000EE;     /* internet blue */
-  cursor: pointer;
-  display: none;      /* hidden by default */
+.portfolio-section .project:nth-child(even) img {
+  right: 100%;
+  margin-right: 24px;
 }
-#portfolio-inline-close:hover { text-decoration: underline; }
-body:has(#portfolio-appendix:not([hidden])) #portfolio-inline-close {
-  display: inline;
-}
-
-/* Alternate sides */
-.portfolio-section .project:nth-child(odd)  img { left: var(--page-gutter); }
-.portfolio-section .project:nth-child(even) img { right: var(--page-gutter); }
 
 @media (max-width: 700px) {
   .portfolio-section { padding: 20px var(--page-gutter); }
