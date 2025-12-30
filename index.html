@@ -37,15 +37,14 @@ body {
 }
 
 a {
-  color: inherit;              
+  color: inherit;
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
 
 a:hover {
-  color: #0000EE;              
+  color: #0000EE;
 }
-
 
 /* ---------- PORTFOLIO ---------- */
 
@@ -80,7 +79,7 @@ a:hover {
   margin: 0;
   font-size: var(--h1-size);
   font-weight: 600;
-  line-height: 125%;
+  line-height: 1.25;
 }
 
 .project-title a {
@@ -89,9 +88,8 @@ a:hover {
 }
 
 .project-title a:hover {
-  color: #0000EE;
+  opacity: 0.6;
 }
-
 
 /* ---------- PROJECT HOVER IMAGES ---------- */
 
@@ -139,6 +137,24 @@ body.portfolio-open #portfolio-inline-close {
   display: inline;
 }
 
+/* ---------- DOTS ---------- */
+
+#random-dots-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+}
+
+.collected-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  position: absolute;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
 /* ---------- FOOTER HOVER GIF ---------- */
 
 .hover-text img { display: none; }
@@ -164,25 +180,36 @@ body.portfolio-open #portfolio-inline-close {
     </h1>
 
     <p>
-      I'm a designer with an aptitude for analytical thinking and an appetite for play — drawing in the margins and following my curiosities on <a href="https://shivaniest.com/tagged/highlights" target="_blank">my blog</a>.
-      Currently shaping technology for social impact at UNICEF Innovation</a>, where I guide the digital
-      <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a> of solutions we invest in and facilitate
-      <a href="https://singh.work/processlab.html" target="_blank" style="text-decoration:none;">collaboration</a>. I think of my practice as a way to bridge intention and outcome.
+      I'm a designer with an aptitude for analytical thinking and an appetite for play — drawing in the margins and following my curiosities
+      <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a>.
+      Currently shaping tech for social impact at UNICEF Innovation, where I guide the digital
+      <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a>
+      of solutions we build and invest in, and facilitate 
+      <a href="https://singh.work/processlab.html" target="_blank">collaboration</a>.
+      I think of my practice as a way to bridge intention and outcome.
       <br><br>
-      Previously, I was a designer at Salesforce in San Francisco — see some of that work in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>.
-      With a background in graphic design, I've also worked in art direction, crafting <a href="https://singh.work/logofolio">brand identities</a> and visual communication.
+      Previously, I was a designer at <a href="https://www.salesforce.com" target="_blank">Salesforce</a> in San Francisco — see some of that work in this
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>.
+      With a background in graphic design, I've also worked in art direction, crafting
+      <a href="https://singh.work/logofolio">brand identities</a>, product packaging and visual communication in the past.
       <br><br>
-      Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities <a href="https://singh.work/fromness" target="_blank">here</a>. An alumnus of the National Institute of Design and California College of the Arts —
-      see more on my <a href="resume.html">resume</a>, or go through select <a href="#portfolio" id="portfolio-link">projects</a><a href="#" id="portfolio-inline-close">[x]</a>.
+      Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
+      <a href="https://singh.work/fromness" target="_blank">here</a>.
+      An alumnus of the National Institute of Design and California College of the Arts —
+      see more on my <a href="resume.html">resume</a>, or go through select
+      <a href="#portfolio" id="portfolio-link">projects</a><a href="#" id="portfolio-inline-close">[x]</a>.
     </p>
   </main>
 </section>
+
+<!-- DOTS -->
+<div id="random-dots-container"></div>
 
 <!-- PORTFOLIO -->
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
   <div class="portfolio-grid">
 
-    <!-- COMING SOON -->
+    <!-- COMING SOON (kept commented, untouched) -->
     <!--
     <div class="project">
       <img src="images/playground.png" alt="Coming Soon">
@@ -247,7 +274,7 @@ body.portfolio-open #portfolio-inline-close {
       <p>Defining exchange between influencers and venues.</p>
     </div>
 
-    <!-- AMBASSADOR -->
+    <!-- AMBASSADOR (kept commented) -->
     <!--
     <div class="project">
       <img src="images/88.png" alt="">
@@ -284,6 +311,8 @@ body.portfolio-open #portfolio-inline-close {
 </p>
 
 <script>
+/* ---------- PORTFOLIO OPEN / CLOSE ---------- */
+
 const portfolioLink = document.getElementById('portfolio-link');
 const portfolio = document.getElementById('portfolio-appendix');
 const closeLink = document.getElementById('portfolio-inline-close');
@@ -309,6 +338,39 @@ closeLink.addEventListener('click', e => {
   e.preventDefault();
   closePortfolio();
 });
+
+/* ---------- DOT SYSTEM ---------- */
+
+const DOT_COLORS = ["#FDFB8C","#D6F5FF","#FFDDEE","#DDFFAA","#EEDDFF"];
+const dotsContainer = document.getElementById("random-dots-container");
+let lastActivity = Date.now();
+
+function spawnDot() {
+  if (dotsContainer.children.length > 80) return;
+
+  const dot = document.createElement("span");
+  dot.className = "collected-dot";
+
+  dot.style.left = Math.random() * (window.innerWidth - 14) + "px";
+  dot.style.top = Math.random() * (window.innerHeight - 14) + "px";
+  dot.style.backgroundColor = DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)];
+
+  dot.addEventListener("pointerdown", () => dot.remove());
+  dotsContainer.appendChild(dot);
+}
+
+["pointermove","scroll","keydown","touchstart"].forEach(e =>
+  window.addEventListener(e, () => lastActivity = Date.now(), { passive:true })
+);
+
+document.addEventListener("click", e => {
+  const link = e.target.closest("a[target='_blank']");
+  if (link) spawnDot();
+});
+
+setInterval(() => {
+  if (Date.now() - lastActivity > 60_000) spawnDot();
+}, 60_000);
 </script>
 
 </body>
