@@ -182,7 +182,7 @@ body.portfolio-open #portfolio-inline-close {
     <p>
       I'm a designer with an aptitude for analytical thinking and an appetite for play — drawing in the margins and following my curiosities
       <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a>.
-      Currently shaping tech for social impact at UNICEF Innovation, where I guide the digital
+      Currently shaping technology for social impact at UNICEF Innovation, where I guide the digital
       <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a>
       of solutions we build and invest in, and facilitate 
       <a href="https://singh.work/processlab.html" target="_blank">collaboration</a>.
@@ -209,7 +209,7 @@ body.portfolio-open #portfolio-inline-close {
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
   <div class="portfolio-grid">
 
-    <!-- COMING SOON (kept commented, untouched) -->
+    <!-- COMING SOON -->
     <!--
     <div class="project">
       <img src="images/playground.png" alt="Coming Soon">
@@ -274,7 +274,7 @@ body.portfolio-open #portfolio-inline-close {
       <p>Defining exchange between influencers and venues.</p>
     </div>
 
-    <!-- AMBASSADOR (kept commented) -->
+    <!-- AMBASSADOR -->
     <!--
     <div class="project">
       <img src="images/88.png" alt="">
@@ -353,9 +353,12 @@ function spawnDot() {
 
   dot.style.left = Math.random() * (window.innerWidth - 14) + "px";
   dot.style.top = Math.random() * (window.innerHeight - 14) + "px";
-  dot.style.backgroundColor = DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)];
+  dot.style.backgroundColor =
+    DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)];
 
-  dot.addEventListener("pointerdown", () => dot.remove());
+  /* hover removes dot */
+  dot.addEventListener("mouseenter", () => dot.remove());
+
   dotsContainer.appendChild(dot);
 }
 
