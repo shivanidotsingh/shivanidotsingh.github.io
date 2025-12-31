@@ -4,7 +4,7 @@
 }
 
 body {
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  font-family: "Inter", -apple-system;
   font-weight: 400;
   max-width: 570px;
   margin: 0 auto;
