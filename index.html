@@ -91,7 +91,6 @@ a:hover {
   color: #0000EE;
 }
 
-
 /* ---------- PROJECT HOVER IMAGES ---------- */
 
 .portfolio-section .project img {
@@ -138,25 +137,6 @@ body.portfolio-open #portfolio-inline-close {
   display: inline;
 }
 
-/* ---------- DOTS ---------- */
-
-#random-dots-container {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 999;
-}
-
-.collected-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  position: absolute;
-  pointer-events: auto;
-  cursor: default;
-
-}
-
 /* ---------- FOOTER HOVER GIF ---------- */
 
 .hover-text img { display: none; }
@@ -182,15 +162,15 @@ body.portfolio-open #portfolio-inline-close {
     </h1>
 
     <p>
-      I'm a designer with an aptitude for analytical thinking and an appetite for <a href="https://shivaniest.com/tagged/highlights" target="_blank">play</a>.
-      Currently shaping technology for social impact at UNICEF Innovation, where I guide the digital
+      A designer with an aptitude for analytical thinking and an appetite for <a href="https://shivaniest.com/tagged/highlights" target="_blank">play</a>.
+      Currently shaping tech for social impact at UNICEF Innovation, where I guide the digital
       <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a>
       of solutions we build and invest in. I think of my practice as a way to bridge intention and outcome.
       <br><br>
       Previously, I was a designer at Salesforce in San Francisco — see some of that work in this
       <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>.
-      With a background in graphic design, I've also worked in visual communication — crafting
-      <a href="https://singh.work/logofolio">brand identities</a>, and advertisements.
+      With a background in graphic design, I've also worked in art direction — crafting
+      <a href="https://singh.work/logofolio">identities</a>, advertisements and visual communication for brands.
       <br><br>
       Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>.
@@ -200,9 +180,6 @@ body.portfolio-open #portfolio-inline-close {
     </p>
   </main>
 </section>
-
-<!-- DOTS -->
-<div id="random-dots-container"></div>
 
 <!-- PORTFOLIO -->
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
@@ -337,42 +314,6 @@ closeLink.addEventListener('click', e => {
   e.preventDefault();
   closePortfolio();
 });
-
-/* ---------- DOT SYSTEM ---------- */
-
-const DOT_COLORS = ["#FDFB8C","#D6F5FF","#FFDDEE","#DDFFAA","#EEDDFF"];
-const dotsContainer = document.getElementById("random-dots-container");
-let lastActivity = Date.now();
-
-function spawnDot() {
-  if (dotsContainer.children.length > 80) return;
-
-  const dot = document.createElement("span");
-  dot.className = "collected-dot";
-
-  dot.style.left = Math.random() * (window.innerWidth - 14) + "px";
-  dot.style.top = Math.random() * (window.innerHeight - 14) + "px";
-  dot.style.backgroundColor =
-    DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)];
-
-  /* hover removes dot */
-  dot.addEventListener("mouseenter", () => dot.remove());
-
-  dotsContainer.appendChild(dot);
-}
-
-["pointermove","scroll","keydown","touchstart"].forEach(e =>
-  window.addEventListener(e, () => lastActivity = Date.now(), { passive:true })
-);
-
-document.addEventListener("click", e => {
-  const link = e.target.closest("a[target='_blank']");
-  if (link) spawnDot();
-});
-
-setInterval(() => {
-  if (Date.now() - lastActivity > 60_000) spawnDot();
-}, 60_000);
 </script>
 
 </body>
