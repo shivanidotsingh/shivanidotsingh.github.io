@@ -139,30 +139,34 @@ body.portfolio-open #portfolio-inline-close {
 
 /* ---------- FOOTER HOVER GIF ---------- */
 
-.hover-text img {
-  display: none;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 300px;
-  max-width: 80vw;
-  height: auto;
-  z-index: -1;
-  pointer-events: none;
-}
-.hover-text:hover img {
-  display: block;
-}
+.hover-text img { display: none; }
 
-/* move ☺ to bottom-right */
-.note .hover-text{
+.hover-text{
   position: fixed;
   right: 12px;
   bottom: 12px;
   display: inline-block;
-  z-index: 5;
 }
 
+.hover-text:hover img{
+  display: block;
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  width: 300px;  
+  height: auto;
+  z-index: -1;
+  pointer-events: none;
+}
+    
+.hover-text:hover .bubble{
+  display:block;
+  z-index: 1;
+  right: calc(12px + 300px - 100px - 20px);
+  bottom: calc(12px + 300px - 100px - 20px);
+  image-rendering: auto;
+}
+    
   </style>
 </head>
 
@@ -297,8 +301,9 @@ body.portfolio-open #portfolio-inline-close {
 <hr style="border:none;border-top:1px solid black;margin:1em 0;">
 <p class="note">
   Built on github.com • Updated on Dec 30, 2025
-  <span class="hover-text"> ☺
+  <span class="hover-text"> 👋🏽
     <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
+    <img class="bubble" src="images/hello.png" alt="hi">
   </span>
 </p>
 
