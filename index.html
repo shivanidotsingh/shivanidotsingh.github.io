@@ -139,14 +139,19 @@ body.portfolio-open #portfolio-inline-close {
 
 /* ---------- FOOTER HOVER GIF ---------- */
 
-.hover-text img { display: none; }
+.hover-text img {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 300px;
+  max-width: 80vw;
+  height: auto;
+  z-index: -1;
+  pointer-events: none;
+}
 .hover-text:hover img {
-  width: 250px;
-  position: fixed;
-  inset: 0;
-  margin: auto;
   display: block;
-  z-index: 3;
 }
 
 /* move ☺ to bottom-right */
@@ -156,7 +161,6 @@ body.portfolio-open #portfolio-inline-close {
   bottom: 12px;
   display: inline-block;
   z-index: 5;
-  line-height: 1;
 }
 
   </style>
