@@ -145,11 +145,57 @@ body.portfolio-open #portfolio-inline-close {
   display: block;
   z-index: 3;
 }
-.note .hover-text { display: inline-block; }
+
+/* move ☺ to bottom-right */
+.note .hover-text{
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  display: inline-block;
+  z-index: 5;
+  line-height: 1;
+}
+
+/* ---------- DRAW MODE UI + CANVAS ---------- */
+
+#draw-toggle{
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 1002;
+  font-size: 12px;
+  line-height: 1;
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid #000;
+  color: #000;
+  cursor: pointer;
+  user-select: none;
+}
+
+#draw-canvas{
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1001;         /* above page, below toggle */
+  pointer-events: none;  /* enabled only in draw mode via JS */
+}
+
+/* when drawing is enabled, show crosshair cursor */
+body.is-drawing{
+  cursor: crosshair;
+}
+
   </style>
 </head>
 
 <body>
+
+  <!-- draw toggle + canvas -->
+  <div id="draw-toggle" role="button" tabindex="0" aria-pressed="false">draw</div>
+  <canvas id="draw-canvas" aria-hidden="true"></canvas>
 
 <!-- INTRO -->
 <section class="intro-wrap">
@@ -159,7 +205,7 @@ body.portfolio-open #portfolio-inline-close {
     </h1>
 
     <p>
-      A designer with an aptitude for analytical thinking and an appetite for <a href="https://shivaniest.com/tagged/highlights" target="_blank">play</a><i class="fa-solid fa-arrow-up-right-from-square"></i>.
+      A designer with an aptitude for analytical thinking and an appetite for <a href="https://shivaniest.com/tagged/highlights" target="_blank">play</a>.
       Currently shaping tech for social impact at UNICEF Innovation, where I guide the digital
       <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">product design</a>
       of solutions we build and invest in. I think of my practice as a way to bridge intention and outcome.
@@ -172,7 +218,7 @@ body.portfolio-open #portfolio-inline-close {
       Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>.
       An alumnus of the National Institute of Design and California College of the Arts —
-      see more on my <a href="resume.html">resume</a>, or go through select
+      see more on my <a href="resume.html">C.V.</a>, or go through select
       <a href="#portfolio" id="portfolio-link">projects</a><a href="#" id="portfolio-inline-close">[x]</a>.
     </p>
   </main>
@@ -278,7 +324,7 @@ body.portfolio-open #portfolio-inline-close {
 <hr style="border:none;border-top:1px solid black;margin:1em 0;">
 <p class="note">
   Built on github.com • Updated on Dec 30, 2025
-  <span class="hover-text"> :)
+  <span class="hover-text"> ☺
     <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
   </span>
 </p>
@@ -310,6 +356,106 @@ portfolioLink.addEventListener('click', e => {
 closeLink.addEventListener('click', e => {
   e.preventDefault();
   closePortfolio();
+});
+
+/* ---------- DRAW MODE (internet blue, thick, sharp) ---------- */
+
+const drawToggle = document.getElementById('draw-toggle');
+const drawCanvas = document.getElementById('draw-canvas');
+const dctx = drawCanvas.getContext('2d');
+
+let drawMode = false;
+let isDown = false;
+let lastPt = null;
+
+function sizeDrawCanvas(){
+  const dpr = Math.max(1, window.devicePixelRatio || 1);
+  drawCanvas.style.width = window.innerWidth + 'px';
+  drawCanvas.style.height = window.innerHeight + 'px';
+  drawCanvas.width = Math.floor(window.innerWidth * dpr);
+  drawCanvas.height = Math.floor(window.innerHeight * dpr);
+  dctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  // sharp-ish pen: no transparency, thick, square-ish ends
+  dctx.strokeStyle = '#0000EE';
+  dctx.lineWidth = 14;
+  dctx.lineCap = 'butt';
+  dctx.lineJoin = 'miter';
+  dctx.miterLimit = 2;
+}
+sizeDrawCanvas();
+window.addEventListener('resize', sizeDrawCanvas);
+
+function setDrawMode(on){
+  drawMode = on;
+
+  drawToggle.textContent = on ? 'erase' : 'draw';
+  drawToggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+
+  // allow drawing only in draw mode
+  drawCanvas.style.pointerEvents = on ? 'auto' : 'none';
+  document.body.classList.toggle('is-drawing', on);
+
+  // stop any in-progress stroke when toggling off
+  if (!on) {
+    isDown = false;
+    lastPt = null;
+  }
+}
+
+function clearDrawing(){
+  dctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+}
+
+function toggleDraw(){
+  if (!drawMode) {
+    setDrawMode(true);
+  } else {
+    // "erase" means: clear + exit draw mode
+    clearDrawing();
+    setDrawMode(false);
+  }
+}
+
+drawToggle.addEventListener('click', toggleDraw);
+drawToggle.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault();
+    toggleDraw();
+  }
+});
+
+// Draw with pointer events
+drawCanvas.addEventListener('pointerdown', (e) => {
+  if (!drawMode) return;
+  isDown = true;
+  drawCanvas.setPointerCapture(e.pointerId);
+  lastPt = { x: e.clientX, y: e.clientY };
+});
+
+drawCanvas.addEventListener('pointermove', (e) => {
+  if (!drawMode || !isDown || !lastPt) return;
+  const x = e.clientX, y = e.clientY;
+
+  dctx.beginPath();
+  dctx.moveTo(lastPt.x, lastPt.y);
+  dctx.lineTo(x, y);
+  dctx.stroke();
+
+  lastPt = { x, y };
+});
+
+function endStroke(){
+  isDown = false;
+  lastPt = null;
+}
+drawCanvas.addEventListener('pointerup', endStroke);
+drawCanvas.addEventListener('pointercancel', endStroke);
+drawCanvas.addEventListener('pointerleave', endStroke);
+
+// Escape exits draw mode without clearing
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && drawMode) setDrawMode(false);
 });
 </script>
 
