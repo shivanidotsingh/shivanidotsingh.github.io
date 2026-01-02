@@ -150,9 +150,9 @@ body.portfolio-open #portfolio-inline-close {
 
 .hover-text:hover img{
   display: block;
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
   width: 300px;  
   height: auto;
   z-index: -1;
@@ -160,12 +160,12 @@ body.portfolio-open #portfolio-inline-close {
 }
     
 .hover-text:hover .bubble{
-  display:block;
+  display: block;
   z-index: 1;
   width: 100px;  
   height: auto;
-  right: calc(12px + 300px - 100px - 20px);
-  bottom: calc(12px + 300px - 100px - 20px);
+  right: calc(300px - 100px - 40px);
+  bottom: calc(300px - 100px - 50px);
   image-rendering: auto;
 }
     
