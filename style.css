@@ -151,41 +151,6 @@ a[target="_blank"] { cursor: alias; }
   padding: 0 5px;
 }
 
-/* ——— HIGHLIGHT BUTTONS ——— */
-button.reveal {
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-  border: none;
-  padding: 0;
-  background: transparent;
-  position: relative;
-  vertical-align: baseline;
-}
-
-button.reveal::before {
-  content: "";
-  position: absolute;
-  bottom: 0.1em;
-  left: 0;
-  right: 0;
-  height: 1.25em;
-  z-index: -1;
-}
-
-.highlight-blue::before   { background: #D6F5FF; }
-.highlight-yellow::before { background: #FDFB8C; }
-.highlight-pink::before   { background: #FFDDEE; }
-.highlight-green::before  { background: #DDFFAA; }
-.highlight-purple::before { background: #EEDDFF; }
-
-button.reveal:disabled::before {
-  opacity: 0;
-}
-
-.inline-reveal { display: none; }
-.inline-reveal.visible { display: inline; }
-
 
 /* ——— MOBILE DOTS ——— */
 #random-dots-container {
@@ -207,7 +172,7 @@ button.reveal:disabled::before {
 
 /* ——— RESPONSIVE ——— */
 @media (max-width: 768px) {
-  body { padding: 20px 15px; }
+  
 
   .full-width-image,
   .pdf-container,
