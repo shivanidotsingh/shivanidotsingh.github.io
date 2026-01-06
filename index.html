@@ -175,7 +175,7 @@ a:hover {
     <p>
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at UNICEF Innovation, where I facilitate collaboration and offer 
       <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">design guidance</a>
-      for the solutions we build and invest in. I think of my practice as a way to bridge intention and outcome. Find me drawing in the margins and following my curiosities on <a href="https://shivaniest.com/tagged/highlights" target="_blank">my blog</a>.
+      for solutions we build and invest in. I think of my practice as a way to bridge intention and outcome. Find me drawing in the margins and following my curiosities on <a href="https://shivaniest.com/tagged/highlights" target="_blank">my blog</a>.
       <br><br>
       Previously, I was a designer at Salesforce in San Francisco — see some of that work in this
       <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>.
@@ -186,7 +186,7 @@ a:hover {
       <a href="https://singh.work/fromness" target="_blank">here</a>.
       An alumnus of the National Institute of Design and California College of the Arts —
       see more on my <a href="resume.html">C.V.</a>, or go through select
-      <a href="#portfolio" id="portfolio-link">projects</a> <a href="#" id="portfolio-toggle">↓</a>.
+      <a href="#portfolio" id="portfolio-link">projects</a> <a href="#" style="text-decoration:none;" id="portfolio-toggle">▾</a>.
     </p>
   </main>
 </section>
@@ -305,14 +305,14 @@ const toggle = document.getElementById('portfolio-toggle');
 function openPortfolio() {
   portfolio.hidden = false;
   document.body.classList.add('portfolio-open');
-  toggle.textContent = '↑';
+  toggle.textContent = '▴';
   portfolio.scrollIntoView({ behavior: 'smooth' });
 }
 
 function closePortfolio() {
   portfolio.hidden = true;
   document.body.classList.remove('portfolio-open');
-  toggle.textContent = '↓';
+  toggle.textContent = '▾';
   document.getElementById('page').scrollIntoView({ behavior: 'smooth' });
 }
 
