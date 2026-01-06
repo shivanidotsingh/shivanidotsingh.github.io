@@ -123,18 +123,6 @@ a:hover {
 }
 
 
-/* ---------- Toggle portfolio ---------- */
-
-#portfolio-toggle {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-  cursor: pointer;
-}
-#portfolio-toggle:hover {
-  color: #0000EE;
-}
-
 /* ---------- FOOTER HOVER GIF ---------- */
 
 .hover-text img { display: none; }
@@ -186,7 +174,7 @@ a:hover {
       <a href="https://singh.work/fromness" target="_blank">here</a>.
       An alumnus of the National Institute of Design and California College of the Arts —
       see more on my <a href="resume.html">C.V.</a>, or go through select
-      <a href="#portfolio" id="portfolio-link">projects</a> <a href="#" style="text-decoration:none;" id="portfolio-toggle"> ▾</a>
+      <a href="#portfolio" id="portfolio-link">projects</a>.
     </p>
   </main>
 </section>
@@ -300,36 +288,18 @@ a:hover {
 <script>
 const portfolioLink = document.getElementById('portfolio-link');
 const portfolio = document.getElementById('portfolio-appendix');
-const toggle = document.getElementById('portfolio-toggle');
 
 function openPortfolio() {
   portfolio.hidden = false;
-  document.body.classList.add('portfolio-open');
-  toggle.textContent = ' ▴';
   portfolio.scrollIntoView({ behavior: 'smooth' });
-}
-
-function closePortfolio() {
-  portfolio.hidden = true;
-  document.body.classList.remove('portfolio-open');
-  toggle.textContent = ' ▾';
-  document.getElementById('page').scrollIntoView({ behavior: 'smooth' });
 }
 
 portfolioLink.addEventListener('click', e => {
   e.preventDefault();
   openPortfolio();
 });
-
-toggle.addEventListener('click', e => {
-  e.preventDefault();
-  if (portfolio.hidden) {
-    openPortfolio();
-  } else {
-    closePortfolio();
-  }
-});
 </script>
+
 
 
 </body>
