@@ -123,18 +123,16 @@ a:hover {
 }
 
 
-/* ---------- INLINE CLOSE ---------- */
+/* ---------- Toggle portfolio ---------- */
 
-#portfolio-inline-close {
-  color: #0000EE;
-  text-decoration: none;
+#portfolio-toggle {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
   cursor: pointer;
-  display: none;
 }
-#portfolio-inline-close:hover { text-decoration: underline; }
-
-body.portfolio-open #portfolio-inline-close {
-  display: inline;
+#portfolio-toggle:hover {
+  color: #0000EE;
 }
 
 /* ---------- FOOTER HOVER GIF ---------- */
@@ -188,7 +186,7 @@ body.portfolio-open #portfolio-inline-close {
       <a href="https://singh.work/fromness" target="_blank">here</a>.
       An alumnus of the National Institute of Design and California College of the Arts —
       see more on my <a href="resume.html">C.V.</a>, or go through select
-      <a href="#portfolio" id="portfolio-link">projects</a> <a href="#" id="portfolio-inline-close">[x]</a>.
+      <a href="#portfolio" id="portfolio-link">projects</a> <a href="#" id="portfolio-toggle">↓</a>.
     </p>
   </main>
 </section>
@@ -300,21 +298,21 @@ body.portfolio-open #portfolio-inline-close {
   </span>
   
 <script>
-/* ---------- PORTFOLIO OPEN / CLOSE ---------- */
-
 const portfolioLink = document.getElementById('portfolio-link');
 const portfolio = document.getElementById('portfolio-appendix');
-const closeLink = document.getElementById('portfolio-inline-close');
+const toggle = document.getElementById('portfolio-toggle');
 
 function openPortfolio() {
   portfolio.hidden = false;
   document.body.classList.add('portfolio-open');
+  toggle.textContent = '↑';
   portfolio.scrollIntoView({ behavior: 'smooth' });
 }
 
 function closePortfolio() {
   portfolio.hidden = true;
   document.body.classList.remove('portfolio-open');
+  toggle.textContent = '↓';
   document.getElementById('page').scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -323,12 +321,16 @@ portfolioLink.addEventListener('click', e => {
   openPortfolio();
 });
 
-closeLink.addEventListener('click', e => {
+toggle.addEventListener('click', e => {
   e.preventDefault();
-  closePortfolio();
+  if (portfolio.hidden) {
+    openPortfolio();
+  } else {
+    closePortfolio();
+  }
 });
-
 </script>
+
 
 </body>
 </html>
