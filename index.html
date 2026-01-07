@@ -157,22 +157,23 @@ a[target="_blank"] { cursor: alias; }
 
 /* ---------- FLOWER CURSOR + STAMPS ---------- */
 body { 
-  cursor: url("images/cursor.png") 16 16, auto; 
+  cursor: url("images/cursor.png") 16 16, auto !important; 
   position: relative; 
 }
 
 * {
-  cursor: url("images/cursor.png") 16 16, auto;
+  cursor: url("images/cursor.png") 16 16, auto !important;
 }
 
 #flower-stamps {
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
   width: 100vw;
-  height: 100%;
+  height: 100vh;
   pointer-events: none;
   z-index: 0;
+  overflow: visible;
 }
 
 .intro-wrap {
@@ -181,7 +182,7 @@ body {
 }
 
 .flower-stamp {
-  position: absolute;
+  position: fixed;
   width: 32px;
   height: 32px;
   transform: translate(-50%, -50%);
@@ -356,8 +357,11 @@ const flowerSvg = `<svg width="32" height="32" viewBox="0 0 250 250" fill="none"
 const flowerUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(flowerSvg);
 
 document.addEventListener("click", (e) => {
-  // Only stamp in intro section
-  if (!introWrap.contains(e.target)) return;
+  // Only stamp if clicking within intro section's vertical bounds
+  const introRect = introWrap.getBoundingClientRect();
+  const clickY = e.clientY;
+  
+  if (clickY < introRect.top || clickY > introRect.bottom) return;
   
   // Don't stamp when clicking interactive elements
   if (e.target.closest("a, button, input, textarea, select, label")) return;
@@ -369,10 +373,9 @@ document.addEventListener("click", (e) => {
   img.alt = "";
   img.src = flowerUrl;
 
-  // Get click position relative to intro section
-  const rect = introWrap.getBoundingClientRect();
-  img.style.left = (e.clientX - rect.left + introWrap.offsetLeft) + "px";
-  img.style.top = (e.clientY - rect.top + introWrap.offsetTop) + "px";
+  // Position at exact cursor location
+  img.style.left = e.clientX + "px";
+  img.style.top = e.clientY + "px";
 
   stamps.appendChild(img);
 
