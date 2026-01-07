@@ -161,18 +161,39 @@ body {
   position: relative; 
 }
 
+* {
+  cursor: url("images/cursor.png") 16 16, auto;
+}
+
+button, input, textarea, select, label {
+  cursor: url("images/cursor.png") 16 16, pointer;
+}
+
+.portfolio-section,
+.portfolio-section * {
+  cursor: default !important;
+}
+
+.portfolio-section a {
+  cursor: pointer !important;
+}
+
+.portfolio-section a[target="_blank"] {
+  cursor: alias !important;
+}
+
 #flower-stamps {
-  position: fixed;
+  position: absolute;
   left: 0;
   top: 0;
   width: 100%;
-  height: 100%;
+  height: 0;
   pointer-events: none;
-  z-index: 9999;
+  z-index: -1;
 }
 
 .flower-stamp {
-  position: fixed;
+  position: absolute;
   width: 32px;
   height: 32px;
   transform: translate(-50%, -50%);
@@ -345,6 +366,24 @@ const stamps = document.getElementById("flower-stamps");
 const flowerSvg = `<svg width="32" height="32" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M157.5 122.762C268.083 199.569 205.822 261.83 129.015 151.247C52.2084 261.83 -10.052 199.569 100.53 122.762C-10.052 45.9554 52.2084 -16.3049 129.015 94.2772C205.822 -16.3049 268.083 45.9554 157.5 122.762Z" fill="#0000FF"/><path d="M145.142 145.142C169.025 277.646 80.9753 277.646 104.858 145.142C-27.6462 169.025 -27.6462 80.9753 104.858 104.858C80.9753 -27.6461 169.025 -27.6461 145.142 104.858C277.646 80.9753 277.646 169.025 145.142 145.142Z" fill="#0000FF"/></svg>`;
 const flowerUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(flowerSvg);
 
+function syncStampLayerSize() {
+  if (!stamps) return;
+  const doc = document.documentElement;
+  const h = Math.max(doc.scrollHeight, document.body.scrollHeight, window.innerHeight);
+  stamps.style.height = h + "px";
+}
+
+syncStampLayerSize();
+window.addEventListener("resize", syncStampLayerSize);
+
+/* portfolio open changes page height, so re-sync after it expands */
+const _openPortfolio = openPortfolio;
+openPortfolio = function () {
+  _openPortfolio();
+  requestAnimationFrame(syncStampLayerSize);
+  setTimeout(syncStampLayerSize, 50);
+};
+
 document.addEventListener("click", (e) => {
   // Don't stamp when clicking interactive elements
   if (e.target.closest("a, button, input, textarea, select, label")) return;
@@ -356,15 +395,22 @@ document.addEventListener("click", (e) => {
   img.alt = "";
   img.src = flowerUrl;
 
-  // Use client coordinates for fixed positioning
-  img.style.left = e.clientX + "px";
-  img.style.top = e.clientY + "px";
+  // Use page coordinates so stamps stay with page scroll
+  img.style.left = e.pageX + "px";
+  img.style.top = e.pageY + "px";
 
   stamps.appendChild(img);
 
   // Limit number of stamps to avoid performance issues
   if (stamps.children.length > 400) {
     stamps.removeChild(stamps.firstElementChild);
+  }
+});
+
+// Clear all flowers when ESC is pressed
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && stamps) {
+    stamps.innerHTML = "";
   }
 });
 </script>
