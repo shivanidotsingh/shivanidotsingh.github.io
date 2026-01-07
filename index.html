@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>shivani's website</title>
 
-  <!-- favicon -->
   <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="style.css">
 
@@ -42,6 +41,8 @@ a {
 a:hover {
   color: #0000EE;
 }
+
+a[target="_blank"] { cursor: alias; }
 
 /* ---------- PORTFOLIO ---------- */
 
@@ -118,10 +119,17 @@ a:hover {
 
 @media (max-width:700px){
   .portfolio-section .project img { display: none; }
-  .note .hover-text { display: none !important; }
-
+  .hover-text { display: none !important; }
 }
 
+/* ---------- INLINE CLOSE ---------- */
+
+#portfolio-inline-close {
+  color: #0000EE;
+  text-decoration: none;
+  cursor: pointer;
+}
+#portfolio-inline-close:hover { text-decoration: underline; }
 
 /* ---------- FOOTER HOVER GIF ---------- */
 
@@ -132,6 +140,8 @@ a:hover {
   right: 12px;
   bottom: 12px;
   display: inline-block;
+  z-index: 5;
+  line-height: 1;
 }
 
 .hover-text:hover img{
@@ -142,22 +152,40 @@ a:hover {
   height: auto;
   z-index: -1;
   pointer-events: none;
-  width: 300px;       
-
+  width: 300px;
 }
-    
+
+/* ---------- FLOWER CURSOR + STAMPS ---------- */
+
+/* cursor is injected via JS as --flower-cursor */
+body { cursor: var(--flower-cursor, auto); }
+
+#flower-stamps {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2; /* above text/bg, below hover images (z=10) */
+}
+
+.flower-stamp {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
   </style>
 </head>
 
 <body>
 
- 
-
 <!-- INTRO -->
 <section class="intro-wrap">
   <main id="page" class="intro-inner">
     <h1>
-      <img class="h1-img" src="images/header.png" alt="shivani singh">
+      <img class="h1-img" src="images/header.png" alt="Shivani Singh">
     </h1>
 
     <p>
@@ -175,8 +203,11 @@ a:hover {
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">C.V.</a> or go through select
       <a href="#portfolio" id="portfolio-link">projects</a>.
     </p>
+
   </main>
 </section>
+
+<div id="flower-stamps" aria-hidden="true"></div>
 
 <!-- PORTFOLIO -->
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
@@ -279,27 +310,69 @@ a:hover {
 <p class="note">
   Built on github.com • Updated on Dec 30, 2025
 </p>
-  
-  <span class="hover-text"> ☻
-    <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
-  </span>
-  
+
+<span class="hover-text"> ☻
+  <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
+</span>
+
 <script>
+/* ---------- PORTFOLIO OPEN / CLOSE ---------- */
+
 const portfolioLink = document.getElementById('portfolio-link');
 const portfolio = document.getElementById('portfolio-appendix');
+const closeLink = document.getElementById('portfolio-inline-close');
 
 function openPortfolio() {
   portfolio.hidden = false;
+  portfolio.setAttribute('aria-hidden', 'false');
   portfolio.scrollIntoView({ behavior: 'smooth' });
+}
+
+function closePortfolio() {
+  portfolio.hidden = true;
+  portfolio.setAttribute('aria-hidden', 'true');
+  document.getElementById('page').scrollIntoView({ behavior: 'smooth' });
 }
 
 portfolioLink.addEventListener('click', e => {
   e.preventDefault();
   openPortfolio();
 });
+
+closeLink.addEventListener('click', e => {
+  e.preventDefault();
+  closePortfolio();
+});
+
+/* ---------- FLOWER CURSOR + CLICK STAMPS ---------- */
+
+const flowerSvg = `<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M129.015 151.247C205.822 261.83 151.247 261.83 129.015 205.822C261.83 199.56 261.83 151.247 205.822 129.015C261.83 52.2084 199.56 -10.052 129.015 52.2084C151.247 -10.052 205.822 -10.052 129.015 100.535C52.2084 -10.052 -10.052 52.2084 52.2084 129.015C-10.052 151.247 -10.052 205.822 52.2084 205.822C75.2312 261.83 52.2084 261.83 100.535 205.822C100.535 261.83 75.2312 261.83 129.015 151.247Z" fill="#0000EE"/></svg>`;
+const flowerUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(flowerSvg);
+
+/* cursor: use the same flower (hotspot near center) */
+document.documentElement.style.setProperty("--flower-cursor", `url("${flowerUrl}") 8 8, auto`);
+
+const stamps = document.getElementById("flower-stamps");
+
+document.addEventListener("click", (e) => {
+  /* don't stamp when clicking links/buttons/interactive stuff */
+  if (e.target.closest("a, button, input, textarea, select, label")) return;
+
+  const img = document.createElement("img");
+  img.className = "flower-stamp";
+  img.alt = "";
+  img.src = flowerUrl;
+
+  /* place in document coords so it stays with scroll */
+  img.style.left = e.pageX + "px";
+  img.style.top  = e.pageY + "px";
+
+  stamps.appendChild(img);
+
+  /* safety cap */
+  if (stamps.children.length > 400) stamps.removeChild(stamps.firstElementChild);
+});
 </script>
-
-
 
 </body>
 </html>
