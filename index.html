@@ -13,6 +13,11 @@
 
 body {
   padding: 0 var(--page-gutter) !important;
+  cursor: url("images/cursor.png") 16 16, auto !important;
+}
+
+* {
+  cursor: url("images/cursor.png") 16 16, auto !important;
 }
 
 /* ---------- INTRO ---------- */
@@ -155,31 +160,7 @@ a[target="_blank"] { cursor: alias; }
   width: 300px;
 }
 
-/* ---------- FLOWER CURSOR + STAMPS ---------- */
-body { 
-  cursor: url("images/cursor.png") 16 16, auto !important; 
-  position: relative; 
-}
-
-* {
-  cursor: url("images/cursor.png") 16 16, auto !important;
-}
-
-#flower-stamps {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 0;
-  overflow: visible;
-}
-
-.intro-wrap {
-  position: relative;
-  z-index: 1;
-}
+/* ---------- FLOWER STAMPS ---------- */
 
 .flower-stamp {
   position: absolute;
@@ -189,6 +170,13 @@ body {
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
+  z-index: -1;
+  transition: transform 1.2s ease-in, opacity 1.2s ease-in;
+}
+
+.flower-stamp.falling {
+  transform: translate(-50%, 150vh);
+  opacity: 0;
 }
 
   </style>
@@ -221,8 +209,6 @@ body {
 
   </main>
 </section>
-
-<div id="flower-stamps" aria-hidden="true"></div>
 
 <!-- PORTFOLIO -->
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
@@ -349,12 +335,13 @@ portfolioLink.addEventListener('click', e => {
 
 /* ---------- FLOWER CURSOR + CLICK STAMPS ---------- */
 
-const stamps = document.getElementById("flower-stamps");
 const introWrap = document.querySelector(".intro-wrap");
 
 // Blue flower SVG
 const flowerSvg = `<svg width="32" height="32" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M157.5 122.762C268.083 199.569 205.822 261.83 129.015 151.247C52.2084 261.83 -10.052 199.569 100.53 122.762C-10.052 45.9554 52.2084 -16.3049 129.015 94.2772C205.822 -16.3049 268.083 45.9554 157.5 122.762Z" fill="#0000FF"/><path d="M145.142 145.142C169.025 277.646 80.9753 277.646 104.858 145.142C-27.6462 169.025 -27.6462 80.9753 104.858 104.858C80.9753 -27.6461 169.025 -27.6461 145.142 104.858C277.646 80.9753 277.646 169.025 145.142 145.142Z" fill="#0000FF"/></svg>`;
 const flowerUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(flowerSvg);
+
+const allFlowers = [];
 
 document.addEventListener("click", (e) => {
   // Only stamp if clicking within intro section's vertical bounds
@@ -366,29 +353,40 @@ document.addEventListener("click", (e) => {
   // Don't stamp when clicking interactive elements
   if (e.target.closest("a, button, input, textarea, select, label")) return;
 
-  if (!stamps) return;
-
   const img = document.createElement("img");
   img.className = "flower-stamp";
   img.alt = "";
   img.src = flowerUrl;
 
-  // Position at exact cursor location
-  img.style.left = e.clientX + "px";
-  img.style.top = e.clientY + "px";
+  // Position absolutely on the page using pageX/pageY
+  img.style.left = e.pageX + "px";
+  img.style.top = e.pageY + "px";
 
-  stamps.appendChild(img);
+  document.body.appendChild(img);
+  allFlowers.push(img);
 
   // Limit number of stamps
-  if (stamps.children.length > 400) {
-    stamps.removeChild(stamps.firstElementChild);
+  if (allFlowers.length > 400) {
+    const old = allFlowers.shift();
+    if (old.parentNode) old.parentNode.removeChild(old);
   }
 });
 
-// Clear all flowers when ESC is pressed
+// Clear all flowers when ESC is pressed - with falling animation
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && stamps) {
-    stamps.innerHTML = "";
+  if (e.key === "Escape") {
+    // Add falling class to all flowers
+    allFlowers.forEach(flower => {
+      if (flower.parentNode) flower.classList.add("falling");
+    });
+    
+    // Remove all flowers after animation completes
+    setTimeout(() => {
+      allFlowers.forEach(flower => {
+        if (flower.parentNode) flower.parentNode.removeChild(flower);
+      });
+      allFlowers.length = 0;
+    }, 1200);
   }
 });
 </script>
