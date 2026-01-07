@@ -36,7 +36,6 @@ a {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 0.25em;
-  cursor: url("images/cursor.png") 16 16, auto; 
 }
 
 a:hover {
@@ -188,7 +187,6 @@ button, input, textarea, select, label {
   left: 0;
   top: 0;
   width: 100%;
-  min-height: 100vh;
   pointer-events: none;
   z-index: -1;
 }
@@ -366,6 +364,22 @@ const stamps = document.getElementById("flower-stamps");
 // Blue flower SVG
 const flowerSvg = `<svg width="32" height="32" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M157.5 122.762C268.083 199.569 205.822 261.83 129.015 151.247C52.2084 261.83 -10.052 199.569 100.53 122.762C-10.052 45.9554 52.2084 -16.3049 129.015 94.2772C205.822 -16.3049 268.083 45.9554 157.5 122.762Z" fill="#0000FF"/><path d="M145.142 145.142C169.025 277.646 80.9753 277.646 104.858 145.142C-27.6462 169.025 -27.6462 80.9753 104.858 104.858C80.9753 -27.6461 169.025 -27.6461 145.142 104.858C277.646 80.9753 277.646 169.025 145.142 145.142Z" fill="#0000FF"/></svg>`;
 const flowerUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(flowerSvg);
+
+// Ensure stamp container height matches document
+function updateStampContainerHeight() {
+  if (!stamps) return;
+  stamps.style.height = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight) + 'px';
+}
+
+updateStampContainerHeight();
+window.addEventListener('resize', updateStampContainerHeight);
+
+// Update height when portfolio opens
+const _openPortfolio = openPortfolio;
+openPortfolio = function() {
+  _openPortfolio();
+  setTimeout(updateStampContainerHeight, 100);
+};
 
 document.addEventListener("click", (e) => {
   // Don't stamp when clicking interactive elements
