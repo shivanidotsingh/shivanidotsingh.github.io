@@ -13,6 +13,7 @@
 
 body {
   padding: 0 var(--page-gutter) !important;
+  cursor: var(--flower-cursor, auto);
 }
 
 /* ---------- INTRO ---------- */
@@ -160,12 +161,16 @@ a[target="_blank"] { cursor: alias; }
 /* cursor is injected via JS as --flower-cursor */
 body { cursor: var(--flower-cursor, auto); }
 
-#flower-stamps {
+#flower-stamps{
   position: absolute;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 0; /* set by JS */
   pointer-events: none;
-  z-index: 2; /* above text/bg, below hover images (z=10) */
+  z-index: 2;
 }
+
 
 .flower-stamp {
   position: absolute;
@@ -324,8 +329,11 @@ const closeLink = document.getElementById('portfolio-inline-close');
 
 function openPortfolio() {
   portfolio.hidden = false;
+  requestAnimationFrame(sizeStampLayer);
+
   portfolio.setAttribute('aria-hidden', 'false');
   portfolio.scrollIntoView({ behavior: 'smooth' });
+
 }
 
 function closePortfolio() {
@@ -346,13 +354,23 @@ closeLink.addEventListener('click', e => {
 
 /* ---------- FLOWER CURSOR + CLICK STAMPS ---------- */
 
-const flowerSvg = `<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M129.015 151.247C205.822 261.83 151.247 261.83 129.015 205.822C261.83 199.56 261.83 151.247 205.822 129.015C261.83 52.2084 199.56 -10.052 129.015 52.2084C151.247 -10.052 205.822 -10.052 129.015 100.535C52.2084 -10.052 -10.052 52.2084 52.2084 129.015C-10.052 151.247 -10.052 205.822 52.2084 205.822C75.2312 261.83 52.2084 261.83 100.535 205.822C100.535 261.83 75.2312 261.83 129.015 151.247Z" fill="#0000EE"/></svg>`;
+const flowerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 250 250">
+  <path d="M129.015 151.247C205.822 261.83 151.247 261.83 129.015 205.822C261.83 199.56 261.83 151.247 205.822 129.015C261.83 52.2084 199.56 -10.052 129.015 52.2084C151.247 -10.052 205.822 -10.052 129.015 100.535C52.2084 -10.052 -10.052 52.2084 52.2084 129.015C-10.052 151.247 -10.052 205.822 52.2084 205.822C75.2312 261.83 52.2084 261.83 100.535 205.822C100.535 261.83 75.2312 261.83 129.015 151.247Z" fill="#0000EE"/>
+</svg>`;
+
 const flowerUrl = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(flowerSvg);
 
-/* cursor: use the same flower (hotspot near center) */
-document.documentElement.style.setProperty("--flower-cursor", `url("${flowerUrl}") 8 8, auto`);
+/* hotspot centered*/
+document.documentElement.style.setProperty("--flower-cursor", `url("${flowerUrl}") 16 16, auto`);
 
 const stamps = document.getElementById("flower-stamps");
+
+function sizeStampLayer(){
+stamps.style.height = document.documentElement.scrollHeight + "px";
+}
+
+sizeStampLayer();
+window.addEventListener("resize", sizeStampLayer);
 
 document.addEventListener("click", (e) => {
   /* don't stamp when clicking links/buttons/interactive stuff */
