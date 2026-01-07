@@ -6,14 +6,13 @@
   <title>shivani's website</title>
 
   <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="style.css">
 
   <style>
 :root { --page-gutter: 40px; }
 
 body {
   padding: 0 var(--page-gutter) !important;
-  cursor: url("images/cursor.png") 16 16, auto;
-  position: relative;
 }
 
 /* ---------- INTRO ---------- */
@@ -31,7 +30,6 @@ body {
 
 .intro-inner {
   padding: 40px 0;
-  max-width: 640px;
 }
 
 a {
@@ -91,11 +89,6 @@ a[target="_blank"] { cursor: alias; }
   color: #0000EE;
 }
 
-.note {
-  font-size: 0.9rem;
-  color: #666;
-}
-
 /* ---------- PROJECT HOVER IMAGES ---------- */
 
 .portfolio-section .project img {
@@ -114,6 +107,7 @@ a[target="_blank"] { cursor: alias; }
   display: block;
 }
 
+/* alternate sides */
 .portfolio-section .project:nth-child(odd) img {
   left: 100%;
   margin-left: 24px;
@@ -127,6 +121,15 @@ a[target="_blank"] { cursor: alias; }
   .portfolio-section .project img { display: none; }
   .hover-text { display: none !important; }
 }
+
+/* ---------- INLINE CLOSE ---------- */
+
+#portfolio-inline-close {
+  color: #0000EE;
+  text-decoration: none;
+  cursor: pointer;
+}
+#portfolio-inline-close:hover { text-decoration: underline; }
 
 /* ---------- FOOTER HOVER GIF ---------- */
 
@@ -152,7 +155,11 @@ a[target="_blank"] { cursor: alias; }
   width: 300px;
 }
 
-/* ---------- FLOWER STAMPS ---------- */
+/* ---------- FLOWER CURSOR + STAMPS ---------- */
+body { 
+  cursor: url("images/cursor.png") 16 16, auto; 
+  position: relative; 
+}
 
 #flower-stamps {
   position: fixed;
@@ -356,11 +363,12 @@ document.addEventListener("click", (e) => {
   stamps.appendChild(img);
 
   // Limit number of stamps to avoid performance issues
-  if (stamps.children.length > 300) {
+  if (stamps.children.length > 400) {
     stamps.removeChild(stamps.firstElementChild);
   }
 });
 </script>
+
 
 </body>
 </html>
