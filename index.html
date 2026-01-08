@@ -381,15 +381,37 @@ document.addEventListener("keydown", (e) => {
     'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12' // Function keys
   ];
   
-  // Don't trigger if typing in an input field
+  // Don't trigger if typing in an input field, exempt keys and if no flowers to clear
   if (e.target.matches('input, textarea, select')) return;
-  
-  // Don't trigger for exempt keys
   if (exemptKeys.includes(e.key)) return;
-  
-  // Don't trigger if no flowers to clear
   if (allFlowers.length === 0) return;
   
+  clearFlowers();
+});
+
+// Shake detection for mobile
+let lastShakeTime = 0;
+const shakeThreshold = 15; // Sensitivity
+const shakeTimeout = 1000; // Minimum time between shakes
+
+if (window.DeviceMotionEvent) {
+  window.addEventListener('devicemotion', (e) => {
+    const acc = e.accelerationIncludingGravity;
+    if (!acc) return;
+    
+    const current = Date.now();
+    if (current - lastShakeTime < shakeTimeout) return;
+    
+    const acceleration = Math.abs(acc.x) + Math.abs(acc.y) + Math.abs(acc.z);
+    
+    if (acceleration > shakeThreshold && allFlowers.length > 0) {
+      lastShakeTime = current;
+      clearFlowers();
+    }
+  });
+}
+
+function clearFlowers() {
   // Add falling class to all flowers
   allFlowers.forEach(flower => {
     if (flower.parentNode) flower.classList.add("falling");
@@ -402,7 +424,7 @@ document.addEventListener("keydown", (e) => {
     });
     allFlowers.length = 0;
   }, 1200);
-});
+}
   
 </script>
 
