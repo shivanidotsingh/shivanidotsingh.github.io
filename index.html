@@ -373,7 +373,7 @@ document.addEventListener("click", (e) => {
 
 // Fall all flowers when key is pressed
 document.addEventListener("keydown", (e) => {
-  // Exempt navigation and functional keys
+
   const exemptKeys = [
     'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', // Navigation
     'Tab', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock', // Modifiers
@@ -394,6 +394,15 @@ document.addEventListener("keydown", (e) => {
   allFlowers.forEach(flower => {
     if (flower.parentNode) flower.classList.add("falling");
   });
+  
+  // Remove all flowers after animation completes
+  setTimeout(() => {
+    allFlowers.forEach(flower => {
+      if (flower.parentNode) flower.parentNode.removeChild(flower);
+    });
+    allFlowers.length = 0;
+  }, 1200);
+});
   
 </script>
 
