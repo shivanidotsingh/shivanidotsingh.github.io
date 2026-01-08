@@ -371,23 +371,30 @@ document.addEventListener("click", (e) => {
   }
 });
 
-// Clear all flowers when ESC is pressed - with falling animation
+// Fall all flowers when key is pressed
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") {
-    // Add falling class to all flowers
-    allFlowers.forEach(flower => {
-      if (flower.parentNode) flower.classList.add("falling");
-    });
-    
-    // Remove all flowers after animation completes
-    setTimeout(() => {
-      allFlowers.forEach(flower => {
-        if (flower.parentNode) flower.parentNode.removeChild(flower);
-      });
-      allFlowers.length = 0;
-    }, 1200);
-  }
-});
+  // Exempt navigation and functional keys
+  const exemptKeys = [
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', // Navigation
+    'Tab', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock', // Modifiers
+    'Home', 'End', 'PageUp', 'PageDown', // Navigation
+    'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12' // Function keys
+  ];
+  
+  // Don't trigger if typing in an input field
+  if (e.target.matches('input, textarea, select')) return;
+  
+  // Don't trigger for exempt keys
+  if (exemptKeys.includes(e.key)) return;
+  
+  // Don't trigger if no flowers to clear
+  if (allFlowers.length === 0) return;
+  
+  // Add falling class to all flowers
+  allFlowers.forEach(flower => {
+    if (flower.parentNode) flower.classList.add("falling");
+  });
+  
 </script>
 
 
