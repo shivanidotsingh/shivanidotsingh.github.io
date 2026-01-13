@@ -6,48 +6,230 @@
   <title>The ABC’s of designing a preschool</title>
   <link rel="stylesheet" href="style.css">
 
+  <!-- Minimal PDF slideshow styles (keep in-page to avoid touching style.css) -->
+  <style>
+    .pdf-deck { width: 100%; margin: 1.5em 0; }
+    .pdf-stage{
+      position: relative;
+      border-radius: 4px;
+      background: #f7f7f7;
+      overflow: hidden;
+      padding: 10px;
+    }
+    #pdfCanvas{ width: 100%; height: auto; display: block; }
+
+    .pdf-nav{
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 999px;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .pdf-nav.prev{ left: 10px; }
+    .pdf-nav.next{ right: 10px; }
+
+    .pdf-thumbs{
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 10px 2px 2px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .pdf-thumbs::-webkit-scrollbar{ display: none; }
+
+    .pdf-thumb{
+      flex: 0 0 auto;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fff;
+      padding: 4px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .pdf-thumb[aria-current="true"]{ opacity: 1; border-color: #000; }
+
+    .pdf-thumb canvas{ display:block; height: 64px; width:auto; }
+
+    @media (max-width: 768px){
+      .pdf-stage{ padding: 8px; }
+      .pdf-nav{ width: 34px; height: 34px; }
+    }
+  </style>
 </head>
+
 <body>
-  
+
   <p><a href="https://singh.work/index.html#portfolio-appendix" class="blue-link">&larr; Back to home</a></p>
 
   <h1>The ABC’s of designing a preschool</h1>
 
   <p>
-When a friend decided to start her own preschool out of a bungalow in Chennai, she reached out to us (Jyothi and me) to work on the name and brand design. We set out to visually define what learning looks like for two to five year olds. The opportunity statement we worked with was, 'How might we design the identity of a preschool to reflect an inclusive learning experience?'
-<br><br>
-<div class="pdf-container">
-    <iframe src="files/Naming.pdf">
-        This browser does not support PDFs. Please download the PDF to view it: <a href="files/Naming.pdf">Download PDF</a>
-    </iframe>
-</div>
-  <br>
-The name elemenopy resonated unanimously, as the phonetic association of the sung alphabet felt familiar and timeless.
-For the logo and identity, we presented the 3 routes, and ultimately picked one that was a simple play of shapes derived from the alphabet, since it perfectly complemented the ‘learning basics’ philosophy that the name intended.
-We wanted to create a sense of belonging and comfort for the children, across all brand communication. A few early explorations below.
-
-<img src="images/lmnop/explorations.png" alt="Brand Explorations">
-<p>The logo that was selected was built out of shapes that abstracted the letters L,M,N,O and P. It allowed the flexibility to take on different meanings across communication collaterals. We defined a playful colour palette and used the font Mikado for the wordmark.  </p>
-    <img src="images/lmnop/pattern.png" alt="pattern">
-  <img src="images/lmnop/finallogo.png" alt="final logo">
-    <img src="images/lmnop/stationery.png" alt="stationery">
-    <img src="images/lmnop/tikitak.png" alt="tikitak">
-<br>We worked on the content and space design as well. We drafted options for mottoes, tag-lines and philosophies that the pre-school stands for, and adapted the shapes to form joyful compositions and sceneries. We did some research on montessori principles of education and adapted a version of teaching a child ‘how to learn rather than what to learn.‘ For the website, we decided to name the five stages of learning in the preschool starting with L-M-N-O-P respectively — Little Learners, Meaning Makers, Nifty Newbies, Observers and Pioneers. The core creative guideline of the brand, both internal and external, remained grounded with the rhetorical and catchy ‘Seek, Solve, Share’.
+    When a friend decided to start her own preschool out of a bungalow in Chennai, she reached out to us (Jyothi and me) to work on the name and brand design. We set out to visually define what learning looks like for two to five year olds. The opportunity statement we worked with was, 'How might we design the identity of a preschool to reflect an inclusive learning experience?'
   </p>
+
+  <!-- PDF.js slideshow (replaces iframe) -->
+  <div class="pdf-deck" id="pdfDeck" aria-label="PDF slideshow">
+    <div class="pdf-stage">
+      <button class="pdf-nav prev" type="button" aria-label="Previous page">←</button>
+      <canvas id="pdfCanvas"></canvas>
+      <button class="pdf-nav next" type="button" aria-label="Next page">→</button>
+    </div>
+    <div class="pdf-thumbs" id="pdfThumbs" aria-label="Page thumbnails"></div>
+
+    <p class="note" style="margin-top:0.75em;">
+      Trouble viewing? <a href="files/Naming.pdf" target="_blank" rel="noopener">Open PDF</a>
+    </p>
+  </div>
+
+  <p>
+    The name elemenopy resonated unanimously, as the phonetic association of the sung alphabet felt familiar and timeless.
+    For the logo and identity, we presented the 3 routes, and ultimately picked one that was a simple play of shapes derived from the alphabet, since it perfectly complemented the ‘learning basics’ philosophy that the name intended.
+    We wanted to create a sense of belonging and comfort for the children, across all brand communication. A few early explorations below.
+  </p>
+
+  <img src="images/lmnop/explorations.png" alt="Brand Explorations">
+
+  <p>
+    The logo that was selected was built out of shapes that abstracted the letters L,M,N,O and P. It allowed the flexibility to take on different meanings across communication collaterals. We defined a playful colour palette and used the font Mikado for the wordmark.
+  </p>
+
+  <img src="images/lmnop/pattern.png" alt="pattern">
+  <img src="images/lmnop/finallogo.png" alt="final logo">
+  <img src="images/lmnop/stationery.png" alt="stationery">
+  <img src="images/lmnop/tikitak.png" alt="tikitak">
+
+  <p>
+    We worked on the content and space design as well. We drafted options for mottoes, tag-lines and philosophies that the pre-school stands for, and adapted the shapes to form joyful compositions and sceneries. We did some research on montessori principles of education and adapted a version of teaching a child ‘how to learn rather than what to learn.‘ For the website, we decided to name the five stages of learning in the preschool starting with L-M-N-O-P respectively — Little Learners, Meaning Makers, Nifty Newbies, Observers and Pioneers. The core creative guideline of the brand, both internal and external, remained grounded with the rhetorical and catchy ‘Seek, Solve, Share’.
+  </p>
+
   <div class="image-pair-container">
     <img src="images/lmnop/wall1.jpg" alt="painting">
     <img src="images/lmnop/wall2.jpg" alt="the wall">
   </div>
-    <img src="images/lmnop/space.png" alt="WIP">
 
-    <img class="full-width-image" src="images/lmnop/digital.png" alt="website mockups">
-  
-  <p>Overall it has been one of the more fulfilling projects that I have helped bring to life, and I love watching it grow. <a href="https://www.instagram.com/elemenopyschool/" target="_blank">Go to their instagram → </a></p>
+  <img src="images/lmnop/space.png" alt="WIP">
+  <img class="full-width-image" src="images/lmnop/digital.png" alt="website mockups">
+
+  <p>
+    Overall it has been one of the more fulfilling projects that I have helped bring to life, and I love watching it grow.
+    <a href="https://www.instagram.com/elemenopyschool/" target="_blank" rel="noopener">Go to their instagram → </a>
+  </p>
+
   <img src="images/lmnop/end.png" alt="shapes">
-  
+
   <hr style="border: none; border-top: 1px solid black; margin: 2em 0;">
   <p><a href="index.html#portfolio-appendix" class="blue-link">&larr; Back to home</a></p>
 
+  <!-- PDF.js (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js"></script>
+  <script>
+    (async function(){
+      // Your PDF path:
+      const url = "files/Naming.pdf";
 
+      // Worker (required for best performance)
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js";
+
+      const canvas = document.getElementById("pdfCanvas");
+      const ctx = canvas.getContext("2d");
+
+      const thumbsEl = document.getElementById("pdfThumbs");
+      const prevBtn = document.querySelector(".pdf-nav.prev");
+      const nextBtn = document.querySelector(".pdf-nav.next");
+
+      const pdf = await pdfjsLib.getDocument(url).promise;
+
+      let pageNum = 1;
+      let rendering = false;
+
+      function stageWidth(){
+        const stage = canvas.closest(".pdf-stage");
+        return Math.max(320, stage.clientWidth - 20);
+      }
+
+      async function renderPage(n){
+        if (rendering) return;
+        rendering = true;
+
+        const page = await pdf.getPage(n);
+
+        const base = page.getViewport({ scale: 1 });
+        const scale = stageWidth() / base.width;
+        const viewport = page.getViewport({ scale });
+
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        [...thumbsEl.children].forEach((btn, i) => {
+          btn.setAttribute("aria-current", (i + 1 === pageNum) ? "true" : "false");
+        });
+
+        rendering = false;
+      }
+
+      function clampPage(n){ return Math.min(Math.max(n, 1), pdf.numPages); }
+
+      async function goTo(n){
+        pageNum = clampPage(n);
+        await renderPage(pageNum);
+
+        const active = thumbsEl.children[pageNum - 1];
+        if (active) active.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
+      }
+
+      async function buildThumbs(){
+        for (let i = 1; i <= pdf.numPages; i++){
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "pdf-thumb";
+          btn.setAttribute("aria-current", "false");
+
+          const tCanvas = document.createElement("canvas");
+          const tCtx = tCanvas.getContext("2d");
+
+          const page = await pdf.getPage(i);
+          const base = page.getViewport({ scale: 1 });
+
+          const targetH = 64;
+          const tScale = targetH / base.height;
+          const vp = page.getViewport({ scale: tScale });
+
+          tCanvas.width = Math.floor(vp.width);
+          tCanvas.height = Math.floor(vp.height);
+
+          await page.render({ canvasContext: tCtx, viewport: vp }).promise;
+
+          btn.appendChild(tCanvas);
+          btn.addEventListener("click", () => goTo(i));
+          thumbsEl.appendChild(btn);
+        }
+      }
+
+      prevBtn.addEventListener("click", () => goTo(pageNum - 1));
+      nextBtn.addEventListener("click", () => goTo(pageNum + 1));
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowLeft") goTo(pageNum - 1);
+        if (e.key === "ArrowRight") goTo(pageNum + 1);
+      });
+
+      let resizeTimer;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => renderPage(pageNum), 150);
+      });
+
+      await buildThumbs();
+      await goTo(1);
+    })();
+  </script>
 </body>
 </html>
