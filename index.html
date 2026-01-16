@@ -66,6 +66,75 @@ a[target="_blank"] { cursor: alias; }
   .portfolio-section { padding: 20px var(--page-gutter); }
 }
 
+.portfolio-grid {
+  max-width: 570px;
+  margin: 0 auto;
+}
+
+.project {
+  position: relative;
+  padding: 14px 0 16px;
+  border-top: 1px solid #000;
+}
+.project:first-child { border-top: none; }
+
+.project-title {
+  margin: 0;
+  font-size: var(--h1-size);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.project-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.project-title a:hover {
+  color: #0000EE;
+}
+
+/* ---------- PROJECT HOVER IMAGES ---------- */
+
+.portfolio-section .project img {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: min(460px, 56vw);
+  max-height: 80vh;
+  object-fit: contain;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.portfolio-section .project:hover img {
+  display: block;
+}
+
+/* alternate sides */
+.portfolio-section .project:nth-child(odd) img {
+  left: 100%;
+  margin-left: 24px;
+}
+.portfolio-section .project:nth-child(even) img {
+  right: 100%;
+  margin-right: 24px;
+}
+
+@media (max-width:700px){
+  .portfolio-section .project img { display: none; }
+  .hover-text { display: none !important; }
+}
+
+/* ---------- INLINE CLOSE ---------- */
+
+#portfolio-inline-close {
+  color: #0000EE;
+  text-decoration: none;
+  cursor: pointer;
+}
+#portfolio-inline-close:hover { text-decoration: underline; }
 
 /* ---------- FOOTER HOVER GIF ---------- */
 
