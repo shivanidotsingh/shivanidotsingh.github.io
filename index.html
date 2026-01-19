@@ -49,67 +49,6 @@ a:hover {
 
 a[target="_blank"] { cursor: alias; }
 
-/* ---------- PORTFOLIO ---------- */
-
-#portfolio-appendix[hidden] { display: none; }
-
-#portfolio-appendix:not([hidden]) ~ hr {
-  width: calc(100% + (2 * var(--page-gutter)));
-  margin-left: calc(-1 * var(--page-gutter));
-  margin-right: calc(-1 * var(--page-gutter));
-  position: relative;
-}
-
-.portfolio-section {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  margin-left: -50vw;
-  padding: 40px 60px;
-  box-sizing: border-box;
-}
-
-@media (max-width:700px){
-  .portfolio-section
-  { padding: 20px var(--page-gutter);
-    
-  }
-  .project { border-top: 1px solid #000; padding-top: 16px; }
-  .project:first-child { border-top: none; padding-top: 0; }
-}
-
-.portfolio-grid {
-  margin: 0 auto;
-  gap: 60px 40px;
-}
-
-.project {
-  position: relative;
-}
-
-.project img {
-  width: 100%;
-  display: block;
-  margin-bottom: 16px;
-  margin-top: 0;
-  height: 320px;
-  object-fit: contain;
-}
-
-.project-title {
-  margin: 0;
-  font-size: h2;
-  line-height: 1.25;
-}
-
-.project-title a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.project-title a:hover {
-  color: #0000EE;
-}
 
 /* ---------- FOOTER HOVER GIF ---------- */
 
@@ -206,7 +145,7 @@ a[target="_blank"] { cursor: alias; }
           The Hungry Venturer
         </a>
       </div>
-      <p>Designing the interaction between Country Office and Ventures.</p>
+      <p>Designing a core point of interaction with the Venture Fund.</p>
     </div>
 
     <div class="project">
@@ -228,7 +167,7 @@ a[target="_blank"] { cursor: alias; }
           A West Oakland Story
         </a>
       </div>
-      <p>Co-creating a data-informed narrative about a neighbourhood.</p>
+      <p>Co-creating a data-informed narrative.</p>
     </div>
 
     <div class="project">
