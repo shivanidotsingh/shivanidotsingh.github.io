@@ -50,29 +50,16 @@ a:hover {
 a[target="_blank"] { cursor: alias; }
 
 
-/* ---------- FOOTER HOVER GIF ---------- */
+/* ---------- DORMANT BOOM GIFS ---------- */
 
-.hover-text img { display: none; }
-
-.hover-text{
+.boom-gif{
   position: fixed;
-  right: 12px;
-  bottom: 12px;
-  display: inline-block;
-  z-index: 5;
-  line-height: 1;
+  width: 120px;       
+  height: auto;
+  pointer-events: none;
+  z-index: 999;      
 }
 
-.hover-text:hover img{
-  display: block;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-  height: auto;
-  z-index: -1;
-  pointer-events: none;
-  width: 300px;
-}
 
 /* ---------- FLOWER STAMPS ---------- */
 
@@ -226,9 +213,9 @@ a[target="_blank"] { cursor: alias; }
 </div>
 
 
-<span class="hover-text"> ☻
+<!-- <span class="hover-text"> ☻
   <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
-</span>
+</span>  -->
 
 <script>
 /* ---------- PORTFOLIO OPEN ---------- */
@@ -318,6 +305,84 @@ document.addEventListener("keydown", (e) => {
     allFlowers.length = 0;
   }, 1200);
 });
+
+  <script>
+    
+/* ---------- DORMANT TAB FACE SPAM ---------- */
+const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
+const MAX_BOOMS = 25;
+const SPAWN_INTERVAL = 15000; // 15s
+const CLEAR_INTERVAL = 120;   // fast but not jarring
+
+let boomTimer = null;
+let clearTimer = null;
+const booms = [];
+
+function spawnBoom(){
+  if (booms.length >= MAX_BOOMS) return;
+
+  const img = document.createElement("img");
+  img.src = BOOM_SRC;
+  img.className = "boom-gif";
+
+  const x = Math.random() * (window.innerWidth - 120);
+  const y = Math.random() * (window.innerHeight - 120);
+
+  img.style.left = x + "px";
+  img.style.top = y + "px";
+
+  document.body.appendChild(img);
+  booms.push(img);
+}
+
+function startDormant(){
+  if (boomTimer) return;
+  boomTimer = setInterval(spawnBoom, SPAWN_INTERVAL);
+}
+
+function stopDormant(){
+  clearInterval(boomTimer);
+  boomTimer = null;
+}
+
+function startClearing(){
+  stopDormant();
+  if (clearTimer) return;
+
+  clearTimer = setInterval(() => {
+    if (booms.length === 0){
+      clearInterval(clearTimer);
+      clearTimer = null;
+      return;
+    }
+    const idx = Math.floor(Math.random() * booms.length);
+    const boom = booms.splice(idx, 1)[0];
+    if (boom && boom.parentNode){
+      boom.parentNode.removeChild(boom);
+    }
+  }, CLEAR_INTERVAL);
+}
+
+/* visibility + focus handling */
+
+function handleVisibility(){
+  if (document.hidden){
+    startDormant();
+  } else {
+    startClearing();
+  }
+}
+
+document.addEventListener("visibilitychange", handleVisibility);
+window.addEventListener("blur", startDormant);
+window.addEventListener("focus", startClearing);
+
+/* if page loads in background */
+if (document.hidden){
+  startDormant();
+}
+</script>
+
   
 </script>
 
