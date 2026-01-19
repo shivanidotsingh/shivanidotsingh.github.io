@@ -162,19 +162,26 @@ a[target="_blank"] { cursor: alias; }
   --project-img-h: 320px;
 }
 
-hr{
-  border: none;
-  border-top: 1px solid #000;
+#portfolio-appendix[hidden]{ display:none; }
+
+.portfolio-footer{
   margin: 1em 0;
 }
 
-#portfolio-appendix[hidden]{ display:none; }
+/* default: behaves like normal content */
+.portfolio-footer{
+  width: auto;
+}
 
-#portfolio-appendix:not([hidden]) ~ hr{
+/* when portfolio is open → align with portfolio edges */
+#portfolio-appendix:not([hidden]) ~ .portfolio-footer{
   width: 100vw;
   margin-left: calc(50% - 50vw);
-
+  margin-right: calc(50% - 50vw);
+  padding-left: var(--page-gutter);
+  padding-right: var(--page-gutter);
 }
+
 
 /* full-bleed portfolio section */
 .portfolio-section{
