@@ -53,6 +53,13 @@ a[target="_blank"] { cursor: alias; }
 
 #portfolio-appendix[hidden] { display: none; }
 
+#portfolio-appendix:not([hidden]) ~ hr {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  margin-left: -50vw;
+}
+
 .portfolio-section {
   width: 100vw;
   position: relative;
@@ -72,6 +79,7 @@ a[target="_blank"] { cursor: alias; }
 
 .portfolio-grid {
   margin: 0 auto;
+  gap: 60px 40px;
 }
 
 .project {
