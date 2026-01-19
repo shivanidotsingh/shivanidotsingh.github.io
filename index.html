@@ -307,7 +307,7 @@ document.addEventListener("keydown", (e) => {
 });
     
 // dormant tab face spam
-  const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
+const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
 const MAX_BOOMS = 25;
 const SPAWN_INTERVAL = 15000; // 15 seconds
 const CLEAR_INTERVAL = 120;   // fast, non-jarring
@@ -318,7 +318,6 @@ let awaitingReturn = false;
 
 const booms = [];
 
-/* create one boom */
 function spawnBoom(){
   if (booms.length >= MAX_BOOMS) return;
 
@@ -326,9 +325,9 @@ function spawnBoom(){
   img.src = BOOM_SRC;
   img.className = "boom-gif";
 
-  const size = 120;
-  const x = Math.random() * (window.innerWidth - size);
-  const y = Math.random() * (window.innerHeight - size);
+  const size = 120; // match your CSS size
+  const x = Math.random() * Math.max(1, (window.innerWidth - size));
+  const y = Math.random() * Math.max(1, (window.innerHeight - size));
 
   img.style.left = x + "px";
   img.style.top = y + "px";
@@ -337,19 +336,22 @@ function spawnBoom(){
   booms.push(img);
 }
 
-/* start spawning while dormant */
 function startDormant(){
+  // stop clearing if we go dormant again
+  if (clearTimer){
+    clearInterval(clearTimer);
+    clearTimer = null;
+  }
+
   if (boomTimer) return;
   boomTimer = setInterval(spawnBoom, SPAWN_INTERVAL);
 }
 
-/* stop spawning */
 function stopDormant(){
   clearInterval(boomTimer);
   boomTimer = null;
 }
 
-/* clear booms one by one */
 function startClearing(){
   stopDormant();
   if (clearTimer) return;
@@ -360,6 +362,7 @@ function startClearing(){
       clearTimer = null;
       return;
     }
+
     const idx = Math.floor(Math.random() * booms.length);
     const boom = booms.splice(idx, 1)[0];
     if (boom && boom.parentNode){
@@ -368,15 +371,14 @@ function startClearing(){
   }, CLEAR_INTERVAL);
 }
 
-/* handle tab visibility */
+/* visibility logic */
 function handleVisibility(){
   if (document.hidden){
+    awaitingReturn = true;   // arm clearing for when user returns
     startDormant();
-    awaitingReturn = true;
   } else {
     stopDormant();
-    // IMPORTANT: do not clear yet
-    // wait for cursor / touch re-entry
+    // IMPORTANT: do not clear yet — wait for user attention (mouse/touch)
   }
 }
 
@@ -384,22 +386,23 @@ document.addEventListener("visibilitychange", handleVisibility);
 
 /* clear only when user re-engages */
 function onReengage(){
-  if (!awaitingReturn || booms.length === 0) return;
+  if (!awaitingReturn) return;      // only after a dormant period
+  if (booms.length === 0) {         // nothing to clear
+    awaitingReturn = false;
+    return;
+  }
 
   awaitingReturn = false;
   startClearing();
-
-  document.removeEventListener("mousemove", onReengage);
-  document.removeEventListener("touchstart", onReengage);
 }
 
-document.addEventListener("mousemove", onReengage);
-document.addEventListener("touchstart", onReengage);
+document.addEventListener("mousemove", onReengage, { passive: true });
+document.addEventListener("touchstart", onReengage, { passive: true });
 
 /* if page loads already inactive */
 if (document.hidden){
-  startDormant();
   awaitingReturn = true;
+  startDormant();
 }
 </script>
 
