@@ -54,7 +54,7 @@ a[target="_blank"] { cursor: alias; }
 
 .boom-gif{
   position: fixed;
-  width: 120px;       
+  width: 250px;       
   height: auto;
   pointer-events: none;
   z-index: 999;      
@@ -125,8 +125,8 @@ a[target="_blank"] { cursor: alias; }
     -->
 
     <div class="project">
-      <img src="images/project2.jpg" alt="">
       <p class="note">Design Sprint • UNICEF Office of Innovation (2023)</p>
+      <img src="images/project2.jpg" alt="">
       <div class="project-title">
         <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
           The Hungry Venturer
@@ -136,8 +136,8 @@ a[target="_blank"] { cursor: alias; }
     </div>
 
     <div class="project">
-      <img src="images/juniper dashboard.png" alt="">
       <p class="note">Interface Design • UNICEF Office of Innovation (2024)</p>
+      <img src="images/juniper dashboard.png" alt="">
       <div class="project-title">
         <a href="https://singh.work/juniper" target="_blank">
           Interface to the CryptoFund
@@ -147,8 +147,8 @@ a[target="_blank"] { cursor: alias; }
     </div>
 
     <div class="project">
-      <img src="images/project1.jpg" alt="">
       <p class="note">Information Design • The Crucible × CCA (2020)</p>
+      <img src="images/project1.jpg" alt="">
       <div class="project-title">
         <a href="https://singh.work/case-study.html">
           A West Oakland Story
@@ -158,8 +158,8 @@ a[target="_blank"] { cursor: alias; }
     </div>
 
     <div class="project">
-      <img src="images/project3.png" alt="">
       <p class="note">Digital Experience Design • CCA (2020)</p>
+      <img src="images/project3.png" alt="">
       <div class="project-title">
         <a href="https://singh.work/dropin">
           The art, the artist and context
@@ -169,8 +169,8 @@ a[target="_blank"] { cursor: alias; }
     </div>
 
     <div class="project">
-      <img src="images/project6.png" alt="">
       <p class="note">Design Sprint • Parallel HQ (2018)</p>
+      <img src="images/project6.png" alt="">
       <div class="project-title">
         <a href="https://singh.work/sprint.html">
           Value of Influence
@@ -194,8 +194,8 @@ a[target="_blank"] { cursor: alias; }
     -->
 
     <div class="project">
-      <img src="images/project7.png" alt="">
       <p class="note">Brand Identity • Elemenopy Preschool (2017)</p>
+      <img src="images/project7.png" alt="">
       <div class="project-title">
         <a href="https://singh.work/lmnop">
           ABC's of branding a Preschool
@@ -306,16 +306,19 @@ document.addEventListener("keydown", (e) => {
   }, 1200);
 });
     
-/* ---------- DORMANT TAB FACE SPAM ---------- */
-const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
+// dormant tab face spam
+  const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
 const MAX_BOOMS = 25;
-const SPAWN_INTERVAL = 15000; // 15s
-const CLEAR_INTERVAL = 120;   // fast but not jarring
+const SPAWN_INTERVAL = 15000; // 15 seconds
+const CLEAR_INTERVAL = 120;   // fast, non-jarring
 
 let boomTimer = null;
 let clearTimer = null;
+let awaitingReturn = false;
+
 const booms = [];
 
+/* create one boom */
 function spawnBoom(){
   if (booms.length >= MAX_BOOMS) return;
 
@@ -323,8 +326,9 @@ function spawnBoom(){
   img.src = BOOM_SRC;
   img.className = "boom-gif";
 
-  const x = Math.random() * (window.innerWidth - 120);
-  const y = Math.random() * (window.innerHeight - 120);
+  const size = 120;
+  const x = Math.random() * (window.innerWidth - size);
+  const y = Math.random() * (window.innerHeight - size);
 
   img.style.left = x + "px";
   img.style.top = y + "px";
@@ -333,16 +337,19 @@ function spawnBoom(){
   booms.push(img);
 }
 
+/* start spawning while dormant */
 function startDormant(){
   if (boomTimer) return;
   boomTimer = setInterval(spawnBoom, SPAWN_INTERVAL);
 }
 
+/* stop spawning */
 function stopDormant(){
   clearInterval(boomTimer);
   boomTimer = null;
 }
 
+/* clear booms one by one */
 function startClearing(){
   stopDormant();
   if (clearTimer) return;
@@ -361,23 +368,38 @@ function startClearing(){
   }, CLEAR_INTERVAL);
 }
 
-/* visibility + focus handling */
-
+/* handle tab visibility */
 function handleVisibility(){
   if (document.hidden){
     startDormant();
+    awaitingReturn = true;
   } else {
-    startClearing();
+    stopDormant();
+    // IMPORTANT: do not clear yet
+    // wait for cursor / touch re-entry
   }
 }
 
 document.addEventListener("visibilitychange", handleVisibility);
-window.addEventListener("blur", startDormant);
-window.addEventListener("focus", startClearing);
 
-/* if page loads in background */
+/* clear only when user re-engages */
+function onReengage(){
+  if (!awaitingReturn || booms.length === 0) return;
+
+  awaitingReturn = false;
+  startClearing();
+
+  document.removeEventListener("mousemove", onReengage);
+  document.removeEventListener("touchstart", onReengage);
+}
+
+document.addEventListener("mousemove", onReengage);
+document.addEventListener("touchstart", onReengage);
+
+/* if page loads already inactive */
 if (document.hidden){
   startDormant();
+  awaitingReturn = true;
 }
 </script>
 
