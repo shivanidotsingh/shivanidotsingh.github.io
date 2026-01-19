@@ -54,10 +54,10 @@ a[target="_blank"] { cursor: alias; }
 #portfolio-appendix[hidden] { display: none; }
 
 #portfolio-appendix:not([hidden]) ~ hr {
-  width: 100vw;
+  width: calc(100% + (2 * var(--page-gutter)));
+  margin-left: calc(-1 * var(--page-gutter));
+  margin-right: calc(-1 * var(--page-gutter));
   position: relative;
-  left: 50%;
-  margin-left: -50vw;
 }
 
 .portfolio-section {
@@ -74,7 +74,8 @@ a[target="_blank"] { cursor: alias; }
   { padding: 20px var(--page-gutter);
     
   }
-  .project img {  border-top: 1px solid black; }
+  .project { border-top: 1px solid #000; padding-top: 16px; }
+  .project:first-child { border-top: none; padding-top: 0; }
 }
 
 .portfolio-grid {
