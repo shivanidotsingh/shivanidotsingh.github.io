@@ -151,51 +151,103 @@ a[target="_blank"] { cursor: alias; }
 
 }
 
-/* ---------- PORTFOLIO GRID ---------- */
 
-.portfolio-grid {
+/* ---------- PORTFOLIO---------- */
+
+:root{
+  --page-gutter: 40px;
+  --portfolio-pad-desktop: 60px;
+  --portfolio-pad-mobile: 20px;
+  --project-title-size: clamp(18px, 1.6vw, 22px); /* h2/h3-ish */
+  --project-img-h: 320px;
+}
+
+#portfolio-appendix[hidden]{ display:none; }
+
+#portfolio-appendix:not([hidden]) ~ hr{
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
+/* full-bleed portfolio section */
+.portfolio-section{
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  margin-left: -50vw;
+
+  padding: 40px var(--portfolio-pad-desktop);
+  box-sizing: border-box;
+}
+
+/* grid */
+.portfolio-grid{
+  max-width: 1100px;
+  margin: 0 auto;
+
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 60px 40px;
 }
 
-@media (min-width: 1400px) {
-  .portfolio-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+@media (min-width: 1400px){
+  .portfolio-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-@media (max-width: 768px) {
-  .portfolio-grid {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-}
+.project{ margin: 0; }
 
-.project img {
+/* image */
+.project img{
   width: 100%;
-  height: auto;
+  height: var(--project-img-h);
+  object-fit: contain;
   display: block;
-  margin-bottom: 16px;
-  margin-top: 0;
+  margin: 0 0 16px 0;
 }
 
-.project-title {
+/* title */
+.project-title{
   margin: 0 0 8px 0;
-  font-size: var(--h1-size);
+  font-size: var(--project-title-size);
   font-weight: 600;
   line-height: 1.25;
 }
 
-.project-title a {
+.project-title a{
   color: inherit;
   text-decoration: none;
 }
 
-.project-title a:hover {
-  color: #0000EE;
-}
+.project-title a:hover{ color:#0000EE; }
 
-.project p {
-  margin: 8px 0 0 0;
+/* description spacing */
+.project p{ margin: 8px 0 0 0; }
+
+/* mobile */
+@media (max-width: 700px){
+  .portfolio-section{
+    padding: var(--portfolio-pad-mobile) var(--page-gutter);
+  }
+
+  .portfolio-grid{
+    grid-template-columns: 1fr;
+    gap: 40px;
+    max-width: 570px;
+  }
+
+  /* crisp separators on mobile */
+  .project{
+    border-top: 1px solid #000;
+    padding-top: 16px;
+  }
+  .project:first-child{
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .project img{
+    height: auto;
+    max-height: 420px;
+  }
 }
