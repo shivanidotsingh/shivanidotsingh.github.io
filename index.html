@@ -125,58 +125,58 @@ a[target="_blank"] { cursor: alias; }
     -->
 
     <div class="project">
-      <img src="images/project2.jpg" alt="">
-      <div class="project-title">
-        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
-          The Hungry Venturer
-        </a>
-      </div>
-      <p>Designing a core point of interaction with the Venture Fund.</p>
-      <p class="note">Design Sprint • UNICEF Office of Innovation (2023)</p>
-    </div>
-
-    <div class="project">
       <img src="images/juniper dashboard.png" alt="">
       <div class="project-title">
         <a href="https://singh.work/juniper" target="_blank">
           Interface to the CryptoFund
         </a>
       </div>
-      <p>Designing a dashboard for tracking transactions.</p>
-      <p class="note">Interface Design • UNICEF Office of Innovation (2024)</p>
+      <p>Designing the dashboard for tracking Cryptofund transactions.</p>
+      <p class="note">UNICEF Office of Innovation (2024)</p>
+    </div>
+
+    <div class="project">
+      <img src="images/project2.jpg" alt="">
+      <div class="project-title">
+        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
+          The Hungry Venturer
+        </a>
+      </div>
+      <p>Design sprint to improve a core point of interaction with the Fund.</p>
+      <p class="note">UNICEF Office of Innovation (2023)</p>
     </div>
 
     <div class="project">
       <img src="images/project1.jpg" alt="">
       <div class="project-title">
-        <a href="https://singh.work/case-study.html">
+        <a class="project-link" href="https://singh.work/case-study.html">
           A West Oakland Story
         </a>
       </div>
       <p>Co-creating a data-informed narrative about the future of a neighbourhood.</p>
-      <p class="note">Information Design • The Crucible × CCA (2020)</p>
+      <p class="note">The Crucible × CCA (2020)</p>
     </div>
 
     <div class="project">
       <img src="images/project3.png" alt="">
       <div class="project-title">
-        <a href="https://singh.work/dropin">
+        <a class="project-link" href="https://singh.work/dropin">
           The art, the artist and context
         </a>
       </div>
       <p>Reimagining online networking for creative professionals.</p>
-      <p class="note">UX Design • Student Project (2020)</p>
+      <p class="note">Student Project (2020)</p>
     </div>
 
     <div class="project">
       <img src="images/project6.png" alt="">
       <div class="project-title">
-        <a href="https://singh.work/sprint.html">
+        <a class="project-link" href="https://singh.work/sprint.html">
           Value of Influence
         </a>
       </div>
-      <p>Defining the exchange between influencers and venues through a mobile app.</p>
-      <p class="note">Design Sprint • Parallel HQ (2018)</p>
+      <p>Defining the exchange between influencers and venues through a design sprint.</p>
+      <p class="note">Parallel HQ (2018)</p>
     </div>
 
     <!-- AMBASSADOR -->
@@ -196,12 +196,12 @@ a[target="_blank"] { cursor: alias; }
     <div class="project">
       <img src="images/project7.png" alt="">
       <div class="project-title">
-        <a href="https://singh.work/lmnop">
+        <a class="project-link" href="https://singh.work/lmnop">
           ABC's of branding a Preschool
         </a>
       </div>
-      <p>Designing a playful identity for early learning.</p>
-      <p class="note">Brand Identity • Elemenopy Preschool (2017)</p>
+      <p>Designing a playful brand identity for early learning.</p>
+      <p class="note">Elemenopy Preschool (2017)</p>
     </div>
 
   </div>
@@ -404,6 +404,31 @@ if (document.hidden){
   awaitingReturn = true;
   startDormant();
 }
+
+  /* ---------- RETURN TO PORTFOLIO ON BACK ---------- */
+
+function openPortfolio() {
+  portfolio.hidden = false;
+  portfolio.setAttribute('aria-hidden', 'false');
+  portfolio.scrollIntoView({ behavior: 'auto' });
+}
+
+// set flag when a project is clicked
+document.querySelectorAll('#portfolio-appendix .project-link').forEach(a => {
+  a.addEventListener('click', () => {
+    sessionStorage.setItem('returnToPortfolio', '1');
+  });
+});
+
+// when coming back (including BFCache), reopen portfolio
+function maybeReturnToPortfolio() {
+  if (sessionStorage.getItem('returnToPortfolio') === '1') {
+    sessionStorage.removeItem('returnToPortfolio');
+    openPortfolio();
+  }
+}
+
+window.addEventListener('pageshow', maybeReturnToPortfolio);
 </script>
 
 </body>
