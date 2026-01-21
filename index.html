@@ -302,6 +302,8 @@ document.addEventListener("keydown", (e) => {
 });
     
 // dormant tab face spam
+const isDesktop = window.matchMedia('(pointer: fine)').matches;
+if (isDesktop) {
 const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
 const MAX_BOOMS = 25;
 const SPAWN_INTERVAL = 15000; // 15 seconds
@@ -369,11 +371,10 @@ function startClearing(){
 /* visibility logic */
 function handleVisibility(){
   if (document.hidden){
-    awaitingReturn = true;   // arm clearing for when user returns
+    awaitingReturn = true;
     startDormant();
   } else {
     stopDormant();
-    // IMPORTANT: do not clear yet — wait for user attention (mouse/touch)
   }
 }
 
@@ -399,7 +400,7 @@ if (document.hidden){
   awaitingReturn = true;
   startDormant();
 }
-
+}
   /* ---------- RETURN TO PORTFOLIO ON BACK ---------- */
 
 function openPortfolio() {
