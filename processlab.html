@@ -20,7 +20,6 @@
   }
 
   .wrap { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
-  /* header WITHOUT “facilitation archives” */
   header { padding: 8px 12px; color: #555; border-bottom: 1px solid #e5e5e5; }
   header .sub { color: #666; font-size: 13px; }
 
@@ -53,20 +52,25 @@
   }
   .tile img { display: block; width: 100%; height: auto; outline: none; }
 
-  /* centered big image: NO borders/outlines/shadows/radius */
-  .focus {
-    position: absolute; left: 50%; top: 50%;
-    transform: translate(-50%, -50%);
-    width: 720px;                 /* big image width */
-    max-width: calc(100vw - 40px);
-    max-height: calc(100vh - 90px); /* leave room for header */
-    background: #fff;
-  }
-  .focus img {
-    display: block;
-    width: 100%; height: 100%;
-    object-fit: contain; background: #fff; outline: none;
-  }
+  /* centered big image — hard center */
+.focus{
+  position:absolute;
+  inset: 0;              /* pin to all sides of the stage */
+  margin: auto;          /* center both axes */
+  width: 720px;          /* your main width */
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 90px); /* room for header */
+  background:#fff;
+}
+.focus img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  background:#fff;
+  outline:none;
+}
+
 </style>
 </head>
 
@@ -129,6 +133,12 @@
   const canvas = document.getElementById('canvas');
   const focusImg = document.getElementById('focusImg');
 
+  // tweakables
+  const THUMB_W = 120;     // thumbnail width
+  const GAP = 8;           // min spacing between thumbs
+  const EDGE_PAD_TL = 10;  // top/left pad (keep a little breathing room)
+  const EDGE_PAD_RB = 16;  // right/bottom pad (extra to avoid bleed)
+
   let metas = [];
   let current = -1;
 
@@ -156,38 +166,45 @@
     const W = stage.clientWidth;
     const H = stage.clientHeight;
 
-    // focus frame bbox (kept clear)
+    // estimate focus frame bbox (to keep clear).
+    // tighter VERTICAL padding so thumbs can sit closer top/bottom of big image.
     const focusW = Math.min(720, W - 40);
-    const focusH = Math.min(H - 90, focusW * 0.75);
+    const focusH = Math.min(H - 90, focusW * 0.75); // rough (landscape-biased)
     const fx = (W - focusW)/2, fy = (H - focusH)/2;
-    const hole = { x: fx - 40, y: fy - 30, w: focusW + 80, h: focusH + 60 };
 
-    const TW = 120; // thumb width
-    const GAP = 8;
+    const HOLE_PAD_X = 60;  // horizontal keep-out
+    const HOLE_PAD_Y = 16;  // vertical keep-out (smaller → closer to image)
+    const hole = {
+      x: fx - HOLE_PAD_X,
+      y: fy - HOLE_PAD_Y,
+      w: focusW + HOLE_PAD_X*2,
+      h: focusH + HOLE_PAD_Y*2
+    };
+
     const placed = [];
-
     metas.forEach((m, i) => {
-      const th = Math.round(TW * (m.a || 1));
+      const th = Math.round(THUMB_W * (m.a || 1));
 
       let tries = 0, ok = false, x = 0, y = 0;
-      while (!ok && tries < 400){
-        x = randInt(8, Math.max(8, W - TW - 8));
-        y = randInt(8, Math.max(8, H - th - 8));
+      while (!ok && tries < 500){
+        // clamp ranges so we NEVER bleed the right/bottom
+        x = randInt(EDGE_PAD_TL, Math.max(EDGE_PAD_TL, W - THUMB_W - EDGE_PAD_RB));
+        y = randInt(EDGE_PAD_TL, Math.max(EDGE_PAD_TL, H - th      - EDGE_PAD_RB));
 
-        const cand = { x, y, w: TW, h: th };
+        const cand = { x, y, w: THUMB_W, h: th };
 
-        ok = !overlap(cand, hole, 10) &&
-             placed.every(p => !overlap(cand, p, GAP));
+        ok = !rectsOverlap(cand, hole, 6) && // slight overlap allowed only when squares get focused later; we don't reflow
+             placed.every(p => !rectsOverlap(cand, p, GAP));
         tries++;
       }
 
-      placed.push({ x, y, w: TW, h: th });
+      placed.push({ x, y, w: THUMB_W, h: th });
 
       const fig = document.createElement('figure');
       fig.className = 'tile';
       fig.style.left = x + 'px';
       fig.style.top  = y + 'px';
-      fig.style.width= TW + 'px';
+      fig.style.width= THUMB_W + 'px';
       fig.dataset.index = i;
 
       const im = document.createElement('img');
@@ -205,10 +222,12 @@
     const m = metas[current];
     focusImg.src = encodeURI(m.src);
     focusImg.alt = `image ${current+1}`;
+    // Note: we do NOT reflow thumbnails on focus change
+    // (okay if a square image overlaps a bit, per your note).
   }
 
   // helpers
-  function overlap(a, b, gap){
+  function rectsOverlap(a, b, gap){
     return !(a.x + a.w + gap <= b.x ||
              b.x + b.w + gap <= a.x ||
              a.y + a.h + gap <= b.y ||
