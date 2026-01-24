@@ -9,339 +9,391 @@
 
 <style>
   :root{
-    --bg:#f2f2f2; --fg:#111;
+    --bg:#ffffff; --fg:#111;
 
-    /* SCATTER KNOBS */
-    --page-pad: 28px;   /* page side padding */
-    --gap: 16px;        /* initial spacing buffer between items */
-    --min-w: 300px;     /* starting width range (desktop)  ⟵ you asked larger */
-    --max-w: 700px;     /* starting width range (desktop)  ⟵ you asked larger */
-    --size-bias: 1.20;  /* global multiplier for default size (1.0 = no change) */
+    /* GRID (cutting-mat vibe) */
+    --grid: 16px;                         /* base grid size */
+    --grid-sub: #f6f6f6;                  /* tiny cells */
+    --grid-main: #efefef;                 /* every 4th line */
+
+    /* LAYOUT */
+    --page-pad: 32px;                     /* side padding */
+    --gap: 16px;                          /* min spacing between tiles (for initial placement) */
+    --min-w: 280px;                       /* initial random width range (desktop) */
+    --max-w: 680px;
+    --size-bias: 1.18;                    /* >1 => a bit larger by default */
 
     /* DRAG/RESIZE */
     --tile-shadow: 0 0 0 1px rgba(0,0,0,.06);
-    --handle-size: 14px; /* resize handle square size */
+    --handle-size: 14px;
   }
 
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  *{ box-sizing:border-box }
+  html,body{ height:100% }
+  body{
+    margin:0; background:var(--bg); color:var(--fg);
+    font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
   }
 
-  /* Desktop-only wrapper */
-  .wrap {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    height: 100vh;
+  .wrap{
+    display:grid;
+    grid-template-rows:auto 1fr;
+    height:100vh;
   }
-  header {
-    padding: 14px max(var(--page-pad), env(safe-area-inset-left)) 6px max(var(--page-pad), env(safe-area-inset-right));
-    color: #777; letter-spacing: .25px;
-  }
-
-  /* Scrollable stage */
-  .stage {
-    position: relative;
-    overflow: auto;
-    padding: 0 var(--page-pad);
-    background: #f2f2f2;
-    -webkit-user-select: none; user-select: none;
+  header{
+    padding:14px max(var(--page-pad), env(safe-area-inset-left)) 6px max(var(--page-pad), env(safe-area-inset-right));
+    color:#777; letter-spacing:.25px;
   }
 
-  /* The tall canvas we place tiles on */
-  #canvas {
-    position: relative;
-    width: 100%;
-    /* JS sets height */
+  /* Stage with cutting-mat grid */
+  .stage{
+    position:relative;
+    overflow:auto;
+    padding:0 var(--page-pad);
+    background:
+      /* sub grid */
+      linear-gradient(var(--grid-sub) 1px, transparent 1px) 0 0/100% var(--grid),
+      linear-gradient(90deg, var(--grid-sub) 1px, transparent 1px) 0 0/var(--grid) 100%,
+      /* main grid (every 4 lines) */
+      linear-gradient(var(--grid-main) 1px, transparent 1px) 0 0/100% calc(var(--grid)*4),
+      linear-gradient(90deg, var(--grid-main) 1px, transparent 1px) 0 0/calc(var(--grid)*4) 100%,
+      #fff;
+    -webkit-user-select:none; user-select:none;
   }
+
+  /* Canvas where tiles are placed (height set by JS) */
+  #canvas{ position:relative; width:100%; }
 
   /* Tiles */
-  .tile {
-    position: absolute;
-    margin: 0;
-    user-select: none;
-    -webkit-user-drag: none;
-    touch-action: none; /* so pointer events are precise */
-    cursor: grab;
-    box-shadow: var(--tile-shadow);
+  .tile{
+    position:absolute;
+    margin:0;
+    user-select:none;
+    -webkit-user-drag:none;
+    touch-action:none;
+    cursor:grab;
+    box-shadow:var(--tile-shadow);
+    background:#fff;
+    will-change:left, top, width, height;
+    transform:translateZ(0);
   }
-  .tile.dragging { cursor: grabbing; }
-  .tile img {
-    display: block; width: 100%; height: auto; pointer-events: none;
+  .tile.dragging{ cursor:grabbing; }
+  .tile img{ display:block; width:100%; height:auto; pointer-events:none; }
+
+  /* Resize handle */
+  .handle{
+    position:absolute;
+    width:var(--handle-size);
+    height:var(--handle-size);
+    right:-6px; bottom:-6px;
+    border:1px solid #ccc;
+    background:#fff;
+    cursor:nwse-resize;
   }
 
-  /* Resize handle (bottom-right) */
-  .handle {
-    position: absolute;
-    width: var(--handle-size);
-    height: var(--handle-size);
-    right: -6px; bottom: -6px;
-    border: 1px solid #ccc;
-    background: #fff;
-    cursor: nwse-resize;
+  /* Phones: show a banner instead (keep your current behavior) */
+  .mobile-only{
+    display:none;
+    position:fixed; inset:0;
+    place-items:center; text-align:center;
+    padding:24px; background:#fff; color:#111;
   }
-
-  /* Mobile/tablet: only show the banner */
-  .mobile-only {
-    display: none;
-    position: fixed; inset: 0;
-    place-items: center;
-    text-align: center;
-    padding: 24px; background: #fff; color: #111;
+  @media (max-width:767px){
+    .wrap{ display:none; }
+    .mobile-only{ display:grid; }
   }
-@media (max-width: 767px) {
-  .wrap { display: none; }
-  .mobile-only { display: grid; }
-}
-
 </style>
 </head>
 
 <body>
-  <!-- Desktop content -->
   <div class="wrap">
     <header>behind the scenes of collaboration, and other cuttings from the work desk.</header>
     <main class="stage" id="stage">
-      <div id="canvas" aria-label="Scattered artefacts (draggable & resizable)"></div>
+      <div id="canvas" aria-label="Grid-snapped artefacts (drag/resize snap on release)"></div>
     </main>
   </div>
-
-  <!-- Mobile/tablet message -->
   <div class="mobile-only">view on desktop</div>
 
   <script>
-    // Image list
-    const IMAGES = [
-      "images/process/ADT vision.png",
-      "images/process/Concentric.png",
-      "images/process/BMC - design.png",
-      "images/process/criteriaforintake.png",
-      "images/process/CRM.png",
-      "images/process/gaps.png",
-      "images/process/ladder.jpg",
-      "images/process/ideally.jpg",
-      "images/process/curriculum.png",
-      "images/process/Datapoints.png",
-      "images/process/GNC learning.png",
-      "images/process/humaneval.png",
-      "images/process/knowledge sharing.png",
-      "images/process/Laddering Data.jpg",
-      "images/process/manual.png",
-      "images/process/medium is msg.png",
-      "images/process/Name Parameters.png",
-      "images/process/naming systems.png",
-      "images/process/ORG.png",
-      "images/process/ourresources.png",
-      "images/process/opp.png",
-      "images/process/Persona.jpg",
-      "images/process/playground UI.png",
-      "images/process/Product Partnerships Data Knowledge.png",
-      "images/process/Reach.png",
-      "images/process/Reachout if.png",
-      "images/process/Rules.png",
-      "images/process/scales of a problem.png",
-      "images/process/signals.png",
-      "images/process/singlesource of truth.png",
-      "images/process/dreaming sensing.png",
-      "images/process/timeline.png",
-      "images/process/types of slides.png",
-      "images/process/vendorgrid.png",
-      "images/process/whatwedonose.png",
-      "images/process/XCapit.png",
-      "images/process/x.png"
-    ];
+  const IMAGES = [
+    "images/process/ADT vision.png",
+    "images/process/Concentric.png",
+    "images/process/BMC - design.png",
+    "images/process/criteriaforintake.png",
+    "images/process/CRM.png",
+    "images/process/gaps.png",
+    "images/process/ladder.jpg",
+    "images/process/ideally.jpg",
+    "images/process/curriculum.png",
+    "images/process/Datapoints.png",
+    "images/process/GNC learning.png",
+    "images/process/humaneval.png",
+    "images/process/knowledge sharing.png",
+    "images/process/Laddering Data.jpg",
+    "images/process/manual.png",
+    "images/process/medium is msg.png",
+    "images/process/Name Parameters.png",
+    "images/process/naming systems.png",
+    "images/process/ORG.png",
+    "images/process/ourresources.png",
+    "images/process/opp.png",
+    "images/process/Persona.jpg",
+    "images/process/playground UI.png",
+    "images/process/Product Partnerships Data Knowledge.png",
+    "images/process/Reach.png",
+    "images/process/Reachout if.png",
+    "images/process/Rules.png",
+    "images/process/scales of a problem.png",
+    "images/process/signals.png",
+    "images/process/singlesource of truth.png",
+    "images/process/dreaming sensing.png",
+    "images/process/timeline.png",
+    "images/process/types of slides.png",
+    "images/process/vendorgrid.png",
+    "images/process/whatwedonose.png",
+    "images/process/XCapit.png",
+    "images/process/x.png"
+  ];
 
-    // Phone-only gate (iPad/tablets allowed)
-    const isPhone = matchMedia("(max-width: 767px)").matches;
-    if (!isPhone) {
+  const isPhone = matchMedia("(max-width: 767px)").matches;
+  if (!isPhone){
+    const stage = document.getElementById('stage');
+    const canvas = document.getElementById('canvas');
+    const css = getComputedStyle(document.documentElement);
 
-      const stage  = document.getElementById('stage');
-      const canvas = document.getElementById('canvas');
+    // vars
+    const GRID = parseInt(css.getPropertyValue('--grid')) || 16;
+    const PAD  = parseInt(css.getPropertyValue('--page-pad')) || 32;
+    const GAP  = parseInt(css.getPropertyValue('--gap')) || 16;
 
-      const css       = getComputedStyle(document.documentElement);
-      const GAP       = parseInt(css.getPropertyValue('--gap'))        || 16;
-      const MIN_W_0   = parseInt(css.getPropertyValue('--min-w'))      || 300;
-      const MAX_W_0   = parseInt(css.getPropertyValue('--max-w'))      || 700;
-      const PAD       = parseInt(css.getPropertyValue('--page-pad'))   || 28;
-      const SIZE_BIAS = parseFloat(css.getPropertyValue('--size-bias'))|| 1.2;
+    const MIN_W_0   = parseInt(css.getPropertyValue('--min-w')) || 280;
+    const MAX_W_0   = parseInt(css.getPropertyValue('--max-w')) || 680;
+    const SIZE_BIAS = parseFloat(css.getPropertyValue('--size-bias')) || 1.18;
 
-      const rand   = (a, b) => Math.random() * (b - a) + a;
-      const clamp  = (v, a, b) => Math.max(a, Math.min(b, v));
+    const rand  = (a,b)=> Math.random()*(b-a)+a;
+    const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
 
-      // 1) Load images to know aspects
-      Promise.all(IMAGES.map(loadMeta)).then(metas => {
-        build(metas);
-        // Relayout on resize (re-randomizes positions to fit new width/height)
-        let rid = null;
-        window.addEventListener('resize', () => {
-          cancelAnimationFrame(rid);
-          rid = requestAnimationFrame(() => build(metas));
-        }, { passive:true });
+    // Load all images to get aspect ratios
+    Promise.all(IMAGES.map(loadMeta)).then(metas=>{
+      build(metas);
+      let rid=null;
+      window.addEventListener('resize', ()=>{
+        cancelAnimationFrame(rid);
+        rid=requestAnimationFrame(()=>build(metas));
+      }, {passive:true});
+    });
+
+    function loadMeta(src){
+      return new Promise(res=>{
+        const img=new Image();
+        img.loading='eager';
+        img.decoding='async';
+        img.onload=()=>res({src,aspect: img.naturalWidth? img.naturalHeight/img.naturalWidth:0.7});
+        img.onerror=()=>res({src,aspect:0.7});
+        img.src=encodeURI(src);
+      });
+    }
+
+    // Grid helpers
+    const toCol = px => Math.max(0, Math.round(px/GRID));
+    const pxOf  = col=> col*GRID;
+
+    function build(metas){
+      canvas.innerHTML="";
+
+      const innerW = stage.clientWidth - PAD*2;
+      const cols = Math.max(8, Math.floor(innerW / GRID));
+
+      // derive min/max widths in columns
+      const minWpx = Math.min(MIN_W_0, Math.max(GRID*4, innerW*0.2));
+      const maxWpx = Math.max(minWpx+GRID*2, Math.min(MAX_W_0, innerW*0.9));
+      const minWc  = Math.max(4, toCol(minWpx));
+      const maxWc  = Math.max(minWc+2, toCol(maxWpx));
+
+      // target canvas height (will extend if crowded)
+      const Hview = stage.clientHeight || innerHeight;
+      let rows = Math.max( Math.ceil((metas.length*GRID*8) / innerW), Math.ceil((4*Hview)/GRID) );
+      let canvasH = rows*GRID;
+
+      const placed = [];   // occupancy rects in grid cells
+      let zTop = 10;
+
+      metas.forEach((m,i)=>{
+        const wc = clamp(Math.round(rand(minWc, maxWc) * SIZE_BIAS), minWc, maxWc);
+        const wpx = pxOf(wc);
+        const hpx = Math.round(wpx * (m.aspect || 0.7));
+
+        const gapRows = Math.ceil(GAP/GRID);
+        const hr = Math.max(3, toCol(hpx) + gapRows);
+
+        let tries=0, col=0, row=0, ok=false;
+        while(!ok && tries<400){
+          col = Math.floor(rand(0, cols - wc));
+          row = Math.floor(rand(0, rows - hr));
+          ok = !collides(col,row,wc,hr,placed);
+          if (!ok){
+            tries++;
+            if (tries===220){ rows += Math.ceil(Hview/GRID/2); canvasH = rows*GRID; }
+          }
+        }
+        placed.push({c:col, r:row, w:wc, h:hr});
+
+        const left = PAD + pxOf(col);
+        const top  = pxOf(row);
+
+        const fig = document.createElement('figure');
+        fig.className='tile';
+        fig.style.left = left + 'px';
+        fig.style.top  = top  + 'px';
+        fig.style.width= wpx  + 'px';
+        fig.style.zIndex = (++zTop).toString();
+
+        const img = document.createElement('img');
+        img.alt = `artefact ${i+1}`;
+        img.src = encodeURI(m.src);
+        fig.appendChild(img);
+
+        const handle = document.createElement('div');
+        handle.className='handle';
+        fig.appendChild(handle);
+
+        fig._state = {
+          aspect: m.aspect || 0.7,
+          minW: pxOf(minWc),
+          maxW: pxOf(maxWc),
+          PAD, GRID
+        };
+
+        canvas.appendChild(fig);
+        enableDragSnapOnRelease(fig);
+        enableResizeSnapOnRelease(fig, handle);
       });
 
-      function loadMeta(src) {
-        return new Promise((res) => {
-          const img = new Image();
-          img.loading = 'eager';
-          img.decoding = 'async';
-          img.onload = () => res({ src, w: img.naturalWidth, h: img.naturalHeight, aspect: img.naturalWidth ? img.naturalHeight / img.naturalWidth : 0.7 });
-          img.onerror = () => res({ src, w: 1200, h: 800, aspect: 800/1200 });
-          img.src = encodeURI(src);
-        });
-      }
+      canvas.style.height = canvasH + 'px';
 
-      // 2) Initial scatter layout (no overlap), then enable drag+resize
-      function build(metas){
-        canvas.innerHTML = "";
-
-        const W = stage.clientWidth - PAD * 2;           // usable width
-        const Hview = stage.clientHeight || innerHeight; // viewport height
-        const MIN_W = Math.min(MIN_W_0, Math.max(160, W * 0.25));
-        const MAX_W = Math.max(MIN_W + 40, Math.min(MAX_W_0, W * 0.9));
-
-        // Make it tall: ~6 images per screen; at least 4 screens
-        const screensBase = Math.max(4, Math.ceil(metas.length / 6));
-        let canvasH = Math.round(screensBase * Hview);
-
-        const rects = [];
-        let zTop = 10;
-
-        // place each image
-        metas.forEach((m, i) => {
-          // random width within range, biased larger
-          const w0 = clamp(rand(MIN_W, MAX_W) * SIZE_BIAS, MIN_W, MAX_W);
-          const h0 = Math.round(w0 * (m.aspect || 0.7));
-
-          // find a spot that doesn't overlap earlier rects
-          let x=0, y=0, tries=0, ok=false;
-          while (!ok && tries < 220) {
-            x = Math.round(rand(PAD, Math.max(PAD, W - w0 - PAD)));
-            y = Math.round(rand(GAP, Math.max(GAP, canvasH - h0 - GAP)));
-            const r = { x, y, w:w0, h:h0 };
-            ok = rects.every(prev => !overlap(r, prev, GAP));
-            if (!ok) {
-              tries++;
-              if (tries === 150) canvasH += Math.round(Hview * 0.5); // give more room if crowded
-            } else {
-              rects.push(r);
-            }
-          }
-
-          // DOM
-          const fig = document.createElement('figure');
-          fig.className = 'tile';
-          fig.style.left = x + 'px';
-          fig.style.top  = y + 'px';
-          fig.style.width = w0 + 'px';
-          fig.style.zIndex = (++zTop).toString();
-
-          // content
-          const img = document.createElement('img');
-          img.alt = `artefact ${i+1}`;
-          img.src = encodeURI(m.src);
-          fig.appendChild(img);
-
-          // handle
-          const handle = document.createElement('div');
-          handle.className = 'handle';
-          fig.appendChild(handle);
-
-          // store state on element
-          fig._state = {
-            aspect: m.aspect || 0.7,
-            minW: Math.max(160, MIN_W),  // do not go too tiny
-            maxW: Math.max(MIN_W + 40, Math.min(MAX_W, W * 0.95)), // safety
-          };
-
-          canvas.appendChild(fig);
-
-          enableDrag(fig);
-          enableResize(fig, handle);
-        });
-
-        canvas.style.height = canvasH + 'px';
-
-        // helpers
-        function overlap(a, b, gap){
-          return !(
-            a.x + a.w + gap <= b.x ||
-            b.x + b.w + gap <= a.x ||
-            a.y + a.h + gap <= b.y ||
-            b.y + b.h + gap <= a.y
-          );
+      function collides(c,r,w,h,arr){
+        for (const a of arr){
+          if (!(c+w <= a.c || a.c+a.w <= c || r+h <= a.r || a.r+a.h <= r)) return true;
         }
-
-        function keepInBounds(el){
-          // keep tile within canvas bounds after drag/resize
-          const w = el.offsetWidth;
-          const h = el.offsetHeight;
-          const maxX = Math.max(0, (stage.clientWidth - PAD*2) - w - PAD);
-          const maxY = Math.max(0, (parseInt(canvas.style.height)||canvas.scrollHeight) - h - 8);
-          const x = clamp(parseFloat(el.style.left)||0, PAD, maxX);
-          const y = clamp(parseFloat(el.style.top)||0,  0,   maxY);
-          el.style.left = x + 'px';
-          el.style.top  = y + 'px';
-        }
-
-        function enableDrag(el){
-          let pid=null, sx=0, sy=0, ox=0, oy=0;
-          el.addEventListener('pointerdown', (e) => {
-            if (e.target.classList.contains('handle')) return; // resize takes precedence
-            pid = e.pointerId;
-            el.setPointerCapture(pid);
-            sx = e.clientX; sy = e.clientY;
-            ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
-            el.classList.add('dragging');
-            el.style.zIndex = (++zTop).toString();
-            e.preventDefault();
-          });
-          el.addEventListener('pointermove', (e) => {
-            if (e.pointerId !== pid) return;
-            const nx = ox + (e.clientX - sx);
-            const ny = oy + (e.clientY - sy);
-            el.style.left = nx + 'px';
-            el.style.top  = ny + 'px';
-          });
-          const end = () => { pid=null; el.classList.remove('dragging'); keepInBounds(el); };
-          el.addEventListener('pointerup', end);
-          el.addEventListener('pointercancel', end);
-          el.addEventListener('lostpointercapture', end);
-        }
-
-        function enableResize(el, handle){
-          let pid=null, sx=0, sy=0, startW=0, startH=0;
-          handle.addEventListener('pointerdown', (e) => {
-            pid = e.pointerId;
-            handle.setPointerCapture(pid);
-            sx = e.clientX; sy = e.clientY;
-            startW = el.offsetWidth; startH = el.offsetHeight;
-            el.style.zIndex = (++zTop).toString();
-            e.preventDefault();
-            e.stopPropagation();
-          });
-          handle.addEventListener('pointermove', (e) => {
-            if (e.pointerId !== pid) return;
-            const dx = e.clientX - sx;
-            // Resize with aspect lock using width as driver
-            const st = el._state;
-            let w = clamp(startW + dx, st.minW, st.maxW);
-            let h = Math.round(w * st.aspect);
-            el.style.width = w + 'px';
-            el.style.height = h + 'px'; // height will be dictated by image ratio, but set for bounds
-          });
-          const end = () => {
-            if (pid==null) return;
-            pid=null;
-            keepInBounds(el);
-          };
-          handle.addEventListener('pointerup', end);
-          handle.addEventListener('pointercancel', end);
-          handle.addEventListener('lostpointercapture', end);
-        }
+        return false;
       }
     }
+
+    /* ---------- dragging: free-move while dragging, snap to grid on release ---------- */
+
+    // clamp to canvas bounds (no snapping)
+    function clampNoSnap(el, nx, ny){
+      const st = el._state;
+      const innerW = stage.clientWidth - st.PAD*2;
+      const canvasH = parseInt(canvas.style.height) || canvas.scrollHeight || canvas.clientHeight;
+      const maxX = Math.max(0, innerW - el.offsetWidth);
+      const maxY = Math.max(0, canvasH - el.offsetHeight);
+
+      nx = clamp(nx, 0, maxX);
+      ny = clamp(ny, 0, maxY);
+
+      el.style.left = (st.PAD + nx) + 'px';
+      el.style.top  = ny + 'px';
+    }
+
+    // grid-snap position (and clamp) used on release
+    function clampSnap(el, nx, ny){
+      const st = el._state;
+      const innerW = stage.clientWidth - st.PAD*2;
+      const canvasH = parseInt(canvas.style.height) || canvas.scrollHeight || canvas.clientHeight;
+      const maxX = Math.max(0, innerW - el.offsetWidth);
+      const maxY = Math.max(0, canvasH - el.offsetHeight);
+
+      nx = clamp(nx, 0, maxX);
+      ny = clamp(ny, 0, maxY);
+
+      nx = Math.round(nx / st.GRID) * st.GRID;
+      ny = Math.round(ny / st.GRID) * st.GRID;
+
+      el.style.left = (st.PAD + nx) + 'px';
+      el.style.top  = ny + 'px';
+    }
+
+    function enableDragSnapOnRelease(el){
+      let pid=null, sx=0, sy=0, ox=0, oy=0;
+      el.addEventListener('pointerdown', (e)=>{
+        if (e.target.classList.contains('handle')) return;
+        pid = e.pointerId;
+        el.setPointerCapture(pid);
+        sx = e.clientX; sy = e.clientY;
+        ox = (parseFloat(el.style.left)||0) - el._state.PAD;
+        oy =  parseFloat(el.style.top)||0;
+        el.classList.add('dragging');
+        el.style.zIndex = (parseInt(el.style.zIndex)||10)+1;
+        if (e.cancelable) e.preventDefault();
+      });
+      el.addEventListener('pointermove', (e)=>{
+        if (e.pointerId !== pid) return;
+        const nx = ox + (e.clientX - sx);
+        const ny = oy + (e.clientY - sy);
+        // move freely but keep within bounds
+        clampNoSnap(el, nx, ny);
+      });
+      const end = ()=>{
+        if (pid==null) return;
+        // snap when released
+        const nx = (parseFloat(el.style.left)||0) - el._state.PAD;
+        const ny =  parseFloat(el.style.top)||0;
+        clampSnap(el, nx, ny);
+        pid=null; el.classList.remove('dragging');
+      };
+      el.addEventListener('pointerup', end);
+      el.addEventListener('pointercancel', end);
+      el.addEventListener('lostpointercapture', end);
+    }
+
+    /* ---------- resize: free width while dragging, snap width/pos on release ---------- */
+
+    function enableResizeSnapOnRelease(el, handle){
+      let pid=null, sx=0, startW=0;
+      handle.addEventListener('pointerdown', (e)=>{
+        pid = e.pointerId;
+        handle.setPointerCapture(pid);
+        sx = e.clientX;
+        startW = el.offsetWidth;
+        el.style.zIndex = (parseInt(el.style.zIndex)||10)+1;
+        e.preventDefault(); e.stopPropagation();
+      });
+      handle.addEventListener('pointermove', (e)=>{
+        if (e.pointerId !== pid) return;
+        const dx = e.clientX - sx;
+        const st = el._state;
+        // resize freely (no snap), clamped to min/max
+        let w = clamp(startW + dx, st.minW, st.maxW);
+        let h = Math.round(w * st.aspect);
+        el.style.width = w + 'px';
+        el.style.height= h + 'px';
+
+        // while resizing, keep current position inside canvas without snapping
+        const nx = (parseFloat(el.style.left)||0) - st.PAD;
+        const ny =  parseFloat(el.style.top)||0;
+        clampNoSnap(el, nx, ny);
+      });
+      const end = ()=>{
+        if (pid==null) return;
+        // snap width to grid columns, and position to grid
+        const st = el._state;
+        let w = Math.round((el.offsetWidth) / st.GRID) * st.GRID;
+        w = clamp(w, st.minW, st.maxW);
+        el.style.width = w + 'px';
+        el.style.height= Math.round(w * st.aspect) + 'px';
+
+        const nx = (parseFloat(el.style.left)||0) - st.PAD;
+        const ny =  parseFloat(el.style.top)||0;
+        clampSnap(el, nx, ny);
+
+        pid=null;
+      };
+      handle.addEventListener('pointerup', end);
+      handle.addEventListener('pointercancel', end);
+      handle.addEventListener('lostpointercapture', end);
+    }
+  }
   </script>
 </body>
 </html>
