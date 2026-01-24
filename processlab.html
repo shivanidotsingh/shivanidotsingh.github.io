@@ -3,150 +3,81 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>collaboration archives</title>
-<meta name="description" content="miro board" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>🌀</text></svg>">
+<title>facilitation archives</title>
+<meta name="description" content="process artefacts" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>*</text></svg>">
 
 <style>
-  :root{
-    --bg:#ffffff; --fg:#111;
-
-    /* cutting-mat grid */
-    --grid: 16px;
-    --grid-sub:#f6f6f6;
-    --grid-main:#efefef;
-
-    /* layout */
-    --side-gutter: 32px;
-    --gap: 12px;
-
-    /* focus (big image) */
-    --focus-w: 800px;      /* 720 or higher — tweak here */
-    --focus-max-h: 86vh;
-
-    /* thumbs */
-    --thumb-w: 148px;      /* tiny thumbnail size */
-    --thumb-shadow: 0 0 0 1px rgba(0,0,0,.06);
+  /* ====== BAREBONES ====== */
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: #fff;
+    color: #000;
+    font: 14px/1.4 system-ui, -apple-system, Arial, sans-serif;
   }
 
-  *{ box-sizing:border-box }
-  html,body{ height:100% }
-  body{
-    margin:0; background:var(--bg); color:var(--fg);
-    font:15px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+  .wrap { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
+  header { padding: 8px 12px; color: #555; }
+
+  /* Scroll area */
+  .stage { position: relative; overflow: auto; }
+  #canvas  { position: relative; }
+
+  /* Thumbnails (tiny) */
+  .tile {
+    position: absolute;
+    width: 140px;         /* thumb width */
+    border: 1px solid #ddd;
+    background: #fff;
+  }
+  .tile img { display: block; width: 100%; height: auto; }
+
+  /* Centered focused image (just the image, no chrome) */
+  .focus-layer { position: fixed; inset: 0; pointer-events: none; }
+  .focus-card  {
+    position: absolute; left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 720px;                     /* big image width */
+    max-width: calc(100vw - 32px);
+    max-height: 90vh;
+    background: #fff;
+    pointer-events: auto;             /* allow clicking the image (future) */
+  }
+  .focus-card img {
+    width: 100%; height: 100%; object-fit: contain; background: #fff;
+    border: 1px solid #ddd;          /* simple 1px, can remove if you want */
   }
 
-  .wrap{
-    display:grid;
-    grid-template-rows:auto 1fr;
-    height:100vh;
-  }
-  header{
-    padding:14px max(var(--side-gutter), env(safe-area-inset-left)) 6px max(var(--side-gutter), env(safe-area-inset-right));
-    color:#777; letter-spacing:.25px;
-  }
-
-  /* stage with grid background */
-  .stage{
-    position:relative;
-    overflow:auto;
-    padding:0 var(--side-gutter);
-    background:
-      linear-gradient(var(--grid-sub) 1px, transparent 1px) 0 0/100% var(--grid),
-      linear-gradient(90deg, var(--grid-sub) 1px, transparent 1px) 0 0/var(--grid) 100%,
-      linear-gradient(var(--grid-main) 1px, transparent 1px) 0 0/100% calc(var(--grid)*4),
-      linear-gradient(90deg, var(--grid-main) 1px, transparent 1px) 0 0/calc(var(--grid)*4) 100%,
-      #fff;
-    -webkit-user-select:none; user-select:none;
-  }
-
-  /* a BIG canvas so thumbs can live all around */
-  #canvas{
-    position:relative;
-    /* width/height are set by JS (px) */
-  }
-
-  /* thumbnails (scattered) */
-  .tile{
-    position:absolute;
-    width:var(--thumb-w);
-    background:#fff;
-    box-shadow:var(--thumb-shadow);
-    transition:opacity .25s ease, transform .2s ease;
-  }
-  .tile img{ display:block; width:100%; height:auto }
-
-  /* dim the scatter when focused */
-  .dimmed .tile{ opacity:.35 }
-
-  /* focus layer (fixed center) */
-  .focus-layer{ position:fixed; inset:0; pointer-events:none; z-index:50; display:none; }
-  .has-focus .focus-layer{ display:block; }
-  .focus-card{
-    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
-    width:var(--focus-w);
-    max-width:min(var(--focus-w), calc(100vw - 2*var(--side-gutter)));
-    max-height:var(--focus-max-h);
-    display:grid; place-items:center;
-    background:#fff;
-    box-shadow:0 10px 40px rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.08);
-    border-radius:6px; overflow:hidden; pointer-events:auto;
-  }
-  .focus-card img{ width:100%; height:100%; object-fit:contain; background:#fff; }
-
-  /* nav arrows */
-  .nav-btn{
-    position:fixed; top:50%; transform:translateY(-50%);
-    z-index:60; pointer-events:auto;
-    width:42px; height:42px; border-radius:50%;
-    display:grid; place-items:center;
-    background:rgba(255,255,255,.95);
-    border:1px solid #e5e5e5;
-    box-shadow:0 6px 20px rgba(0,0,0,.08);
-    cursor:pointer;
-    display:none;
-  }
-  .has-focus .nav-btn{ display:grid; }
-  .nav-left{ left:14px } .nav-right{ right:14px }
-  .nav-btn svg{ width:18px; height:18px }
-
-  /* phones: banner only */
-  .mobile-only{
-    display:none; position:fixed; inset:0;
-    place-items:center; text-align:center; padding:24px; background:#fff; color:#111;
-  }
-  @media (max-width:767px){
+  /* Phones: hard-stop (optional; remove if you want mobile too) */
+  .mobile-only { display: none; position: fixed; inset: 0; align-items: center; justify-content: center; background:#fff; }
+  @media (max-width: 767px){
     .wrap{ display:none }
-    .mobile-only{ display:grid }
+    .mobile-only{ display:flex }
   }
 </style>
 </head>
 
 <body>
   <div class="wrap">
-    <header>behind the scenes of collaboration, and other cuttings from the work desk.</header>
-
+    <header>process cuttings (click a thumbnail)</header>
     <main class="stage" id="stage">
-      <div id="canvas" aria-label="Scattered thumbnails (click to focus)"></div>
+      <div id="canvas" aria-label="scattered thumbnails"></div>
 
-      <div class="focus-layer" id="focusLayer" aria-hidden="true">
+      <!-- centered big image -->
+      <div class="focus-layer" id="focusLayer">
         <figure class="focus-card" id="focusCard">
           <img id="focusImg" alt="">
         </figure>
       </div>
-
-      <button class="nav-btn nav-left" id="prevBtn" aria-label="Previous">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="nav-btn nav-right" id="nextBtn" aria-label="Next">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
     </main>
   </div>
 
   <div class="mobile-only">view on desktop</div>
 
   <script>
+  /* your images */
   const IMAGES = [
     "images/process/ADT vision.png",
     "images/process/Concentric.png",
@@ -191,173 +122,116 @@
   if (!isPhone){
     const stage  = document.getElementById('stage');
     const canvas = document.getElementById('canvas');
-
-    // focus UI
-    const body      = document.body;
-    const focusLayer= document.getElementById('focusLayer');
-    const focusCard = document.getElementById('focusCard');
-    const focusImg  = document.getElementById('focusImg');
-    const prevBtn   = document.getElementById('prevBtn');
-    const nextBtn   = document.getElementById('nextBtn');
-
-    // config
-    const GRID    = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid')) || 16;
-    const GAP     = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap'))  || 12;
-    const THUMB_W = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--thumb-w')) || 148;
-
-    const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
+    const focusImg = document.getElementById('focusImg');
 
     let metas = [];
     let current = -1;
 
-    // 1) load images to get aspect ratios
+    // load natural sizes
     Promise.all(IMAGES.map(loadMeta)).then(_metas=>{
       metas = _metas;
-      layoutScatter();
-      // center scroll to canvas middle
+      buildScatter();
       centerScroll();
-      // start focused on a RANDOM image
-      setFocus(Math.floor(Math.random()*IMAGES.length));
+      setFocus(Math.floor(Math.random() * IMAGES.length)); // start on a random one
     });
 
     function loadMeta(src){
       return new Promise(res=>{
         const img=new Image();
-        img.loading='eager'; img.decoding='async';
-        img.onload=()=>res({src, aspect: img.naturalWidth? img.naturalHeight/img.naturalWidth:1});
-        img.onerror=()=>res({src, aspect:1});
+        img.onload=()=>res({src, w: img.naturalWidth||1000, h: img.naturalHeight||1000, a: (img.naturalHeight||1000)/(img.naturalWidth||1000)});
+        img.onerror=()=>res({src, w:1000, h:1000, a:1});
         img.src=encodeURI(src);
       });
     }
 
-    // 2) build a big canvas and scatter tiny thumbnails around the center
-    function layoutScatter(){
-      canvas.innerHTML="";
+    function buildScatter(){
+      canvas.innerHTML = "";
 
       const vw = stage.clientWidth;
       const vh = stage.clientHeight;
 
-      // make a generous playground (4× viewport each way)
-      const CANVAS_W = Math.max(3200, vw * 4);
-      const CANVAS_H = Math.max(2400, vh * 4);
-      canvas.style.width  = CANVAS_W + 'px';
-      canvas.style.height = CANVAS_H + 'px';
+      // large canvas so thumbs can be placed all around the viewport center
+      const CW = Math.max(3200, vw*4);
+      const CH = Math.max(2400, vh*4);
+      canvas.style.width  = CW + 'px';
+      canvas.style.height = CH + 'px';
 
-      const CX = CANVAS_W / 2;
-      const CY = CANVAS_H / 2;
-
-      // keep thumbnails from the very center so the focus has breathing room
-      const innerHole = Math.min(vw, vh) * 0.8;         // diameter
-      const R_MIN = innerHole * 0.5;                    // min radius for thumbs
-      const R_MAX = Math.min(CANVAS_W, CANVAS_H) * 0.45; // max radius
-
+      const CX = CW/2, CY = CH/2;
+      const gap = 10;         // min spacing between thumbs
+      const TW  = 140;        // thumbnail width
       const placed = [];
 
-      metas.forEach((m, i) => {
-        // thumbnail height from aspect
-        const tw = THUMB_W;
-        const th = Math.round(tw * (m.aspect || 1));
+      metas.forEach((m, i)=>{
+        const th = Math.round(TW * (m.a || 1));
+        let tries=0, ok=false, x=0, y=0;
 
-        // try to place in polar coords around center; avoid overlap
-        let tries = 0, ok = false, x = 0, y = 0;
-        while (!ok && tries < 500){
-          // bias radius outward a bit for spread
-          const r = rand(R_MIN, R_MAX) * easeOut(Math.random());
-          const a = rand(0, Math.PI * 2);
-          x = Math.round(CX + r * Math.cos(a) - tw/2);
-          y = Math.round(CY + r * Math.sin(a) - th/2);
+        // keep a clean hole in the center so the big image sits free
+        const hole = Math.min(vw, vh) * 0.7;
+        const Rmin = hole * 0.55;
+        const Rmax = Math.min(CW, CH) * 0.45;
 
-          // clamp inside canvas
-          x = clamp(x, 0, CANVAS_W - tw);
-          y = clamp(y, 0, CANVAS_H - th);
+        while (!ok && tries<500){
+          const r = rand(Rmin, Rmax) * easeOut(Math.random());
+          const a = rand(0, Math.PI*2);
+          x = Math.round(CX + r*Math.cos(a) - TW/2);
+          y = Math.round(CY + r*Math.sin(a) - th/2);
 
-          const cand = {x, y, w: tw, h: th};
-          ok = placed.every(p => !overlap(cand, p, GAP));
+          x = clamp(x, 0, CW - TW);
+          y = clamp(y, 0, CH - th);
+
+          const cand = {x, y, w: TW, h: th};
+          ok = placed.every(p => !overlap(cand, p, gap));
           tries++;
         }
-        placed.push({x, y, w: tw, h: th});
+        placed.push({x, y, w: TW, h: th});
 
-        // DOM
         const fig = document.createElement('figure');
         fig.className = 'tile';
         fig.style.left = x + 'px';
         fig.style.top  = y + 'px';
-        fig.style.width= tw + 'px';
+        fig.style.width= TW + 'px';
         fig.dataset.index = i;
 
-        const img = document.createElement('img');
-        img.alt = `artefact ${i+1}`;
-        img.src = encodeURI(m.src);
-        fig.appendChild(img);
+        const im = document.createElement('img');
+        im.alt = `img ${i+1}`;
+        im.src = encodeURI(m.src);
+        fig.appendChild(im);
 
-        fig.addEventListener('click', () => setFocus(i));
+        fig.addEventListener('click', ()=> setFocus(i));
         canvas.appendChild(fig);
       });
 
       function rand(a,b){ return Math.random()*(b-a)+a; }
-      function easeOut(t){ return 1 - Math.pow(1-t, 2); } // quadratic ease
-      function overlap(a,b,gap){
-        return !(a.x + a.w + gap <= b.x ||
-                 b.x + b.w + gap <= a.x ||
-                 a.y + a.h + gap <= b.y ||
-                 b.y + b.h + gap <= a.y);
+      function easeOut(t){ return 1 - Math.pow(1-t,2); }
+      function overlap(a,b,g){
+        return !(a.x + a.w + g <= b.x ||
+                 b.x + b.w + g <= a.x ||
+                 a.y + a.h + g <= b.y ||
+                 b.y + b.h + g <= a.y);
       }
+      function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
     }
 
-    // center the scroll on the canvas middle
     function centerScroll(){
-      const CANVAS_W = canvas.scrollWidth;
-      const CANVAS_H = canvas.scrollHeight;
-      stage.scrollLeft = Math.max(0, CANVAS_W/2 - stage.clientWidth/2);
-      stage.scrollTop  = Math.max(0, CANVAS_H/2 - stage.clientHeight/2);
+      const CW = canvas.scrollWidth;
+      const CH = canvas.scrollHeight;
+      stage.scrollLeft = Math.max(0, CW/2 - stage.clientWidth/2);
+      stage.scrollTop  = Math.max(0, CH/2 - stage.clientHeight/2);
     }
 
-    // 3) focus behaviour
     function setFocus(i){
-      i = ( (i % metas.length) + metas.length ) % metas.length;
+      i = ((i % metas.length) + metas.length) % metas.length;
       current = i;
-
       const m = metas[i];
       focusImg.src = encodeURI(m.src);
-      focusImg.alt = `artefact ${i+1}`;
-
-      document.body.classList.add('has-focus');
-      document.getElementById('stage').classList.add('dimmed');
-      document.getElementById('focusLayer').setAttribute('aria-hidden', 'false');
+      focusImg.alt = `image ${i+1}`;
     }
-    function clearFocus(){
-      current = -1;
-      document.body.classList.remove('has-focus');
-      document.getElementById('stage').classList.remove('dimmed');
-      document.getElementById('focusLayer').setAttribute('aria-hidden', 'true');
-    }
-    function next(){ if (current<0) return setFocus(0); setFocus(current+1); }
-    function prev(){ if (current<0) return setFocus(metas.length-1); setFocus(current-1); }
 
-    // nav
-    document.getElementById('nextBtn').addEventListener('click', next);
-    document.getElementById('prevBtn').addEventListener('click', prev);
-
-    // keyboard
+    // Optional: keyboard cycle (simple, still barebones)
     window.addEventListener('keydown', (e)=>{
-      if (current >= 0){
-        if (e.key === 'ArrowRight') next();
-        else if (e.key === 'ArrowLeft')  prev();
-        else if (e.key === 'Escape')     clearFocus();
-      }
+      if (e.key === 'ArrowRight') setFocus(current + 1);
+      if (e.key === 'ArrowLeft')  setFocus(current - 1);
     });
-
-    // click outside to close
-    document.getElementById('focusLayer').addEventListener('click', (e)=>{
-      if (!document.getElementById('focusCard').contains(e.target)) clearFocus();
-    });
-
-    // keep centered scroll if the window size changes
-    let rid=null;
-    window.addEventListener('resize', ()=>{
-      cancelAnimationFrame(rid);
-      rid=requestAnimationFrame(centerScroll);
-    }, {passive:true});
   }
   </script>
 </body>
