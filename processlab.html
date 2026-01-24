@@ -20,8 +20,9 @@
     --side-gutter: 32px;                  /* visual gutters left/right */
     --gap: 12px;                          /* spacing between tiles (tight) */
 
-    /* DRAG */
+    /* DRAG/RESIZE */
     --tile-shadow: 0 0 0 1px rgba(0,0,0,.06);
+    --handle-size: 14px;
   }
 
   *{ box-sizing:border-box }
@@ -73,6 +74,14 @@
   .tile.dragging{ cursor:grabbing; }
   .tile img{ display:block; width:100%; height:auto; pointer-events:none; }
 
+  /* Resize handle */
+  .handle{
+    position:absolute;
+    width:var(--handle-size); height:var(--handle-size);
+    right:-6px; bottom:-6px;
+    border:1px solid #ccc; background:#fff; cursor:nwse-resize;
+  }
+
   /* Phones: show banner */
   .mobile-only{
     display:none; position:fixed; inset:0;
@@ -89,7 +98,7 @@
   <div class="wrap">
     <header>behind the scenes of collaboration, and other cuttings from the work desk.</header>
     <main class="stage" id="stage">
-      <div id="canvas" aria-label="Grid-snapped artefacts (tight; consistent sizes; no overlaps)"></div>
+      <div id="canvas" aria-label="Grid-snapped artefacts (tight; resize; slight overlap allowed)"></div>
     </main>
   </div>
   <div class="mobile-only">view on desktop</div>
@@ -146,11 +155,14 @@
     const GRID  = parseInt(css.getPropertyValue('--grid')) || 16;
     const GAP   = parseInt(css.getPropertyValue('--gap'))  || 12;
 
-    /* Sizing policy (edit these) */
-    const WIDE_W      = 720;   // landscape width (px)
+    /* Consistent sizing (edit these) */
+    const WIDE_W      = 700;   // landscape width (px)  ← per your request
     const NARROW_W    = 480;   // square-ish width (px)
     const PORTRAIT_W  = 480;   // portrait width (px)
     const SQUARE_EPS  = 0.12;  // |aspect - 1| <= eps => square-ish
+
+    /* Overlap tolerance (px) */
+    const OVERLAP_TOL = 20;    // allow up to 20px overlap
 
     const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
 
@@ -176,13 +188,43 @@
     const toPx    = c  => c*GRID;
 
     function desiredWidthFor(aspect){
-      // aspect = h/w
       if (Math.abs(aspect - 1) <= SQUARE_EPS) return NARROW_W;   // square-ish
       if (aspect < 1) return WIDE_W;                              // landscape
       return PORTRAIT_W;                                          // portrait
     }
 
-    /* --------- initial tight packing (skyline / no overlap) --------- */
+    /* ---------- collision helpers with tolerance ---------- */
+    function readRects(excludeEl=null){
+      const rects=[];
+      canvas.querySelectorAll('.tile').forEach(el=>{
+        if (el===excludeEl) return;
+        rects.push({
+          el,
+          x: parseFloat(el.style.left)||0,
+          y: parseFloat(el.style.top)||0,
+          w: el.offsetWidth,
+          h: el.offsetHeight
+        });
+      });
+      return rects;
+    }
+    // Returns true if overlap is more than tolerance (i.e., NOT allowed)
+    function overlapsBeyondTol(a,b,tol){
+      const left   = Math.max(a.x, b.x);
+      const right  = Math.min(a.x + a.w, b.x + b.w);
+      const top    = Math.max(a.y, b.y);
+      const bottom = Math.min(a.y + a.h, b.y + b.h);
+      const overW = right - left;
+      const overH = bottom - top;
+      if (overW <= 0 || overH <= 0) return false; // no overlap
+      // allow skinny overlaps up to tol in either dimension
+      return (overW > tol && overH > tol);
+    }
+    function violatesWithTol(candidate, others, tol){
+      return others.some(r => overlapsBeyondTol(candidate, r, tol));
+    }
+
+    /* --------- initial tight packing (skyline / no violation) --------- */
     function build(metas){
       canvas.innerHTML="";
 
@@ -197,7 +239,6 @@
       const Hview = stage.clientHeight || innerHeight;
       let canvasH = Math.ceil((4*Hview)/GRID) * GRID;
 
-      // place in natural order for now (keeps feel predictable)
       metas.forEach((m,i)=>{
         // consistent width by category, then snap to grid column multiple
         const targetW = desiredWidthFor(m.aspect);
@@ -236,41 +277,30 @@
         img.src = encodeURI(m.src);
         fig.appendChild(img);
 
+        // resize handle
+        const handle = document.createElement('div');
+        handle.className='handle';
+        fig.appendChild(handle);
+
         // state for interactions
         fig._state = { aspect: m.aspect || 1, GRID };
 
         canvas.appendChild(fig);
 
-        // drag with snap + no overlap
-        enableDragSnapNoOverlap(fig);
+        // interactions
+        enableDragSnapTol(fig);
+        enableResizeSnapTol(fig, handle);
       });
 
       canvas.style.height = canvasH + 'px';
     }
 
-    /* ---------- drag: free-move; on release -> snap to grid + reject overlaps ---------- */
-    function readRects(excludeEl=null){
-      const rects=[];
-      canvas.querySelectorAll('.tile').forEach(el=>{
-        if (el===excludeEl) return;
-        rects.push({
-          el,
-          x: parseFloat(el.style.left)||0,
-          y: parseFloat(el.style.top)||0,
-          w: el.offsetWidth,
-          h: el.offsetHeight
-        });
-      });
-      return rects;
-    }
-    function intersects(a,b){
-      return !(a.x+a.w <= b.x || b.x+b.w <= a.x || a.y+a.h <= b.y || b.y+b.h <= a.y);
-    }
-
-    function enableDragSnapNoOverlap(el){
+    /* ---------- drag: free-move; on release -> snap to grid; allow <=OVERLAP_TOL ---------- */
+    function enableDragSnapTol(el){
       let pid=null, sx=0, sy=0, ox=0, oy=0, prev={x:0,y:0,w:0,h:0};
 
       el.addEventListener('pointerdown', (e)=>{
+        if (e.target.classList.contains('handle')) return;
         pid = e.pointerId; el.setPointerCapture(pid);
         sx = e.clientX; sy = e.clientY;
         ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
@@ -296,21 +326,21 @@
         pid=null; el.classList.remove('dragging');
 
         // snap pos to grid
-        let nx = Math.round((parseFloat(el.style.left)||0)/el._state.GRID)*el._state.GRID;
-        let ny = Math.round((parseFloat(el.style.top)||0)/el._state.GRID)*el._state.GRID;
+        let nx = Math.round((parseFloat(el.style.left)||0)/GRID)*GRID;
+        let ny = Math.round((parseFloat(el.style.top)||0)/GRID)*GRID;
         // clamp after snap
         const maxX = canvas.clientWidth - el.offsetWidth;
         const maxY = (parseInt(canvas.style.height)||canvas.scrollHeight||canvas.clientHeight) - el.offsetHeight;
         nx = clamp(nx, 0, Math.max(0,maxX));
         ny = clamp(ny, 0, Math.max(0,maxY));
 
-        // overlap check
+        // tolerance-based collision check
         const others = readRects(el);
         const candidate = { x:nx, y:ny, w: el.offsetWidth, h: el.offsetHeight };
-        const hit = others.some(r=>intersects(candidate, r));
+        const bad = violatesWithTol(candidate, others, OVERLAP_TOL);
 
-        if (hit){
-          // revert to previous valid position
+        if (bad){
+          // revert
           el.style.left = prev.x + 'px';
           el.style.top  = prev.y + 'px';
         } else {
@@ -322,6 +352,78 @@
       el.addEventListener('pointerup', end);
       el.addEventListener('pointercancel', end);
       el.addEventListener('lostpointercapture', end);
+    }
+
+    /* ---------- resize: free; on release -> snap width; allow <=OVERLAP_TOL ---------- */
+    function enableResizeSnapTol(el, handle){
+      let pid=null, sx=0, startW=0, prev={x:0,y:0,w:0,h:0};
+
+      handle.addEventListener('pointerdown', (e)=>{
+        pid = e.pointerId; handle.setPointerCapture(pid);
+        sx = e.clientX; startW = el.offsetWidth;
+        prev = {
+          x: parseFloat(el.style.left)||0,
+          y: parseFloat(el.style.top)||0,
+          w: el.offsetWidth,
+          h: el.offsetHeight
+        };
+        el.style.zIndex = (parseInt(el.style.zIndex)||10)+1;
+        e.preventDefault(); e.stopPropagation();
+      });
+
+      handle.addEventListener('pointermove', (e)=>{
+        if (e.pointerId !== pid) return;
+        const dx = e.clientX - sx;
+        let w = startW + dx;
+        w = Math.max(w, GRID*4); // safety minimum ~64px
+        // clamp to canvas width
+        w = Math.min(w, canvas.clientWidth - (parseFloat(el.style.left)||0));
+        const h = Math.round(w * (el._state.aspect||1));
+        el.style.width = w + 'px';
+        el.style.height= h + 'px';
+      });
+
+      const end = ()=>{
+        if (pid==null) return;
+
+        // snap width to grid
+        let w = Math.round(el.offsetWidth / GRID) * GRID;
+        w = Math.max(w, GRID*4);
+        w = Math.min(w, canvas.clientWidth - (parseFloat(el.style.left)||0));
+        let h = Math.round(w * (el._state.aspect||1));
+
+        // tentative apply
+        el.style.width = w + 'px';
+        el.style.height= h + 'px';
+
+        // snap position too (safer)
+        let nx = Math.round((parseFloat(el.style.left)||0)/GRID)*GRID;
+        let ny = Math.round((parseFloat(el.style.top)||0)/GRID)*GRID;
+        const maxX = canvas.clientWidth - w;
+        const maxY = (parseInt(canvas.style.height)||canvas.scrollHeight||canvas.clientHeight) - h;
+        nx = clamp(nx, 0, Math.max(0,maxX));
+        ny = clamp(ny, 0, Math.max(0,maxY));
+
+        const candidate = { x:nx, y:ny, w, h };
+        const bad = violatesWithTol(candidate, readRects(el), OVERLAP_TOL);
+
+        if (bad){
+          // revert all
+          el.style.left = prev.x + 'px';
+          el.style.top  = prev.y + 'px';
+          el.style.width= prev.w + 'px';
+          el.style.height= prev.h + 'px';
+        } else {
+          el.style.left = nx + 'px';
+          el.style.top  = ny + 'px';
+        }
+
+        pid=null;
+      };
+
+      handle.addEventListener('pointerup', end);
+      handle.addEventListener('pointercancel', end);
+      handle.addEventListener('lostpointercapture', end);
     }
   }
   </script>
