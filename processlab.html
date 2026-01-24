@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>facilitation archives</title>
+<title>collaboration archives</title>
 <meta name="description" content="miro board" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>🌀</text></svg>">
 
@@ -11,18 +11,22 @@
   :root{
     --bg:#ffffff; --fg:#111;
 
-    /* GRID (cutting-mat vibe) */
-    --grid: 16px;                         /* base grid size */
-    --grid-sub: #f6f6f6;                  /* tiny cells */
-    --grid-main: #efefef;                 /* every 4th line */
+    /* cutting-mat grid */
+    --grid: 16px;
+    --grid-sub:#f6f6f6;
+    --grid-main:#efefef;
 
-    /* LAYOUT */
-    --side-gutter: 32px;                  /* visual gutters left/right */
-    --gap: 12px;                          /* spacing between tiles (tight) */
+    /* layout */
+    --side-gutter: 32px;
+    --gap: 12px;
 
-    /* DRAG/RESIZE */
-    --tile-shadow: 0 0 0 1px rgba(0,0,0,.06);
-    --handle-size: 14px;
+    /* focus (big image) */
+    --focus-w: 800px;      /* 720 or higher — tweak here */
+    --focus-max-h: 86vh;
+
+    /* thumbs */
+    --thumb-w: 148px;      /* tiny thumbnail size */
+    --thumb-shadow: 0 0 0 1px rgba(0,0,0,.06);
   }
 
   *{ box-sizing:border-box }
@@ -42,54 +46,78 @@
     color:#777; letter-spacing:.25px;
   }
 
-  /* Stage spans full width; grid drawn across the whole area */
+  /* stage with grid background */
   .stage{
     position:relative;
     overflow:auto;
-    padding:0 var(--side-gutter); /* gutters here so every grid col is usable */
+    padding:0 var(--side-gutter);
     background:
-      /* sub grid */
       linear-gradient(var(--grid-sub) 1px, transparent 1px) 0 0/100% var(--grid),
       linear-gradient(90deg, var(--grid-sub) 1px, transparent 1px) 0 0/var(--grid) 100%,
-      /* main grid (every 4 lines) */
       linear-gradient(var(--grid-main) 1px, transparent 1px) 0 0/100% calc(var(--grid)*4),
       linear-gradient(90deg, var(--grid-main) 1px, transparent 1px) 0 0/calc(var(--grid)*4) 100%,
       #fff;
     -webkit-user-select:none; user-select:none;
   }
 
-  /* Canvas uses full stage width inside gutters */
-  #canvas{ position:relative; width:100%; }
+  /* a BIG canvas so thumbs can live all around */
+  #canvas{
+    position:relative;
+    /* width/height are set by JS (px) */
+  }
 
+  /* thumbnails (scattered) */
   .tile{
     position:absolute;
-    margin:0;
-    user-select:none; -webkit-user-drag:none; touch-action:none;
-    cursor:grab;
-    box-shadow:var(--tile-shadow);
+    width:var(--thumb-w);
     background:#fff;
-    will-change:left, top, width, height;
-    transform:translateZ(0);
+    box-shadow:var(--thumb-shadow);
+    transition:opacity .25s ease, transform .2s ease;
   }
-  .tile.dragging{ cursor:grabbing; }
-  .tile img{ display:block; width:100%; height:auto; pointer-events:none; }
+  .tile img{ display:block; width:100%; height:auto }
 
-  /* Resize handle */
-  .handle{
-    position:absolute;
-    width:var(--handle-size); height:var(--handle-size);
-    right:-6px; bottom:-6px;
-    border:1px solid #ccc; background:#fff; cursor:nwse-resize;
+  /* dim the scatter when focused */
+  .dimmed .tile{ opacity:.35 }
+
+  /* focus layer (fixed center) */
+  .focus-layer{ position:fixed; inset:0; pointer-events:none; z-index:50; display:none; }
+  .has-focus .focus-layer{ display:block; }
+  .focus-card{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    width:var(--focus-w);
+    max-width:min(var(--focus-w), calc(100vw - 2*var(--side-gutter)));
+    max-height:var(--focus-max-h);
+    display:grid; place-items:center;
+    background:#fff;
+    box-shadow:0 10px 40px rgba(0,0,0,.16), 0 0 0 1px rgba(0,0,0,.08);
+    border-radius:6px; overflow:hidden; pointer-events:auto;
   }
+  .focus-card img{ width:100%; height:100%; object-fit:contain; background:#fff; }
 
-  /* Phones: show banner */
+  /* nav arrows */
+  .nav-btn{
+    position:fixed; top:50%; transform:translateY(-50%);
+    z-index:60; pointer-events:auto;
+    width:42px; height:42px; border-radius:50%;
+    display:grid; place-items:center;
+    background:rgba(255,255,255,.95);
+    border:1px solid #e5e5e5;
+    box-shadow:0 6px 20px rgba(0,0,0,.08);
+    cursor:pointer;
+    display:none;
+  }
+  .has-focus .nav-btn{ display:grid; }
+  .nav-left{ left:14px } .nav-right{ right:14px }
+  .nav-btn svg{ width:18px; height:18px }
+
+  /* phones: banner only */
   .mobile-only{
     display:none; position:fixed; inset:0;
     place-items:center; text-align:center; padding:24px; background:#fff; color:#111;
   }
   @media (max-width:767px){
-    .wrap{ display:none; }
-    .mobile-only{ display:grid; }
+    .wrap{ display:none }
+    .mobile-only{ display:grid }
   }
 </style>
 </head>
@@ -97,14 +125,28 @@
 <body>
   <div class="wrap">
     <header>behind the scenes of collaboration, and other cuttings from the work desk.</header>
+
     <main class="stage" id="stage">
-      <div id="canvas" aria-label="Grid-snapped artefacts (tight; resize; slight overlap allowed)"></div>
+      <div id="canvas" aria-label="Scattered thumbnails (click to focus)"></div>
+
+      <div class="focus-layer" id="focusLayer" aria-hidden="true">
+        <figure class="focus-card" id="focusCard">
+          <img id="focusImg" alt="">
+        </figure>
+      </div>
+
+      <button class="nav-btn nav-left" id="prevBtn" aria-label="Previous">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="nav-btn nav-right" id="nextBtn" aria-label="Next">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </main>
   </div>
+
   <div class="mobile-only">view on desktop</div>
 
   <script>
-  /* ---- Your images ---- */
   const IMAGES = [
     "images/process/ADT vision.png",
     "images/process/Concentric.png",
@@ -145,32 +187,37 @@
     "images/process/x.png"
   ];
 
-  /* ---- Phone gate ---- */
   const isPhone = matchMedia("(max-width: 767px)").matches;
   if (!isPhone){
     const stage  = document.getElementById('stage');
     const canvas = document.getElementById('canvas');
 
-    const css   = getComputedStyle(document.documentElement);
-    const GRID  = parseInt(css.getPropertyValue('--grid')) || 16;
-    const GAP   = parseInt(css.getPropertyValue('--gap'))  || 12;
+    // focus UI
+    const body      = document.body;
+    const focusLayer= document.getElementById('focusLayer');
+    const focusCard = document.getElementById('focusCard');
+    const focusImg  = document.getElementById('focusImg');
+    const prevBtn   = document.getElementById('prevBtn');
+    const nextBtn   = document.getElementById('nextBtn');
 
-    /* Consistent sizing (edit these) */
-    const WIDE_W      = 700;   // landscape width (px)  ← per your request
-    const NARROW_W    = 480;   // square-ish width (px)
-    const PORTRAIT_W  = 480;   // portrait width (px)
-    const SQUARE_EPS  = 0.12;  // |aspect - 1| <= eps => square-ish
-
-    /* Overlap tolerance (px) */
-    const OVERLAP_TOL = 20;    // allow up to 20px overlap
+    // config
+    const GRID    = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid')) || 16;
+    const GAP     = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--gap'))  || 12;
+    const THUMB_W = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--thumb-w')) || 148;
 
     const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
 
-    // load aspects
-    Promise.all(IMAGES.map(loadMeta)).then(metas=>{
-      build(metas);
-      let rid=null;
-      window.addEventListener('resize', ()=>{ cancelAnimationFrame(rid); rid=requestAnimationFrame(()=>build(metas)); }, {passive:true});
+    let metas = [];
+    let current = -1;
+
+    // 1) load images to get aspect ratios
+    Promise.all(IMAGES.map(loadMeta)).then(_metas=>{
+      metas = _metas;
+      layoutScatter();
+      // center scroll to canvas middle
+      centerScroll();
+      // start focused on a RANDOM image
+      setFocus(Math.floor(Math.random()*IMAGES.length));
     });
 
     function loadMeta(src){
@@ -183,248 +230,134 @@
       });
     }
 
-    // helpers
-    const toCells = px => Math.max(1, Math.round(px/GRID));
-    const toPx    = c  => c*GRID;
-
-    function desiredWidthFor(aspect){
-      if (Math.abs(aspect - 1) <= SQUARE_EPS) return NARROW_W;   // square-ish
-      if (aspect < 1) return WIDE_W;                              // landscape
-      return PORTRAIT_W;                                          // portrait
-    }
-
-    /* ---------- collision helpers with tolerance ---------- */
-    function readRects(excludeEl=null){
-      const rects=[];
-      canvas.querySelectorAll('.tile').forEach(el=>{
-        if (el===excludeEl) return;
-        rects.push({
-          el,
-          x: parseFloat(el.style.left)||0,
-          y: parseFloat(el.style.top)||0,
-          w: el.offsetWidth,
-          h: el.offsetHeight
-        });
-      });
-      return rects;
-    }
-    // Returns true if overlap is more than tolerance (i.e., NOT allowed)
-    function overlapsBeyondTol(a,b,tol){
-      const left   = Math.max(a.x, b.x);
-      const right  = Math.min(a.x + a.w, b.x + b.w);
-      const top    = Math.max(a.y, b.y);
-      const bottom = Math.min(a.y + a.h, b.y + b.h);
-      const overW = right - left;
-      const overH = bottom - top;
-      if (overW <= 0 || overH <= 0) return false; // no overlap
-      // allow skinny overlaps up to tol in either dimension
-      return (overW > tol && overH > tol);
-    }
-    function violatesWithTol(candidate, others, tol){
-      return others.some(r => overlapsBeyondTol(candidate, r, tol));
-    }
-
-    /* --------- initial tight packing (skyline / no violation) --------- */
-    function build(metas){
+    // 2) build a big canvas and scatter tiny thumbnails around the center
+    function layoutScatter(){
       canvas.innerHTML="";
 
-      const innerW = canvas.clientWidth;           // actual usable width
-      const cols   = Math.max(8, Math.floor(innerW / GRID));
-      const gapC   = toCells(GAP);
+      const vw = stage.clientWidth;
+      const vh = stage.clientHeight;
 
-      // skyline heights by column
-      const colHeights = new Array(cols).fill(0);
+      // make a generous playground (4× viewport each way)
+      const CANVAS_W = Math.max(3200, vw * 4);
+      const CANVAS_H = Math.max(2400, vh * 4);
+      canvas.style.width  = CANVAS_W + 'px';
+      canvas.style.height = CANVAS_H + 'px';
 
-      // estimate canvas height (will grow as needed)
-      const Hview = stage.clientHeight || innerHeight;
-      let canvasH = Math.ceil((4*Hview)/GRID) * GRID;
+      const CX = CANVAS_W / 2;
+      const CY = CANVAS_H / 2;
 
-      metas.forEach((m,i)=>{
-        // consistent width by category, then snap to grid column multiple
-        const targetW = desiredWidthFor(m.aspect);
-        const wc = Math.max(2, toCells(targetW));
-        const wpx = toPx(wc);
-        const hpx = Math.round(wpx * (m.aspect || 1));
-        const hr  = Math.max(2, toCells(hpx)) + gapC;
+      // keep thumbnails from the very center so the focus has breathing room
+      const innerHole = Math.min(vw, vh) * 0.8;         // diameter
+      const R_MIN = innerHole * 0.5;                    // min radius for thumbs
+      const R_MAX = Math.min(CANVAS_W, CANVAS_H) * 0.45; // max radius
 
-        // choose column span with lowest skyline
-        let bestCol = 0, bestY = Infinity;
-        for (let c=0; c<=cols-wc; c++){
-          let y = 0;
-          for (let k=0;k<wc;k++) y = Math.max(y, colHeights[c+k]);
-          if (y < bestY) { bestY = y; bestCol = c; }
+      const placed = [];
+
+      metas.forEach((m, i) => {
+        // thumbnail height from aspect
+        const tw = THUMB_W;
+        const th = Math.round(tw * (m.aspect || 1));
+
+        // try to place in polar coords around center; avoid overlap
+        let tries = 0, ok = false, x = 0, y = 0;
+        while (!ok && tries < 500){
+          // bias radius outward a bit for spread
+          const r = rand(R_MIN, R_MAX) * easeOut(Math.random());
+          const a = rand(0, Math.PI * 2);
+          x = Math.round(CX + r * Math.cos(a) - tw/2);
+          y = Math.round(CY + r * Math.sin(a) - th/2);
+
+          // clamp inside canvas
+          x = clamp(x, 0, CANVAS_W - tw);
+          y = clamp(y, 0, CANVAS_H - th);
+
+          const cand = {x, y, w: tw, h: th};
+          ok = placed.every(p => !overlap(cand, p, GAP));
+          tries++;
         }
-
-        const left = toPx(bestCol);
-        const top  = toPx(bestY);
-
-        // update skyline
-        for (let k=0;k<wc;k++) colHeights[bestCol+k] = bestY + hr;
-
-        // grow canvas if needed
-        canvasH = Math.max(canvasH, toPx(bestY + hr));
+        placed.push({x, y, w: tw, h: th});
 
         // DOM
         const fig = document.createElement('figure');
-        fig.className='tile';
-        fig.style.left = left + 'px';
-        fig.style.top  = top  + 'px';
-        fig.style.width= wpx  + 'px';
-        fig.style.zIndex = (10+i).toString();
+        fig.className = 'tile';
+        fig.style.left = x + 'px';
+        fig.style.top  = y + 'px';
+        fig.style.width= tw + 'px';
+        fig.dataset.index = i;
 
         const img = document.createElement('img');
         img.alt = `artefact ${i+1}`;
         img.src = encodeURI(m.src);
         fig.appendChild(img);
 
-        // resize handle
-        const handle = document.createElement('div');
-        handle.className='handle';
-        fig.appendChild(handle);
-
-        // state for interactions
-        fig._state = { aspect: m.aspect || 1, GRID };
-
+        fig.addEventListener('click', () => setFocus(i));
         canvas.appendChild(fig);
-
-        // interactions
-        enableDragSnapTol(fig);
-        enableResizeSnapTol(fig, handle);
       });
 
-      canvas.style.height = canvasH + 'px';
+      function rand(a,b){ return Math.random()*(b-a)+a; }
+      function easeOut(t){ return 1 - Math.pow(1-t, 2); } // quadratic ease
+      function overlap(a,b,gap){
+        return !(a.x + a.w + gap <= b.x ||
+                 b.x + b.w + gap <= a.x ||
+                 a.y + a.h + gap <= b.y ||
+                 b.y + b.h + gap <= a.y);
+      }
     }
 
-    /* ---------- drag: free-move; on release -> snap to grid; allow <=OVERLAP_TOL ---------- */
-    function enableDragSnapTol(el){
-      let pid=null, sx=0, sy=0, ox=0, oy=0, prev={x:0,y:0,w:0,h:0};
-
-      el.addEventListener('pointerdown', (e)=>{
-        if (e.target.classList.contains('handle')) return;
-        pid = e.pointerId; el.setPointerCapture(pid);
-        sx = e.clientX; sy = e.clientY;
-        ox = parseFloat(el.style.left)||0; oy = parseFloat(el.style.top)||0;
-        prev = { x:ox, y:oy, w: el.offsetWidth, h: el.offsetHeight };
-        el.classList.add('dragging');
-        el.style.zIndex = (parseInt(el.style.zIndex)||10)+1;
-        if (e.cancelable) e.preventDefault();
-      });
-
-      el.addEventListener('pointermove', (e)=>{
-        if (e.pointerId !== pid) return;
-        const nx = ox + (e.clientX - sx);
-        const ny = oy + (e.clientY - sy);
-        // clamp to canvas bounds, no snap yet
-        const maxX = canvas.clientWidth - el.offsetWidth;
-        const maxY = (parseInt(canvas.style.height)||canvas.scrollHeight||canvas.clientHeight) - el.offsetHeight;
-        el.style.left = clamp(nx, 0, Math.max(0,maxX)) + 'px';
-        el.style.top  = clamp(ny, 0, Math.max(0,maxY)) + 'px';
-      });
-
-      const end = ()=>{
-        if (pid==null) return;
-        pid=null; el.classList.remove('dragging');
-
-        // snap pos to grid
-        let nx = Math.round((parseFloat(el.style.left)||0)/GRID)*GRID;
-        let ny = Math.round((parseFloat(el.style.top)||0)/GRID)*GRID;
-        // clamp after snap
-        const maxX = canvas.clientWidth - el.offsetWidth;
-        const maxY = (parseInt(canvas.style.height)||canvas.scrollHeight||canvas.clientHeight) - el.offsetHeight;
-        nx = clamp(nx, 0, Math.max(0,maxX));
-        ny = clamp(ny, 0, Math.max(0,maxY));
-
-        // tolerance-based collision check
-        const others = readRects(el);
-        const candidate = { x:nx, y:ny, w: el.offsetWidth, h: el.offsetHeight };
-        const bad = violatesWithTol(candidate, others, OVERLAP_TOL);
-
-        if (bad){
-          // revert
-          el.style.left = prev.x + 'px';
-          el.style.top  = prev.y + 'px';
-        } else {
-          el.style.left = nx + 'px';
-          el.style.top  = ny + 'px';
-        }
-      };
-
-      el.addEventListener('pointerup', end);
-      el.addEventListener('pointercancel', end);
-      el.addEventListener('lostpointercapture', end);
+    // center the scroll on the canvas middle
+    function centerScroll(){
+      const CANVAS_W = canvas.scrollWidth;
+      const CANVAS_H = canvas.scrollHeight;
+      stage.scrollLeft = Math.max(0, CANVAS_W/2 - stage.clientWidth/2);
+      stage.scrollTop  = Math.max(0, CANVAS_H/2 - stage.clientHeight/2);
     }
 
-    /* ---------- resize: free; on release -> snap width; allow <=OVERLAP_TOL ---------- */
-    function enableResizeSnapTol(el, handle){
-      let pid=null, sx=0, startW=0, prev={x:0,y:0,w:0,h:0};
+    // 3) focus behaviour
+    function setFocus(i){
+      i = ( (i % metas.length) + metas.length ) % metas.length;
+      current = i;
 
-      handle.addEventListener('pointerdown', (e)=>{
-        pid = e.pointerId; handle.setPointerCapture(pid);
-        sx = e.clientX; startW = el.offsetWidth;
-        prev = {
-          x: parseFloat(el.style.left)||0,
-          y: parseFloat(el.style.top)||0,
-          w: el.offsetWidth,
-          h: el.offsetHeight
-        };
-        el.style.zIndex = (parseInt(el.style.zIndex)||10)+1;
-        e.preventDefault(); e.stopPropagation();
-      });
+      const m = metas[i];
+      focusImg.src = encodeURI(m.src);
+      focusImg.alt = `artefact ${i+1}`;
 
-      handle.addEventListener('pointermove', (e)=>{
-        if (e.pointerId !== pid) return;
-        const dx = e.clientX - sx;
-        let w = startW + dx;
-        w = Math.max(w, GRID*4); // safety minimum ~64px
-        // clamp to canvas width
-        w = Math.min(w, canvas.clientWidth - (parseFloat(el.style.left)||0));
-        const h = Math.round(w * (el._state.aspect||1));
-        el.style.width = w + 'px';
-        el.style.height= h + 'px';
-      });
-
-      const end = ()=>{
-        if (pid==null) return;
-
-        // snap width to grid
-        let w = Math.round(el.offsetWidth / GRID) * GRID;
-        w = Math.max(w, GRID*4);
-        w = Math.min(w, canvas.clientWidth - (parseFloat(el.style.left)||0));
-        let h = Math.round(w * (el._state.aspect||1));
-
-        // tentative apply
-        el.style.width = w + 'px';
-        el.style.height= h + 'px';
-
-        // snap position too (safer)
-        let nx = Math.round((parseFloat(el.style.left)||0)/GRID)*GRID;
-        let ny = Math.round((parseFloat(el.style.top)||0)/GRID)*GRID;
-        const maxX = canvas.clientWidth - w;
-        const maxY = (parseInt(canvas.style.height)||canvas.scrollHeight||canvas.clientHeight) - h;
-        nx = clamp(nx, 0, Math.max(0,maxX));
-        ny = clamp(ny, 0, Math.max(0,maxY));
-
-        const candidate = { x:nx, y:ny, w, h };
-        const bad = violatesWithTol(candidate, readRects(el), OVERLAP_TOL);
-
-        if (bad){
-          // revert all
-          el.style.left = prev.x + 'px';
-          el.style.top  = prev.y + 'px';
-          el.style.width= prev.w + 'px';
-          el.style.height= prev.h + 'px';
-        } else {
-          el.style.left = nx + 'px';
-          el.style.top  = ny + 'px';
-        }
-
-        pid=null;
-      };
-
-      handle.addEventListener('pointerup', end);
-      handle.addEventListener('pointercancel', end);
-      handle.addEventListener('lostpointercapture', end);
+      document.body.classList.add('has-focus');
+      document.getElementById('stage').classList.add('dimmed');
+      document.getElementById('focusLayer').setAttribute('aria-hidden', 'false');
     }
+    function clearFocus(){
+      current = -1;
+      document.body.classList.remove('has-focus');
+      document.getElementById('stage').classList.remove('dimmed');
+      document.getElementById('focusLayer').setAttribute('aria-hidden', 'true');
+    }
+    function next(){ if (current<0) return setFocus(0); setFocus(current+1); }
+    function prev(){ if (current<0) return setFocus(metas.length-1); setFocus(current-1); }
+
+    // nav
+    document.getElementById('nextBtn').addEventListener('click', next);
+    document.getElementById('prevBtn').addEventListener('click', prev);
+
+    // keyboard
+    window.addEventListener('keydown', (e)=>{
+      if (current >= 0){
+        if (e.key === 'ArrowRight') next();
+        else if (e.key === 'ArrowLeft')  prev();
+        else if (e.key === 'Escape')     clearFocus();
+      }
+    });
+
+    // click outside to close
+    document.getElementById('focusLayer').addEventListener('click', (e)=>{
+      if (!document.getElementById('focusCard').contains(e.target)) clearFocus();
+    });
+
+    // keep centered scroll if the window size changes
+    let rid=null;
+    window.addEventListener('resize', ()=>{
+      cancelAnimationFrame(rid);
+      rid=requestAnimationFrame(centerScroll);
+    }, {passive:true});
   }
   </script>
 </body>
