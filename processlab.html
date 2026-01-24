@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>facilitation archives</title>
+<title>process artefacts</title>
 <meta name="description" content="process artefacts" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>*</text></svg>">
 
 <style>
-  /* ===== BAREBONES ===== */
+  /* barebones */
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
@@ -16,24 +16,18 @@
     background: #fff;
     color: #000;
     font: 14px/1.4 system-ui, -apple-system, Arial, sans-serif;
-    overflow: hidden; /* NO SCROLL */
+    overflow: hidden; /* no scroll */
   }
 
-  .wrap {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    height: 100vh;
-  }
-
-  /* original heading/title content */
+  .wrap { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
+  /* header WITHOUT “facilitation archives” */
   header { padding: 8px 12px; color: #555; border-bottom: 1px solid #e5e5e5; }
-  header .title { font-weight: 600; }
   header .sub { color: #666; font-size: 13px; }
 
   /* stage fills viewport, no scroll */
   .stage {
     position: relative;
-    overflow: hidden; /* NO SCROLL */
+    overflow: hidden;
     background-image: var(--grid-img);
     background-size: var(--grid-size) var(--grid-size);
     background-repeat: repeat;
@@ -51,30 +45,27 @@
 
   #canvas { position: relative; width: 100%; height: 100%; }
 
-  /* thumbnails */
+  /* thumbnails: NO borders/outlines/shadows/radius */
   .tile {
     position: absolute;
-    width: 120px;                  /* thumb size */
-    border: 1px solid #ddd;
+    width: 120px;   /* thumb size */
     background: #fff;
-    /* no transitions, no shadow, no radius */
   }
-  .tile img { display: block; width: 100%; height: auto; }
+  .tile img { display: block; width: 100%; height: auto; outline: none; }
 
-  /* centered big image (no chrome) */
+  /* centered big image: NO borders/outlines/shadows/radius */
   .focus {
     position: absolute; left: 50%; top: 50%;
     transform: translate(-50%, -50%);
-    width: 720px;                 /* big image width (change if you want) */
+    width: 720px;                 /* big image width */
     max-width: calc(100vw - 40px);
     max-height: calc(100vh - 90px); /* leave room for header */
-    border: 1px solid #ddd;
     background: #fff;
   }
   .focus img {
     display: block;
     width: 100%; height: 100%;
-    object-fit: contain; background: #fff;
+    object-fit: contain; background: #fff; outline: none;
   }
 </style>
 </head>
@@ -82,14 +73,13 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="title">facilitation archives</div>
       <div class="sub">behind the scenes of collaboration, and other cuttings from the work desk.</div>
     </header>
 
     <main class="stage" id="stage">
       <div id="canvas">
         <figure class="focus" id="focusCard"><img id="focusImg" alt=""></figure>
-        <!-- thumbnails get injected here -->
+        <!-- thumbnails injected here -->
       </div>
     </main>
   </div>
@@ -145,9 +135,8 @@
   // load natural sizes
   Promise.all(IMAGES.map(loadMeta)).then(_metas=>{
     metas = _metas;
-    placeThumbs();         // within current viewport only
+    placeThumbs();                         // scatter within viewport only
     setFocus(randInt(0, IMAGES.length-1)); // start on a random one
-    // reflow thumbs if viewport changes
     window.addEventListener('resize', ()=>{ placeThumbs(); setFocus(current); });
   });
 
@@ -161,17 +150,17 @@
   }
 
   function placeThumbs(){
-    // clear all thumbnails (keep focus card)
+    // clear thumbnails (keep focus card)
     [...canvas.querySelectorAll('.tile')].forEach(n=>n.remove());
 
     const W = stage.clientWidth;
     const H = stage.clientHeight;
 
-    // focus frame bbox (to keep clear)
+    // focus frame bbox (kept clear)
     const focusW = Math.min(720, W - 40);
-    const focusH = Math.min(H - 90, focusW * 0.75); // rough; final is object-fit
+    const focusH = Math.min(H - 90, focusW * 0.75);
     const fx = (W - focusW)/2, fy = (H - focusH)/2;
-    const focusHole = { x: fx - 40, y: fy - 30, w: focusW + 80, h: focusH + 60 };
+    const hole = { x: fx - 40, y: fy - 30, w: focusW + 80, h: focusH + 60 };
 
     const TW = 120; // thumb width
     const GAP = 8;
@@ -187,8 +176,8 @@
 
         const cand = { x, y, w: TW, h: th };
 
-        ok = !rectsOverlap(cand, focusHole, 10) &&
-             placed.every(p => !rectsOverlap(cand, p, GAP));
+        ok = !overlap(cand, hole, 10) &&
+             placed.every(p => !overlap(cand, p, GAP));
         tries++;
       }
 
@@ -219,7 +208,7 @@
   }
 
   // helpers
-  function rectsOverlap(a, b, gap){
+  function overlap(a, b, gap){
     return !(a.x + a.w + gap <= b.x ||
              b.x + b.w + gap <= a.x ||
              a.y + a.h + gap <= b.y ||
