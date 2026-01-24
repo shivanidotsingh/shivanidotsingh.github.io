@@ -8,7 +8,6 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>*</text></svg>">
 
 <style>
-  /* barebones */
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
@@ -23,7 +22,6 @@
   header { padding: 8px 12px; color: #555; border-bottom: 1px solid #e5e5e5; }
   header .sub { color: #666; font-size: 13px; }
 
-  /* stage fills viewport, no scroll */
   .stage {
     position: relative;
     overflow: hidden;
@@ -32,7 +30,7 @@
     background-repeat: repeat;
   }
 
-  /* grid (tiled SVG, low-tech) */
+  /* grid */
   :root{
     --grid-size: 16px;
     --grid-img: url("data:image/svg+xml;utf8,\
@@ -44,7 +42,6 @@
 
   #canvas { position: relative; width: 100%; height: 100%; }
 
-  /* thumbnails: NO borders/outlines/shadows/radius */
   .tile {
     position: absolute;
     width: 120px;   /* thumb size */
@@ -52,22 +49,22 @@
   }
   .tile img { display: block; width: 100%; height: auto; outline: none; }
 
-  /* centered big image — hard center */
 .focus{
   position:absolute;
-  inset: 0;              /* pin to all sides of the stage */
-  margin: auto;          /* center both axes */
-  width: 720px;          /* your main width */
+  inset: 0;
+  margin: auto;
+  width: 720px;
   max-width: calc(100vw - 40px);
-  max-height: calc(100vh - 90px); /* room for header */
-  background:#fff;
+  max-height: calc(100vh - 90px);
+  background: transparent;   /* ← let the grid show through */
 }
+
 .focus img{
   display:block;
   width:100%;
   height:100%;
   object-fit:contain;
-  background:#fff;
+  background: transparent;    /* ← no white panel */
   outline:none;
 }
 
