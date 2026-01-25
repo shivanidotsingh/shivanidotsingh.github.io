@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>process lab</title>
+<title>process artefacts</title>
 <meta name="description" content="process lab" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
 
@@ -180,8 +180,8 @@ function layoutInitial() {
   // Create main image
   createImageElement(main.src, mainPos, true, mainIndex);
   
-  // Exclusion zone around main
-  const pad = G * 3;
+  // Very minimal exclusion zone - thumbnails can be very close to main
+  const pad = 0; // No padding - thumbnails can touch main image area
   const exclude = {
     x: mainX - pad,
     y: mainY - pad,
