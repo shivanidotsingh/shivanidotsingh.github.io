@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>process lab</title>
+<title>process artefacts</title>
 <meta name="description" content="process lab" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
 
@@ -23,46 +23,29 @@
   header .sub { color: #666; font-size: 13px; }
 
   :root{
-    --grid: 16px;                
-    --grid-line: #e9e9e9;         
-    --hole-pad-x: 48px;          
-    --hole-pad-y: 12px;        
+    --grid: 16px;             /* snap unit */
+    --grid-line: #e9e9e9;     /* grid color */
+    --hole-pad-x: 48px;       /* keep-out around focus (X) */
+    --hole-pad-y: 12px;       /* keep-out around focus (Y) */
   }
 
+  /* crisp grid (no aliasing) */
   .stage{
     position: relative;
     overflow: hidden;
     background:
-      repeating-linear-gradient(
-        to right,
-        var(--grid-line) 0 1px,
-        transparent 1px var(--grid)
-      ),
-      repeating-linear-gradient(
-        to bottom,
-        var(--grid-line) 0 1px,
-        transparent 1px var(--grid)
-      );
-    background-position: 0 0; 
-    image-rendering: pixelated;      
+      repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px var(--grid)),
+      repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px var(--grid));
+    background-position: 0 0;
   }
 
   #canvas { position: relative; width: 100%; height: 100%; }
 
-  .tile{
-    position: absolute;
-    background: #fff;
-  }
-  .tile img{
-    display:block; width:100%; height:100%; object-fit:contain;
-  }
-
-  .focus{
-    position:absolute; background:transparent;
-  }
-  .focus img{
-    display:block; width:100%; height:100%; object-fit:contain; background:transparent;
-  }
+  /* bare thumbnails and focus */
+  .tile { position: absolute; background:#fff; }
+  .tile img { display:block; width:100%; height:100%; }
+  .focus { position:absolute; background:transparent; }
+  .focus img { display:block; width:100%; height:100%; background:transparent; }
 </style>
 </head>
 
@@ -75,7 +58,6 @@
     <main class="stage" id="stage">
       <div id="canvas">
         <figure class="focus" id="focusCard"><img id="focusImg" alt=""></figure>
-        <!-- thumbnails injected here -->
       </div>
     </main>
   </div>
@@ -126,22 +108,22 @@
 
   const GRID = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--grid')) || 16;
 
-  /* Use grid multiples only */
-  const THUMB_W   = gridMul(8);   // 8 * 16 = 128px
-  const EDGE_TL   = gridMul(0.5); // 8px
-  const EDGE_RB   = gridMul(1);   // 16px
-  const GAP       = gridMul(0.5); // 8px
-  const HOLE_PAD_X= px('--hole-pad-x');
-  const HOLE_PAD_Y= px('--hole-pad-y');
+  // grid-multiple constants
+  const EDGE_TL     = GRID/2;     // 8px
+  const EDGE_RB     = GRID;       // 16px
+  const GAP         = GRID/2;     // 8px
+  const HOLE_PAD_X  = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-x')) || 48;
+  const HOLE_PAD_Y  = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-y')) || 12;
+  const THUMB_W     = snap(128);  // 8 columns at 16px
 
   let metas = [];
   let current = -1;
 
-  Promise.all(IMAGES.map(loadMeta)).then(_metas=>{
-    metas = _metas;
-    layout();
-    setFocus(randInt(0, IMAGES.length-1));
-    window.addEventListener('resize', ()=>{ layout(); setFocus(current); });
+  Promise.all(IMAGES.map(loadMeta)).then(m=>{
+    metas = m;
+    build();
+    setFocus(randInt(0, metas.length-1));
+    window.addEventListener('resize', ()=>{ build(); setFocus(current); });
   });
 
   function loadMeta(src){
@@ -153,87 +135,130 @@
     });
   }
 
-  function px(varName){
-    const v = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-    return parseFloat(v);
-  }
-  function snap(v){ return Math.round(v / GRID) * GRID; }
-  function gridMul(n){ return Math.round(n * GRID); }
-  function clamp(v,a,b){ return Math.max(a, Math.min(b,v)); }
-  function overlap(a,b,g){
-    return !(a.x + a.w + g <= b.x ||
-             b.x + b.w + g <= a.x ||
-             a.y + a.h + g <= b.y ||
-             b.y + b.h + g <= a.y);
-  }
+  // helpers
+  const snap  = v => Math.round(v / GRID) * GRID;
+  const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
   function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
 
-  function layout(){
-    // wipe thumbs
+  function fitSnappedBox(maxW, maxH, aspect){
+    let w = snap(maxW);
+    let h = snap(Math.max(GRID, w * aspect));
+    if (h > maxH){ h = snap(maxH); w = snap(Math.max(GRID, h / aspect)); }
+    return { w, h };
+  }
+
+  function positionFocusSnapped(aspect){
+    const W = stage.clientWidth;
+    const H = stage.clientHeight;
+    const { w: fw, h: fh } = fitSnappedBox(W - snap(40), H - snap(90), aspect);
+    let left = snap((W - fw)/2);
+    let top  = snap((H - fh)/2);
+    left = clamp(left, EDGE_TL, Math.max(EDGE_TL, W - fw - EDGE_RB));
+    top  = clamp(top,  EDGE_TL, Math.max(EDGE_TL, H - fh - EDGE_RB));
+    focusEl.style.left = left+'px'; focusEl.style.top = top+'px';
+    focusEl.style.width = fw+'px'; focusEl.style.height = fh+'px';
+    return { left, top, fw, fh };
+  }
+
+  function build(){
+    // clear thumbnails
     [...canvas.querySelectorAll('.tile')].forEach(n=>n.remove());
 
     const W = stage.clientWidth;
     const H = stage.clientHeight;
 
-    // Focus box: width snaps (<= 720), height snaps (landscape-ish)
-    let fw = Math.min(720, W - gridMul(2.5)); // leave some breath
-    fw = snap(fw);
-    let fh = Math.min(H - gridMul(5.5), fw * 0.75);
-    fh = snap(Math.max(GRID, fh));
+    // provisional focus box (16:9) to carve hole before we know the chosen image
+    const { w: fw0, h: fh0 } = fitSnappedBox(W - snap(40), H - snap(90), 9/16);
+    const fx0 = snap((W - fw0)/2);
+    const fy0 = snap((H - fh0)/2);
 
-    // Center → then snap → then clamp within edges
-    let fx = snap((W - fw)/2);
-    let fy = snap((H - fh)/2);
-    fx = clamp(fx, EDGE_TL, Math.max(EDGE_TL, W - fw - EDGE_RB));
-    fy = clamp(fy, EDGE_TL, Math.max(EDGE_TL, H - fh - EDGE_RB));
-
-    // Set focus figure box (exact multiples)
-    focusEl.style.left   = fx + 'px';
-    focusEl.style.top    = fy + 'px';
-    focusEl.style.width  = fw + 'px';
-    focusEl.style.height = fh + 'px';
-
-    // Build a snapped keep-out hole
+    // hole rect (snapped)
     const hole = {
-      x: snap(fx - HOLE_PAD_X),
-      y: snap(fy - HOLE_PAD_Y),
-      w: snap(fw + HOLE_PAD_X*2),
-      h: snap(fh + HOLE_PAD_Y*2)
+      x: snap(fx0 - HOLE_PAD_X),
+      y: snap(fy0 - HOLE_PAD_Y),
+      w: snap(fw0 + HOLE_PAD_X*2),
+      h: snap(fh0 + HOLE_PAD_Y*2)
     };
 
-    // Place snapped thumbnails
-    const placed = [];
-    metas.forEach((m,i)=>{
-      const TH = snap(Math.max(GRID, THUMB_W * (m.a || 1))); // snap height too
+    // Build a grid-occupancy map in cell units
+    const cols = Math.floor((W - EDGE_TL - EDGE_RB) / GRID);
+    const rows = Math.floor((H - EDGE_TL - EDGE_RB) / GRID);
+    const occ  = Array.from({length: rows}, ()=> Array(cols).fill(false));
 
-      let tries=0, ok=false, x=0, y=0;
-      while(!ok && tries<800){
-        x = clamp(snap(randInt(EDGE_TL, Math.max(EDGE_TL, W - THUMB_W - EDGE_RB))), EDGE_TL, W - THUMB_W - EDGE_RB);
-        y = clamp(snap(randInt(EDGE_TL, Math.max(EDGE_TL, H - TH - EDGE_RB))), EDGE_TL, H - TH - EDGE_RB);
+    // mark a rect (in px) as occupied in the occ grid
+    function occupyPxRect(rx, ry, rw, rh){
+      const c0 = Math.max(0, Math.floor((rx - EDGE_TL)/GRID));
+      const r0 = Math.max(0, Math.floor((ry - EDGE_TL)/GRID));
+      const c1 = Math.min(cols-1, Math.ceil((rx + rw - EDGE_TL)/GRID) - 1);
+      const r1 = Math.min(rows-1, Math.ceil((ry + rh - EDGE_TL)/GRID) - 1);
+      for(let r=r0; r<=r1; r++) for(let c=c0; c<=c1; c++) occ[r][c]=true;
+    }
+    // check if a rect (in px) touches any occupied cell
+    function isFreePxRect(rx, ry, rw, rh){
+      const c0 = Math.max(0, Math.floor((rx - EDGE_TL)/GRID));
+      const r0 = Math.max(0, Math.floor((ry - EDGE_TL)/GRID));
+      const c1 = Math.min(cols-1, Math.ceil((rx + rw - EDGE_TL)/GRID) - 1);
+      const r1 = Math.min(rows-1, Math.ceil((ry + rh - EDGE_TL)/GRID) - 1);
+      for(let r=r0; r<=r1; r++) for(let c=c0; c<=c1; c++) if(occ[r][c]) return false;
+      return true;
+    }
 
-        const cand = {x, y, w: THUMB_W, h: TH};
-        ok = !overlap(cand, hole, GAP) &&
-             placed.every(p => !overlap(cand, p, GAP));
-        tries++;
+    // occupy the keep-out hole first
+    occupyPxRect(hole.x, hole.y, hole.w, hole.h);
+
+    // place thumbnails by scanning free cell blocks (no overlap possible)
+    metas.forEach((m, i)=>{
+      const TW = snap(THUMB_W);
+      const TH = snap(Math.max(GRID, TW * m.a)); // preserve aspect, snapped
+
+      // try random starting cells, then scan forward
+      let placed = false;
+      const tries = 800;
+      for(let t=0; t<tries && !placed; t++){
+        // random snapped coords in px within bounds
+        let rx = snap(randInt(EDGE_TL, Math.max(EDGE_TL, W - TW - EDGE_RB)));
+        let ry = snap(randInt(EDGE_TL, Math.max(EDGE_TL, H - TH - EDGE_RB)));
+
+        // scan in a small spiral-ish pattern to find nearest free block
+        const step = GRID;
+        for(let ring=0; ring<6 && !placed; ring++){
+          for(let dy=-ring; dy<=ring && !placed; dy++){
+            for(let dx=-ring; dx<=ring && !placed; dx++){
+              const x = clamp(snap(rx + dx*step), EDGE_TL, W - TW - EDGE_RB);
+              const y = clamp(snap(ry + dy*step), EDGE_TL, H - TH - EDGE_RB);
+              // must NOT intersect hole and must be free in occ grid
+              const intersectsHole = !(x + TW + GAP <= hole.x ||
+                                       hole.x + hole.w + GAP <= x ||
+                                       y + TH + GAP <= hole.y ||
+                                       hole.y + hole.h + GAP <= y);
+              if (!intersectsHole && isFreePxRect(x, y, TW, TH)){
+                placeThumb(i, x, y, TW, TH);
+                occupyPxRect(x, y, TW, TH);
+                placed = true;
+              }
+            }
+          }
+        }
       }
-      placed.push({x, y, w: THUMB_W, h: TH});
-
-      const fig = document.createElement('figure');
-      fig.className = 'tile';
-      fig.style.left   = x  + 'px';
-      fig.style.top    = y  + 'px';
-      fig.style.width  = THUMB_W + 'px';
-      fig.style.height = TH + 'px';
-      fig.dataset.index = i;
-
-      const im = document.createElement('img');
-      im.alt = `img ${i+1}`;
-      im.src = encodeURI(m.src);
-      fig.appendChild(im);
-
-      fig.addEventListener('click', ()=> setFocus(i));
-      canvas.appendChild(fig);
+      // if still not placed (super tight screens), last-resort: skip
+      if (!placed){
+        // noop: avoid overlap rather than forcing
+      }
     });
+  }
+
+  function placeThumb(i, x, y, w, h){
+    const fig = document.createElement('figure');
+    fig.className = 'tile';
+    fig.style.left = x+'px'; fig.style.top = y+'px';
+    fig.style.width = w+'px'; fig.style.height = h+'px';
+    fig.dataset.index = i;
+
+    const im = document.createElement('img');
+    im.alt = `img ${i+1}`; im.src = encodeURI(metas[i].src);
+    fig.appendChild(im);
+    fig.addEventListener('click', ()=> setFocus(i));
+    canvas.appendChild(fig);
   }
 
   function setFocus(i){
@@ -241,7 +266,7 @@
     const m = metas[current];
     focusImg.src = encodeURI(m.src);
     focusImg.alt = `image ${current+1}`;
-    // no reflow required; the focus box is already aligned and snapped
+    positionFocusSnapped(m.a); // use real aspect; box edges land exactly on grid
   }
   </script>
 </body>
