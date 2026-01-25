@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>process lab</title>
+<title>process artefacts</title>
 <meta name="description" content="process lab" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
 
@@ -122,13 +122,18 @@
   const rnd   = (min,max)=> Math.floor(Math.random()*(max-min+1))+min;
 
   function fitSnappedBox(maxW, maxH, aspect){
-    // width-first
-    let w = snap(maxW);
-    let h = snap(Math.max(GRID, w * aspect));
-    if (h > maxH){ // height-first fallback
-      h = snap(maxH);
-      w = snap(Math.max(GRID, h / aspect));
+    // Calculate dimensions that are multiples of GRID
+    let w = Math.floor(maxW / GRID) * GRID;
+    let h = Math.floor((w * aspect) / GRID) * GRID;
+    
+    if (h > maxH || h < GRID){
+      h = Math.floor(maxH / GRID) * GRID;
+      w = Math.floor((h / aspect) / GRID) * GRID;
     }
+    
+    w = Math.max(GRID, w);
+    h = Math.max(GRID, h);
+    
     return { w, h };
   }
 
@@ -168,17 +173,16 @@
     const H = stage.clientHeight;
 
     // Reduce by 25%: multiply available space by 0.75
-    const maxW = (W - snap(40)) * 0.75;
-    const maxH = (H - snap(90)) * 0.75;
+    const maxW = Math.floor(((W - 40) * 0.75) / GRID) * GRID;
+    const maxH = Math.floor(((H - 90) * 0.75) / GRID) * GRID;
 
     const { w: fw, h: fh } = fitSnappedBox(maxW, maxH, aspect);
 
-    let left = snap((W - fw)/2);
-    let top  = snap((H - fh)/2);
-    left = clamp(left, EDGE_TL, Math.max(EDGE_TL, W - fw - EDGE_RB));
-    top  = clamp(top,  EDGE_TL, Math.max(EDGE_TL, H - fh - EDGE_RB));
+    // Calculate position so both left edge AND right edge are on grid
+    let left = Math.floor((W - fw) / 2 / GRID) * GRID;
+    let top  = Math.floor((H - fh) / 2 / GRID) * GRID;
 
-    // apply snapped rect
+    // apply grid-aligned rect
     focusEl.style.left   = left + 'px';
     focusEl.style.top    = top  + 'px';
     focusEl.style.width  = fw   + 'px';
@@ -202,35 +206,42 @@
     const H = stage.clientHeight;
 
     // carve provisional centered hole (16:9) before we know which image is focused
-    const maxW = (W - snap(40)) * 0.75;
-    const maxH = (H - snap(90)) * 0.75;
+    const maxW = Math.floor(((W - 40) * 0.75) / GRID) * GRID;
+    const maxH = Math.floor(((H - 90) * 0.75) / GRID) * GRID;
     const { w: fw0, h: fh0 } = fitSnappedBox(maxW, maxH, 9/16);
-    const fx0 = snap((W - fw0)/2);
-    const fy0 = snap((H - fh0)/2);
+    const fx0 = Math.floor((W - fw0) / 2 / GRID) * GRID;
+    const fy0 = Math.floor((H - fh0) / 2 / GRID) * GRID;
     const hole = {
-      x: snap(fx0 - HOLE_PAD_X),
-      y: snap(fy0 - HOLE_PAD_Y),
-      w: snap(fw0 + HOLE_PAD_X*2),
-      h: snap(fh0 + HOLE_PAD_Y*2)
+      x: Math.floor((fx0 - HOLE_PAD_X) / GRID) * GRID,
+      y: Math.floor((fy0 - HOLE_PAD_Y) / GRID) * GRID,
+      w: Math.ceil((fw0 + HOLE_PAD_X*2) / GRID) * GRID,
+      h: Math.ceil((fh0 + HOLE_PAD_Y*2) / GRID) * GRID
     };
 
     // base thumb width (multiple of grid); can shrink (by 1 grid) if packing is tight
-    const BASE = snap(128);               // 8 * 16
-    const MINW = snap(Math.max(80, GRID*5)); // don't go below 80px (or 5 * grid)
+    const BASE = 128;  // Must be multiple of GRID (8 * 16)
+    const MINW = 80;   // Must be multiple of GRID (5 * 16)
 
     const placed = [];
 
     metas.forEach((m, i)=>{
       let tw = BASE;
-      let th = snap(Math.max(GRID, tw * m.a));
+      let th = Math.floor((tw * m.a) / GRID) * GRID;
+      th = Math.max(GRID, th);
 
       let ok = false, tries = 0, rect = null;
 
       while(!ok && tries < 1200){
-        // candidate snapped position within edges
+        // Generate random position that's a multiple of GRID
+        const maxX = Math.max(GRID, W - tw - EDGE_RB);
+        const maxY = Math.max(GRID, H - th - EDGE_RB);
+        
+        const gridX = Math.floor((maxX - EDGE_TL) / GRID);
+        const gridY = Math.floor((maxY - EDGE_TL) / GRID);
+        
         const cand = {
-          x: clamp(snap(rnd(EDGE_TL, Math.max(EDGE_TL, W - tw - EDGE_RB))), EDGE_TL, W - tw - EDGE_RB),
-          y: clamp(snap(rnd(EDGE_TL, Math.max(EDGE_TL, H - th - EDGE_RB))), EDGE_TL, H - th - EDGE_RB),
+          x: EDGE_TL + (Math.floor(Math.random() * (gridX + 1)) * GRID),
+          y: EDGE_TL + (Math.floor(Math.random() * (gridY + 1)) * GRID),
           w: tw,
           h: th
         };
@@ -242,10 +253,11 @@
         }
 
         tries++;
-        // after every 200 failed tries, shrink by 1 grid to find a legal spot (still snapped)
+        // after every 200 failed tries, shrink by GRID to find a legal spot
         if (tries % 200 === 0 && tw > MINW){
-          tw = snap(tw - GRID);
-          th = snap(Math.max(GRID, tw * m.a));
+          tw = tw - GRID;
+          th = Math.floor((tw * m.a) / GRID) * GRID;
+          th = Math.max(GRID, th);
         }
       }
 
