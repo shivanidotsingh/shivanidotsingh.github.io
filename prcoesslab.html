@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>process artefacts</title>
+<meta name="description" content="process lab" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
+
+<style>
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: #fff;
+  color: #000;
+  font: 14px/1.4 system-ui, -apple-system, Arial, sans-serif;
+  overflow: hidden;
+}
+
+.wrap { 
+  display: grid; 
+  grid-template-rows: auto 1fr; 
+  height: 100vh; 
+}
+
+header { 
+  padding: 8px 12px; 
+  color: #555; 
+  border-bottom: 1px solid #efefef;
+  background: #fff;
+  position: relative;
+  z-index: 100;
+}
+
+header .sub { 
+  color: #666; 
+  font-size: 13px; 
+}
+
+.stage {
+  position: relative;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(to right, #efefef 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(to bottom, #efefef 0 1px, transparent 1px 16px);
+}
+
+#canvas { 
+  position: relative; 
+  width: 100%; 
+  height: 100%; 
+}
+
+.image-box {
+  position: absolute;
+  background: #fff;
+}
+
+.image-box img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.thumb {
+  cursor: pointer;
+}
+
+.main {
+  z-index: 10;
+}
+</style>
+</head>
+
+<body>
+<div class="wrap">
+  <header>
+    <div class="sub">behind the scenes of collaboration, and other cuttings from the work desk.</div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div id="canvas"></div>
+  </main>
+</div>
+
+<script>
+const IMAGES = [
+  "images/process/ADT vision.png",
+  "images/process/BMC - design.png",
+  "images/process/criteriaforintake.png",
+  "images/process/CRM.png",
+  "images/process/gaps.png",
+  "images/process/ladder.jpg",
+  "images/process/ideally.jpg",
+  "images/process/curriculum.png",
+  "images/process/Datapoints.png",
+  "images/process/GNC learning.png",
+  "images/process/humaneval.png",
+  "images/process/knowledge sharing.png",
+  "images/process/Laddering Data.jpg",
+  "images/process/manual.png",
+  "images/process/medium is msg.png",
+  "images/process/Name Parameters.png",
+  "images/process/naming systems.png",
+  "images/process/ourresources.png",
+  "images/process/opp.png",
+  "images/process/Persona.jpg",
+  "images/process/playground UI.png",
+  "images/process/Product Partnerships Data Knowledge.png",
+  "images/process/Reach.png",
+  "images/process/Reachout if.png",
+  "images/process/Rules.png",
+  "images/process/scales of a problem.png",
+  "images/process/signals.png",
+  "images/process/singlesource of truth.png",
+  "images/process/dreaming sensing.png",
+  "images/process/timeline.png",
+  "images/process/types of slides.png",
+  "images/process/vendorgrid.png",
+  "images/process/whatwedonose.png",
+  "images/process/XCapit.png",
+  "images/process/x.png"
+];
+
+const G = 16;
+const stage = document.getElementById('stage');
+const canvas = document.getElementById('canvas');
+
+let images = [];
+let mainIndex = 0;
+
+// Load all images and get their natural dimensions
+Promise.all(IMAGES.map(src => {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve({ src, w: img.naturalWidth, h: img.naturalHeight });
+    img.onerror = () => resolve({ src, w: 100, h: 100 });
+    img.src = src;
+  });
+})).then(loaded => {
+  images = loaded;
+  layout();
+  window.addEventListener('resize', layout);
+});
+
+function gridAlign(value) {
+  return Math.floor(value / G) * G;
+}
+
+function layout() {
+  canvas.innerHTML = '';
+  
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+  
+  // Calculate main image size (75% of viewport, grid-aligned)
+  const main = images[mainIndex];
+  const mainAspect = main.h / main.w;
+  
+  let mainW = gridAlign(W * 0.75);
+  let mainH = gridAlign(mainW * mainAspect);
+  
+  if (mainH > H * 0.75) {
+    mainH = gridAlign(H * 0.75);
+    mainW = gridAlign(mainH / mainAspect);
+  }
+  
+  const mainX = gridAlign((W - mainW) / 2);
+  const mainY = gridAlign((H - mainH) / 2);
+  
+  // Create main image
+  const mainEl = document.createElement('div');
+  mainEl.className = 'image-box main';
+  mainEl.style.left = mainX + 'px';
+  mainEl.style.top = mainY + 'px';
+  mainEl.style.width = mainW + 'px';
+  mainEl.style.height = mainH + 'px';
+  
+  const mainImg = document.createElement('img');
+  mainImg.src = main.src;
+  mainEl.appendChild(mainImg);
+  canvas.appendChild(mainEl);
+  
+  // Exclusion zone around main
+  const pad = G * 3;
+  const exclude = {
+    x: mainX - pad,
+    y: mainY - pad,
+    w: mainW + pad * 2,
+    h: mainH + pad * 2
+  };
+  
+  // Place thumbnails
+  const placed = [];
+  
+  images.forEach((img, i) => {
+    if (i === mainIndex) return;
+    
+    const aspect = img.h / img.w;
+    const baseW = 128;
+    let thumbW = gridAlign(baseW);
+    let thumbH = gridAlign(thumbW * aspect);
+    
+    let attempts = 0;
+    let pos = null;
+    
+    while (attempts < 1500 && !pos) {
+      const x = gridAlign(Math.random() * (W - thumbW - G));
+      const y = gridAlign(Math.random() * (H - thumbH - G));
+      
+      const box = { x, y, w: thumbW, h: thumbH };
+      
+      // Check if overlaps with main or other thumbs
+      const overlapsMain = !(box.x + box.w <= exclude.x || exclude.x + exclude.w <= box.x ||
+                             box.y + box.h <= exclude.y || exclude.y + exclude.h <= box.y);
+      
+      const overlapsThumb = placed.some(p => 
+        !(box.x + box.w + G <= p.x || p.x + p.w + G <= box.x ||
+          box.y + box.h + G <= p.y || p.y + p.h + G <= box.y)
+      );
+      
+      if (!overlapsMain && !overlapsThumb && x >= 0 && y >= 0 && x + thumbW <= W && y + thumbH <= H) {
+        pos = box;
+      }
+      
+      attempts++;
+      
+      if (attempts % 300 === 0 && thumbW > 64) {
+        thumbW = gridAlign(thumbW - G);
+        thumbH = gridAlign(thumbW * aspect);
+      }
+    }
+    
+    if (!pos) return;
+    
+    const thumbEl = document.createElement('div');
+    thumbEl.className = 'image-box thumb';
+    thumbEl.style.left = pos.x + 'px';
+    thumbEl.style.top = pos.y + 'px';
+    thumbEl.style.width = pos.w + 'px';
+    thumbEl.style.height = pos.h + 'px';
+    
+    const thumbImg = document.createElement('img');
+    thumbImg.src = img.src;
+    thumbEl.appendChild(thumbImg);
+    
+    thumbEl.addEventListener('click', () => {
+      mainIndex = i;
+      layout();
+    });
+    
+    canvas.appendChild(thumbEl);
+    placed.push(pos);
+  });
+}
+</script>
+</body>
+</html>
