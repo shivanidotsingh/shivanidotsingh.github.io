@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>process artefacts</title>
+<title>process labs</title>
 <meta name="description" content="process lab" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
 
 <style>
-  /* barebones */
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
@@ -30,6 +29,7 @@
     background-image: var(--grid-img);
     background-size: var(--grid-size) var(--grid-size);
     background-repeat: repeat;
+    background-position: 0 0; /* align grid origin exactly */
   }
 
   /* grid (tiled SVG) */
@@ -47,23 +47,21 @@
   /* thumbnails: NO borders/shadows/radius */
   .tile {
     position: absolute;
-    width: 120px;   /* thumb size */
     background: #fff;
+    /* width/height/left/top are set via JS and snapped to grid */
   }
-  .tile img { display: block; width: 100%; height: auto; outline: none; }
+  .tile img {
+    display: block; width: 100%; height: 100%;
+    object-fit: contain; outline: none;
+  }
 
-  /* big image — positioned via JS (snapped to grid) */
+  /* big image — position & size set via JS (snapped to grid) */
   .focus {
     position: absolute;
-    /* left/top are set in JS to snapped grid coords */
-    width: 720px;                         /* main width (multiple of 16) */
-    max-width: calc(100vw - 40px);
-    max-height: calc(100vh - 90px);       /* room for header */
-    background: transparent;              /* let grid show through */
+    background: transparent; /* let grid show through */
   }
   .focus img {
-    display: block;
-    width: 100%; height: 100%;
+    display: block; width: 100%; height: 100%;
     object-fit: contain; background: transparent; outline: none;
   }
 </style>
@@ -129,11 +127,11 @@
 
   const GRID = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size')) || 16;
 
-  // tweakables
-  const THUMB_W = 120;     // thumbnail width
-  const GAP     = 8;       // min spacing between thumbs
-  const EDGE_TL = 8;       // top/left pad
-  const EDGE_RB = 12;      // right/bottom pad
+  // tweakables (use grid-multiples)
+  const THUMB_W_BASE = 128;    // multiple of 16 (8 cols)
+  const GAP          = GRID/2; // min spacing between thumbs
+  const EDGE_TL      = GRID/2; // top/left pad
+  const EDGE_RB      = GRID;   // right/bottom pad
 
   let metas = [];
   let current = -1;
@@ -155,33 +153,42 @@
     });
   }
 
-  // snap helper
-  const snap = v => Math.round(v / GRID) * GRID;
+  // helpers
+  const snap  = v => Math.round(v / GRID) * GRID;
   const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
+  function overlap(a, b, gap){
+    return !(a.x + a.w + gap <= b.x ||
+             b.x + b.w + gap <= a.x ||
+             a.y + a.h + gap <= b.y ||
+             b.y + b.h + gap <= a.y);
+  }
+  function randInt(min, max){ return Math.floor(Math.random()*(max-min+1)) + min; }
 
   function positionFocusSnapped(){
     const W = stage.clientWidth;
     const H = stage.clientHeight;
 
-    // compute centered box
-    const fw = Math.min(720, W - 40);
-    const fh = Math.min(H - 90, fw * 0.75); // rough landscape bias; actual image is object-fit
+    // base target width snapped (720 is already multiple of 16)
+    let fw = Math.min(720, W - 40);
+    fw = snap(fw);
 
-    // center, then snap to grid
-    let left = (W - fw) / 2;
-    let top  = (H - fh) / 2;
-    left = snap(left);
-    top  = snap(top);
+    // landscape-ish height, then snap
+    let fh = Math.min(H - 90, fw * 0.75);
+    fh = snap(Math.max(GRID, fh));
 
-    // clamp so it never bleeds after snapping
+    // center, then snap
+    let left = snap((W - fw) / 2);
+    let top  = snap((H - fh) / 2);
+
+    // clamp to edges
     left = clamp(left, EDGE_TL, Math.max(EDGE_TL, W - fw - EDGE_RB));
     top  = clamp(top,  EDGE_TL, Math.max(EDGE_TL, H - fh - EDGE_RB));
 
     // apply
-    focusEl.style.left = left + 'px';
-    focusEl.style.top  = top  + 'px';
-    focusEl.style.width = fw + 'px';
-    focusEl.style.height = fh + 'px';
+    focusEl.style.left   = left + 'px';
+    focusEl.style.top    = top  + 'px';
+    focusEl.style.width  = fw   + 'px';
+    focusEl.style.height = fh   + 'px';
   }
 
   function placeThumbsSnapped(){
@@ -191,49 +198,50 @@
     const W = stage.clientWidth;
     const H = stage.clientHeight;
 
-    // derive the (snapped) focus keep-out box FIRST so thumbs align around it
-    const fw0 = Math.min(720, W - 40);
-    const fh0 = Math.min(H - 90, fw0 * 0.75);
-    let left0 = (W - fw0)/2;
-    let top0  = (H - fh0)/2;
-    left0 = snap(left0);
-    top0  = snap(top0);
+    // compute snapped focus keep-out
+    let fw0 = snap(Math.min(720, W - 40));
+    let fh0 = snap(Math.min(H - 90, fw0 * 0.75));
+    let left0 = snap((W - fw0)/2);
+    let top0  = snap((H - fh0)/2);
 
-    const HOLE_PAD_X = 48;     // tighter horizontal keep-out than before
-    const HOLE_PAD_Y = 12;     // tighter vertical keep-out
+    const HOLE_PAD_X = snap(48);
+    const HOLE_PAD_Y = snap(12);
     const hole = {
-      x: snap(left0 - HOLE_PAD_X),
-      y: snap(top0  - HOLE_PAD_Y),
-      w: snap(fw0 + HOLE_PAD_X*2),
-      h: snap(fh0 + HOLE_PAD_Y*2)
+      x: left0 - HOLE_PAD_X,
+      y: top0  - HOLE_PAD_Y,
+      w: fw0 + HOLE_PAD_X*2,
+      h: fh0 + HOLE_PAD_Y*2
     };
 
     const placed = [];
     metas.forEach((m, i) => {
-      const th = Math.round(THUMB_W * (m.a || 1));
+      // snap thumb width & height
+      const TW = snap(THUMB_W_BASE);
+      const rawH = TW * (m.a || 1);
+      const TH = snap(Math.max(GRID, rawH)); // ensure height is also a multiple of GRID
 
       let tries = 0, ok = false, x = 0, y = 0;
-      while (!ok && tries < 600){
-        // raw random
-        let rx = randInt(EDGE_TL, Math.max(EDGE_TL, W - THUMB_W - EDGE_RB));
-        let ry = randInt(EDGE_TL, Math.max(EDGE_TL, H - th      - EDGE_RB));
-        // snap to grid
-        x = clamp(snap(rx), EDGE_TL, Math.max(EDGE_TL, W - THUMB_W - EDGE_RB));
-        y = clamp(snap(ry), EDGE_TL, Math.max(EDGE_TL, H - th      - EDGE_RB));
+      while (!ok && tries < 800){
+        // pick random, then snap to grid
+        let rx = randInt(EDGE_TL, Math.max(EDGE_TL, W - TW - EDGE_RB));
+        let ry = randInt(EDGE_TL, Math.max(EDGE_TL, H - TH - EDGE_RB));
+        x = clamp(snap(rx), EDGE_TL, Math.max(EDGE_TL, W - TW - EDGE_RB));
+        y = clamp(snap(ry), EDGE_TL, Math.max(EDGE_TL, H - TH - EDGE_RB));
 
-        const cand = { x, y, w: THUMB_W, h: th };
-        ok = !overlap(cand, hole, 6) &&
+        const cand = { x, y, w: TW, h: TH };
+        ok = !overlap(cand, hole, GAP) &&
              placed.every(p => !overlap(cand, p, GAP));
         tries++;
       }
 
-      placed.push({ x, y, w: THUMB_W, h: th });
+      placed.push({ x, y, w: TW, h: TH });
 
       const fig = document.createElement('figure');
       fig.className = 'tile';
-      fig.style.left = x + 'px';
-      fig.style.top  = y + 'px';
-      fig.style.width= THUMB_W + 'px';
+      fig.style.left   = x + 'px';
+      fig.style.top    = y + 'px';
+      fig.style.width  = TW + 'px';
+      fig.style.height = TH + 'px';
       fig.dataset.index = i;
 
       const im = document.createElement('img');
@@ -245,7 +253,7 @@
       canvas.appendChild(fig);
     });
 
-    // finally position the big image snapped too
+    // position big image snapped
     positionFocusSnapped();
   }
 
@@ -254,17 +262,8 @@
     const m = metas[current];
     focusImg.src = encodeURI(m.src);
     focusImg.alt = `image ${current+1}`;
-    positionFocusSnapped(); // ensure snap stays correct on change
+    positionFocusSnapped();
   }
-
-  // helpers
-  function overlap(a, b, gap){
-    return !(a.x + a.w + gap <= b.x ||
-             b.x + b.w + gap <= a.x ||
-             a.y + a.h + gap <= b.y ||
-             b.y + b.h + gap <= a.y);
-  }
-  function randInt(min, max){ return Math.floor(Math.random()*(max-min+1)) + min; }
   </script>
 </body>
 </html>
