@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>process lab</title>
+<title>process artefacts</title>
 <meta name="description" content="process lab" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
 
@@ -61,7 +61,7 @@ header .sub {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 .thumb {
@@ -130,6 +130,7 @@ const canvas = document.getElementById('canvas');
 
 let images = [];
 let mainIndex = 0;
+let positions = []; // Store thumb positions so they don't move
 
 // Load all images and get their natural dimensions
 Promise.all(IMAGES.map(src => {
@@ -141,21 +142,24 @@ Promise.all(IMAGES.map(src => {
   });
 })).then(loaded => {
   images = loaded;
-  layout();
-  window.addEventListener('resize', layout);
+  layoutInitial();
+  window.addEventListener('resize', () => {
+    positions = [];
+    layoutInitial();
+  });
 });
 
 function gridAlign(value) {
   return Math.floor(value / G) * G;
 }
 
-function layout() {
+function layoutInitial() {
   canvas.innerHTML = '';
   
   const W = stage.clientWidth;
   const H = stage.clientHeight;
   
-  // Calculate main image size (75% of viewport, grid-aligned)
+  // Calculate main image position
   const main = images[mainIndex];
   const mainAspect = main.h / main.w;
   
@@ -170,18 +174,11 @@ function layout() {
   const mainX = gridAlign((W - mainW) / 2);
   const mainY = gridAlign((H - mainH) / 2);
   
-  // Create main image
-  const mainEl = document.createElement('div');
-  mainEl.className = 'image-box main';
-  mainEl.style.left = mainX + 'px';
-  mainEl.style.top = mainY + 'px';
-  mainEl.style.width = mainW + 'px';
-  mainEl.style.height = mainH + 'px';
+  // Store main position
+  const mainPos = { x: mainX, y: mainY, w: mainW, h: mainH };
   
-  const mainImg = document.createElement('img');
-  mainImg.src = main.src;
-  mainEl.appendChild(mainImg);
-  canvas.appendChild(mainEl);
+  // Create main image
+  createImageElement(main.src, mainPos, true, mainIndex);
   
   // Exclusion zone around main
   const pad = G * 3;
@@ -192,68 +189,89 @@ function layout() {
     h: mainH + pad * 2
   };
   
-  // Place thumbnails
-  const placed = [];
-  
-  images.forEach((img, i) => {
-    if (i === mainIndex) return;
+  // Place thumbnails only if positions not yet calculated
+  if (positions.length === 0) {
+    const placed = [];
     
-    const aspect = img.h / img.w;
-    const baseW = 128;
-    let thumbW = gridAlign(baseW);
-    let thumbH = gridAlign(thumbW * aspect);
-    
-    let attempts = 0;
-    let pos = null;
-    
-    while (attempts < 1500 && !pos) {
-      const x = gridAlign(Math.random() * (W - thumbW - G));
-      const y = gridAlign(Math.random() * (H - thumbH - G));
-      
-      const box = { x, y, w: thumbW, h: thumbH };
-      
-      // Check if overlaps with main or other thumbs
-      const overlapsMain = !(box.x + box.w <= exclude.x || exclude.x + exclude.w <= box.x ||
-                             box.y + box.h <= exclude.y || exclude.y + exclude.h <= box.y);
-      
-      const overlapsThumb = placed.some(p => 
-        !(box.x + box.w + G <= p.x || p.x + p.w + G <= box.x ||
-          box.y + box.h + G <= p.y || p.y + p.h + G <= box.y)
-      );
-      
-      if (!overlapsMain && !overlapsThumb && x >= 0 && y >= 0 && x + thumbW <= W && y + thumbH <= H) {
-        pos = box;
+    images.forEach((img, i) => {
+      if (i === mainIndex) {
+        positions[i] = null; // Main has no thumb position
+        return;
       }
       
-      attempts++;
+      const aspect = img.h / img.w;
+      const baseW = 128;
+      let thumbW = gridAlign(baseW);
+      let thumbH = gridAlign(thumbW * aspect);
       
-      if (attempts % 300 === 0 && thumbW > 64) {
-        thumbW = gridAlign(thumbW - G);
-        thumbH = gridAlign(thumbW * aspect);
+      let attempts = 0;
+      let pos = null;
+      
+      while (attempts < 1500 && !pos) {
+        const x = gridAlign(Math.random() * (W - thumbW - G));
+        const y = gridAlign(Math.random() * (H - thumbH - G));
+        
+        const box = { x, y, w: thumbW, h: thumbH };
+        
+        const overlapsMain = !(box.x + box.w <= exclude.x || exclude.x + exclude.w <= box.x ||
+                               box.y + box.h <= exclude.y || exclude.y + exclude.h <= box.y);
+        
+        const overlapsThumb = placed.some(p => 
+          !(box.x + box.w + G <= p.x || p.x + p.w + G <= box.x ||
+            box.y + box.h + G <= p.y || p.y + p.h + G <= box.y)
+        );
+        
+        if (!overlapsMain && !overlapsThumb && x >= 0 && y >= 0 && x + thumbW <= W && y + thumbH <= H) {
+          pos = box;
+        }
+        
+        attempts++;
+        
+        if (attempts % 300 === 0 && thumbW > 64) {
+          thumbW = gridAlign(thumbW - G);
+          thumbH = gridAlign(thumbW * aspect);
+        }
       }
-    }
-    
-    if (!pos) return;
-    
-    const thumbEl = document.createElement('div');
-    thumbEl.className = 'image-box thumb';
-    thumbEl.style.left = pos.x + 'px';
-    thumbEl.style.top = pos.y + 'px';
-    thumbEl.style.width = pos.w + 'px';
-    thumbEl.style.height = pos.h + 'px';
-    
-    const thumbImg = document.createElement('img');
-    thumbImg.src = img.src;
-    thumbEl.appendChild(thumbImg);
-    
-    thumbEl.addEventListener('click', () => {
-      mainIndex = i;
-      layout();
+      
+      if (pos) {
+        positions[i] = pos;
+        placed.push(pos);
+      }
     });
-    
-    canvas.appendChild(thumbEl);
-    placed.push(pos);
+  }
+  
+  // Draw all thumbnails using stored positions
+  positions.forEach((pos, i) => {
+    if (pos && i !== mainIndex) {
+      createImageElement(images[i].src, pos, false, i);
+    }
   });
+}
+
+function createImageElement(src, pos, isMain, index) {
+  const el = document.createElement('div');
+  el.className = isMain ? 'image-box main' : 'image-box thumb';
+  el.style.left = pos.x + 'px';
+  el.style.top = pos.y + 'px';
+  el.style.width = pos.w + 'px';
+  el.style.height = pos.h + 'px';
+  
+  const img = document.createElement('img');
+  img.src = src;
+  el.appendChild(img);
+  
+  if (!isMain) {
+    el.addEventListener('click', () => {
+      mainIndex = index;
+      layoutInitial();
+    });
+  }
+  
+  canvas.appendChild(el);
+}
+
+function layout() {
+  layoutInitial();
 }
 </script>
 </body>
