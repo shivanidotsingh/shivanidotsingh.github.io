@@ -1,288 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>process artefacts</title>
-<meta name="description" content="process lab" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>process lab</title>
 <style>
-  * { box-sizing: border-box; }
-  html, body { height: 100%; }
-  body {
-    margin: 0;
-    background: #fff;
-    color: #000;
-    font: 14px/1.4 system-ui, -apple-system, Arial, sans-serif;
-    overflow: hidden; /* single-screen composition */
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .wrap { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
-  header { padding: 8px 12px; color: #555; border-bottom: 1px solid #efefef; }
-  header .sub { color: #666; font-size: 13px; }
+body {
+  font-family: 'Courier New', monospace;
+  background: #fff;
+  overflow: hidden;
+}
 
-  :root{
-    --grid: 16px;           /* snapping unit */
-    --grid-line: #efefef;   /* lighter grid */
-    --hole-pad-x: 48px;     /* keep-out around focus */
-    --hole-pad-y: 16px;
-  }
+.grid-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(0deg, #e0e0e0 0, #e0e0e0 1px, transparent 1px, transparent 16px),
+    repeating-linear-gradient(90deg, #e0e0e0 0, #e0e0e0 1px, transparent 1px, transparent 16px);
+  pointer-events: none;
+  z-index: 1000;
+}
 
-  /* crisp, light grid */
-  .stage{
-    position: relative;
-    overflow: hidden;
-    background:
-      repeating-linear-gradient(to right, var(--grid-line) 0 1px, transparent 1px var(--grid)),
-      repeating-linear-gradient(to bottom, var(--grid-line) 0 1px, transparent 1px var(--grid));
-    background-position: 0 0;
-  }
+.container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
 
-  #canvas { position: relative; width: 100%; height: 100%; }
+.image-box {
+  position: absolute;
+  background: #000;
+  cursor: pointer;
+  overflow: hidden;
+}
 
-  /* absolutely-positioned boxes; no borders/shadows/radius */
-  .tile { position: absolute; background: #fff; }
-  .tile img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-  .focus { position: absolute; background: transparent; }
-  .focus img { display: block; width: 100%; height: 100%; object-fit: contain; background: transparent; }
+.main {
+  border: 2px solid #000;
+  z-index: 10;
+}
+
+.thumb {
+  border: 1px solid #666;
+}
+
+.info {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  font-size: 11px;
+  color: #666;
+  background: #fff;
+  padding: 8px;
+  border: 1px solid #ccc;
+  z-index: 1001;
+}
 </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <header>
-      <div class="sub">behind the scenes of collaboration, and other cuttings from the work desk.</div>
-    </header>
 
-    <main class="stage" id="stage">
-      <div id="canvas">
-        <figure class="focus" id="focusCard"><img id="focusImg" alt=""></figure>
-      </div>
-    </main>
-  </div>
+<div class="grid-bg"></div>
+<div class="container" id="container"></div>
+<div class="info">click thumbnails to swap • grid: 16px</div>
 
-  <script>
-  /* ===== data ===== */
-  const IMAGES = [
-    "images/process/ADT vision.png",
-    "images/process/BMC - design.png",
-    "images/process/criteriaforintake.png",
-    "images/process/CRM.png",
-    "images/process/gaps.png",
-    "images/process/ladder.jpg",
-    "images/process/ideally.jpg",
-    "images/process/curriculum.png",
-    "images/process/Datapoints.png",
-    "images/process/GNC learning.png",
-    "images/process/humaneval.png",
-    "images/process/knowledge sharing.png",
-    "images/process/Laddering Data.jpg",
-    "images/process/manual.png",
-    "images/process/medium is msg.png",
-    "images/process/Name Parameters.png",
-    "images/process/naming systems.png",
-    "images/process/ourresources.png",
-    "images/process/opp.png",
-    "images/process/Persona.jpg",
-    "images/process/playground UI.png",
-    "images/process/Product Partnerships Data Knowledge.png",
-    "images/process/Reach.png",
-    "images/process/Reachout if.png",
-    "images/process/Rules.png",
-    "images/process/scales of a problem.png",
-    "images/process/signals.png",
-    "images/process/singlesource of truth.png",
-    "images/process/dreaming sensing.png",
-    "images/process/timeline.png",
-    "images/process/types of slides.png",
-    "images/process/vendorgrid.png",
-    "images/process/whatwedonose.png",
-    "images/process/XCapit.png",
-    "images/process/x.png"
-  ];
+<script>
+const IMAGES = [
+  "images/process/ADT vision.png",
+  "images/process/BMC - design.png",
+  "images/process/criteriaforintake.png",
+  "images/process/CRM.png",
+  "images/process/gaps.png",
+  "images/process/ladder.jpg",
+  "images/process/ideally.jpg",
+  "images/process/curriculum.png",
+  "images/process/Datapoints.png",
+  "images/process/GNC learning.png",
+  "images/process/humaneval.png",
+  "images/process/knowledge sharing.png",
+  "images/process/Laddering Data.jpg",
+  "images/process/manual.png",
+  "images/process/medium is msg.png",
+  "images/process/Name Parameters.png",
+  "images/process/naming systems.png",
+  "images/process/ourresources.png",
+  "images/process/opp.png",
+  "images/process/Persona.jpg",
+  "images/process/playground UI.png",
+  "images/process/Product Partnerships Data Knowledge.png",
+  "images/process/Reach.png",
+  "images/process/Reachout if.png",
+  "images/process/Rules.png",
+  "images/process/scales of a problem.png",
+  "images/process/signals.png",
+  "images/process/singlesource of truth.png",
+  "images/process/dreaming sensing.png",
+  "images/process/timeline.png",
+  "images/process/types of slides.png",
+  "images/process/vendorgrid.png",
+  "images/process/whatwedonose.png",
+  "images/process/XCapit.png",
+  "images/process/x.png"
+];
 
-  /* ===== elements ===== */
-  const stage    = document.getElementById('stage');
-  const canvas   = document.getElementById('canvas');
-  const focusEl  = document.getElementById('focusCard');
-  const focusImg = document.getElementById('focusImg');
+const GRID = 16;
+const MAIN_SIZE = 25 * GRID; // 400px (25 grid units)
+const THUMB_SIZE = 6 * GRID;  // 96px (6 grid units)
 
-  /* ===== grid + helpers ===== */
-  const GRID = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--grid')) || 16;
-  const EDGE_TL = GRID;          // 16px
-  const EDGE_RB = GRID;          // 16px
-  const GAP     = GRID;          // 16px separation between thumbs
-  const HOLE_PAD_X = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-x')) || 48;
-  const HOLE_PAD_Y = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-y')) || 16;
+let mainIndex = 0;
+const container = document.getElementById('container');
 
-  const snap  = v => Math.round(v / GRID) * GRID;
-  const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
-  const rnd   = (min,max)=> Math.floor(Math.random()*(max-min+1))+min;
+function gridSnap(value) {
+  return Math.round(value / GRID) * GRID;
+}
 
-  function fitSnappedBox(maxW, maxH, aspect){
-    // Calculate dimensions that are multiples of GRID
-    let w = Math.floor(maxW / GRID) * GRID;
-    let h = Math.floor((w * aspect) / GRID) * GRID;
-    
-    if (h > maxH || h < GRID){
-      h = Math.floor(maxH / GRID) * GRID;
-      w = Math.floor((h / aspect) / GRID) * GRID;
-    }
-    
-    w = Math.max(GRID, w);
-    h = Math.max(GRID, h);
-    
-    return { w, h };
-  }
-
-  function overlaps(a, b, gap){
-    return !(a.x + a.w + gap <= b.x ||
-             b.x + b.w + gap <= a.x ||
-             a.y + a.h + gap <= b.y ||
-             b.y + b.h + gap <= a.y);
-  }
-
-  /* ===== load natural sizes ===== */
-  let metas = [];   // [{src, a}]
-  let current = -1; // index of focused
-
-  Promise.all(IMAGES.map(loadMeta)).then(m=>{
-    metas = m;
-    layoutThumbs();                          // place thumbs (snapped, non-overlapping)
-    setFocus(rnd(0, metas.length-1));        // pick a random image to start
-    window.addEventListener('resize', ()=>{  // keep snapped on resize
-      layoutThumbs();
-      setFocus(current);
-    });
-  });
-
-  function loadMeta(src){
-    return new Promise(res=>{
-      const img = new Image();
-      img.onload = ()=> res({ src, a: (img.naturalHeight||1000)/(img.naturalWidth||1000) });
-      img.onerror= ()=> res({ src, a: 1 });
-      img.src = encodeURI(src);
-    });
-  }
-
-  /* ===== focus placement (centered + snapped, using REAL aspect) ===== */
-  function positionFocus(aspect){
-    const W = stage.clientWidth;
-    const H = stage.clientHeight;
-
-    // Reduce by 25%: multiply available space by 0.75
-    const maxW = Math.floor(((W - 40) * 0.75) / GRID) * GRID;
-    const maxH = Math.floor(((H - 90) * 0.75) / GRID) * GRID;
-
-    const { w: fw, h: fh } = fitSnappedBox(maxW, maxH, aspect);
-
-    // Calculate position so both left edge AND right edge are on grid
-    let left = Math.floor((W - fw) / 2 / GRID) * GRID;
-    let top  = Math.floor((H - fh) / 2 / GRID) * GRID;
-
-    // apply grid-aligned rect
-    focusEl.style.left   = left + 'px';
-    focusEl.style.top    = top  + 'px';
-    focusEl.style.width  = fw   + 'px';
-    focusEl.style.height = fh   + 'px';
-  }
-
-  function setFocus(i){
-    current = ((i % metas.length) + metas.length) % metas.length;
-    const m = metas[current];
-    focusImg.src = encodeURI(m.src);
-    focusImg.alt = `image ${current+1}`;
-    positionFocus(m.a); // snaps left/top/width/height using THIS image aspect
-  }
-
-  /* ===== thumbnails (snapped positions & sizes, no overlap) ===== */
-  function layoutThumbs(){
-    // remove existing thumbs
-    [...canvas.querySelectorAll('.tile')].forEach(n=>n.remove());
-
-    const W = stage.clientWidth;
-    const H = stage.clientHeight;
-
-    // carve provisional centered hole (16:9) before we know which image is focused
-    const maxW = Math.floor(((W - 40) * 0.75) / GRID) * GRID;
-    const maxH = Math.floor(((H - 90) * 0.75) / GRID) * GRID;
-    const { w: fw0, h: fh0 } = fitSnappedBox(maxW, maxH, 9/16);
-    const fx0 = Math.floor((W - fw0) / 2 / GRID) * GRID;
-    const fy0 = Math.floor((H - fh0) / 2 / GRID) * GRID;
-    const hole = {
-      x: Math.floor((fx0 - HOLE_PAD_X) / GRID) * GRID,
-      y: Math.floor((fy0 - HOLE_PAD_Y) / GRID) * GRID,
-      w: Math.ceil((fw0 + HOLE_PAD_X*2) / GRID) * GRID,
-      h: Math.ceil((fh0 + HOLE_PAD_Y*2) / GRID) * GRID
-    };
-
-    // base thumb width (multiple of grid); can shrink (by 1 grid) if packing is tight
-    const BASE = 128;  // Must be multiple of GRID (8 * 16)
-    const MINW = 80;   // Must be multiple of GRID (5 * 16)
-
-    const placed = [];
-
-    metas.forEach((m, i)=>{
-      let tw = BASE;
-      let th = Math.floor((tw * m.a) / GRID) * GRID;
-      th = Math.max(GRID, th);
-
-      let ok = false, tries = 0, rect = null;
-
-      while(!ok && tries < 1200){
-        // Generate random position that's a multiple of GRID
-        const maxX = Math.max(GRID, W - tw - EDGE_RB);
-        const maxY = Math.max(GRID, H - th - EDGE_RB);
-        
-        const gridX = Math.floor((maxX - EDGE_TL) / GRID);
-        const gridY = Math.floor((maxY - EDGE_TL) / GRID);
-        
-        const cand = {
-          x: EDGE_TL + (Math.floor(Math.random() * (gridX + 1)) * GRID),
-          y: EDGE_TL + (Math.floor(Math.random() * (gridY + 1)) * GRID),
-          w: tw,
-          h: th
-        };
-
-        if (!overlaps(cand, hole, GAP) && placed.every(p => !overlaps(cand, p, GAP))){
-          ok = true;
-          rect = cand;
-          break;
-        }
-
-        tries++;
-        // after every 200 failed tries, shrink by GRID to find a legal spot
-        if (tries % 200 === 0 && tw > MINW){
-          tw = tw - GRID;
-          th = Math.floor((tw * m.a) / GRID) * GRID;
-          th = Math.max(GRID, th);
-        }
+function getGridCoords(w, h, excludeZone = null) {
+  const cols = Math.floor(w / GRID);
+  const rows = Math.floor(h / GRID);
+  const coords = [];
+  
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const x = col * GRID;
+      const y = row * GRID;
+      
+      // Skip if in exclude zone
+      if (excludeZone) {
+        const inZone = x < excludeZone.x + excludeZone.w &&
+                       x + THUMB_SIZE > excludeZone.x &&
+                       y < excludeZone.y + excludeZone.h &&
+                       y + THUMB_SIZE > excludeZone.y;
+        if (inZone) continue;
       }
-
-      if (!ok) return; // skip this thumb rather than overlap on ultra-tight screens
-
-      // create the thumb (SNAPPED left/top/width/height)
-      const fig = document.createElement('figure');
-      fig.className = 'tile';
-      fig.style.left   = rect.x + 'px';
-      fig.style.top    = rect.y + 'px';
-      fig.style.width  = rect.w + 'px';
-      fig.style.height = rect.h + 'px';
-
-      const im = document.createElement('img');
-      im.alt = `img ${i+1}`;
-      im.src = encodeURI(m.src);
-      fig.appendChild(im);
-
-      // 🔧 fixed: use the global setFocus(i) directly
-      fig.addEventListener('click', ()=> setFocus(i));
-
-      canvas.appendChild(fig);
-      placed.push(rect);
-    });
+      
+      // Skip if too close to edges
+      if (x + THUMB_SIZE > w || y + THUMB_SIZE > h) continue;
+      
+      coords.push({ x, y });
+    }
   }
-  </script>
+  
+  return coords;
+}
+
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function layout() {
+  container.innerHTML = '';
+  
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  
+  // Main image - centered and grid-aligned
+  const mainX = gridSnap((vw - MAIN_SIZE) / 2);
+  const mainY = gridSnap((vh - MAIN_SIZE) / 2);
+  
+  const mainBox = document.createElement('div');
+  mainBox.className = 'image-box main';
+  mainBox.style.left = mainX + 'px';
+  mainBox.style.top = mainY + 'px';
+  mainBox.style.width = MAIN_SIZE + 'px';
+  mainBox.style.height = MAIN_SIZE + 'px';
+  
+  const mainImg = document.createElement('img');
+  mainImg.src = IMAGES[mainIndex];
+  mainBox.appendChild(mainImg);
+  container.appendChild(mainBox);
+  
+  // Exclude zone around main image
+  const excludeZone = {
+    x: mainX - GRID * 2,
+    y: mainY - GRID * 2,
+    w: MAIN_SIZE + GRID * 4,
+    h: MAIN_SIZE + GRID * 4
+  };
+  
+  // Get available grid positions
+  const available = shuffle(getGridCoords(vw, vh, excludeZone));
+  
+  // Place thumbnails
+  IMAGES.forEach((src, i) => {
+    if (i === mainIndex) return;
+    if (available.length === 0) return;
+    
+    const pos = available.pop();
+    
+    const thumbBox = document.createElement('div');
+    thumbBox.className = 'image-box thumb';
+    thumbBox.style.left = pos.x + 'px';
+    thumbBox.style.top = pos.y + 'px';
+    thumbBox.style.width = THUMB_SIZE + 'px';
+    thumbBox.style.height = THUMB_SIZE + 'px';
+    
+    const thumbImg = document.createElement('img');
+    thumbImg.src = src;
+    thumbBox.appendChild(thumbImg);
+    
+    thumbBox.addEventListener('click', () => {
+      mainIndex = i;
+      layout();
+    });
+    
+    container.appendChild(thumbBox);
+  });
+}
+
+layout();
+window.addEventListener('resize', layout);
+</script>
+
 </body>
 </html>
