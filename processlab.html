@@ -4,10 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>process artefacts</title>
-<meta name="description" content="process artefacts" />
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>*</text></svg>">
+<meta name="description" content="process lab" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
 
 <style>
+  /* barebones */
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
@@ -22,6 +23,7 @@
   header { padding: 8px 12px; color: #555; border-bottom: 1px solid #e5e5e5; }
   header .sub { color: #666; font-size: 13px; }
 
+  /* stage fills viewport, no scroll */
   .stage {
     position: relative;
     overflow: hidden;
@@ -30,7 +32,7 @@
     background-repeat: repeat;
   }
 
-  /* grid */
+  /* grid (tiled SVG) */
   :root{
     --grid-size: 16px;
     --grid-img: url("data:image/svg+xml;utf8,\
@@ -42,6 +44,7 @@
 
   #canvas { position: relative; width: 100%; height: 100%; }
 
+  /* thumbnails: NO borders/shadows/radius */
   .tile {
     position: absolute;
     width: 120px;   /* thumb size */
@@ -49,25 +52,20 @@
   }
   .tile img { display: block; width: 100%; height: auto; outline: none; }
 
-.focus{
-  position:absolute;
-  inset: 0;
-  margin: auto;
-  width: 720px;
-  max-width: calc(100vw - 40px);
-  max-height: calc(100vh - 90px);
-  background: transparent;   /* ← let the grid show through */
-}
-
-.focus img{
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  background: transparent;    /* ← no white panel */
-  outline:none;
-}
-
+  /* big image — positioned via JS (snapped to grid) */
+  .focus {
+    position: absolute;
+    /* left/top are set in JS to snapped grid coords */
+    width: 720px;                         /* main width (multiple of 16) */
+    max-width: calc(100vw - 40px);
+    max-height: calc(100vh - 90px);       /* room for header */
+    background: transparent;              /* let grid show through */
+  }
+  .focus img {
+    display: block;
+    width: 100%; height: 100%;
+    object-fit: contain; background: transparent; outline: none;
+  }
 </style>
 </head>
 
@@ -88,7 +86,6 @@
   <script>
   const IMAGES = [
     "images/process/ADT vision.png",
-    "images/process/Concentric.png",
     "images/process/BMC - design.png",
     "images/process/criteriaforintake.png",
     "images/process/CRM.png",
@@ -105,7 +102,6 @@
     "images/process/medium is msg.png",
     "images/process/Name Parameters.png",
     "images/process/naming systems.png",
-    "images/process/ORG.png",
     "images/process/ourresources.png",
     "images/process/opp.png",
     "images/process/Persona.jpg",
@@ -126,56 +122,90 @@
     "images/process/x.png"
   ];
 
-  const stage  = document.getElementById('stage');
-  const canvas = document.getElementById('canvas');
+  const stage    = document.getElementById('stage');
+  const canvas   = document.getElementById('canvas');
+  const focusEl  = document.getElementById('focusCard');
   const focusImg = document.getElementById('focusImg');
+
+  const GRID = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-size')) || 16;
 
   // tweakables
   const THUMB_W = 120;     // thumbnail width
-  const GAP = 8;           // min spacing between thumbs
-  const EDGE_PAD_TL = 10;  // top/left pad (keep a little breathing room)
-  const EDGE_PAD_RB = 16;  // right/bottom pad (extra to avoid bleed)
+  const GAP     = 8;       // min spacing between thumbs
+  const EDGE_TL = 8;       // top/left pad
+  const EDGE_RB = 12;      // right/bottom pad
 
   let metas = [];
   let current = -1;
 
-  // load natural sizes
+  // load natural sizes, then build
   Promise.all(IMAGES.map(loadMeta)).then(_metas=>{
     metas = _metas;
-    placeThumbs();                         // scatter within viewport only
-    setFocus(randInt(0, IMAGES.length-1)); // start on a random one
-    window.addEventListener('resize', ()=>{ placeThumbs(); setFocus(current); });
+    placeThumbsSnapped();
+    setFocus(randInt(0, IMAGES.length-1)); // random start
+    window.addEventListener('resize', ()=>{ placeThumbsSnapped(); setFocus(current); });
   });
 
   function loadMeta(src){
     return new Promise(res=>{
       const img=new Image();
-      img.onload=()=>res({src, w: img.naturalWidth||1000, h: img.naturalHeight||1000, a:(img.naturalHeight||1000)/(img.naturalWidth||1000)});
-      img.onerror=()=>res({src, w:1000, h:1000, a:1});
+      img.onload=()=>res({src, a: (img.naturalHeight||1000)/(img.naturalWidth||1000)});
+      img.onerror=()=>res({src, a:1});
       img.src=encodeURI(src);
     });
   }
 
-  function placeThumbs(){
-    // clear thumbnails (keep focus card)
+  // snap helper
+  const snap = v => Math.round(v / GRID) * GRID;
+  const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
+
+  function positionFocusSnapped(){
+    const W = stage.clientWidth;
+    const H = stage.clientHeight;
+
+    // compute centered box
+    const fw = Math.min(720, W - 40);
+    const fh = Math.min(H - 90, fw * 0.75); // rough landscape bias; actual image is object-fit
+
+    // center, then snap to grid
+    let left = (W - fw) / 2;
+    let top  = (H - fh) / 2;
+    left = snap(left);
+    top  = snap(top);
+
+    // clamp so it never bleeds after snapping
+    left = clamp(left, EDGE_TL, Math.max(EDGE_TL, W - fw - EDGE_RB));
+    top  = clamp(top,  EDGE_TL, Math.max(EDGE_TL, H - fh - EDGE_RB));
+
+    // apply
+    focusEl.style.left = left + 'px';
+    focusEl.style.top  = top  + 'px';
+    focusEl.style.width = fw + 'px';
+    focusEl.style.height = fh + 'px';
+  }
+
+  function placeThumbsSnapped(){
+    // clear thumbs
     [...canvas.querySelectorAll('.tile')].forEach(n=>n.remove());
 
     const W = stage.clientWidth;
     const H = stage.clientHeight;
 
-    // estimate focus frame bbox (to keep clear).
-    // tighter VERTICAL padding so thumbs can sit closer top/bottom of big image.
-    const focusW = Math.min(720, W - 40);
-    const focusH = Math.min(H - 90, focusW * 0.75); // rough (landscape-biased)
-    const fx = (W - focusW)/2, fy = (H - focusH)/2;
+    // derive the (snapped) focus keep-out box FIRST so thumbs align around it
+    const fw0 = Math.min(720, W - 40);
+    const fh0 = Math.min(H - 90, fw0 * 0.75);
+    let left0 = (W - fw0)/2;
+    let top0  = (H - fh0)/2;
+    left0 = snap(left0);
+    top0  = snap(top0);
 
-    const HOLE_PAD_X = 60;  // horizontal keep-out
-    const HOLE_PAD_Y = 16;  // vertical keep-out (smaller → closer to image)
+    const HOLE_PAD_X = 48;     // tighter horizontal keep-out than before
+    const HOLE_PAD_Y = 12;     // tighter vertical keep-out
     const hole = {
-      x: fx - HOLE_PAD_X,
-      y: fy - HOLE_PAD_Y,
-      w: focusW + HOLE_PAD_X*2,
-      h: focusH + HOLE_PAD_Y*2
+      x: snap(left0 - HOLE_PAD_X),
+      y: snap(top0  - HOLE_PAD_Y),
+      w: snap(fw0 + HOLE_PAD_X*2),
+      h: snap(fh0 + HOLE_PAD_Y*2)
     };
 
     const placed = [];
@@ -183,15 +213,17 @@
       const th = Math.round(THUMB_W * (m.a || 1));
 
       let tries = 0, ok = false, x = 0, y = 0;
-      while (!ok && tries < 500){
-        // clamp ranges so we NEVER bleed the right/bottom
-        x = randInt(EDGE_PAD_TL, Math.max(EDGE_PAD_TL, W - THUMB_W - EDGE_PAD_RB));
-        y = randInt(EDGE_PAD_TL, Math.max(EDGE_PAD_TL, H - th      - EDGE_PAD_RB));
+      while (!ok && tries < 600){
+        // raw random
+        let rx = randInt(EDGE_TL, Math.max(EDGE_TL, W - THUMB_W - EDGE_RB));
+        let ry = randInt(EDGE_TL, Math.max(EDGE_TL, H - th      - EDGE_RB));
+        // snap to grid
+        x = clamp(snap(rx), EDGE_TL, Math.max(EDGE_TL, W - THUMB_W - EDGE_RB));
+        y = clamp(snap(ry), EDGE_TL, Math.max(EDGE_TL, H - th      - EDGE_RB));
 
         const cand = { x, y, w: THUMB_W, h: th };
-
-        ok = !rectsOverlap(cand, hole, 6) && // slight overlap allowed only when squares get focused later; we don't reflow
-             placed.every(p => !rectsOverlap(cand, p, GAP));
+        ok = !overlap(cand, hole, 6) &&
+             placed.every(p => !overlap(cand, p, GAP));
         tries++;
       }
 
@@ -212,6 +244,9 @@
       fig.addEventListener('click', ()=> setFocus(i));
       canvas.appendChild(fig);
     });
+
+    // finally position the big image snapped too
+    positionFocusSnapped();
   }
 
   function setFocus(i){
@@ -219,12 +254,11 @@
     const m = metas[current];
     focusImg.src = encodeURI(m.src);
     focusImg.alt = `image ${current+1}`;
-    // Note: we do NOT reflow thumbnails on focus change
-    // (okay if a square image overlaps a bit, per your note).
+    positionFocusSnapped(); // ensure snap stays correct on change
   }
 
   // helpers
-  function rectsOverlap(a, b, gap){
+  function overlap(a, b, gap){
     return !(a.x + a.w + gap <= b.x ||
              b.x + b.w + gap <= a.x ||
              a.y + a.h + gap <= b.y ||
