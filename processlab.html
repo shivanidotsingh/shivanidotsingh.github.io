@@ -43,10 +43,10 @@
 
   /* absolutely-positioned boxes; no borders/shadows/radius */
   .tile { position: absolute; background: #fff; }
-  .tile img { display: block; width: 100%; height: 100%; }
+  .tile img { display: block; width: 100%; height: 100%; object-fit: contain; }
 
   .focus { position: absolute; background: transparent; }
-  .focus img { display: block; width: 100%; height: 100%; background: transparent; }
+  .focus img { display: block; width: 100%; height: 100%; object-fit: contain; background: transparent; }
 </style>
 </head>
 
@@ -167,7 +167,11 @@
     const W = stage.clientWidth;
     const H = stage.clientHeight;
 
-    const { w: fw, h: fh } = fitSnappedBox(W - snap(40), H - snap(90), aspect);
+    // Reduce by 25%: multiply available space by 0.75
+    const maxW = (W - snap(40)) * 0.75;
+    const maxH = (H - snap(90)) * 0.75;
+
+    const { w: fw, h: fh } = fitSnappedBox(maxW, maxH, aspect);
 
     let left = snap((W - fw)/2);
     let top  = snap((H - fh)/2);
@@ -198,7 +202,9 @@
     const H = stage.clientHeight;
 
     // carve provisional centered hole (16:9) before we know which image is focused
-    const { w: fw0, h: fh0 } = fitSnappedBox(W - snap(40), H - snap(90), 9/16);
+    const maxW = (W - snap(40)) * 0.75;
+    const maxH = (H - snap(90)) * 0.75;
+    const { w: fw0, h: fh0 } = fitSnappedBox(maxW, maxH, 9/16);
     const fx0 = snap((W - fw0)/2);
     const fy0 = snap((H - fh0)/2);
     const hole = {
