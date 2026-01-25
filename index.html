@@ -229,7 +229,8 @@ portfolioLink.addEventListener('click', e => {
   openPortfolio();
 });
 
-/* ---------- FLOWER CURSOR + CLICK STAMPS ---------- */
+
+/* ---------- FLOWER CLICK STAMPS ---------- */
 
 const introWrap = document.querySelector(".intro-wrap");
 
@@ -243,9 +244,9 @@ document.addEventListener("click", (e) => {
   // Only stamp if clicking within intro section's vertical bounds
   const introRect = introWrap.getBoundingClientRect();
   const clickY = e.clientY;
-  
+
   if (clickY < introRect.top || clickY > introRect.bottom) return;
-  
+
   // Don't stamp when clicking interactive elements
   if (e.target.closest("a, button, input, textarea, select, label")) return;
 
@@ -272,26 +273,26 @@ document.addEventListener("click", (e) => {
 document.addEventListener("keydown", (e) => {
 
   const exemptKeys = [
-    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', // Navigation
-    'Tab', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock', // Modifiers
-    'Home', 'End', 'PageUp', 'PageDown', // Navigation
-    'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12' // Function keys
+    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
+    'Tab', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock',
+    'Home', 'End', 'PageUp', 'PageDown',
+    'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
   ];
-  
+
   // Don't trigger if typing in an input field
   if (e.target.matches('input, textarea, select')) return;
-  
+
   // Don't trigger for exempt keys
   if (exemptKeys.includes(e.key)) return;
-  
+
   // Don't trigger if no flowers to clear
   if (allFlowers.length === 0) return;
-  
+
   // Add falling class to all flowers
   allFlowers.forEach(flower => {
     if (flower.parentNode) flower.classList.add("falling");
   });
-  
+
   // Remove all flowers after animation completes
   setTimeout(() => {
     allFlowers.forEach(flower => {
@@ -300,110 +301,128 @@ document.addEventListener("keydown", (e) => {
     allFlowers.length = 0;
   }, 1200);
 });
-    
-// dormant tab face spam
+
+
+/* ---------- DORMANT TAB BOOM (DVD BOUNCE) ---------- */
+
 const isDesktop = window.matchMedia('(pointer: fine)').matches;
+
 if (isDesktop) {
-const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
-const MAX_BOOMS = 25;
-const SPAWN_INTERVAL = 15000; // 15 seconds
-const CLEAR_INTERVAL = 120;   // fast, non-jarring
+  const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
 
-let boomTimer = null;
-let clearTimer = null;
-let awaitingReturn = false;
+  let boomEl = null;
+  let awaitingReturn = false;
 
-const booms = [];
+  // motion state
+  let x = 0, y = 0;
+  let vx = 0.6, vy = 0.45; // slow drift; tweak if needed
+  let rafId = null;
+  let lastT = 0;
 
-function spawnBoom(){
-  if (booms.length >= MAX_BOOMS) return;
+  function ensureBoom() {
+    if (boomEl) return;
 
-  const img = document.createElement("img");
-  img.src = BOOM_SRC;
-  img.className = "boom-gif";
+    boomEl = document.createElement("img");
+    boomEl.src = BOOM_SRC;
+    boomEl.className = "boom-gif";
+    document.body.appendChild(boomEl);
 
-  const size = 120; // match your CSS size
-  const x = Math.random() * Math.max(1, (window.innerWidth - size));
-  const y = Math.random() * Math.max(1, (window.innerHeight - size));
-
-  img.style.left = x + "px";
-  img.style.top = y + "px";
-
-  document.body.appendChild(img);
-  booms.push(img);
-}
-
-function startDormant(){
-  // stop clearing if we go dormant again
-  if (clearTimer){
-    clearInterval(clearTimer);
-    clearTimer = null;
+    // position once it has a size
+    requestAnimationFrame(() => {
+      const r = boomEl.getBoundingClientRect();
+      const maxX = Math.max(0, window.innerWidth - r.width);
+      const maxY = Math.max(0, window.innerHeight - r.height);
+      x = Math.random() * maxX;
+      y = Math.random() * maxY;
+      boomEl.style.left = x + "px";
+      boomEl.style.top = y + "px";
+    });
   }
 
-  if (boomTimer) return;
-  boomTimer = setInterval(spawnBoom, SPAWN_INTERVAL);
-}
+  function removeBoom() {
+    if (!boomEl) return;
+    boomEl.remove();
+    boomEl = null;
+  }
 
-function stopDormant(){
-  clearInterval(boomTimer);
-  boomTimer = null;
-}
+  function stopAnim() {
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = null;
+    lastT = 0;
+  }
 
-function startClearing(){
-  stopDormant();
-  if (clearTimer) return;
+  function step(t) {
+    if (!boomEl) return;
 
-  clearTimer = setInterval(() => {
-    if (booms.length === 0){
-      clearInterval(clearTimer);
-      clearTimer = null;
-      return;
-    }
+    const dt = lastT ? (t - lastT) / 16.6667 : 1;
+    lastT = t;
 
-    const idx = Math.floor(Math.random() * booms.length);
-    const boom = booms.splice(idx, 1)[0];
-    if (boom && boom.parentNode){
-      boom.parentNode.removeChild(boom);
-    }
-  }, CLEAR_INTERVAL);
-}
+    const r = boomEl.getBoundingClientRect();
+    const maxX = Math.max(0, window.innerWidth - r.width);
+    const maxY = Math.max(0, window.innerHeight - r.height);
 
-/* visibility logic */
-function handleVisibility(){
-  if (document.hidden){
+    x += vx * dt;
+    y += vy * dt;
+
+    // bounce
+    if (x <= 0) { x = 0; vx *= -1; }
+    if (y <= 0) { y = 0; vy *= -1; }
+    if (x >= maxX) { x = maxX; vx *= -1; }
+    if (y >= maxY) { y = maxY; vy *= -1; }
+
+    boomEl.style.left = x + "px";
+    boomEl.style.top = y + "px";
+
+    rafId = requestAnimationFrame(step);
+  }
+
+  function startDormant() {
     awaitingReturn = true;
-    startDormant();
-  } else {
-    stopDormant();
+    ensureBoom();
+    if (!rafId) rafId = requestAnimationFrame(step);
   }
-}
 
-document.addEventListener("visibilitychange", handleVisibility);
+  function stopDormant() {
+    // freeze on return (still visible)
+    stopAnim();
+  }
 
-/* clear only when user re-engages */
-function onReengage(){
-  if (!awaitingReturn) return;      // only after a dormant period
-  if (booms.length === 0) {         // nothing to clear
+  function handleVisibility() {
+    if (document.hidden) startDormant();
+    else stopDormant();
+  }
+
+  document.addEventListener("visibilitychange", handleVisibility);
+
+  // Clear ONLY when user re-engages (mouse/touch) after a dormant period
+  function onReengage() {
+    if (!awaitingReturn) return;
     awaitingReturn = false;
-    return;
+    stopAnim();
+    removeBoom();
   }
 
-  awaitingReturn = false;
-  startClearing();
+  document.addEventListener("mousemove", onReengage, { passive: true });
+  document.addEventListener("touchstart", onReengage, { passive: true });
+
+  // If page loads already inactive
+  if (document.hidden) startDormant();
+
+  // Keep inside viewport on resize
+  window.addEventListener("resize", () => {
+    if (!boomEl) return;
+    const r = boomEl.getBoundingClientRect();
+    x = Math.min(x, Math.max(0, window.innerWidth - r.width));
+    y = Math.min(y, Math.max(0, window.innerHeight - r.height));
+    boomEl.style.left = x + "px";
+    boomEl.style.top = y + "px";
+  });
 }
 
-document.addEventListener("mousemove", onReengage, { passive: true });
-document.addEventListener("touchstart", onReengage, { passive: true });
 
-/* if page loads already inactive */
-if (document.hidden){
-  awaitingReturn = true;
-  startDormant();
-}
-}
-  /* ---------- RETURN TO PORTFOLIO ON BACK ---------- */
+/* ---------- RETURN TO PORTFOLIO ON BACK ---------- */
 
-function openPortfolio() {
+function openPortfolioInstant() {
   portfolio.hidden = false;
   portfolio.setAttribute('aria-hidden', 'false');
   portfolio.scrollIntoView({ behavior: 'auto' });
@@ -420,7 +439,7 @@ document.querySelectorAll('#portfolio-appendix .project-link').forEach(a => {
 function maybeReturnToPortfolio() {
   if (sessionStorage.getItem('returnToPortfolio') === '1') {
     sessionStorage.removeItem('returnToPortfolio');
-    openPortfolio();
+    openPortfolioInstant();
   }
 }
 
