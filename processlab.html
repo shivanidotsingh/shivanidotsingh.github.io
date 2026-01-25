@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>process artefacts</title>
+<title>process lab</title>
 <meta name="description" content="process lab" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='86'>𓆉</text></svg>">
 
 <style>
-  /* barebones */
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body {
@@ -16,7 +15,7 @@
     background: #fff;
     color: #000;
     font: 14px/1.4 system-ui, -apple-system, Arial, sans-serif;
-    overflow: hidden; /* single-screen composition, no scroll */
+    overflow: hidden; /* single-screen composition */
   }
 
   .wrap { display: grid; grid-template-rows: auto 1fr; height: 100vh; }
@@ -24,12 +23,13 @@
   header .sub { color: #666; font-size: 13px; }
 
   :root{
-    --grid: 16px;         
-    --grid-line: #efefef;  
-    --hole-pad-x: 48px;     
+    --grid: 16px;           /* snapping unit */
+    --grid-line: #efefef;   /* lighter grid */
+    --hole-pad-x: 48px;     /* keep-out around focus */
     --hole-pad-y: 16px;
   }
 
+  /* crisp, light grid */
   .stage{
     position: relative;
     overflow: hidden;
@@ -41,8 +41,12 @@
 
   #canvas { position: relative; width: 100%; height: 100%; }
 
-  .tile, .focus { position: absolute; background: #fff; }
-  .tile img, .focus img { display: block; width: 100%; height: 100%; }
+  /* absolutely-positioned boxes; no borders/shadows/radius */
+  .tile { position: absolute; background: #fff; }
+  .tile img { display: block; width: 100%; height: 100%; }
+
+  .focus { position: absolute; background: transparent; }
+  .focus img { display: block; width: 100%; height: 100%; background: transparent; }
 </style>
 </head>
 
@@ -55,208 +59,212 @@
     <main class="stage" id="stage">
       <div id="canvas">
         <figure class="focus" id="focusCard"><img id="focusImg" alt=""></figure>
-        <!-- thumbnails injected below -->
       </div>
     </main>
   </div>
 
   <script>
-    /* === data === */
-    const IMAGES = [
-      "images/process/ADT vision.png",
-      "images/process/BMC - design.png",
-      "images/process/criteriaforintake.png",
-      "images/process/CRM.png",
-      "images/process/gaps.png",
-      "images/process/ladder.jpg",
-      "images/process/ideally.jpg",
-      "images/process/curriculum.png",
-      "images/process/Datapoints.png",
-      "images/process/GNC learning.png",
-      "images/process/humaneval.png",
-      "images/process/knowledge sharing.png",
-      "images/process/Laddering Data.jpg",
-      "images/process/manual.png",
-      "images/process/medium is msg.png",
-      "images/process/Name Parameters.png",
-      "images/process/naming systems.png",
-      "images/process/ourresources.png",
-      "images/process/opp.png",
-      "images/process/Persona.jpg",
-      "images/process/playground UI.png",
-      "images/process/Product Partnerships Data Knowledge.png",
-      "images/process/Reach.png",
-      "images/process/Reachout if.png",
-      "images/process/Rules.png",
-      "images/process/scales of a problem.png",
-      "images/process/signals.png",
-      "images/process/singlesource of truth.png",
-      "images/process/dreaming sensing.png",
-      "images/process/timeline.png",
-      "images/process/types of slides.png",
-      "images/process/vendorgrid.png",
-      "images/process/whatwedonose.png",
-      "images/process/XCapit.png",
-      "images/process/x.png"
-    ];
+  /* ===== data ===== */
+  const IMAGES = [
+    "images/process/ADT vision.png",
+    "images/process/BMC - design.png",
+    "images/process/criteriaforintake.png",
+    "images/process/CRM.png",
+    "images/process/gaps.png",
+    "images/process/ladder.jpg",
+    "images/process/ideally.jpg",
+    "images/process/curriculum.png",
+    "images/process/Datapoints.png",
+    "images/process/GNC learning.png",
+    "images/process/humaneval.png",
+    "images/process/knowledge sharing.png",
+    "images/process/Laddering Data.jpg",
+    "images/process/manual.png",
+    "images/process/medium is msg.png",
+    "images/process/Name Parameters.png",
+    "images/process/naming systems.png",
+    "images/process/ourresources.png",
+    "images/process/opp.png",
+    "images/process/Persona.jpg",
+    "images/process/playground UI.png",
+    "images/process/Product Partnerships Data Knowledge.png",
+    "images/process/Reach.png",
+    "images/process/Reachout if.png",
+    "images/process/Rules.png",
+    "images/process/scales of a problem.png",
+    "images/process/signals.png",
+    "images/process/singlesource of truth.png",
+    "images/process/dreaming sensing.png",
+    "images/process/timeline.png",
+    "images/process/types of slides.png",
+    "images/process/vendorgrid.png",
+    "images/process/whatwedonose.png",
+    "images/process/XCapit.png",
+    "images/process/x.png"
+  ];
 
-    /* === elements === */
-    const stage    = document.getElementById('stage');
-    const canvas   = document.getElementById('canvas');
-    const focusEl  = document.getElementById('focusCard');
-    const focusImg = document.getElementById('focusImg');
+  /* ===== elements ===== */
+  const stage    = document.getElementById('stage');
+  const canvas   = document.getElementById('canvas');
+  const focusEl  = document.getElementById('focusCard');
+  const focusImg = document.getElementById('focusImg');
 
-    /* === constants / helpers === */
-    const GRID = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--grid')) || 16;
-    const EDGE_TL = GRID;        // safe padding left/top
-    const EDGE_RB = GRID;        // safe padding right/bottom
-    const GAP     = GRID;        // minimum gap between thumbs (1 grid)
-    const HOLE_PAD_X = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-x')) || 48;
-    const HOLE_PAD_Y = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-y')) || 16;
+  /* ===== grid + helpers ===== */
+  const GRID = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--grid')) || 16;
+  const EDGE_TL = GRID;          // 16px
+  const EDGE_RB = GRID;          // 16px
+  const GAP     = GRID;          // 16px separation between thumbs
+  const HOLE_PAD_X = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-x')) || 48;
+  const HOLE_PAD_Y = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hole-pad-y')) || 16;
 
-    const snap  = v => Math.round(v / GRID) * GRID;
-    const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
-    const randInt = (min,max)=> Math.floor(Math.random()*(max-min+1))+min;
+  const snap  = v => Math.round(v / GRID) * GRID;
+  const clamp = (v,a,b)=> Math.max(a, Math.min(b,v));
+  const rnd   = (min,max)=> Math.floor(Math.random()*(max-min+1))+min;
 
-    // fully snapped fit-box using REAL aspect; returns integers snapped to grid
-    function fitSnappedBox(maxW, maxH, aspect){
-      let w = snap(maxW);
-      let h = snap(Math.max(GRID, w * aspect));
-      if (h > maxH){ h = snap(maxH); w = snap(Math.max(GRID, h / aspect)); }
-      return { w, h };
+  function fitSnappedBox(maxW, maxH, aspect){
+    // width-first
+    let w = snap(maxW);
+    let h = snap(Math.max(GRID, w * aspect));
+    if (h > maxH){ // height-first fallback
+      h = snap(maxH);
+      w = snap(Math.max(GRID, h / aspect));
     }
+    return { w, h };
+  }
 
-    // no-overlap check in px space with a grid-sized gap
-    function rectsOverlap(a, b, gap){
-      return !(a.x + a.w + gap <= b.x ||
-               b.x + b.w + gap <= a.x ||
-               a.y + a.h + gap <= b.y ||
-               b.y + b.h + gap <= a.y);
-    }
+  function overlaps(a, b, gap){
+    return !(a.x + a.w + gap <= b.x ||
+             b.x + b.w + gap <= a.x ||
+             a.y + a.h + gap <= b.y ||
+             b.y + b.h + gap <= a.y);
+  }
 
-    /* === load natural sizes === */
-    Promise.all(IMAGES.map(loadMeta)).then(metas=>{
-      // build once, keep simple
-      build(metas);
-      // start on a random focus image
-      setFocus(randInt(0, metas.length-1), metas);
-      // keep snapping on resize
-      window.addEventListener('resize', ()=>{ build(metas); setFocus(current, metas); });
+  /* ===== load natural sizes ===== */
+  let metas = [];   // [{src, a}]
+  let current = -1; // index of focused
+
+  Promise.all(IMAGES.map(loadMeta)).then(m=>{
+    metas = m;
+    layoutThumbs();                          // place thumbs (snapped, non-overlapping)
+    setFocus(rnd(0, metas.length-1));        // pick a random image to start
+    window.addEventListener('resize', ()=>{  // keep snapped on resize
+      layoutThumbs();
+      setFocus(current);
     });
+  });
 
-    function loadMeta(src){
-      return new Promise(res=>{
-        const img = new Image();
-        img.onload = ()=> res({ src, a: (img.naturalHeight||1000)/(img.naturalWidth||1000) });
-        img.onerror= ()=> res({ src, a: 1 });
-        img.src = encodeURI(src);
-      });
-    }
+  function loadMeta(src){
+    return new Promise(res=>{
+      const img = new Image();
+      img.onload = ()=> res({ src, a: (img.naturalHeight||1000)/(img.naturalWidth||1000) });
+      img.onerror= ()=> res({ src, a: 1 });
+      img.src = encodeURI(src);
+    });
+  }
 
-    let current = -1;
+  /* ===== focus placement (centered + snapped, using REAL aspect) ===== */
+  function positionFocus(aspect){
+    const W = stage.clientWidth;
+    const H = stage.clientHeight;
 
-    function setFocus(i, metas){
-      current = ((i % metas.length) + metas.length) % metas.length;
-      const m = metas[current];
-      focusImg.src = encodeURI(m.src);
-      focusImg.alt = `image ${current+1}`;
-      // place focus box exactly on-grid using the image's REAL aspect
-      positionFocusSnapped(m.a);
-    }
+    const { w: fw, h: fh } = fitSnappedBox(W - snap(40), H - snap(90), aspect);
 
-    function positionFocusSnapped(aspect){
-      const W = stage.clientWidth;
-      const H = stage.clientHeight;
+    let left = snap((W - fw)/2);
+    let top  = snap((H - fh)/2);
+    left = clamp(left, EDGE_TL, Math.max(EDGE_TL, W - fw - EDGE_RB));
+    top  = clamp(top,  EDGE_TL, Math.max(EDGE_TL, H - fh - EDGE_RB));
 
-      const { w: fw, h: fh } = fitSnappedBox(W - snap(40), H - snap(90), aspect);
+    // apply snapped rect
+    focusEl.style.left   = left + 'px';
+    focusEl.style.top    = top  + 'px';
+    focusEl.style.width  = fw   + 'px';
+    focusEl.style.height = fh   + 'px';
+  }
 
-      let left = snap((W - fw)/2);
-      let top  = snap((H - fh)/2);
-      left = clamp(left, EDGE_TL, Math.max(EDGE_TL, W - fw - EDGE_RB));
-      top  = clamp(top,  EDGE_TL, Math.max(EDGE_TL, H - fh - EDGE_RB));
+  function setFocus(i){
+    current = ((i % metas.length) + metas.length) % metas.length;
+    const m = metas[current];
+    focusImg.src = encodeURI(m.src);
+    focusImg.alt = `image ${current+1}`;
+    positionFocus(m.a); // snaps left/top/width/height using THIS image aspect
+  }
 
-      focusEl.style.left   = left + 'px';
-      focusEl.style.top    = top  + 'px';
-      focusEl.style.width  = fw   + 'px';
-      focusEl.style.height = fh   + 'px';
-    }
+  /* ===== thumbnails (snapped positions & sizes, no overlap) ===== */
+  function layoutThumbs(){
+    // remove existing thumbs
+    [...canvas.querySelectorAll('.tile')].forEach(n=>n.remove());
 
-    function build(metas){
-      // wipe old thumbs
-      [...canvas.querySelectorAll('.tile')].forEach(n=>n.remove());
+    const W = stage.clientWidth;
+    const H = stage.clientHeight;
 
-      const W = stage.clientWidth;
-      const H = stage.clientHeight;
+    // carve provisional centered hole (16:9) before we know which image is focused
+    const { w: fw0, h: fh0 } = fitSnappedBox(W - snap(40), H - snap(90), 9/16);
+    const fx0 = snap((W - fw0)/2);
+    const fy0 = snap((H - fh0)/2);
+    const hole = {
+      x: snap(fx0 - HOLE_PAD_X),
+      y: snap(fy0 - HOLE_PAD_Y),
+      w: snap(fw0 + HOLE_PAD_X*2),
+      h: snap(fh0 + HOLE_PAD_Y*2)
+    };
 
-      // carve a centered keep-out hole (use neutral 16:9 just to reserve space)
-      const { w: fw0, h: fh0 } = fitSnappedBox(W - snap(40), H - snap(90), 9/16);
-      const fx0 = snap((W - fw0)/2);
-      const fy0 = snap((H - fh0)/2);
-      const hole = {
-        x: snap(fx0 - HOLE_PAD_X),
-        y: snap(fy0 - HOLE_PAD_Y),
-        w: snap(fw0 + HOLE_PAD_X*2),
-        h: snap(fh0 + HOLE_PAD_Y*2)
-      };
+    // base thumb width (multiple of grid); can shrink (by 1 grid) if packing is tight
+    const BASE = snap(128);               // 8 * 16
+    const MINW = snap(Math.max(80, GRID*5)); // don't go below 80px (or 5 * grid)
 
-      // base thumb width as a multiple of grid; will shrink per-thumb if needed to avoid overlaps
-      const BASE_TW = snap(128);                 // 8 * 16
-      const MIN_TW  = snap(Math.max(80, GRID*4)); // do not go below 5*16 = 80px (or 4*16 on tiny screens)
+    const placed = [];
 
-      const placedRects = [];
+    metas.forEach((m, i)=>{
+      let tw = BASE;
+      let th = snap(Math.max(GRID, tw * m.a));
 
-      metas.forEach((m, i)=>{
-        let TW = BASE_TW;
-        let TH = snap(Math.max(GRID, TW * m.a));
+      let ok = false, tries = 0, rect = null;
 
-        let placed = false;
-        let attempts = 0;
+      while(!ok && tries < 1200){
+        // candidate snapped position within edges
+        const cand = {
+          x: clamp(snap(rnd(EDGE_TL, Math.max(EDGE_TL, W - tw - EDGE_RB))), EDGE_TL, W - tw - EDGE_RB),
+          y: clamp(snap(rnd(EDGE_TL, Math.max(EDGE_TL, H - th - EDGE_RB))), EDGE_TL, H - th - EDGE_RB),
+          w: tw,
+          h: th
+        };
 
-        while(!placed && attempts < 1200){
-          // random snapped candidate within edges
-          let x = clamp(snap(randInt(EDGE_TL, Math.max(EDGE_TL, W - TW - EDGE_RB))), EDGE_TL, W - TW - EDGE_RB);
-          let y = clamp(snap(randInt(EDGE_TL, Math.max(EDGE_TL, H - TH - EDGE_RB))), EDGE_TL, H - TH - EDGE_RB);
-
-          const cand = { x, y, w: TW, h: TH };
-
-          const intersectsHole = rectsOverlap(cand, hole, GAP);
-          const intersectsAny  = placedRects.some(r => rectsOverlap(cand, r, GAP));
-
-          if (!intersectsHole && !intersectsAny){
-            // place it
-            placeThumb(i, cand);
-            placedRects.push(cand);
-            placed = true;
-          } else {
-            // try another spot; after N tries, shrink by one grid step (keeps on-grid), then continue
-            attempts++;
-            if (attempts % 180 === 0 && TW > MIN_TW){
-              TW = snap(TW - GRID);             // shrink width by 1 grid
-              TH = snap(Math.max(GRID, TW * m.a)); // keep aspect exact + snapped
-            }
-          }
+        if (!overlaps(cand, hole, GAP) && placed.every(p => !overlaps(cand, p, GAP))){
+          ok = true;
+          rect = cand;
+          break;
         }
-        // if not placed after all attempts, we skip that one (avoids overlap + avoids “disappearing everything”)
-      });
-    }
 
-    function placeThumb(i, rect){
+        tries++;
+        // after every 200 failed tries, shrink by 1 grid to find a legal spot (still snapped)
+        if (tries % 200 === 0 && tw > MINW){
+          tw = snap(tw - GRID);
+          th = snap(Math.max(GRID, tw * m.a));
+        }
+      }
+
+      if (!ok) return; // skip this thumb rather than overlap on ultra-tight screens
+
+      // create the thumb (SNAPPED left/top/width/height)
       const fig = document.createElement('figure');
       fig.className = 'tile';
       fig.style.left   = rect.x + 'px';
       fig.style.top    = rect.y + 'px';
       fig.style.width  = rect.w + 'px';
       fig.style.height = rect.h + 'px';
-      fig.dataset.index = i;
 
       const im = document.createElement('img');
       im.alt = `img ${i+1}`;
-      im.src = encodeURI(IMAGES[i]);
+      im.src = encodeURI(m.src);
       fig.appendChild(im);
 
-      fig.addEventListener('click', ()=> setFocus(i, null)); // metas not needed here; setFocus reads the image again
+      // 🔧 fixed: use the global setFocus(i) directly
+      fig.addEventListener('click', ()=> setFocus(i));
+
       canvas.appendChild(fig);
-    }
+      placed.push(rect);
+    });
+  }
   </script>
 </body>
 </html>
