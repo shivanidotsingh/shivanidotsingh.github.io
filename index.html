@@ -218,7 +218,7 @@ a[target="_blank"] { cursor: alias; }
 const portfolioLink = document.getElementById('portfolio-link');
 const portfolio = document.getElementById('portfolio-appendix');
 
-function openPortfolio() {
+function openPortfolioSmooth() {
   portfolio.hidden = false;
   portfolio.setAttribute('aria-hidden', 'false');
   portfolio.scrollIntoView({ behavior: 'smooth' });
@@ -226,7 +226,7 @@ function openPortfolio() {
 
 portfolioLink.addEventListener('click', e => {
   e.preventDefault();
-  openPortfolio();
+  openPortfolioSmooth();
 });
 
 
@@ -255,168 +255,143 @@ document.addEventListener("click", (e) => {
   img.alt = "";
   img.src = flowerUrl;
 
-  // Position absolutely on the page using pageX/pageY
   img.style.left = e.pageX + "px";
-  img.style.top = e.pageY + "px";
+  img.style.top  = e.pageY + "px";
 
   document.body.appendChild(img);
   allFlowers.push(img);
 
-  // Limit number of stamps
   if (allFlowers.length > 400) {
     const old = allFlowers.shift();
-    if (old.parentNode) old.parentNode.removeChild(old);
+    if (old && old.parentNode) old.parentNode.removeChild(old);
   }
 });
 
-// Fall all flowers when key is pressed
 document.addEventListener("keydown", (e) => {
-
   const exemptKeys = [
-    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-    'Tab', 'Shift', 'Control', 'Alt', 'Meta', 'CapsLock',
-    'Home', 'End', 'PageUp', 'PageDown',
-    'F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'
+    'ArrowUp','ArrowDown','ArrowLeft','ArrowRight',
+    'Tab','Shift','Control','Alt','Meta','CapsLock',
+    'Home','End','PageUp','PageDown',
+    'F1','F2','F3','F4','F5','F6','F7','F8','F9','F10','F11','F12'
   ];
 
-  // Don't trigger if typing in an input field
   if (e.target.matches('input, textarea, select')) return;
-
-  // Don't trigger for exempt keys
   if (exemptKeys.includes(e.key)) return;
-
-  // Don't trigger if no flowers to clear
   if (allFlowers.length === 0) return;
 
-  // Add falling class to all flowers
-  allFlowers.forEach(flower => {
-    if (flower.parentNode) flower.classList.add("falling");
-  });
+  allFlowers.forEach(f => f && f.parentNode && f.classList.add("falling"));
 
-  // Remove all flowers after animation completes
   setTimeout(() => {
-    allFlowers.forEach(flower => {
-      if (flower.parentNode) flower.parentNode.removeChild(flower);
-    });
+    allFlowers.forEach(f => f && f.parentNode && f.parentNode.removeChild(f));
     allFlowers.length = 0;
   }, 1200);
 });
 
 
-/* ---------- DORMANT TAB BOOM (DVD BOUNCE) ---------- */
+/* ---------- DORMANT TAB BOOM (FILL UP, FIXED) ---------- */
 
 const isDesktop = window.matchMedia('(pointer: fine)').matches;
 
 if (isDesktop) {
   const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
+  const MAX_BOOMS = 25;
+  const SPAWN_INTERVAL = 15000; // 15s
+  const CLEAR_INTERVAL = 120;   // fast, not jarring
 
-  let boomEl = null;
+  let boomTimer = null;
+  let clearTimer = null;
   let awaitingReturn = false;
 
-  // motion state
-  let x = 0, y = 0;
-  let vx = 0.6, vy = 0.45; // slow drift; tweak if needed
-  let rafId = null;
-  let lastT = 0;
+  const booms = [];
 
-  function ensureBoom() {
-    if (boomEl) return;
+  function spawnBoom(){
+    if (booms.length >= MAX_BOOMS) return;
 
-    boomEl = document.createElement("img");
-    boomEl.src = BOOM_SRC;
-    boomEl.className = "boom-gif";
-    document.body.appendChild(boomEl);
+    const img = document.createElement("img");
+    img.src = BOOM_SRC;
+    img.className = "boom-gif";
 
-    // position once it has a size
+    // append first so we can measure actual size (your CSS sets width: 300px)
+    document.body.appendChild(img);
+
     requestAnimationFrame(() => {
-      const r = boomEl.getBoundingClientRect();
-      const maxX = Math.max(0, window.innerWidth - r.width);
-      const maxY = Math.max(0, window.innerHeight - r.height);
-      x = Math.random() * maxX;
-      y = Math.random() * maxY;
-      boomEl.style.left = x + "px";
-      boomEl.style.top = y + "px";
+      const r = img.getBoundingClientRect();
+      const maxX = Math.max(1, window.innerWidth  - r.width);
+      const maxY = Math.max(1, window.innerHeight - r.height);
+
+      img.style.left = (Math.random() * maxX) + "px";
+      img.style.top  = (Math.random() * maxY) + "px";
     });
+
+    booms.push(img);
   }
 
-  function removeBoom() {
-    if (!boomEl) return;
-    boomEl.remove();
-    boomEl = null;
+  function startDormant(){
+    // If we go dormant again mid-clear, stop clearing and go back to spawning
+    if (clearTimer){
+      clearInterval(clearTimer);
+      clearTimer = null;
+    }
+    if (boomTimer) return;
+    boomTimer = setInterval(spawnBoom, SPAWN_INTERVAL);
   }
 
-  function stopAnim() {
-    if (rafId) cancelAnimationFrame(rafId);
-    rafId = null;
-    lastT = 0;
+  function stopDormant(){
+    clearInterval(boomTimer);
+    boomTimer = null;
   }
 
-  function step(t) {
-    if (!boomEl) return;
+  function startClearing(){
+    stopDormant();
+    if (clearTimer) return;
 
-    const dt = lastT ? (t - lastT) / 16.6667 : 1;
-    lastT = t;
+    clearTimer = setInterval(() => {
+      if (booms.length === 0){
+        clearInterval(clearTimer);
+        clearTimer = null;
+        return;
+      }
 
-    const r = boomEl.getBoundingClientRect();
-    const maxX = Math.max(0, window.innerWidth - r.width);
-    const maxY = Math.max(0, window.innerHeight - r.height);
-
-    x += vx * dt;
-    y += vy * dt;
-
-    // bounce
-    if (x <= 0) { x = 0; vx *= -1; }
-    if (y <= 0) { y = 0; vy *= -1; }
-    if (x >= maxX) { x = maxX; vx *= -1; }
-    if (y >= maxY) { y = maxY; vy *= -1; }
-
-    boomEl.style.left = x + "px";
-    boomEl.style.top = y + "px";
-
-    rafId = requestAnimationFrame(step);
+      const idx = Math.floor(Math.random() * booms.length);
+      const boom = booms.splice(idx, 1)[0];
+      if (boom && boom.parentNode) boom.parentNode.removeChild(boom);
+    }, CLEAR_INTERVAL);
   }
 
-  function startDormant() {
-    awaitingReturn = true;
-    ensureBoom();
-    if (!rafId) rafId = requestAnimationFrame(step);
-  }
-
-  function stopDormant() {
-    // freeze on return (still visible)
-    stopAnim();
-  }
-
-  function handleVisibility() {
-    if (document.hidden) startDormant();
-    else stopDormant();
+  function handleVisibility(){
+    if (document.hidden){
+      awaitingReturn = true;  // re-arm for the next return
+      startDormant();
+    } else {
+      stopDormant();
+      // IMPORTANT: do not clear yet — wait for user attention (mousemove/touch)
+    }
   }
 
   document.addEventListener("visibilitychange", handleVisibility);
 
-  // Clear ONLY when user re-engages (mouse/touch) after a dormant period
-  function onReengage() {
+  // BUG FIX: listeners stay forever; gating is via awaitingReturn
+  function onReengage(){
     if (!awaitingReturn) return;
+
+    // if nothing to clear, just disarm
+    if (booms.length === 0){
+      awaitingReturn = false;
+      return;
+    }
+
     awaitingReturn = false;
-    stopAnim();
-    removeBoom();
+    startClearing();
   }
 
   document.addEventListener("mousemove", onReengage, { passive: true });
   document.addEventListener("touchstart", onReengage, { passive: true });
 
   // If page loads already inactive
-  if (document.hidden) startDormant();
-
-  // Keep inside viewport on resize
-  window.addEventListener("resize", () => {
-    if (!boomEl) return;
-    const r = boomEl.getBoundingClientRect();
-    x = Math.min(x, Math.max(0, window.innerWidth - r.width));
-    y = Math.min(y, Math.max(0, window.innerHeight - r.height));
-    boomEl.style.left = x + "px";
-    boomEl.style.top = y + "px";
-  });
+  if (document.hidden){
+    awaitingReturn = true;
+    startDormant();
+  }
 }
 
 
@@ -428,14 +403,12 @@ function openPortfolioInstant() {
   portfolio.scrollIntoView({ behavior: 'auto' });
 }
 
-// set flag when a project is clicked
 document.querySelectorAll('#portfolio-appendix .project-link').forEach(a => {
   a.addEventListener('click', () => {
     sessionStorage.setItem('returnToPortfolio', '1');
   });
 });
 
-// when coming back (including BFCache), reopen portfolio
 function maybeReturnToPortfolio() {
   if (sessionStorage.getItem('returnToPortfolio') === '1') {
     sessionStorage.removeItem('returnToPortfolio');
@@ -445,6 +418,7 @@ function maybeReturnToPortfolio() {
 
 window.addEventListener('pageshow', maybeReturnToPortfolio);
 </script>
+
 
 </body>
 </html>
