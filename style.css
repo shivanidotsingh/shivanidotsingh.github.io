@@ -34,10 +34,16 @@ img {
 
 a {
   color: inherit;
-  cursor: pointer;
   text-decoration: underline;
-  text-underline-offset: 0.2em;
+  text-underline-offset: 0.25em;
 }
+
+a:hover {
+  color: #0000EE;
+}
+a:visited {
+  color: #0000EE;
+}    
 
 a[target="_blank"] { cursor: alias; }
 
