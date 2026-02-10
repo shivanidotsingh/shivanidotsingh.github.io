@@ -41,9 +41,6 @@ a {
 a:hover {
   color: #0000EE;
 }
-a:visited {
-  color: #0000EE;
-}    
 
 a[target="_blank"] { cursor: alias; }
 
