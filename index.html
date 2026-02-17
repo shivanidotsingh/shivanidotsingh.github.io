@@ -54,7 +54,16 @@ body {
   z-index: -1;          /* behind text/images; change to 999 if you want chaos */
   line-height: 1;
   color: #0000EE;
-}
+  }
+
+  #hits{
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 10;
+  pointer-events: none;
+  }
+
 
   </style>
 </head>
@@ -188,6 +197,7 @@ body {
   <p class="note">This site was co-created with artificial intelligence • Updated on Feb 07, 2026</p>
 </div>
 
+<p class="note" id="hits" hidden>hits: <span id="hitCount">…</span></p>
 
 <!-- <span class="hover-text"> ☻
   <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
@@ -352,6 +362,25 @@ if (isDesktop) {
   }
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+  const counter = new Counter({ workspace: 'shivani-site' });
+
+  counter.up('hits-total').then(res => {
+    const n = Number(res.value) || 0;
+
+    // update number
+    const countEl = document.getElementById('hitCount');
+    const wrapper = document.getElementById('hits');
+    if (!countEl || !wrapper) return;
+
+    countEl.textContent = n;
+
+    // only reveal once >= 100
+    if (n >= 100) wrapper.hidden = false;
+  }).catch(() => {
+    // stay hidden on error
+  });
+});
 
 /* ---------- RETURN TO PORTFOLIO ON BACK ---------- */
 
@@ -376,7 +405,7 @@ function maybeReturnToPortfolio() {
 
 window.addEventListener('pageshow', maybeReturnToPortfolio);
 </script>
-
+<script async src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 
 </body>
 </html>
