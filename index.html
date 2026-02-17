@@ -55,16 +55,6 @@ body {
   line-height: 1;
   color: #0000EE;
   }
-
-  #hits{
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
-  z-index: 10;
-  pointer-events: none;
-  }
-
-
   </style>
 </head>
 
@@ -197,7 +187,7 @@ body {
   <p class="note">This site was co-created with artificial intelligence • Updated on Feb 07, 2026</p>
 </div>
 
-<p class="note" id="hits" hidden>hits: <span id="hitCount">…</span></p>
+<p class="note" id="weather-line"></p>
 
 <!-- <span class="hover-text"> ☻
   <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
@@ -338,7 +328,7 @@ if (isDesktop) {
 
   document.addEventListener("visibilitychange", handleVisibility);
 
-  // BUG FIX: listeners stay forever; gating is via awaitingReturn
+  // return
   function onReengage(){
     if (!awaitingReturn) return;
 
@@ -362,25 +352,53 @@ if (isDesktop) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const counter = new Counter({ workspace: 'shivani-site' });
+const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 
-  counter.up('hits-total').then(res => {
-    const n = Number(res.value) || 0;
+// Stockholm coordinates
+const lat = 59.3293;
+const lon = 18.0686;
 
-    // update number
-    const countEl = document.getElementById('hitCount');
-    const wrapper = document.getElementById('hits');
-    if (!countEl || !wrapper) return;
-
-    countEl.textContent = n;
-
-    // only reveal once >= 100
-    if (n >= 100) wrapper.hidden = false;
-  }).catch(() => {
-    // stay hidden on error
+// ---- TIME ----
+function updateTime() {
+  const now = new Date();
+  const time = now.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
   });
-});
+  document.getElementById("weather-line").dataset.time = time;
+}
+
+updateTime();
+setInterval(updateTime, 60000);
+
+// ---- WEATHER + MOON ----
+fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${apiKey}`)
+  .then(res => res.json())
+  .then(data => {
+
+    const description = data.current.weather[0].description;
+    const temp = data.current.temp.toFixed(1);
+
+    const moonrise = new Date(data.daily[0].moonrise * 1000);
+    const moonriseTime = moonrise.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    function render() {
+      const time = document.getElementById("weather-line").dataset.time || "";
+      document.getElementById("weather-line").textContent =
+        `Time ${time}  ${description.charAt(0).toUpperCase() + description.slice(1)}. ${temp}ºC. Moonrise ${moonriseTime}`;
+    }
+
+    render();
+    setInterval(render, 60000);
+
+  })
+  .catch(() => {
+    document.getElementById("weather-line").textContent = "";
+  });
+
 
 /* ---------- RETURN TO PORTFOLIO ON BACK ---------- */
 
@@ -405,7 +423,6 @@ function maybeReturnToPortfolio() {
 
 window.addEventListener('pageshow', maybeReturnToPortfolio);
 </script>
-<script async src="https://cdn.jsdelivr.net/npm/counterapi/dist/counter.browser.min.js"></script>
 
 </body>
 </html>
