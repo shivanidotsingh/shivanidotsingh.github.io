@@ -214,9 +214,7 @@ portfolioLink.addEventListener('click', e => {
 /* ---------- RANDOM EMOJI CLICK STAMPS ---------- */
 
 const introWrap = document.querySelector(".intro-wrap");
-
 const FLOWERS = ["𐫱","✿","❀","❁","✽","✾","❃","❊"];
-
 const emojiStamps = [];
 const MAX_STAMPS = 400;
 
@@ -225,11 +223,6 @@ function pick(arr){
 }
 
 document.addEventListener("click", (e) => {
-  // Only stamp if clicking within intro section's vertical bounds
-  const introRect = introWrap.getBoundingClientRect();
-  const clickY = e.clientY;
-  if (clickY < introRect.top || clickY > introRect.bottom) return;
-
   // Don’t stamp when clicking interactive elements
   if (e.target.closest("a, button, input, textarea, select, label")) return;
 
