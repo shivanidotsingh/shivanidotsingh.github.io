@@ -33,17 +33,6 @@ body {
 }
 
 
-/* ---------- DORMANT BOOM GIFS ---------- */
-
-.boom-gif{
-  position: fixed;
-  width: 300px;       
-  height: auto;
-  pointer-events: none;
-  z-index: 999;      
-}
-
-
 /* ---------- EMOJI CLICK STAMPS ---------- */
 .emoji-stamp{
   position: absolute;
@@ -84,7 +73,9 @@ body {
       Previously, I was a designer at Salesforce in San Francisco — see some of that work in this
       <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>. With a background in graphic design, I've also crafted 
       <a href="https://singh.work/logofolio">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
-      <br><br>
+      <br>
+      <img src="images/moi.png">
+      <br>
       Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">C.V.</a> or go through select
@@ -198,8 +189,8 @@ body {
 
 <p class="note" id="weather-line"></p>
 
-<!-- <span class="hover-text"> ☻
-  <img src="https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif">
+<!-- <span class="portrait"> ☻
+  <img src="images/moi.png" style="align:center;">
 </span>  -->
 
 <script>
@@ -252,112 +243,6 @@ document.addEventListener("click", (e) => {
     if (old && old.parentNode) old.parentNode.removeChild(old);
   }
 });
-
-
-
-/* ---------- DORMANT TAB BOOM ---------- */
-
-const isDesktop = window.matchMedia('(pointer: fine)').matches;
-
-if (isDesktop) {
-  const BOOM_SRC = "https://shivaniest.wordpress.com/wp-content/uploads/2020/12/boom.gif";
-  const MAX_BOOMS = 25;
-  const SPAWN_INTERVAL = 15000; // 15s
-  const CLEAR_INTERVAL = 120;   // fast, not jarring
-
-  let boomTimer = null;
-  let clearTimer = null;
-  let awaitingReturn = false;
-
-  const booms = [];
-
-  function spawnBoom(){
-    if (booms.length >= MAX_BOOMS) return;
-
-    const img = document.createElement("img");
-    img.src = BOOM_SRC;
-    img.className = "boom-gif";
-
-    // append first so we can measure actual size (your CSS sets width: 300px)
-    document.body.appendChild(img);
-
-    requestAnimationFrame(() => {
-      const r = img.getBoundingClientRect();
-      const maxX = Math.max(1, window.innerWidth  - r.width);
-      const maxY = Math.max(1, window.innerHeight - r.height);
-
-      img.style.left = (Math.random() * maxX) + "px";
-      img.style.top  = (Math.random() * maxY) + "px";
-    });
-
-    booms.push(img);
-  }
-
-  function startDormant(){
-    // If we go dormant again mid-clear, stop clearing and go back to spawning
-    if (clearTimer){
-      clearInterval(clearTimer);
-      clearTimer = null;
-    }
-    if (boomTimer) return;
-    boomTimer = setInterval(spawnBoom, SPAWN_INTERVAL);
-  }
-
-  function stopDormant(){
-    clearInterval(boomTimer);
-    boomTimer = null;
-  }
-
-  function startClearing(){
-    stopDormant();
-    if (clearTimer) return;
-
-    clearTimer = setInterval(() => {
-      if (booms.length === 0){
-        clearInterval(clearTimer);
-        clearTimer = null;
-        return;
-      }
-
-      const idx = Math.floor(Math.random() * booms.length);
-      const boom = booms.splice(idx, 1)[0];
-      if (boom && boom.parentNode) boom.parentNode.removeChild(boom);
-    }, CLEAR_INTERVAL);
-  }
-
-  function handleVisibility(){
-    if (document.hidden){
-      awaitingReturn = true;  // re-arm for the next return
-      startDormant();
-    } else {
-      stopDormant();    }
-  }
-
-  document.addEventListener("visibilitychange", handleVisibility);
-
-  // return
-  function onReengage(){
-    if (!awaitingReturn) return;
-
-    // if nothing to clear, just disarm
-    if (booms.length === 0){
-      awaitingReturn = false;
-      return;
-    }
-
-    awaitingReturn = false;
-    startClearing();
-  }
-
-  document.addEventListener("mousemove", onReengage, { passive: true });
-  document.addEventListener("touchstart", onReengage, { passive: true });
-
-  // If page loads already inactive
-  if (document.hidden){
-    awaitingReturn = true;
-    startDormant();
-  }
-}
 
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 
