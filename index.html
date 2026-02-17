@@ -51,10 +51,19 @@ body {
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;
-  z-index: -1;          /* behind text/images; change to 999 if you want chaos */
+  z-index: -1; 
   line-height: 1;
   color: #0000EE;
-  }
+}
+
+  #weather-line {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 10;
+  pointer-events: none;
+}
+    
   </style>
 </head>
 
@@ -321,9 +330,7 @@ if (isDesktop) {
       awaitingReturn = true;  // re-arm for the next return
       startDormant();
     } else {
-      stopDormant();
-      // IMPORTANT: do not clear yet — wait for user attention (mousemove/touch)
-    }
+      stopDormant();    }
   }
 
   document.addEventListener("visibilitychange", handleVisibility);
