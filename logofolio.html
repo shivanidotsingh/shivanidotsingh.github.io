@@ -9,9 +9,15 @@
         /* Page-specific styles for logofolio.html */
         .logo-grid {
             width: 100vw;
+             margin-left: calc(50% - 50vw);
+             margin-right: calc(50% - 50vw);
+             padding-left: var(--page-gutter);
+             padding-right: var(--page-gutter);
+             box-sizing: border-box;
+            
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 25px;
             justify-content: center;
         }
 
