@@ -249,8 +249,9 @@ const lon = 18.0686;
 function updateTime() {
   const now = new Date();
   const time = now.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit'
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Stockholm"
   });
   document.getElementById("weather-line").dataset.time = time;
 }
