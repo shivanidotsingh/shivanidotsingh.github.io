@@ -258,31 +258,30 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 60000);
 
-// ---- WEATHER + MOON ----
-fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${apiKey}`)
-  .then(res => res.json())
+// ---- WEATHER ----
+fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
+  .then(async (res) => {
+    const data = await res.json();
+    if (!res.ok) throw new Error(data?.message || "Weather fetch failed");
+    return data;
+  })
   .then(data => {
 
-    const description = data.current.weather[0].description;
-    const temp = data.current.temp.toFixed(1);
-
-    const moonrise = new Date(data.daily[0].moonrise * 1000);
-    const moonriseTime = moonrise.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    const description = data.weather[0].description;
+    const temp = data.main.temp.toFixed(1);
 
     function render() {
       const time = document.getElementById("weather-line").dataset.time || "";
       document.getElementById("weather-line").textContent =
-        `Time ${time}  ${description.charAt(0).toUpperCase() + description.slice(1)}. ${temp}ºC. Moonrise ${moonriseTime}`;
+        `Time ${time}  ${description.charAt(0).toUpperCase() + description.slice(1)}. ${temp}ºC`;
     }
 
     render();
     setInterval(render, 60000);
 
   })
-  .catch(() => {
+  .catch((err) => {
+    console.error(err);
     document.getElementById("weather-line").textContent = "";
   });
 
