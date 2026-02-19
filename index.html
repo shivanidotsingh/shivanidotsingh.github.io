@@ -75,7 +75,7 @@ body {
       <br>
       <img src="images/moi.png">
       <br>
-      Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm currently based in <span id="stockholm-trigger" title="">Stockholm</span>. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">C.V.</a> or go through select
       <a href="#portfolio" id="portfolio-link">projects</a>.
@@ -186,8 +186,6 @@ body {
   <p class="note">This site was co-created with artificial intelligence • Updated on Feb 07, 2026</p>
 </div>
 
-<p class="note" id="weather-line"></p>
-
 <script>
 /* ---------- PORTFOLIO OPEN ---------- */
 
@@ -239,51 +237,32 @@ document.addEventListener("click", (e) => {
   }
 });
 
+//Weather and Time hover
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
-
-// Stockholm coordinates
 const lat = 59.3293;
 const lon = 18.0686;
 
-// ---- TIME ----
-function updateTime() {
-  const now = new Date();
-  const time = now.toLocaleTimeString([], {
+const trigger = document.getElementById("stockholm-trigger");
+
+function stockholmTime() {
+  return new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Europe/Stockholm"
   });
-  document.getElementById("weather-line").dataset.time = time;
 }
 
-updateTime();
-setInterval(updateTime, 60000);
-
-// ---- WEATHER ----
 fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
-  .then(async (res) => {
-    const data = await res.json();
-    if (!res.ok) throw new Error(data?.message || "Weather fetch failed");
-    return data;
-  })
+  .then(res => res.json())
   .then(data => {
-
     const description = data.weather[0].description;
     const temp = data.main.temp.toFixed(1);
 
-    function render() {
-      const time = document.getElementById("weather-line").dataset.time || "";
-      document.getElementById("weather-line").textContent =
-        `Time ${time}  ${description.charAt(0).toUpperCase() + description.slice(1)}. ${temp}ºC`;
-    }
-
-    render();
-    setInterval(render, 60000);
-
+    const text = `${stockholmTime()} · ${description} · ${temp}ºC`;
+    trigger.setAttribute("title", text);
   })
-  .catch((err) => {
-    console.error(err);
-    document.getElementById("weather-line").textContent = "";
+  .catch(() => {
+    trigger.setAttribute("title", "");
   });
 
 
