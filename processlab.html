@@ -189,9 +189,10 @@ function createImageElement(src, pos, isMain, index) {
   el.appendChild(img);
 
   if (!isMain) {
-    el.addEventListener('click', () => {
+   el.addEventListener('click', () => {
   mainIndex = index;
-  layoutInitialProgressive(); 
+  updateMainOnly();
+});
 });
   }
 
@@ -213,6 +214,20 @@ function computeMainPos(mainMeta, W, H) {
   const mainY = gridAlign((H - mainH) / 2);
 
   return { x: mainX, y: mainY, w: mainW, h: mainH };
+}
+
+  function updateMainOnly() {
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+
+  loadMeta(mainIndex).then(mainMeta => {
+    const mainPos = computeMainPos(mainMeta, W, H);
+
+    const existingMain = document.querySelector('.image-box.main');
+    if (existingMain) existingMain.remove();
+
+    createImageElement(mainMeta.src, mainPos, true, mainIndex);
+  });
 }
 
 // Progressive layout: show main as soon as it loads, then place thumbs as each loads
