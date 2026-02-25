@@ -140,126 +140,40 @@ const G = 16;
 const stage = document.getElementById('stage');
 const canvas = document.getElementById('canvas');
 
-let images = [];
 let mainIndex = 0;
-let positions = []; // Store thumb positions so they don't move
 
-// Load all images and get their natural dimensions
-Promise.all(IMAGES.map(src => {
-  return new Promise(resolve => {
-    const img = new Image();
-    img.onload = () => resolve({ src, w: img.naturalWidth, h: img.naturalHeight });
-    img.onerror = () => resolve({ src, w: 100, h: 100 });
-    img.src = src;
-  });
-})).then(loaded => {
-  images = loaded;
-  layoutInitial();
-  window.addEventListener('resize', () => {
-    positions = [];
-    layoutInitial();
-  });
-});
+// Cache metadata so we don’t re-wait on every layout/click
+const metaCache = new Array(IMAGES.length);   // { src, w, h }
+const metaPromises = new Array(IMAGES.length);
+
+let positions = []; // thumb positions (kept during a session; wiped on resize)
+let layoutRunId = 0; // cancels old async placements when we relayout
 
 function gridAlign(value) {
   return Math.floor(value / G) * G;
 }
 
-function layoutInitial() {
-  canvas.innerHTML = '';
-  
-  const W = stage.clientWidth;
-  const H = stage.clientHeight;
-  
-  // Calculate main image position
-  const main = images[mainIndex];
-  const mainAspect = main.h / main.w;
-  
-  let mainW = gridAlign(W * 0.75);
-  let mainH = gridAlign(mainW * mainAspect);
-  
-  if (mainH > H * 0.75) {
-    mainH = gridAlign(H * 0.75);
-    mainW = gridAlign(mainH / mainAspect);
-  }
-  
-  const mainX = gridAlign((W - mainW) / 2);
-  const mainY = gridAlign((H - mainH) / 2);
-  
-  // Store main position
-  const mainPos = { x: mainX, y: mainY, w: mainW, h: mainH };
-  
-  // Create main image
-  createImageElement(main.src, mainPos, true, mainIndex);
-  
-  // Very minimal exclusion zone - thumbnails can be very close to main
-  const pad = 0; // No padding - thumbnails can touch main image area
-  const exclude = {
-    x: mainX - pad,
-    y: mainY - pad,
-    w: mainW + pad * 2,
-    h: mainH + pad * 2
-  };
-  
-  // Place thumbnails only if positions not yet calculated
-  if (positions.length === 0) {
-    const placed = [];
-    
-    images.forEach((img, i) => {
-      if (i === mainIndex) {
-        positions[i] = null; // Main has no thumb position
-        return;
-      }
-      
-      const aspect = img.h / img.w;
-      const baseW = 128;
-      let thumbW = gridAlign(baseW);
-      let thumbH = gridAlign(thumbW * aspect);
-      
-      let attempts = 0;
-      let pos = null;
-      
-      while (attempts < 1500 && !pos) {
-        const x = gridAlign(Math.random() * (W - thumbW - G));
-        const y = gridAlign(Math.random() * (H - thumbH - G));
-        
-        const box = { x, y, w: thumbW, h: thumbH };
-        
-        const overlapsMain = !(box.x + box.w <= exclude.x || exclude.x + exclude.w <= box.x ||
-                               box.y + box.h <= exclude.y || exclude.y + exclude.h <= box.y);
-        
-        const overlapsThumb = placed.some(p => 
-          !(box.x + box.w + G <= p.x || p.x + p.w + G <= box.x ||
-            box.y + box.h + G <= p.y || p.y + p.h + G <= box.y)
-        );
-        
-        if (!overlapsMain && !overlapsThumb && x >= 0 && y >= 0 && x + thumbW <= W && y + thumbH <= H) {
-          pos = box;
-        }
-        
-        attempts++;
-        
-        if (attempts % 300 === 0 && thumbW > 64) {
-          thumbW = gridAlign(thumbW - G);
-          thumbH = gridAlign(thumbW * aspect);
-        }
-      }
-      
-      if (pos) {
-        positions[i] = pos;
-        placed.push(pos);
-      }
-    });
-  }
-  
-  // Draw all thumbnails using stored positions
-  positions.forEach((pos, i) => {
-    if (pos && i !== mainIndex) {
-      createImageElement(images[i].src, pos, false, i);
-    }
+function loadMeta(i) {
+  if (metaCache[i]) return Promise.resolve(metaCache[i]);
+  if (metaPromises[i]) return metaPromises[i];
+
+  metaPromises[i] = new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      metaCache[i] = { src: IMAGES[i], w: img.naturalWidth || 100, h: img.naturalHeight || 100 };
+      resolve(metaCache[i]);
+    };
+    img.onerror = () => {
+      metaCache[i] = { src: IMAGES[i], w: 100, h: 100 };
+      resolve(metaCache[i]);
+    };
+    img.src = IMAGES[i];
   });
+
+  return metaPromises[i];
 }
 
+// Creates a positioned image element
 function createImageElement(src, pos, isMain, index) {
   const el = document.createElement('div');
   el.className = isMain ? 'image-box main' : 'image-box thumb';
@@ -267,24 +181,147 @@ function createImageElement(src, pos, isMain, index) {
   el.style.top = pos.y + 'px';
   el.style.width = pos.w + 'px';
   el.style.height = pos.h + 'px';
-  
+
   const img = document.createElement('img');
   img.src = src;
+  img.decoding = 'async';
+  img.loading = isMain ? 'eager' : 'lazy';
   el.appendChild(img);
-  
+
   if (!isMain) {
     el.addEventListener('click', () => {
       mainIndex = index;
-      layoutInitial();
+      // Keep your original behavior: clicking reshuffles + recomputes everything
+      positions = [];
+      layoutInitialProgressive();
     });
   }
-  
+
   canvas.appendChild(el);
 }
 
-function layout() {
-  layoutInitial();
+function computeMainPos(mainMeta, W, H) {
+  const mainAspect = mainMeta.h / mainMeta.w;
+
+  let mainW = gridAlign(W * 0.75);
+  let mainH = gridAlign(mainW * mainAspect);
+
+  if (mainH > H * 0.75) {
+    mainH = gridAlign(H * 0.75);
+    mainW = gridAlign(mainH / mainAspect);
+  }
+
+  const mainX = gridAlign((W - mainW) / 2);
+  const mainY = gridAlign((H - mainH) / 2);
+
+  return { x: mainX, y: mainY, w: mainW, h: mainH };
 }
+
+// Progressive layout: show main as soon as it loads, then place thumbs as each loads
+function layoutInitialProgressive() {
+  const runId = ++layoutRunId;
+  canvas.innerHTML = '';
+
+  const W = stage.clientWidth;
+  const H = stage.clientHeight;
+
+  // 1) Load ONLY the selected main image first
+  loadMeta(mainIndex).then(mainMeta => {
+    if (runId !== layoutRunId) return;
+
+    // Draw main
+    const mainPos = computeMainPos(mainMeta, W, H);
+    createImageElement(mainMeta.src, mainPos, true, mainIndex);
+
+    // Exclusion zone (same as your original: basically none)
+    const pad = 0;
+    const exclude = {
+      x: mainPos.x - pad,
+      y: mainPos.y - pad,
+      w: mainPos.w + pad * 2,
+      h: mainPos.h + pad * 2
+    };
+
+    // 2) Thumbs: place progressively as their metadata becomes available
+    const placed = [];
+
+    // If positions already exist (rare here because you wipe on resize/click), reuse them:
+    const canReuse = positions.length === IMAGES.length && positions.some(Boolean);
+
+    if (canReuse) {
+      // Draw existing thumbs immediately (metas may still load, but browser will fetch images)
+      positions.forEach((pos, i) => {
+        if (!pos || i === mainIndex) return;
+        createImageElement(IMAGES[i], pos, false, i);
+        placed.push(pos);
+      });
+      return;
+    }
+
+    // Ensure positions array has correct length
+    positions = new Array(IMAGES.length).fill(null);
+
+    // Start loading all thumbs in parallel
+    IMAGES.forEach((_, i) => {
+      if (i === mainIndex) return;
+
+      loadMeta(i).then(meta => {
+        if (runId !== layoutRunId) return;
+
+        const aspect = meta.h / meta.w;
+        const baseW = 128;
+        let thumbW = gridAlign(baseW);
+        let thumbH = gridAlign(thumbW * aspect);
+
+        let attempts = 0;
+        let pos = null;
+
+        while (attempts < 1500 && !pos) {
+          const x = gridAlign(Math.random() * (W - thumbW - G));
+          const y = gridAlign(Math.random() * (H - thumbH - G));
+
+          const box = { x, y, w: thumbW, h: thumbH };
+
+          const overlapsMain = !(
+            box.x + box.w <= exclude.x || exclude.x + exclude.w <= box.x ||
+            box.y + box.h <= exclude.y || exclude.y + exclude.h <= box.y
+          );
+
+          const overlapsThumb = placed.some(p =>
+            !(box.x + box.w + G <= p.x || p.x + p.w + G <= box.x ||
+              box.y + box.h + G <= p.y || p.y + p.h + G <= box.y)
+          );
+
+          if (!overlapsMain && !overlapsThumb && x >= 0 && y >= 0 && x + thumbW <= W && y + thumbH <= H) {
+            pos = box;
+          }
+
+          attempts++;
+
+          if (attempts % 300 === 0 && thumbW > 64) {
+            thumbW = gridAlign(thumbW - G);
+            thumbH = gridAlign(thumbW * aspect);
+          }
+        }
+
+        if (pos) {
+          positions[i] = pos;
+          placed.push(pos);
+          createImageElement(meta.src, pos, false, i);
+        }
+      });
+    });
+  });
+}
+
+// Initial render
+layoutInitialProgressive();
+
+// Reshuffle on resize (your preference)
+window.addEventListener('resize', () => {
+  positions = [];
+  layoutInitialProgressive();
+});
 </script>
 </body>
 </html>
