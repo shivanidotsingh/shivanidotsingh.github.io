@@ -190,11 +190,9 @@ function createImageElement(src, pos, isMain, index) {
 
   if (!isMain) {
     el.addEventListener('click', () => {
-      mainIndex = index;
-      // Keep your original behavior: clicking reshuffles + recomputes everything
-      positions = [];
-      layoutInitialProgressive();
-    });
+  mainIndex = index;
+  layoutInitialProgressive(); 
+});
   }
 
   canvas.appendChild(el);
