@@ -72,6 +72,7 @@ a {  text-decoration-style: wavy; text-decoration-thickness: 0.5px; }
 .photo-postit.bottom-right {
   bottom: -20px;
   right: -30px;
+  transform: rotate(2deg);
 }
 
 .intro-inner img {
@@ -273,31 +274,56 @@ document.addEventListener("click", (e) => {
 });
 
 //Weather and Time hover
+//Weather and Time click
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
 
 const trigger = document.getElementById("stockholm-trigger");
+let weatherLine = null;
 
 function stockholmTime() {
-  return new Date().toLocaleTimeString([], {
-    hour: "2-digit",
+  const hour = new Date().toLocaleTimeString([], {
+    hour: "numeric",
     minute: "2-digit",
-    timeZone: "Europe/Stockholm"
+    timeZone: "Europe/Stockholm",
+    hour12: false
   });
+  
+  const hourNum = parseInt(hour);
+  let timeOfDay = "in the morning";
+  if (hourNum >= 12 && hourNum < 17) timeOfDay = "in the afternoon";
+  else if (hourNum >= 17) timeOfDay = "in the evening";
+  
+  return `${hour} ${timeOfDay}`;
 }
 
 fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
   .then(res => res.json())
   .then(data => {
     const description = data.weather[0].description;
-    const temp = data.main.temp.toFixed(1);
+    const temp = Math.round(data.main.temp);
 
-    const text = `${stockholmTime()} · ${description} · ${temp}ºC`;
-    trigger.setAttribute("title", text);
+    trigger.style.cursor = "pointer";
+    trigger.style.textDecoration = "underline";
+    trigger.style.textDecorationStyle = "dotted";
+    
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      if (weatherLine) {
+        weatherLine.remove();
+        weatherLine = null;
+        return;
+      }
+      
+      weatherLine = document.createElement('span');
+      weatherLine.textContent = ` — where it's ${stockholmTime()}, ${description} and ${temp} degrees outside`;
+      trigger.insertAdjacentElement('afterend', weatherLine);
+    });
   })
   .catch(() => {
-    trigger.setAttribute("title", "");
+    trigger.style.cursor = "default";
   });
 
 
