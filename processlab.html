@@ -240,19 +240,21 @@ function layoutInitialProgressive() {
       h: mainPos.h + pad * 2
     };
 
-    // post-it note
+//post-it note
 const postit = document.createElement('div');
 postit.textContent = 'design is thinking made visible';
 postit.style.position = 'absolute';
 postit.style.left = gridAlign(mainPos.x + mainPos.w + G * 3) + 'px';
 postit.style.top = gridAlign(mainPos.y + G * 2) + 'px';
-postit.style.width = gridAlign(160) + 'px';
+postit.style.width = gridAlign(96) + 'px';
+postit.style.height = gridAlign(96) + 'px';
 postit.style.padding = '12px';
 postit.style.background = '#f4f3b2';
-postit.style.fontSize = '12px';
+postit.style.fontSize = '11px';
 postit.style.lineHeight = '1.3';
-postit.style.fontFamily = 'Georgia, serif';
+postit.style.fontFamily = 'Courier New, monospace';
 postit.style.color = '#333';
+postit.style.zIndex = '20';
 canvas.appendChild(postit);
   
 
