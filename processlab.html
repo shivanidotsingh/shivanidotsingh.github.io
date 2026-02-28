@@ -240,12 +240,12 @@ function layoutInitialProgressive() {
       h: mainPos.h + pad * 2
     };
 
-//post-it note
+// post-it note
 const postit = document.createElement('div');
 postit.textContent = 'design is thinking made visible';
 postit.style.position = 'absolute';
-postit.style.left = gridAlign(W * 0.7) + 'px'; // fixed at 70% from left
-postit.style.top = gridAlign(H * 0.2) + 'px'; // fixed at 20% from top
+postit.style.left = gridAlign(W * 0.85) + 'px'; // closer to right edge
+postit.style.top = gridAlign(H * 0.7) + 'px'; // more towards bottom
 postit.style.width = gridAlign(96) + 'px';
 postit.style.height = gridAlign(96) + 'px';
 postit.style.padding = '12px';
