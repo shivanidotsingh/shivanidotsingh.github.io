@@ -14,9 +14,6 @@
 body {
   padding: 0 var(--page-gutter) !important;
 }
-
-/* ---------- INTRO ---------- */
-
 .h1-img {
   height: var(--h1-size);
   width: auto;
@@ -35,8 +32,8 @@ body {
 a {  text-decoration-style: wavy; text-decoration-thickness: 0.5px; }
 
 
-/* ---------- EMOJI CLICK STAMPS ---------- */
-.emoji-stamp{
+/* ---------- CLICK STAMPS ---------- */
+.flower-stamp{
   position: absolute;
   transform: translate(-50%, -50%);
   pointer-events: none;
@@ -67,9 +64,9 @@ a {  text-decoration-style: wavy; text-decoration-thickness: 0.5px; }
     </h1>
 
     <p>
-      A designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org/" target="_blank">UNICEF Innovation</a>, where I facilitate   
-      <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">design guidance</a>
-      for solutions we build and invest in. I think of my practice as a way to bridge intention and outcome. 
+      A designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org/" target="_blank">UNICEF Innovation</a>, where I facilitate <a href="https://singh.work/processlab.html" target="_blank">collaboration</a> and   
+      <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">guide the design</a>
+      of solutions we build and invest in. I think of my practice as a way to bridge intention and outcome. 
       <br><br>
       Previously, I was a designer at Salesforce in San Francisco — see some of that work in this
       <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>. With a background in graphic design, I've also crafted 
@@ -206,11 +203,11 @@ portfolioLink.addEventListener('click', e => {
 });
 
 
-/* ---------- RANDOM EMOJI CLICK STAMPS ---------- */
+/* ---------- RANDOM FLOWER CLICK STAMPS ---------- */
 
 const introWrap = document.querySelector(".intro-wrap");
 const FLOWERS = ["𐫱","✿","❀","❁","✽","✾","❃","❊"];
-const emojiStamps = [];
+const flowerStamps = [];
 const MAX_STAMPS = 400;
 
 function pick(arr){
@@ -222,7 +219,7 @@ document.addEventListener("click", (e) => {
   if (e.target.closest("a, button, input, textarea, select, label")) return;
 
   const s = document.createElement("span");
-  s.className = "emoji-stamp";
+  s.className = "flower-stamp";
   s.textContent = pick(FLOWERS);
 
   // place at click location (page coords)
@@ -230,11 +227,11 @@ document.addEventListener("click", (e) => {
   s.style.top = e.pageY + "px";
 
   document.body.appendChild(s);
-  emojiStamps.push(s);
+  flowerStamps.push(s);
 
   // cap stamps
-  if (emojiStamps.length > MAX_STAMPS) {
-    const old = emojiStamps.shift();
+  if (flowerStamps.length > MAX_STAMPS) {
+    const old = flowerStamps.shift();
     if (old && old.parentNode) old.parentNode.removeChild(old);
   }
 });
