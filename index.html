@@ -260,7 +260,7 @@ function pick(arr){
 
 document.addEventListener("click", (e) => {
   // Don’t stamp when clicking interactive elements
-  if (e.target.closest("a, button, input, textarea, select, label")) return;
+  if (e.target.closest("a, button, input, textarea, select, label, #stockholm-trigger")) return;
 
   const s = document.createElement("span");
   s.className = "flower-stamp";
