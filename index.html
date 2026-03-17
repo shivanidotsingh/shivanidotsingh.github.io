@@ -85,18 +85,6 @@ a {  text-decoration-style: wavy; text-decoration-thickness: 0.5px; }
   margin: 20px 0;
 }
 
-body.weather-clear {
-  background: radial-gradient(circle at top right, rgba(248, 244, 232, 0.38), rgba(255, 255, 255, 0) 45%), #fff;
-}
-
-body.weather-clouds {
-  background: radial-gradient(circle at top right, rgba(232, 238, 243, 0.42), rgba(255, 255, 255, 0) 50%), #fff;
-}
-
-body.weather-coldwet {
-  background: radial-gradient(circle at top right, rgba(224, 230, 236, 0.46), rgba(255, 255, 255, 0) 52%), #fff;
-}
-
 @media (max-width: 768px) {
   .photo-postit {
     display: none;
@@ -292,16 +280,14 @@ document.addEventListener("click", (e) => {
   }
 });
 
-/* ---------- Weather and Time click ---------- */
+/* ---------- WEATHER AND TIME ---------- */
+// Weather and Time click
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
 
 const trigger = document.getElementById("stockholm-trigger");
-const pageSurface = document.body;
-
 let weatherLine = null;
-let weatherClass = "";
 
 function stockholmTime() {
   const time = new Date().toLocaleTimeString([], {
@@ -328,47 +314,21 @@ function stockholmTime() {
   return `${time} ${timeOfDay}`;
 }
 
-function getWeatherClass(main) {
-  const m = main.toLowerCase();
-
-  if (m === "clear") return "weather-clear";
-  if (m === "clouds") return "weather-clouds";
-  return "weather-coldwet";
-}
-
-function removeWeatherState() {
-  if (weatherLine) {
-    weatherLine.remove();
-    weatherLine = null;
-  }
-
-  if (weatherClass) {
-    pageSurface.classList.remove(weatherClass);
-    weatherClass = "";
-  }
-}
-
 fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
   .then(res => res.json())
   .then(data => {
-    const main = data.weather[0].main;
     const description = data.weather[0].description;
     const temp = Math.round(data.main.temp);
 
     trigger.addEventListener("click", (e) => {
       e.preventDefault();
 
-      // toggle off
       if (weatherLine) {
-        removeWeatherState();
+        weatherLine.remove();
+        weatherLine = null;
         return;
       }
 
-      // apply gradient
-      weatherClass = getWeatherClass(main);
-      pageSurface.classList.add(weatherClass);
-
-      // add text
       weatherLine = document.createElement("span");
       weatherLine.textContent =
         ` — ${description.charAt(0).toUpperCase() + description.slice(1)}. It's ${stockholmTime()}, ${temp}ºC outside`;
