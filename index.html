@@ -31,14 +31,14 @@ body {
 
 /* ----- LINKS ------*/
 /* Regular links - underline */
-a[target="_blank"]:hover { text-decoration-style: wavy; }
+a:hover { text-decoration-style: wavy; }
 
 /* Same-page links - yellow highlights */
-a,
+a[href^="#"],
 #stockholm-trigger {
   text-decoration: none; background: #FFFF99; cursor: pointer;
 }
-a:hover { color: #000; } 
+a[href^="#"]:hover { color: #000; } 
 
 
 /* ---------- CLICK STAMPS ---------- */
