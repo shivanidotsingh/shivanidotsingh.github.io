@@ -30,22 +30,16 @@ body {
 }
 
 /* ----- LINKS ------*/
-/* Regular links - underline with gap */
-a {
-  text-decoration: underline;   text-decoration-thickness: 0.75px; text-underline-offset: 0.25em;
-}
-a:hover {
-  text-decoration-style: wavy; animation: wave 0.5s linear infinite;
-}
-@keyframes wave {
-  0%, 100% { text-underline-offset: 0.25em; }
-  50% { text-underline-offset: 0.35em; }
-}
+/* Regular links - underline */
+a[target="_blank"]:hover { text-decoration-style: wavy; }
+
 /* Same-page links - yellow highlights */
-a[href^="#"],
+a,
 #stockholm-trigger {
   text-decoration: none; background: #FFFF99; cursor: pointer;
 }
+a:hover { color: #000; } 
+
 
 /* ---------- CLICK STAMPS ---------- */
 .flower-stamp{
