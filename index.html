@@ -29,7 +29,23 @@ body {
   padding: 40px 0;
 }
 
-a {  text-decoration-style: wavy; text-decoration-thickness: 0.5px; }
+/* ----- LINKS ------*/
+/* Regular links - underline with gap */
+a {
+  text-decoration: underline;   text-decoration-thickness: 0.75px; text-underline-offset: 0.25em;
+}
+a:hover {
+  text-decoration-style: wavy; animation: wave 0.5s linear infinite;
+}
+@keyframes wave {
+  0%, 100% { text-underline-offset: 0.25em; }
+  50% { text-underline-offset: 0.35em; }
+}
+/* Same-page links - yellow highlights */
+a[href^="#"],
+#stockholm-trigger {
+  text-decoration: none; background: #FFFF99; cursor: pointer;
+}
 
 /* ---------- CLICK STAMPS ---------- */
 .flower-stamp{
@@ -118,7 +134,7 @@ a {  text-decoration-style: wavy; text-decoration-thickness: 0.5px; }
   <div class="photo-postit bottom-right"> often found making thinking visible through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>. </div>
 </div>
       <br>
-      Born in India, I'm currently based in <span id="stockholm-trigger" title="" style="cursor: crosshair;">Stockholm</span>. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm currently based in <span id="stockholm-trigger" title="">Stockholm</span>. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">C.V.</a> or go through select
       <a href="#portfolio" id="portfolio-link">projects</a>.
