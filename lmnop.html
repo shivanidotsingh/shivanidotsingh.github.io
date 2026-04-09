@@ -154,24 +154,27 @@
     let rendering = false;
 
     function stageWidth() {
-      const stage = canvas.closest(".pdf-stage");
-      return Math.max(320, stage.clientWidth - 20);
-    }
+  const stage = canvas.closest(".pdf-stage");
+  return Math.max(320, stage.clientWidth - 20);
+}
 
-    async function renderPage(n) {
-      if (rendering) return;
-      rendering = true;
+async function renderPage(n) {
+  if (rendering) return;
+  rendering = true;
 
-      const page = await pdf.getPage(n);
-      const base = page.getViewport({ scale: 1 });
-      const scale = stageWidth() / base.width;
-      const viewport = page.getViewport({ scale });
+  const page = await pdf.getPage(n);
+  const base = page.getViewport({ scale: 1 });
+  const dpr = window.devicePixelRatio || 1;
+  const scale = (stageWidth() / base.width) * dpr;
+  const viewport = page.getViewport({ scale });
 
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
+  canvas.width = Math.floor(viewport.width);
+  canvas.height = Math.floor(viewport.height);
+  canvas.style.width = stageWidth() + "px";
+  canvas.style.height = (viewport.height / dpr) + "px";
 
-      await page.render({ canvasContext: ctx, viewport }).promise;
-
+  await page.render({ canvasContext: ctx, viewport }).promise;
+  
       [...thumbsEl.children].forEach((btn, i) => {
         btn.setAttribute("aria-current", i + 1 === pageNum ? "true" : "false");
       });
