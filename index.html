@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>shivani's website</title>
-
-  <link rel="icon" type="image/png" href="images/favicon.png">
   <link rel="stylesheet" href="style.css">
 
   <style>
@@ -40,27 +38,14 @@ a[href^="#"],
 }
 a[href^="#"]:hover { color: #000; } 
 
-
-/* ---------- CLICK STAMPS ---------- */
-.flower-stamp{
-  position: absolute;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  user-select: none;
-  -webkit-user-drag: none;
-  z-index: 10; 
-  line-height: 1;
-  color: #0000EE;
-}
-
-  #weather-line {
+#weather-line {
   position: fixed;
   right: 12px;
   bottom: 12px;
   pointer-events: none;
 }
 
-  .photo-postit {
+.photo-postit {
   position: absolute;
   width: 120px;
   height: 120px;
@@ -95,6 +80,21 @@ a[href^="#"]:hover { color: #000; }
   margin: 20px 0;
 }
 
+.photo-wrapper img {
+  transition: opacity 0.4s ease;
+}
+
+.photo-wrapper .photo-color {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+.photo-wrapper:hover .photo-color {
+  opacity: 1;
+}
+
 @media (max-width: 768px) {
   .photo-postit {
     display: none;
@@ -122,7 +122,8 @@ a[href^="#"]:hover { color: #000; }
       <a href="https://singh.work/logofolio">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
       <br>
       <div class="photo-wrapper">
-  <img src="images/moi.png">
+  <img src="images/moi.png" class="photo-bw">
+  <img src="images/red.jpg" class="photo-color">
   <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
   <div class="photo-postit bottom-right"> making thinking visible through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>. </div>
 </div>
@@ -139,16 +140,6 @@ a[href^="#"]:hover { color: #000; }
 <!-- PORTFOLIO -->
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
   <div class="portfolio-grid">
-
-    <!-- COMING SOON -->
-    <!--
-    <div class="project">
-      <img src="images/playground.png" alt="Coming Soon">
-      <p class="note">[Coming Soon] • UNICEF Office of Innovation (2024)</p>
-      <div class="project-title">Playground for Prototypes</div>
-      <p>A sandbox environment for testing digital prototypes.</p>
-    </div>
-    -->
 
     <div class="project">
       <img src="images/juniper dashboard.png" alt="">
@@ -205,20 +196,6 @@ a[href^="#"]:hover { color: #000; }
       <p class="note">Parallel HQ (2018)</p>
     </div>
 
-    <!-- AMBASSADOR -->
-    <!--
-    <div class="project">
-      <img src="images/88.png" alt="">
-      <p class="note">Visual Identity Design • Ambassador 88 (2020)</p>
-      <div class="project-title">
-        <a href="https://singh.work/ambassador.html">
-          Cultural Ambassador
-        </a>
-      </div>
-      <p>Brand language for a children's product.</p>
-    </div>
-    -->
-
     <div class="project">
       <img src="images/project7.png" alt="">
       <div class="project-title">
@@ -255,42 +232,8 @@ portfolioLink.addEventListener('click', e => {
   openPortfolioSmooth();
 });
 
-
-/* ---------- RANDOM FLOWER CLICK STAMPS ---------- */
-
-const introWrap = document.querySelector(".intro-wrap");
-const FLOWERS = ["𐫱","✿","❀","❁","✽","✾","❃","❊"];
-const flowerStamps = [];
-const MAX_STAMPS = 400;
-
-function pick(arr){
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-document.addEventListener("click", (e) => {
-  // Don’t stamp when clicking interactive elements
-  if (e.target.closest("a, button, input, textarea, select, label, #stockholm-trigger")) return;
-
-  const s = document.createElement("span");
-  s.className = "flower-stamp";
-  s.textContent = pick(FLOWERS);
-
-  // place at click location (page coords)
-  s.style.left = e.pageX + "px";
-  s.style.top = e.pageY + "px";
-
-  document.body.appendChild(s);
-  flowerStamps.push(s);
-
-  // cap stamps
-  if (flowerStamps.length > MAX_STAMPS) {
-    const old = flowerStamps.shift();
-    if (old && old.parentNode) old.parentNode.removeChild(old);
-  }
-});
-
 /* ---------- WEATHER AND TIME ---------- */
-// Weather and Time click
+
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
