@@ -231,12 +231,12 @@ a:hover {
   line-height: 1.25;
 }
 
-.project-title {
+.project-title a {
   color: inherit;
   text-decoration: none;
 }
 
-a:hover .project-title {
+.project-title a:hover {
   color: #0000EE;
 }
 
