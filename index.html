@@ -31,12 +31,17 @@ body {
 /* Regular links - underline */
 a:hover { text-decoration-style: wavy; }
 
-/* Same-page links - yellow highlights */
-a[href^="#"],
-#stockholm-trigger {
-  text-decoration: none; background: #FFFF99; cursor: pointer;
+/* Post-it links - inverted terminal style */
+.photo-postit a {
+  text-decoration: none;
+  background: #333;
+  color: #FFFF99;
+  padding: 0 2px;
 }
-a[href^="#"]:hover { color: #000; } 
+
+.photo-postit a:hover {
+  background: #000;
+}
 
 #weather-line {
   position: fixed;
@@ -135,7 +140,7 @@ a[href^="#"]:hover { color: #000; }
   <img src="images/moi.png" class="photo-bw">
   <img src="images/red.jpg" class="photo-color">
   <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
-  <div class="photo-postit bottom-right"> making thinking visible through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>. </div>
+  <div class="photo-postit bottom-right"> often found translating ideas into <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a> to make thinking visible. </div>
 </div>
       <br>
       Born in India, I'm currently based in <span id="stockholm-trigger" title="">Stockholm</span>. To visualise the many places I've called home, I'm graphing my time across cities
