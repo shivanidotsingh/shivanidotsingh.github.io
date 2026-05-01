@@ -31,16 +31,19 @@ body {
 /* Regular links - underline */
 a:hover { text-decoration-style: wavy; }
 
-/* Post-it links - inverted terminal style */
+a[target="_blank"] { 
+  cursor: pointer; 
+}
+
+/* Post-it links - dotted underline */
 .photo-postit a {
-  text-decoration: none;
-  background: #333;
-  color: #FFFF99;
-  padding: 0 2px;
+  text-decoration: underline;
+  text-decoration-style: dotted;
 }
 
 .photo-postit a:hover {
-  background: #000;
+  text-decoration-style: dotted;
+  color: inherit;
 }
 
 #weather-line {
@@ -143,7 +146,7 @@ a:hover { text-decoration-style: wavy; }
   <div class="photo-postit bottom-right"> often found translating ideas into <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a> to make thinking visible. </div>
 </div>
       <br>
-      Born in India, I'm currently based in <span id="stockholm-trigger" title="">Stockholm</span>. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm currently based in <a href="#" id="stockholm-trigger">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
       <a href="#portfolio" id="portfolio-link">projects</a>.
