@@ -6,47 +6,13 @@
   <title>shivani's work experience</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    /* Minimal, robust overrides */
-    .resume-header .photo,
-    .resume-header .photo img {
-      box-sizing: border-box; /* Avoid border/padding glitches */
-      margin: 0 !important;
-      padding: 0 !important;
-      border: none !important;
-      display: block;
-      background: #f3f3f3;
-    }
-    .resume-header .photo {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      overflow: hidden;
-      flex: 0 0 auto;
-      position: relative;
-    }
-    .resume-header .photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      background: #f3f3f3;
-    }
-    /* Layout and utilities (unchanged, checked for issues) */
     .topbar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       margin: 0;
+      margin-bottom: 15px;
     }
-    .print-btn {
-      border: 1px solid #111;
-      background: transparent;
-      color: inherit;
-      font: inherit;
-      line-height: 1;
-      border-radius: 4px;
-      padding: 4px 8px;
-      cursor: pointer;
-    }
+    
     .resume-header {
       display: flex;
       justify-content: space-between;
@@ -55,22 +21,65 @@
       margin-top: 15px;
       margin-bottom: 24px;
     }
+    
+    .photo-container {
+      position: relative;
+      flex: 0 0 auto;
+    }
+    
+    .photo {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #f3f3f3;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+    
+    .linkedin-badge {
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    
+    .linkedin-badge svg {
+      width: 24px;
+      height: 24px;
+      display: block;
+    }
+    
     .item-header {
       display: flex;
       flex-wrap: wrap;
       gap: .5em;
       align-items: baseline;
     }
+    
     .item-date {
       opacity: .6;
       white-space: nowrap;
       margin-right: .5em;
     }
+    
     .item-role {
       font-weight: 600;
-    }
-    @media print {
-      .topbar { display: none !important; }
     }
   </style>
 </head>
@@ -79,18 +88,27 @@
     <!-- Top Bar -->
     <div class="topbar">
       <a href="index.html" class="blue-link">&larr; Back to home</a>
-      <button class="print-btn" onclick="window.print()" aria-label="Print resume">Print</button>
     </div>
+    
     <!-- Header -->
     <header class="resume-header">
       <div class="info">
         <h1>Shivani Singh</h1>
         <p class="note">25.shivanisingh@gmail.com <br> +46&nbsp;76&nbsp;885&nbsp;66&nbsp;09</p>
       </div>
-      <div class="photo">
-        <img src="images/profile.jpg" alt="Shivani Singh">
+      <div class="photo-container">
+        <div class="photo">
+          <img src="images/profile.jpg" alt="Shivani Singh">
+        </div>
+        <a href="https://www.linkedin.com/in/shivanidotsingh/" target="_blank" class="linkedin-badge" aria-label="LinkedIn Profile">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="24" rx="4" fill="#111"/>
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" fill="white"/>
+          </svg>
+        </a>
       </div>
     </header>
+    
     <!-- Experience -->
     <h4>Experience</h4>
     <div class="item">
@@ -104,7 +122,7 @@
       <p class="note">I guide the design of digital products and services at the Office of Innovation, and support the UX of solutions we invest in — including development of persona archetypes, user flows, concept models and system maps. I also facilitate collaborative workshops, and contribute to visual communication to improve brand presence and clarity.</p>
     </div>
 
-       <div class="item">
+    <div class="item">
       <div class="item-header">
         <span class="item-date">2021—2023</span>
         <span class="item-role">Designer,</span>
@@ -119,7 +137,7 @@
         <span class="item-role">UX Designer,</span>
         <span class="item-org"><a href="https://parallelhq.com" target="_blank">Parallel Labs</a> · Bangalore, India</span>
       </div>
-      <p class="note">Applied design sprints to align business goals with consumer needs. Co-facilitated workshops and design jams with Facebook’s TTC Labs across Singapore, Hyderabad and Bangalore.</p>
+      <p class="note">Applied design sprints to align business goals with consumer needs. Co-facilitated workshops and design jams with Facebook's TTC Labs across Singapore, Hyderabad and Bangalore.</p>
     </div>
 
     <div class="item">
@@ -157,7 +175,6 @@
       </div>
     </div>
     
-    
     <!-- Education -->
     <h4>Education</h4>
     <div class="item">
@@ -178,15 +195,6 @@
       </div>
     </div>
 
-    <!--
-    <div class="item">
-      <div class="item-header">
-        <span class="item-date">2002—2010</span>
-        <span class="item-role">ISC Graduation,</span>
-        <span class="item-org">Welham Girls’ School · Dehradun, India</span>
-      </div>
-    </div>
-    -->
    <hr style="border: none; border-top: 1px solid black; margin: 2em 0;">
    <p><a href="index.html" class="blue-link">&larr; Back to home</a></p>
     
