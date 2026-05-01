@@ -40,14 +40,27 @@ a[href^="#"],
 }
 a[href^="#"]:hover { color: #000; } 
 
-#weather-line {
+
+/* ---------- CLICK STAMPS ---------- */
+.flower-stamp{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  z-index: 10; 
+  line-height: 1;
+  color: #0000EE;
+}
+
+  #weather-line {
   position: fixed;
   right: 12px;
   bottom: 12px;
   pointer-events: none;
 }
 
-.photo-postit {
+  .photo-postit {
   position: absolute;
   width: 120px;
   height: 120px;
@@ -71,16 +84,15 @@ a[href^="#"]:hover { color: #000; }
   transform: rotate(2deg);
 }
 
+.intro-inner img {
+  position: relative;
+  display: inline-block;
+}
+
 .photo-wrapper {
   position: relative;
   display: inline-block;
   margin: 20px 0;
-}
-
-.photo-wrapper canvas {
-  display: block;
-  width: 100%;
-  height: auto;
 }
 
 @media (max-width: 768px) {
@@ -110,10 +122,10 @@ a[href^="#"]:hover { color: #000; }
       <a href="https://singh.work/logofolio">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
       <br>
       <div class="photo-wrapper">
-        <canvas id="photoCanvas"></canvas>
-        <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
-        <div class="photo-postit bottom-right"> making thinking visible through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>. </div>
-      </div>
+  <img src="images/moi.png">
+  <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
+  <div class="photo-postit bottom-right"> making thinking visible through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>. </div>
+</div>
       <br>
       Born in India, I'm currently based in <span id="stockholm-trigger" title="">Stockholm</span>. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>. 
@@ -127,6 +139,16 @@ a[href^="#"]:hover { color: #000; }
 <!-- PORTFOLIO -->
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
   <div class="portfolio-grid">
+
+    <!-- COMING SOON -->
+    <!--
+    <div class="project">
+      <img src="images/playground.png" alt="Coming Soon">
+      <p class="note">[Coming Soon] • UNICEF Office of Innovation (2024)</p>
+      <div class="project-title">Playground for Prototypes</div>
+      <p>A sandbox environment for testing digital prototypes.</p>
+    </div>
+    -->
 
     <div class="project">
       <img src="images/juniper dashboard.png" alt="">
@@ -183,6 +205,20 @@ a[href^="#"]:hover { color: #000; }
       <p class="note">Parallel HQ (2018)</p>
     </div>
 
+    <!-- AMBASSADOR -->
+    <!--
+    <div class="project">
+      <img src="images/88.png" alt="">
+      <p class="note">Visual Identity Design • Ambassador 88 (2020)</p>
+      <div class="project-title">
+        <a href="https://singh.work/ambassador.html">
+          Cultural Ambassador
+        </a>
+      </div>
+      <p>Brand language for a children's product.</p>
+    </div>
+    -->
+
     <div class="project">
       <img src="images/project7.png" alt="">
       <div class="project-title">
@@ -219,109 +255,42 @@ portfolioLink.addEventListener('click', e => {
   openPortfolioSmooth();
 });
 
-/* ---------- PHOTO DEVELOPMENT EFFECT ---------- */
 
-const canvas = document.getElementById('photoCanvas');
-const ctx = canvas.getContext('2d');
+/* ---------- RANDOM FLOWER CLICK STAMPS ---------- */
 
-const bwImg = new Image();
-const colorImg = new Image();
+const introWrap = document.querySelector(".intro-wrap");
+const FLOWERS = ["𐫱","✿","❀","❁","✽","✾","❃","❊"];
+const flowerStamps = [];
+const MAX_STAMPS = 400;
 
-bwImg.src = 'images/moi.png'; // Your B&W dithered version
-colorImg.src = 'images/red.jpg';  // Your color original
+function pick(arr){
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-let imagesLoaded = 0;
+document.addEventListener("click", (e) => {
+  // Don’t stamp when clicking interactive elements
+  if (e.target.closest("a, button, input, textarea, select, label, #stockholm-trigger")) return;
 
-function checkImagesLoaded() {
-  imagesLoaded++;
-  if (imagesLoaded === 2) {
-    startDevelopment();
+  const s = document.createElement("span");
+  s.className = "flower-stamp";
+  s.textContent = pick(FLOWERS);
+
+  // place at click location (page coords)
+  s.style.left = e.pageX + "px";
+  s.style.top = e.pageY + "px";
+
+  document.body.appendChild(s);
+  flowerStamps.push(s);
+
+  // cap stamps
+  if (flowerStamps.length > MAX_STAMPS) {
+    const old = flowerStamps.shift();
+    if (old && old.parentNode) old.parentNode.removeChild(old);
   }
-}
-
-bwImg.onload = checkImagesLoaded;
-colorImg.onload = checkImagesLoaded;
-
-function startDevelopment() {
-  // Set canvas dimensions
-  canvas.width = colorImg.width;
-  canvas.height = colorImg.height;
-  
-  // Draw B&W image initially
-  ctx.drawImage(bwImg, 0, 0);
-  
-  // Get pixel data
-  const bwData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  ctx.drawImage(colorImg, 0, 0);
-  const colorData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  
-  // Start with B&W
-  ctx.putImageData(bwData, 0, 0);
-  
-  // Create development mask (tracks which pixels are developed)
-  const developed = new Uint8Array(canvas.width * canvas.height);
-  
-  // Development parameters
-  const totalPixels = canvas.width * canvas.height;
-  const cloudSize = 8; // Size of each cloud cluster
-  const duration = 3000; // 3 seconds
-  const fps = 30;
-  const frames = (duration / 1000) * fps;
-  const pixelsPerFrame = Math.ceil(totalPixels / frames);
-  
-  let frameCount = 0;
-  
-  // Start development after brief delay
-  setTimeout(() => {
-    const developInterval = setInterval(() => {
-      frameCount++;
-      
-      // Develop clusters of pixels (clouds)
-      for (let i = 0; i < pixelsPerFrame / (cloudSize * cloudSize); i++) {
-        // Pick random starting point
-        const x = Math.floor(Math.random() * canvas.width);
-        const y = Math.floor(Math.random() * canvas.height);
-        
-        // Develop a cloud around this point
-        for (let dx = -cloudSize; dx <= cloudSize; dx++) {
-          for (let dy = -cloudSize; dy <= cloudSize; dy++) {
-            const nx = x + dx;
-            const ny = y + dy;
-            
-            if (nx >= 0 && nx < canvas.width && ny >= 0 && ny < canvas.height) {
-              const distance = Math.sqrt(dx * dx + dy * dy);
-              if (distance <= cloudSize && Math.random() > 0.3) { // organic edge
-                const idx = ny * canvas.width + nx;
-                if (!developed[idx]) {
-                  developed[idx] = 1;
-                  
-                  // Copy color pixel
-                  const pixelIdx = idx * 4;
-                  bwData.data[pixelIdx] = colorData.data[pixelIdx];
-                  bwData.data[pixelIdx + 1] = colorData.data[pixelIdx + 1];
-                  bwData.data[pixelIdx + 2] = colorData.data[pixelIdx + 2];
-                  bwData.data[pixelIdx + 3] = colorData.data[pixelIdx + 3];
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      // Draw updated image
-      ctx.putImageData(bwData, 0, 0);
-      
-      // Stop when development is complete
-      if (frameCount >= frames) {
-        clearInterval(developInterval);
-        ctx.drawImage(colorImg, 0, 0); // Ensure final image is perfect
-      }
-    }, 1000 / fps);
-  }, 500); // 500ms delay before starting
-}
+});
 
 /* ---------- WEATHER AND TIME ---------- */
-
+// Weather and Time click
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
