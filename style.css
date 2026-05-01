@@ -38,11 +38,9 @@ a {
   text-underline-offset: 0.25em;
 }
 
-a:hover {
-  color: #0000EE;
+a:hover { 
+  text-decoration-style: wavy; 
 }
-
-a[target="_blank"] { cursor: alias; }
 
 .blue-link { color: #0000EE; text-decoration: none; }
 
