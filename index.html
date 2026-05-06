@@ -151,14 +151,14 @@ a:hover { text-decoration-style: wavy; }
       Born in India, I'm currently based in <a href="#" id="stockholm-trigger">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
-      projects below.
+      <a href="#portfolio" id="portfolio-link">projects</a>.
     </p>
 
   </main>
 </section>
 
 <!-- PORTFOLIO -->
-<section id="portfolio-appendix" class="portfolio-section">
+<section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
   <div class="portfolio-grid">
 
     <div class="project">
@@ -324,6 +324,21 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   .catch(() => {
     trigger.style.cursor = "default";
   });
+
+  /* ---------- PORTFOLIO OPEN ---------- */
+const portfolioLink = document.getElementById('portfolio-link');
+const portfolio = document.getElementById('portfolio-appendix');
+
+function openPortfolioSmooth() {
+  portfolio.hidden = false;
+  portfolio.setAttribute('aria-hidden', 'false');
+  portfolio.scrollIntoView({ behavior: 'smooth' });
+}
+
+portfolioLink.addEventListener('click', e => {
+  e.preventDefault();
+  openPortfolioSmooth();
+});
 
 </script>
 
