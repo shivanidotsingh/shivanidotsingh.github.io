@@ -10,7 +10,7 @@
 :root { --page-gutter: 40px; }
 body::before {
   content: '';
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
@@ -358,6 +358,52 @@ function maybeReturnToPortfolio() {
 }
 
 window.addEventListener('pageshow', maybeReturnToPortfolio);
+
+  /* ---------- DRAGGABLE POST-ITS ---------- */
+const postits = document.querySelectorAll('.photo-postit');
+
+postits.forEach(postit => {
+  let isDragging = false;
+  let currentX;
+  let currentY;
+  let initialX;
+  let initialY;
+
+  postit.style.cursor = 'move';
+  
+  postit.addEventListener('mousedown', dragStart);
+  
+  function dragStart(e) {
+    initialX = e.clientX - postit.offsetLeft;
+    initialY = e.clientY - postit.offsetTop;
+    
+    isDragging = true;
+    
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('mouseup', dragEnd);
+  }
+  
+  function drag(e) {
+    if (isDragging) {
+      e.preventDefault();
+      currentX = e.clientX - initialX;
+      currentY = e.clientY - initialY;
+      
+      // Snap to 150px grid
+      const snappedX = Math.round(currentX / 150) * 150;
+      const snappedY = Math.round(currentY / 150) * 150;
+      
+      postit.style.left = snappedX + 'px';
+      postit.style.top = snappedY + 'px';
+    }
+  }
+  
+  function dragEnd() {
+    isDragging = false;
+    document.removeEventListener('mousemove', drag);
+    document.removeEventListener('mouseup', dragEnd);
+  }
+});
 </script>
 
 </body>
