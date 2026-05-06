@@ -321,58 +321,6 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
     trigger.style.cursor = "default";
   });
 
-
-  /* ---------- DRAGGABLE POST-ITS ---------- */
-const postits = document.querySelectorAll('.photo-postit');
-
-postits.forEach(postit => {
-  let isDragging = false;
-  let currentX;
-  let currentY;
-  let initialX;
-  let initialY;
-
-  postit.style.cursor = 'move';
-  
-  postit.addEventListener('mousedown', dragStart);
-  
-  function dragStart(e) {
-    initialX = e.clientX - postit.offsetLeft;
-    initialY = e.clientY - postit.offsetTop;
-    
-    isDragging = true;
-    
-    document.addEventListener('mousemove', drag);
-    document.addEventListener('mouseup', dragEnd);
-  }
-  
-function drag(e) {
-  if (isDragging) {
-    e.preventDefault();
-    currentX = e.clientX - initialX;
-    currentY = e.clientY - initialY;
-    
-    // Snap to 150px grid aligned with page
-    const pageX = currentX + postit.parentElement.offsetLeft;
-    const pageY = currentY + postit.parentElement.offsetTop;
-    
-    const snappedPageX = Math.round(pageX / 150) * 150;
-    const snappedPageY = Math.round(pageY / 150) * 150;
-    
-    const snappedX = snappedPageX - postit.parentElement.offsetLeft;
-    const snappedY = snappedPageY - postit.parentElement.offsetTop;
-    
-    postit.style.left = snappedX + 'px';
-    postit.style.top = snappedY + 'px';
-  }
-}
-  
-  function dragEnd() {
-    isDragging = false;
-    document.removeEventListener('mousemove', drag);
-    document.removeEventListener('mouseup', dragEnd);
-  }
-});
 </script>
 
 </body>
