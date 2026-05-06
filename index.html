@@ -162,14 +162,14 @@ a:hover { text-decoration-style: wavy; }
       Born in India, I'm currently based in <a href="#" id="stockholm-trigger">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
-      <a href="#portfolio" id="portfolio-link">projects</a>.
+      projects below.
     </p>
 
   </main>
 </section>
 
 <!-- PORTFOLIO -->
-<section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
+<section id="portfolio-appendix" class="portfolio-section">
   <div class="portfolio-grid">
 
     <div class="project">
@@ -260,7 +260,7 @@ a:hover { text-decoration-style: wavy; }
 </div>
 
 <script>
-/* ---------- PORTFOLIO OPEN ---------- */
+/* ---------- PORTFOLIO OPEN 
 
 const portfolioLink = document.getElementById('portfolio-link');
 const portfolio = document.getElementById('portfolio-appendix');
@@ -274,7 +274,7 @@ function openPortfolioSmooth() {
 portfolioLink.addEventListener('click', e => {
   e.preventDefault();
   openPortfolioSmooth();
-});
+}); ---------- */
 
 /* ---------- WEATHER AND TIME ---------- */
 
@@ -336,28 +336,6 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
     trigger.style.cursor = "default";
   });
 
-/* ---------- RETURN TO PORTFOLIO ON BACK ---------- */
-
-function openPortfolioInstant() {
-  portfolio.hidden = false;
-  portfolio.setAttribute('aria-hidden', 'false');
-  portfolio.scrollIntoView({ behavior: 'auto' });
-}
-
-document.querySelectorAll('#portfolio-appendix .project-link').forEach(a => {
-  a.addEventListener('click', () => {
-    sessionStorage.setItem('returnToPortfolio', '1');
-  });
-});
-
-function maybeReturnToPortfolio() {
-  if (sessionStorage.getItem('returnToPortfolio') === '1') {
-    sessionStorage.removeItem('returnToPortfolio');
-    openPortfolioInstant();
-  }
-}
-
-window.addEventListener('pageshow', maybeReturnToPortfolio);
 
   /* ---------- DRAGGABLE POST-ITS ---------- */
 const postits = document.querySelectorAll('.photo-postit');
