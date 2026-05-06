@@ -94,11 +94,15 @@ a:hover { text-decoration-style: wavy; }
   opacity: 0;
 }
 
-.photo-wrapper:hover > .photo-color {
+.photo-wrapper:hover .photo-color {
   opacity: 1;
 }
 
-.photo-postit:hover ~ .photo-color {
+.photo-postit:hover {
+  pointer-events: auto;
+}
+
+.photo-wrapper:has(.photo-postit:hover) .photo-color {
   opacity: 0;
 }
 
