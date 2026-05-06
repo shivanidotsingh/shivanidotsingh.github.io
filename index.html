@@ -9,8 +9,114 @@
   <style>
 :root { --page-gutter: 40px; }
 body {
-  padding: 0 var(--page-gutter) !important;
+  padding: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
 }
+
+/* ——— THREE-COLUMN WRAPPER ——— */
+.page-layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 570px) 220px;
+  grid-template-areas: "left center right";
+  justify-content: center;
+  gap: 0 40px;
+  align-items: start;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.col-left   { grid-area: left;   padding-top: 40px; }
+.col-center { grid-area: center; }
+.col-right  { grid-area: right;  padding-top: 40px; }
+
+/* ——— CENTER: intro ——— */
+.intro-inner {
+  padding: 40px 0;
+}
+
+/* ——— SIDE PROJECT CARDS ——— */
+.side-project {
+  margin-bottom: 28px;
+  background: #fff;
+  box-shadow: 3px 3px 18px rgba(0,0,0,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.side-project:nth-child(1) { transform: rotate(-1.2deg); }
+.side-project:nth-child(2) { transform: rotate(0.8deg); }
+.side-project:nth-child(3) { transform: rotate(-0.5deg); }
+
+.side-project:hover {
+  box-shadow: 4px 4px 22px rgba(0,0,0,0.08);
+  transform: rotate(0deg);
+}
+
+.side-project a.project-img-link {
+  display: block;
+  text-decoration: none;
+}
+
+.side-project img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+  margin: 0;
+}
+
+.side-project-body {
+  padding: 10px 12px 12px;
+}
+
+.side-project-title {
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 4px 0;
+}
+
+.side-project-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.side-project-title a:hover {
+  color: #0000EE;
+}
+
+.side-project-desc {
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: #333;
+  margin: 0 0 3px 0;
+}
+
+.side-project-note {
+  font-size: 10.5px;
+  color: #808080;
+  margin: 0;
+}
+
+
+/* ——— FOOTER ——— */
+.portfolio-footer {
+  grid-column: 1 / -1;
+  margin: 1em 0;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+.portfolio-footer hr {
+  border: none;
+  border-top: 1px solid #000;
+  margin: 0 0 0.75em 0;
+}
+
+
+/* ——— EVERYTHING FROM ORIGINAL INTRO STYLE ——— */
 .h1-img {
   height: var(--h1-size);
   width: auto;
@@ -22,15 +128,8 @@ body {
   position: relative;
 }
 
-.intro-inner {
-  padding: 40px 0;
-}
-
-/* ----- LINKS ------*/
-/* Regular links - underline */
 a:hover { text-decoration-style: wavy; }
 
-/* Post-it links - dotted underline */
 .photo-postit a {
   text-decoration: underline;
   text-decoration-style: dotted;
@@ -39,13 +138,6 @@ a:hover { text-decoration-style: wavy; }
 .photo-postit a:hover {
   text-decoration-style: dotted;
   color: inherit;
-}
-
-#weather-line {
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
-  pointer-events: none;
 }
 
 .photo-postit {
@@ -106,164 +198,211 @@ a:hover { text-decoration-style: wavy; }
   opacity: 0;
 }
 
+
+/* ——— MOBILE: revert to single column ——— */
 @media (max-width: 768px) {
+  body {
+    padding: 0 40px !important;
+    max-width: 570px !important;
+    margin: 0 auto !important;
+  }
+
+  .page-layout {
+    display: block;
+    padding: 0;
+  }
+
+  .col-left,
+  .col-right {
+    display: none;
+  }
+
+  .col-center {
+    display: block;
+  }
+
+  .portfolio-footer {
+    padding: 0;
+  }
+
   .photo-postit {
     display: none;
   }
-  
+
   .photo-wrapper .photo-bw {
     display: none;
   }
-  
+
   .photo-wrapper .photo-color {
     position: static;
     opacity: 1;
   }
-
 }
-    
+
+[hidden] { display: none !important; }
+
+/* ——— MEDIUM: 2-col, one side hidden ——— */
+@media (min-width: 769px) and (max-width: 1050px) {
+  .page-layout {
+    grid-template-columns: 200px minmax(0, 570px);
+    grid-template-areas: "left center";
+    padding: 0 30px;
+    gap: 0 30px;
+  }
+
+  .col-right {
+    display: none;
+  }
+}
   </style>
 </head>
 
 <body>
 
-<!-- INTRO -->
-<section class="intro-wrap">
-  <main id="page" class="intro-inner">
-    <h1>
-      <img class="h1-img" src="images/header.png" alt="Shivani Singh">
-    </h1>
+<div class="page-layout">
 
-    <p>
-      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicef.org/innovation/" target="_blank">UNICEF Innovation</a>. 
-      <br><br>
-      Previously, I worked at Salesforce in San Francisco — see some of that work in this
-      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>. With a background in graphic design, I've also crafted 
-      <a href="https://singh.work/logofolio">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a>.
-      <br>
-      <div class="photo-wrapper">
-  <img src="images/moi.png" class="photo-bw">
-  <img src="images/red.jpg" class="photo-color">
-  <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
-  <div class="photo-postit bottom-right"> often found thinking out loud through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>.</div>
-</div>
-      <br>
-      Born in India, I'm currently based in <a href="#" id="stockholm-trigger">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
-      <a href="https://singh.work/fromness" target="_blank">here</a>. 
-      An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
-      <a href="#portfolio" id="portfolio-link">projects</a>.
-    </p>
+  <!-- LEFT COLUMN: projects 1–3 -->
+  <aside class="col-left" id="col-left" hidden>
 
-  </main>
-</section>
-
-<!-- PORTFOLIO -->
-<section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
-  <div class="portfolio-grid">
-
-    <div class="project">
-      <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">
-        <img src="images/juniper dashboard.png" alt="">
+    <div class="side-project">
+      <a class="project-img-link" href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">
+        <img src="images/juniper dashboard.png" alt="Interface to the CryptoFund">
       </a>
-      <div class="project-title">
-        <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">
-          Interface to the CryptoFund
-        </a>
+      <div class="side-project-body">
+        <div class="side-project-title">
+          <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">Interface to the CryptoFund</a>
+        </div>
+        <p class="side-project-desc">Designing the dashboard for tracking Cryptofund transactions.</p>
+        <!-- <p class="side-project-note">UNICEF Office of Innovation (2024)</p> -->
       </div>
-      <p>Designing the dashboard for tracking Cryptofund transactions.</p>
-      <p class="note">UNICEF Office of Innovation (2024)</p>
     </div>
 
-    <div class="project">
-      <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
-        <img src="images/project2.jpg" alt="">
+    <div class="side-project">
+      <a class="project-img-link" href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
+        <img src="images/project2.jpg" alt="The Hungry Venturer">
       </a>
-      <div class="project-title">
-        <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
-          The Hungry Venturer
-        </a>
+      <div class="side-project-body">
+        <div class="side-project-title">
+          <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">The Hungry Venturer</a>
+        </div>
+        <p class="side-project-desc">Design sprint to improve a core point of interaction with the Fund.</p>
+        <!-- <p class="side-project-note">UNICEF Office of Innovation (2023)</p> -->
       </div>
-      <p>Design sprint to improve a core point of interaction with the Fund.</p>
-      <p class="note">UNICEF Office of Innovation (2023)</p>
     </div>
 
-    <div class="project">
-      <a class="project-link" href="https://singh.work/case-study.html">
-        <img src="images/project1.jpg" alt="">
+    <div class="side-project">
+      <a class="project-img-link" href="https://singh.work/case-study.html">
+        <img src="images/project1.jpg" alt="A West Oakland Story">
       </a>
-      <div class="project-title">
-        <a class="project-link" href="https://singh.work/case-study.html">
-          A West Oakland Story
-        </a>
+      <div class="side-project-body">
+        <div class="side-project-title">
+          <a href="https://singh.work/case-study.html">A West Oakland Story</a>
+        </div>
+        <p class="side-project-desc">Co-creating a data-informed narrative about the future of a neighbourhood.</p>
+        <!-- <p class="side-project-note">The Crucible × CCA (2020)</p> -->
       </div>
-      <p>Co-creating a data-informed narrative about the future of a neighbourhood.</p>
-      <p class="note">The Crucible × CCA (2020)</p>
     </div>
 
-    <div class="project">
-      <a class="project-link" href="https://singh.work/dropin">
-        <img src="images/project3.png" alt="">
+  </aside>
+
+
+  <!-- CENTER COLUMN: intro -->
+  <section class="intro-wrap col-center">
+    <main id="page" class="intro-inner">
+      <h1>
+        <img class="h1-img" src="images/header.png" alt="Shivani Singh">
+      </h1>
+
+      <p>
+        I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicef.org/innovation/" target="_blank">UNICEF Innovation</a>. 
+        <br><br>
+        Previously, I worked at Salesforce in San Francisco — see some of that work in this
+        <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>. With a background in graphic design, I've also crafted 
+        <a href="https://singh.work/logofolio">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a>.
+        <br>
+        <div class="photo-wrapper">
+          <img src="images/moi.png" class="photo-bw">
+          <img src="images/red.jpg" class="photo-color">
+          <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
+          <div class="photo-postit bottom-right"> often found thinking out loud through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>.</div>
+        </div>
+        <br>
+        Born in India, I'm currently based in <a href="#" id="stockholm-trigger">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
+        <a href="https://singh.work/fromness" target="_blank">here</a>. 
+        An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
+        <a href="#portfolio" id="portfolio-link">projects</a>.
+      </p>
+
+    </main>
+  </section>
+
+
+  <!-- RIGHT COLUMN: projects 4–6 -->
+  <aside class="col-right" id="col-right" hidden>
+
+    <div class="side-project">
+      <a class="project-img-link" href="https://singh.work/dropin">
+        <img src="images/project3.png" alt="The Art, Artist and Context">
       </a>
-      <div class="project-title">
-        <a class="project-link" href="https://singh.work/dropin">
-          The Art, Artist and Context
-        </a>
+      <div class="side-project-body">
+        <div class="side-project-title">
+          <a href="https://singh.work/dropin">The Art, Artist and Context</a>
+        </div>
+        <p class="side-project-desc">Reimagining online networking for creative professionals.</p>
+        <!-- <p class="side-project-note">Student Project (2020)</p> -->
       </div>
-      <p>Reimagining online networking for creative professionals.</p>
-      <p class="note">Student Project (2020)</p>
     </div>
 
-    <div class="project">
-      <a class="project-link" href="https://singh.work/sprint.html">
-        <img src="images/project6.png" alt="">
+    <div class="side-project">
+      <a class="project-img-link" href="https://singh.work/sprint.html">
+        <img src="images/project6.png" alt="Value of Influence">
       </a>
-      <div class="project-title">
-        <a class="project-link" href="https://singh.work/sprint.html">
-          Value of Influence
-        </a>
+      <div class="side-project-body">
+        <div class="side-project-title">
+          <a href="https://singh.work/sprint.html">Value of Influence</a>
+        </div>
+        <p class="side-project-desc">Defining the exchange between influencers and venues through a design sprint.</p>
+        <!-- <p class="side-project-note">Parallel HQ (2018)</p> -->
       </div>
-      <p>Defining the exchange between influencers and venues through a design sprint.</p>
-      <p class="note">Parallel HQ (2018)</p>
     </div>
 
-    <div class="project">
-      <a class="project-link" href="https://singh.work/lmnop">
-        <img src="images/project7.png" alt="">
+    <div class="side-project">
+      <a class="project-img-link" href="https://singh.work/lmnop">
+        <img src="images/project7.png" alt="ABC's of Branding a Preschool">
       </a>
-      <div class="project-title">
-        <a class="project-link" href="https://singh.work/lmnop">
-          ABC's of Branding a Preschool
-        </a>
+      <div class="side-project-body">
+        <div class="side-project-title">
+          <a href="https://singh.work/lmnop">ABC's of Branding a Preschool</a>
+        </div>
+        <p class="side-project-desc">Designing a playful brand identity for early childhood learning.</p>
+        <!-- <p class="side-project-note">Elemenopy Preschool (2017)</p> -->
       </div>
-      <p>Designing a playful brand identity for early childhood learning.</p>
-      <p class="note">Elemenopy Preschool (2017)</p>
     </div>
 
-  </div>
-</section>
+  </aside>
 
-  
+</div><!-- /.page-layout -->
+
+
+<!-- FOOTER -->
 <div class="portfolio-footer">
   <hr>
   <p class="note">co-created with artificial intelligence • updated on Apr 25, 2026</p>
 </div>
 
+
 <script>
-/* ---------- PORTFOLIO OPEN 
-
+/* ---------- PORTFOLIO TOGGLE ---------- */
 const portfolioLink = document.getElementById('portfolio-link');
-const portfolio = document.getElementById('portfolio-appendix');
-
-function openPortfolioSmooth() {
-  portfolio.hidden = false;
-  portfolio.setAttribute('aria-hidden', 'false');
-  portfolio.scrollIntoView({ behavior: 'smooth' });
-}
+const colLeft = document.getElementById('col-left');
+const colRight = document.getElementById('col-right');
 
 portfolioLink.addEventListener('click', e => {
   e.preventDefault();
-  openPortfolioSmooth();
-}); ---------- */
+  const isHidden = colLeft.hidden;
+  colLeft.hidden = !isHidden;
+  colRight.hidden = !isHidden;
+});
 
 /* ---------- WEATHER AND TIME ---------- */
 
@@ -324,22 +463,6 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   .catch(() => {
     trigger.style.cursor = "default";
   });
-
-  /* ---------- PORTFOLIO OPEN ---------- */
-const portfolioLink = document.getElementById('portfolio-link');
-const portfolio = document.getElementById('portfolio-appendix');
-
-function openPortfolioSmooth() {
-  portfolio.hidden = false;
-  portfolio.setAttribute('aria-hidden', 'false');
-  portfolio.scrollIntoView({ behavior: 'smooth' });
-}
-
-portfolioLink.addEventListener('click', e => {
-  e.preventDefault();
-  openPortfolioSmooth();
-});
-
 </script>
 
 </body>
