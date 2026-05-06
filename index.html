@@ -383,20 +383,26 @@ postits.forEach(postit => {
     document.addEventListener('mouseup', dragEnd);
   }
   
-  function drag(e) {
-    if (isDragging) {
-      e.preventDefault();
-      currentX = e.clientX - initialX;
-      currentY = e.clientY - initialY;
-      
-      // Snap to 150px grid
-      const snappedX = Math.round(currentX / 150) * 150;
-      const snappedY = Math.round(currentY / 150) * 150;
-      
-      postit.style.left = snappedX + 'px';
-      postit.style.top = snappedY + 'px';
-    }
+function drag(e) {
+  if (isDragging) {
+    e.preventDefault();
+    currentX = e.clientX - initialX;
+    currentY = e.clientY - initialY;
+    
+    // Snap to 150px grid aligned with page
+    const pageX = currentX + postit.parentElement.offsetLeft;
+    const pageY = currentY + postit.parentElement.offsetTop;
+    
+    const snappedPageX = Math.round(pageX / 150) * 150;
+    const snappedPageY = Math.round(pageY / 150) * 150;
+    
+    const snappedX = snappedPageX - postit.parentElement.offsetLeft;
+    const snappedY = snappedPageY - postit.parentElement.offsetTop;
+    
+    postit.style.left = snappedX + 'px';
+    postit.style.top = snappedY + 'px';
   }
+}
   
   function dragEnd() {
     isDragging = false;
