@@ -39,13 +39,6 @@ body {
   color: inherit;
 }
 
-#weather-line {
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
-  pointer-events: none;
-}
-
 .photo-postit {
   position: absolute;
   width: 120px;
@@ -149,6 +142,12 @@ body {
   text-decoration-style: unset;
 }
 
+/* ——— FOOTER ——— */
+#weather-footer {
+  color: #808080;
+  font-size: 0.8em;
+}
+
   </style>
 </head>
 
@@ -180,7 +179,7 @@ body {
         <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often using the clarity of process to contain the chaos of collaboration.</div></a>
       </div>
       <br>
-      Born in India, I'm currently based in <a href="#" id="stockholm-trigger" class="highlight-static">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank" data-preview="images/hover5.jpg" data-side="right">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
       <a href="#portfolio" id="portfolio-link" class="highlight-static">projects</a>.
@@ -263,7 +262,6 @@ body {
         </a>
       </div>
       <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
-
     </div>
 
   </div>
@@ -271,7 +269,7 @@ body {
 
 <div class="portfolio-footer">
   <hr>
-  <p class="note">co-created with artificial intelligence • updated on Apr 25, 2026</p>
+  <p id="weather-footer" class="note"></p>
 </div>
 
 <script>
@@ -333,14 +331,12 @@ portfolioLink.addEventListener('click', e => {
 });
 
 
-/* ---------- WEATHER AND TIME ---------- */
+/* ---------- WEATHER FOOTER ---------- */
 
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
-
-const trigger = document.getElementById("stockholm-trigger");
-let weatherLine = null;
+const weatherFooter = document.getElementById('weather-footer');
 
 function stockholmTime() {
   const time = new Date().toLocaleTimeString([], {
@@ -372,26 +368,9 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   .then(data => {
     const description = data.weather[0].description;
     const temp = Math.round(data.main.temp);
-
-    trigger.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      if (weatherLine) {
-        weatherLine.remove();
-        weatherLine = null;
-        return;
-      }
-
-      weatherLine = document.createElement("span");
-      weatherLine.textContent =
-        ` — ${description.charAt(0).toUpperCase() + description.slice(1)}. It's ${stockholmTime()}, ${temp}ºC outside`;
-
-      trigger.insertAdjacentElement("afterend", weatherLine);
-    });
+    weatherFooter.textContent = `${description.charAt(0).toUpperCase() + description.slice(1)}, ${temp}ºC. It's ${stockholmTime()}.`;
   })
-  .catch(() => {
-    trigger.style.cursor = "default";
-  });
+  .catch(() => {});
 
 </script>
 
