@@ -115,7 +115,7 @@ a:hover { text-decoration-style: wavy; }
 /* ——— HOVER PREVIEW ——— */
 #link-preview {
   position: fixed;
-  width: 300px;
+  width: 330px;
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.15s ease;
@@ -130,8 +130,8 @@ a:hover { text-decoration-style: wavy; }
   width: 100%;
   display: block;
   margin: 0;
-  border-radius: 3px;
-  border: 1px solid #111;
+  border-radius: 4px;
+  border: 0.5px solid #111;
 }
 
 @media (max-width: 900px) {
@@ -139,6 +139,16 @@ a:hover { text-decoration-style: wavy; }
 }
 
 .project-title a:hover { color: inherit; background: #FFFF99; }
+
+.highlight-static {
+  background: #FFFF99;
+  text-decoration: none;
+}
+.highlight-static:hover {
+  background: #FFFF99;
+  text-decoration: none;
+  text-decoration-style: unset;
+}
 
   </style>
 </head>
@@ -171,10 +181,10 @@ a:hover { text-decoration-style: wavy; }
         <div class="photo-postit bottom-right"> often found thinking out loud through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>.</div>
       </div>
       <br>
-      Born in India, I'm currently based in <a href="#" id="stockholm-trigger">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm currently based in <a href="#" id="stockholm-trigger" class="highlight-static">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank" data-preview="images/hover5.jpg" data-side="right">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
-      <a href="#portfolio" id="portfolio-link">projects</a>.
+      <a href="#portfolio" id="portfolio-link" class="highlight-static">projects</a>.
     </p>
 
   </main>
