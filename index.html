@@ -368,7 +368,20 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   .then(data => {
     const description = data.weather[0].description;
     const temp = Math.round(data.main.temp);
-    weatherFooter.textContent = `${description.charAt(0).toUpperCase() + description.slice(1)}, ${temp}ºC. It's ${stockholmTime()}.`;
+    const id = data.weather[0].id;
+
+    let emoji = '🌡️';
+    if (id >= 200 && id < 300) emoji = '⛈️';
+    else if (id >= 300 && id < 400) emoji = '🌦️';
+    else if (id >= 500 && id < 600) emoji = '🌧️';
+    else if (id >= 600 && id < 700) emoji = '❄️';
+    else if (id >= 700 && id < 800) emoji = '🌫️';
+    else if (id === 800) emoji = '☀️';
+    else if (id === 801) emoji = '🌤️';
+    else if (id === 802) emoji = '⛅';
+    else if (id >= 803) emoji = '☁️';
+
+    weatherFooter.textContent = `${emoji} ${description.charAt(0).toUpperCase() + description.slice(1)}, ${temp}ºC. It's ${stockholmTime()}.`;
   })
   .catch(() => {});
 
