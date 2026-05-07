@@ -106,18 +106,9 @@ a:hover { text-decoration-style: wavy; }
 }
 
 @media (max-width: 768px) {
-  .photo-postit {
-    display: none;
-  }
-  
-  .photo-wrapper .photo-bw {
-    display: none;
-  }
-  
-  .photo-wrapper .photo-color {
-    position: static;
-    opacity: 1;
-  }
+  .photo-postit { display: none; }
+  .photo-wrapper .photo-bw { display: none; }
+  .photo-wrapper .photo-color { position: static; opacity: 1; }
 }
 
 
@@ -147,8 +138,9 @@ a:hover { text-decoration-style: wavy; }
   #link-preview { display: none; }
 }
 
-  .project-title a:hover { color: inherit; background: #FFFF99; }
-</style>
+.project-title a:hover { color: inherit; background: #FFFF99; }
+
+  </style>
 </head>
 
 <body>
@@ -167,10 +159,10 @@ a:hover { text-decoration-style: wavy; }
 
     <p>
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicef.org/innovation/" target="_blank" data-preview="images/hover1.jpg" data-side="right">UNICEF Innovation</a>. Previously, I worked at Salesforce in San Francisco — see some of that work in this
-      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="right">overview</a>. 
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="left">overview</a>. 
       <br><br>
       With a background in graphic design, I've also crafted 
-      <a href="https://singh.work/logofolio" data-preview="images/hover4.jpg" data-side="left">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank" data-preview="images/hover3.jpg" data-side="left">corner of the internet</a>.
+      <a href="https://singh.work/logofolio" data-preview="images/hover4.jpg" data-side="right">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank" data-preview="images/hover3.jpg" data-side="left">corner of the internet</a>.
       <br>
       <div class="photo-wrapper">
         <img src="images/moi.png" class="photo-bw">
@@ -273,7 +265,6 @@ a:hover { text-decoration-style: wavy; }
   </div>
 </section>
 
-  
 <div class="portfolio-footer">
   <hr>
   <p class="note">co-created with artificial intelligence • updated on Apr 25, 2026</p>
@@ -291,18 +282,15 @@ document.querySelectorAll('a[data-preview]').forEach(link => {
   link.addEventListener('mouseenter', () => {
     previewImg.src = link.dataset.preview;
 
-    // Get intro column bounds
     const introRect = document.getElementById('page').getBoundingClientRect();
     const pw = preview.offsetWidth;
-    const gutter = introRect.left; // page edge to intro = natural page gutter
+    const gutter = introRect.left;
 
     let x;
     if (side === 'right') {
-      // Centre preview in the right gap: introRect.right + half of remaining space
       const rightGapCentre = introRect.right + gutter / 2;
       x = rightGapCentre - pw / 2;
     } else {
-      // Centre preview in the left gap
       const leftGapCentre = introRect.left / 2;
       x = leftGapCentre - pw / 2;
     }
