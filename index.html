@@ -11,6 +11,7 @@
 body {
   padding: 0 var(--page-gutter) !important;
 }
+
 .h1-img {
   height: var(--h1-size);
   width: auto;
@@ -27,10 +28,8 @@ body {
 }
 
 /* ----- LINKS ------*/
-/* Regular links - underline */
 a:hover { text-decoration-style: wavy; }
 
-/* Post-it links - dotted underline */
 .photo-postit a {
   text-decoration: underline;
   text-decoration-style: dotted;
@@ -119,13 +118,45 @@ a:hover { text-decoration-style: wavy; }
     position: static;
     opacity: 1;
   }
-
 }
-    
-  </style>
+
+
+/* ——— HOVER PREVIEW ——— */
+#link-preview {
+  position: fixed;
+  width: 300px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 100;
+}
+
+#link-preview.visible {
+  opacity: 1;
+}
+
+#link-preview img {
+  width: 100%;
+  display: block;
+  margin: 0;
+  border-radius: 3px;
+  border: 1px solid #111;
+}
+
+@media (max-width: 900px) {
+  #link-preview { display: none; }
+}
+
+  .project-title a:hover { color: inherit; background: #FFFF99; }
+</style>
 </head>
 
 <body>
+
+<!-- HOVER PREVIEW ELEMENT -->
+<div id="link-preview" aria-hidden="true">
+  <img src="" alt="">
+</div>
 
 <!-- INTRO -->
 <section class="intro-wrap">
@@ -135,21 +166,21 @@ a:hover { text-decoration-style: wavy; }
     </h1>
 
     <p>
-      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicef.org/innovation/" target="_blank">UNICEF Innovation</a>. 
+      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicef.org/innovation/" target="_blank" data-preview="images/hover1.jpg" data-side="right">UNICEF Innovation</a>. Previously, I worked at Salesforce in San Francisco — see some of that work in this
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="right">overview</a>. 
       <br><br>
-      Previously, I worked at Salesforce in San Francisco — see some of that work in this
-      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>. With a background in graphic design, I've also crafted 
-      <a href="https://singh.work/logofolio">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a>.
+      With a background in graphic design, I've also crafted 
+      <a href="https://singh.work/logofolio" data-preview="images/hover4.jpg" data-side="left">brand identities</a> and ads in the past. Find other curiosities and half-baked ideas <a href="https://shivaniest.com/tagged/highlights" target="_blank" data-preview="images/hover3.jpg" data-side="left">on my blog</a>.
       <br>
       <div class="photo-wrapper">
-  <img src="images/moi.png" class="photo-bw">
-  <img src="images/red.jpg" class="photo-color">
-  <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
-  <div class="photo-postit bottom-right"> often found thinking out loud through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>.</div>
-</div>
+        <img src="images/moi.png" class="photo-bw">
+        <img src="images/red.jpg" class="photo-color">
+        <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
+        <div class="photo-postit bottom-right"> often found thinking out loud through <a href="https://singh.work/processlab.html" target="_blank">frameworks</a> and <a href="https://shivaniest.com/tagged/sketchnotes" target="_blank">sketchnotes</a>.</div>
+      </div>
       <br>
       Born in India, I'm currently based in <a href="#" id="stockholm-trigger">Stockholm</a>. To visualise the many places I've called home, I'm graphing my time across cities
-      <a href="https://singh.work/fromness" target="_blank">here</a>. 
+      <a href="https://singh.work/fromness" target="_blank" data-preview="images/hover5.jpg" data-side="right">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
       <a href="#portfolio" id="portfolio-link">projects</a>.
     </p>
@@ -249,8 +280,52 @@ a:hover { text-decoration-style: wavy; }
 </div>
 
 <script>
-/* ---------- PORTFOLIO OPEN 
 
+/* ---------- HOVER PREVIEWS ---------- */
+const preview = document.getElementById('link-preview');
+const previewImg = preview.querySelector('img');
+
+document.querySelectorAll('a[data-preview]').forEach(link => {
+  const side = link.dataset.side || 'right';
+
+  link.addEventListener('mouseenter', () => {
+    previewImg.src = link.dataset.preview;
+
+    // Get intro column bounds
+    const introRect = document.getElementById('page').getBoundingClientRect();
+    const pw = preview.offsetWidth;
+    const gutter = introRect.left; // page edge to intro = natural page gutter
+
+    let x;
+    if (side === 'right') {
+      // Centre preview in the right gap: introRect.right + half of remaining space
+      const rightGapCentre = introRect.right + gutter / 2;
+      x = rightGapCentre - pw / 2;
+    } else {
+      // Centre preview in the left gap
+      const leftGapCentre = introRect.left / 2;
+      x = leftGapCentre - pw / 2;
+    }
+
+    preview.style.left = Math.max(8, x) + 'px';
+    preview.classList.add('visible');
+  });
+
+  link.addEventListener('mousemove', (e) => {
+    const vpH = window.innerHeight;
+    const ph  = preview.offsetHeight;
+    let y = e.clientY - ph / 2;
+    y = Math.max(16, Math.min(vpH - ph - 16, y));
+    preview.style.top = y + 'px';
+  });
+
+  link.addEventListener('mouseleave', () => {
+    preview.classList.remove('visible');
+  });
+});
+
+
+/* ---------- PORTFOLIO OPEN ---------- */
 const portfolioLink = document.getElementById('portfolio-link');
 const portfolio = document.getElementById('portfolio-appendix');
 
@@ -263,7 +338,8 @@ function openPortfolioSmooth() {
 portfolioLink.addEventListener('click', e => {
   e.preventDefault();
   openPortfolioSmooth();
-}); ---------- */
+});
+
 
 /* ---------- WEATHER AND TIME ---------- */
 
@@ -324,21 +400,6 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   .catch(() => {
     trigger.style.cursor = "default";
   });
-
-  /* ---------- PORTFOLIO OPEN ---------- */
-const portfolioLink = document.getElementById('portfolio-link');
-const portfolio = document.getElementById('portfolio-appendix');
-
-function openPortfolioSmooth() {
-  portfolio.hidden = false;
-  portfolio.setAttribute('aria-hidden', 'false');
-  portfolio.scrollIntoView({ behavior: 'smooth' });
-}
-
-portfolioLink.addEventListener('click', e => {
-  e.preventDefault();
-  openPortfolioSmooth();
-});
 
 </script>
 
