@@ -236,7 +236,7 @@ a:hover {
 }
 
 .project-title a:hover {
-  color: #0000EE;
+   color: inherit; background: #FFFF99; 
 }
 
 /* description spacing */
