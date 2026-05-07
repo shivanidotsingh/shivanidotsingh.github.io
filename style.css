@@ -34,12 +34,13 @@ img {
 a {
   color: inherit;
   text-decoration: underline;
+  text-decoration-thickness: 0.75px;
   text-underline-offset: 0.25em;
 }
 
 a:hover { 
   text-decoration-style: wavy;
-  text-decoration-thickness: 0.5px;
+  text-decoration-thickness: 0.75px;
 }
 
 .blue-link { color: #0000EE; text-decoration: none; }
@@ -171,7 +172,7 @@ a:hover {
 
 .portfolio-footer hr{
   border: none;
-  border-top: 0.5px solid #111;
+  border-top: 0.75px solid #111;
   margin: 0 0 0.75em 0;
 }
 
