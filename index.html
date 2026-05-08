@@ -330,6 +330,7 @@ const portfolio = document.getElementById('portfolio-appendix');
 function openPortfolioSmooth() {
   portfolio.hidden = false;
   portfolio.setAttribute('aria-hidden', 'false');
+  localStorage.setItem('portfolioOpen', 'true');
   portfolio.scrollIntoView({ behavior: 'smooth' });
 }
 
@@ -338,6 +339,7 @@ portfolioLink.addEventListener('click', e => {
   openPortfolioSmooth();
 });
 
+if (localStorage.getItem('portfolioOpen')) openPortfolioSmooth();
 
 /* ---------- WEATHER FOOTER ---------- */
 
