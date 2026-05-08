@@ -122,7 +122,6 @@ body {
   width: 100%;
   display: block;
   margin: 0;
-  border: 0.5px solid #111;
 }
 
 @media (max-width: 900px) {
@@ -178,7 +177,7 @@ body {
         <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often using the clarity of process to contain the chaos of collaboration.</div></a>
       </div>
       <br>
-      Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank" data-preview="images/hover5.jpg" data-side="right">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
       <a href="#portfolio" id="portfolio-link" class="highlight-static">projects</a>.
@@ -291,12 +290,14 @@ document.querySelectorAll('a[data-preview]').forEach(link => {
     if (side === 'right') {
       const rightGapCentre = introRect.right + gutter / 2;
       x = rightGapCentre - pw / 2;
+      x = Math.min(x, window.innerWidth - pw - 8);
     } else {
       const leftGapCentre = introRect.left / 2;
       x = leftGapCentre - pw / 2;
+      x = Math.max(8, x);
     }
 
-    preview.style.left = Math.max(8, x) + 'px';
+    preview.style.left = x + 'px';
     preview.classList.add('visible');
   });
 
@@ -314,6 +315,11 @@ document.querySelectorAll('a[data-preview]').forEach(link => {
   });
 });
 
+
+/* ---------- PRELOAD PREVIEW IMAGES ---------- */
+['hover1.jpg','hover2.jpg','hover3.jpg','hover4.jpg','hover5.jpg'].forEach(f => {
+  new Image().src = 'images/' + f;
+});
 
 /* ---------- PORTFOLIO OPEN ---------- */
 const portfolioLink = document.getElementById('portfolio-link');
