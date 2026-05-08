@@ -122,8 +122,7 @@ body {
   width: 100%;
   display: block;
   margin: 0;
-  border-radius: 4px;
-  border: 0.5px solid #111;
+
 }
 
 @media (max-width: 900px) {
@@ -176,10 +175,10 @@ body {
         <img src="images/moi.png" class="photo-bw">
         <img src="images/red.jpg" class="photo-color">
         <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
-        <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often making thinking visible through frameworks and sketchnotes.</div></a>
+        <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often using the clarity of process to contain the chaos of collaboration.</div></a>
       </div>
       <br>
-      Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank" data-preview="images/hover5.jpg" data-side="right">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
       <a href="#portfolio" id="portfolio-link" class="highlight-static">projects</a>.
@@ -311,6 +310,7 @@ document.querySelectorAll('a[data-preview]').forEach(link => {
 
   link.addEventListener('mouseleave', () => {
     preview.classList.remove('visible');
+    previewImg.src = '';
   });
 });
 
@@ -366,22 +366,21 @@ function stockholmTime() {
 fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
   .then(res => res.json())
   .then(data => {
-    const description = data.weather[0].description;
     const temp = Math.round(data.main.temp);
     const id = data.weather[0].id;
 
-    let emoji = '🌡️';
-    if (id >= 200 && id < 300) emoji = '⛈️';
-    else if (id >= 300 && id < 400) emoji = '🌦️';
-    else if (id >= 500 && id < 600) emoji = '🌧️';
-    else if (id >= 600 && id < 700) emoji = '❄️';
-    else if (id >= 700 && id < 800) emoji = '🌫️';
-    else if (id === 800) emoji = '☀️';
-    else if (id === 801) emoji = '🌤️';
-    else if (id === 802) emoji = '⛅';
-    else if (id >= 803) emoji = '☁️';
+    let condition = 'mild';
+    if (id >= 200 && id < 300) condition = 'stormy';
+    else if (id >= 300 && id < 400) condition = 'drizzly';
+    else if (id >= 500 && id < 600) condition = 'rainy';
+    else if (id >= 600 && id < 700) condition = 'snowy';
+    else if (id >= 700 && id < 800) condition = 'misty';
+    else if (id === 800) condition = 'clear';
+    else if (id === 801 || id === 802) condition = 'partly cloudy';
+    else if (id === 803) condition = 'mostly cloudy';
+    else if (id === 804) condition = 'cloudy';
 
-    weatherFooter.textContent = `${emoji} ${description.charAt(0).toUpperCase() + description.slice(1)}, ${temp}ºC. It's ${stockholmTime()}.`;
+    weatherFooter.textContent = `Outside, it's ${condition} and ${temp}ºC — ${stockholmTime()}.`;
   })
   .catch(() => {});
 
