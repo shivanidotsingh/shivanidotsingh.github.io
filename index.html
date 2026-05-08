@@ -380,12 +380,12 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
     const id = data.weather[0].id;
 
     let condition = 'mild';
-    if (id >= 200 && id < 300) condition = 'stormy';
+    if (id >= 200 && id < 300) condition = 'unexpectedly stormy';
     else if (id >= 300 && id < 400) condition = 'drizzly';
-    else if (id >= 500 && id < 600) condition = 'rainy';
+    else if (id >= 500 && id < 600) condition = 'raining';
     else if (id >= 600 && id < 700) condition = 'snowy';
     else if (id >= 700 && id < 800) condition = 'misty';
-    else if (id === 800) condition = 'clear';
+    else if (id === 800) condition = 'clear skies';
     else if (id === 801 || id === 802) condition = 'partly cloudy';
     else if (id === 803) condition = 'mostly cloudy';
     else if (id === 804) condition = 'cloudy';
