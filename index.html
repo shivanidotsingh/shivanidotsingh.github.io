@@ -348,31 +348,6 @@ const lat = 59.3293;
 const lon = 18.0686;
 const weatherFooter = document.getElementById('weather-footer');
 
-function getSeasonTimePhrase() {
-  const now = new Date();
-
-  // Time of day in Stockholm
-  const hour = parseInt(new Date().toLocaleTimeString([], {
-    hour: "numeric", timeZone: "Europe/Stockholm", hour12: false
-  }), 10);
-
-  let timeOfDay;
-  if (hour >= 0 && hour < 4) timeOfDay = "night";
-  else if (hour >= 4 && hour < 12) timeOfDay = "morning";
-  else if (hour >= 12 && hour < 17) timeOfDay = "afternoon";
-  else timeOfDay = "evening";
-
-  // Season (northern hemisphere)
-  const month = now.getMonth(); // 0-indexed
-  let season;
-  if (month >= 2 && month <= 4) season = "spring";
-  else if (month >= 5 && month <= 7) season = "summer";
-  else if (month >= 8 && month <= 10) season = "autumn";
-  else season = "winter";
-
-  return `on this ${season} ${timeOfDay}`;
-}
-
 fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
   .then(res => res.json())
   .then(data => {
@@ -391,7 +366,8 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
     else if (id === 804) condition = 'cloudy';
 
     const feelsLike = Math.round(data.main.feels_like);
-    weatherFooter.textContent = `Outside, it's ${condition} and feels like ${feelsLike}ºC ${getSeasonTimePhrase()}.`;
+    weatherFooter.textContent = `Outside, it's ${condition} and feels like ${feelsLike}ºC.`;
+
   })
   .catch(() => {});
 
