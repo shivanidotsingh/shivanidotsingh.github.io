@@ -122,7 +122,7 @@ body {
   width: 100%;
   display: block;
   margin: 0;
-
+  border: 0.5px solid #111;
 }
 
 @media (max-width: 900px) {
@@ -178,7 +178,7 @@ body {
         <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often using the clarity of process to contain the chaos of collaboration.</div></a>
       </div>
       <br>
-      Born in India, I'm based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
+      Born in India, I'm currently based in Stockholm. To visualise the many places I've called home, I'm graphing my time across cities
       <a href="https://singh.work/fromness" target="_blank" data-preview="images/hover5.jpg" data-side="right">here</a>. 
       An alumnus of the National Institute of Design and California College of the Arts — see more on my <a href="resume.html">resume</a> or go through select
       <a href="#portfolio" id="portfolio-link" class="highlight-static">projects</a>.
@@ -338,29 +338,33 @@ const lat = 59.3293;
 const lon = 18.0686;
 const weatherFooter = document.getElementById('weather-footer');
 
-function stockholmTime() {
-  const time = new Date().toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-    timeZone: "Europe/Stockholm",
-    hour12: true
+function getSeasonTimePhrase() {
+  const now = new Date();
+
+  // Time of day in Stockholm
+  const hour = parseInt(new Date().toLocaleTimeString([], {
+    hour: "numeric", timeZone: "Europe/Stockholm", hour12: false
+  }), 10);
+
+  const mins = now.toLocaleTimeString([], {
+    hour: "numeric", minute: "2-digit", timeZone: "Europe/Stockholm", hour12: true
   }).replace(/\s?(AM|PM)/i, "");
 
-  const hour = new Date().toLocaleTimeString([], {
-    hour: "numeric",
-    timeZone: "Europe/Stockholm",
-    hour12: false
-  });
+  let timeOfDay;
+  if (hour >= 0 && hour < 4) timeOfDay = "night";
+  else if (hour >= 4 && hour < 12) timeOfDay = "morning";
+  else if (hour >= 12 && hour < 17) timeOfDay = "afternoon";
+  else timeOfDay = "evening";
 
-  const hourNum = parseInt(hour, 10);
+  // Season (northern hemisphere)
+  const month = now.getMonth(); // 0-indexed
+  let season;
+  if (month >= 2 && month <= 4) season = "spring";
+  else if (month >= 5 && month <= 7) season = "summer";
+  else if (month >= 8 && month <= 10) season = "autumn";
+  else season = "winter";
 
-  let timeOfDay = "in the morning";
-  if (hourNum >= 0 && hourNum < 4) timeOfDay = "in the night";
-  else if (hourNum >= 4 && hourNum < 12) timeOfDay = "in the morning";
-  else if (hourNum >= 12 && hourNum < 17) timeOfDay = "in the afternoon";
-  else if (hourNum >= 17) timeOfDay = "in the evening";
-
-  return `${time} ${timeOfDay}`;
+  return `at ${mins} on this ${season} ${timeOfDay}`;
 }
 
 fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
@@ -380,7 +384,8 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
     else if (id === 803) condition = 'mostly cloudy';
     else if (id === 804) condition = 'cloudy';
 
-    weatherFooter.textContent = `Outside, it's ${condition} and ${temp}ºC — ${stockholmTime()}.`;
+    const feelsLike = Math.round(data.main.feels_like);
+    weatherFooter.textContent = `Outside, it's ${condition} and feels like ${feelsLike}ºC ${getSeasonTimePhrase()}.`;
   })
   .catch(() => {});
 
