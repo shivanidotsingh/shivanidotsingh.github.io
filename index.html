@@ -332,6 +332,7 @@ function openPortfolioSmooth() {
   portfolio.setAttribute('aria-hidden', 'false');
   localStorage.setItem('portfolioOpen', 'true');
   portfolio.scrollIntoView({ behavior: 'smooth' });
+  portfolioLink.classList.remove('highlight-static');
 }
 
 portfolioLink.addEventListener('click', e => {
