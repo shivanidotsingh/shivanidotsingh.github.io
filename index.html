@@ -333,6 +333,8 @@ function openPortfolioSmooth() {
   localStorage.setItem('portfolioOpen', 'true');
   portfolio.scrollIntoView({ behavior: 'smooth' });
   portfolioLink.classList.remove('highlight-static');
+  portfolioLink.style.pointerEvents = 'none';
+  portfolioLink.style.textDecoration = 'none';
 }
 
 portfolioLink.addEventListener('click', e => {
@@ -344,7 +346,8 @@ if (localStorage.getItem('portfolioOpen')) {
   portfolio.hidden = false;
   portfolio.setAttribute('aria-hidden', 'false');
   portfolioLink.classList.remove('highlight-static');
-
+  portfolioLink.style.pointerEvents = 'none';
+  portfolioLink.style.textDecoration = 'none';
 }
 /* ---------- WEATHER FOOTER ---------- */
 
