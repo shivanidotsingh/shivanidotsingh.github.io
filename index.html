@@ -339,8 +339,10 @@ portfolioLink.addEventListener('click', e => {
   openPortfolioSmooth();
 });
 
-if (localStorage.getItem('portfolioOpen')) openPortfolioSmooth();
-
+if (localStorage.getItem('portfolioOpen')) {
+  portfolio.hidden = false;
+  portfolio.setAttribute('aria-hidden', 'false');
+}
 /* ---------- WEATHER FOOTER ---------- */
 
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
