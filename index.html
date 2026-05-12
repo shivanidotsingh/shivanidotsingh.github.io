@@ -147,6 +147,95 @@ body {
   font-size: 0.8em;
 }
 
+/* ——— DRAWING CANVAS ——— */
+#drawing-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 50;
+  pointer-events: none;
+}
+
+#drawing-canvas.active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+#draw-tools {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  z-index: 60;
+  align-items: center;
+}
+
+.draw-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  padding: 0;
+  transition: transform 0.1s;
+}
+
+.draw-dot:hover { transform: scale(1.2); }
+
+.draw-dot-inner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.draw-dot.selected {
+  border-color: currentColor;
+}
+
+.draw-dot.selected .draw-dot-inner {
+  width: 4px;
+  height: 4px;
+}
+
+.draw-dot-black { color: #222; }
+.draw-dot-black .draw-dot-inner { background: #222; }
+
+.draw-dot-red { color: #e03030; }
+.draw-dot-red .draw-dot-inner { background: #e03030; }
+
+.draw-dot-yellow { color: #c8a000; }
+.draw-dot-yellow .draw-dot-inner { background: #FFFF99; }
+
+.draw-clear {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid #aaa;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform 0.1s;
+}
+
+.draw-clear:hover { transform: scale(1.2); }
+
+.draw-clear svg {
+  width: 10px;
+  height: 10px;
+  stroke: #888;
+  stroke-width: 2;
+  fill: none;
+}
   </style>
 
 </head>
@@ -157,6 +246,25 @@ body {
 
 <div id="link-preview" aria-hidden="true">
   <img src="" alt="">
+</div>
+
+<!-- DRAWING CANVAS -->
+<canvas id="drawing-canvas" aria-hidden="true"></canvas>
+
+<!-- DRAWING TOOLS -->
+<div id="draw-tools" role="toolbar" aria-label="drawing tools">
+  <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
+    <div class="draw-dot-inner"></div>
+  </button>
+  <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
+    <div class="draw-dot-inner"></div>
+  </button>
+  <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
+    <div class="draw-dot-inner"></div>
+  </button>
+  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">
+    <svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/><line x1="2" y1="2" x2="8" y2="8"/></svg>
+  </button>
 </div>
 
 <!-- INTRO -->
@@ -176,7 +284,7 @@ body {
     <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often building visual frameworks that organize collaborative thinking. </div></a>
   </div>
   <br>
-  Previously at Salesforce in San Francisco — see some of my work in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="left">this overview</a>. 
+  Previously at Salesforce in San Francisco — see some of the work in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="left">this overview</a>. 
   Trained in graphic design, I've also built 
   <a href="https://singh.work/logofolio" data-preview="images/hover4.jpg" data-side="right">brands</a> out of businesses in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank" data-preview="images/hover3.jpg" data-side="left">corner of the internet</a>.
   <br>
@@ -379,6 +487,185 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
     weatherInline.textContent = `It's ${condition} here today and feels like ${feelsLike}ºC outside.`;
   })
   .catch(() => {});
+
+/* ---------- DRAWING CANVAS ---------- */
+
+const drawCanvas = document.getElementById('drawing-canvas');
+const drawCtx = drawCanvas.getContext('2d');
+
+const DPR = window.devicePixelRatio || 1;
+
+function resizeCanvas() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  if (drawCanvas.width > 0 && drawCanvas.height > 0) {
+    const imageData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
+    drawCanvas.width = w * DPR;
+    drawCanvas.height = h * DPR;
+    drawCanvas.style.width = w + 'px';
+    drawCanvas.style.height = h + 'px';
+    drawCtx.scale(DPR, DPR);
+    drawCtx.putImageData(imageData, 0, 0);
+  } else {
+    drawCanvas.width = w * DPR;
+    drawCanvas.height = h * DPR;
+    drawCanvas.style.width = w + 'px';
+    drawCanvas.style.height = h + 'px';
+    drawCtx.scale(DPR, DPR);
+  }
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let drawTool = null;
+let drawIsDown = false;
+let sprayInterval = null;
+let drawLastPos = null;
+
+const GRID = 4;
+const SPRAY_R = 18;
+const SPRAY_DENSITY = 6;
+
+const drawBtns = {
+  black: document.getElementById('draw-btn-black'),
+  red: document.getElementById('draw-btn-red'),
+  yellow: document.getElementById('draw-btn-yellow')
+};
+
+function setDrawTool(t) {
+  drawTool = t;
+  drawCanvas.classList.add('active');
+  Object.entries(drawBtns).forEach(([k, b]) => {
+    b.classList.toggle('selected', k === t);
+    if (k !== 'black') {
+      b.querySelector('.draw-dot-inner') && null;
+    }
+  });
+}
+
+Object.entries(drawBtns).forEach(([k, b]) => {
+  b.addEventListener('click', () => setDrawTool(k));
+});
+
+document.getElementById('draw-btn-clear').addEventListener('click', () => {
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+});
+
+function getDrawPos(e) {
+  const src = e.touches ? e.touches[0] : e;
+  return { x: src.clientX, y: src.clientY };
+}
+
+function sprayDither(x, y) {
+  for (let i = 0; i < SPRAY_DENSITY; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * SPRAY_R;
+    const rx = Math.round((x + Math.cos(angle) * dist) / GRID) * GRID;
+    const ry = Math.round((y + Math.sin(angle) * dist) / GRID) * GRID;
+    drawCtx.fillStyle = '#111';
+    drawCtx.fillRect(rx, ry, GRID - 1, GRID - 1);
+  }
+}
+
+drawCanvas.addEventListener('mousedown', e => {
+  drawIsDown = true;
+  drawLastPos = getDrawPos(e);
+  if (drawTool === 'black') {
+    sprayDither(drawLastPos.x, drawLastPos.y);
+    sprayInterval = setInterval(() => sprayDither(drawLastPos.x, drawLastPos.y), 40);
+  }
+});
+
+drawCanvas.addEventListener('mousemove', e => {
+  if (!drawIsDown) return;
+  const pos = getDrawPos(e);
+  if (drawTool === 'red') {
+    drawCtx.strokeStyle = '#e03030';
+    drawCtx.lineWidth = 4;
+    drawCtx.lineCap = 'round';
+    drawCtx.lineJoin = 'round';
+    drawCtx.globalAlpha = 1;
+    drawCtx.beginPath();
+    drawCtx.moveTo(drawLastPos.x, drawLastPos.y);
+    drawCtx.lineTo(pos.x, pos.y);
+    drawCtx.stroke();
+  } else if (drawTool === 'yellow') {
+    drawCtx.strokeStyle = '#FFFF99';
+    drawCtx.lineWidth = 16;
+    drawCtx.lineCap = 'square';
+    drawCtx.lineJoin = 'round';
+    drawCtx.globalAlpha = 0.35;
+    drawCtx.beginPath();
+    drawCtx.moveTo(drawLastPos.x, drawLastPos.y);
+    drawCtx.lineTo(pos.x, pos.y);
+    drawCtx.stroke();
+    drawCtx.globalAlpha = 1;
+  } else if (drawTool === 'black') {
+    drawLastPos = pos;
+    return;
+  }
+  drawLastPos = pos;
+});
+
+drawCanvas.addEventListener('mouseup', () => {
+  drawIsDown = false;
+  clearInterval(sprayInterval);
+  drawLastPos = null;
+  drawCtx.globalAlpha = 1;
+});
+
+drawCanvas.addEventListener('mouseleave', () => {
+  drawIsDown = false;
+  clearInterval(sprayInterval);
+  drawLastPos = null;
+  drawCtx.globalAlpha = 1;
+});
+
+drawCanvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  drawIsDown = true;
+  drawLastPos = getDrawPos(e);
+  if (drawTool === 'black') {
+    sprayDither(drawLastPos.x, drawLastPos.y);
+    sprayInterval = setInterval(() => sprayDither(drawLastPos.x, drawLastPos.y), 40);
+  }
+}, { passive: false });
+
+drawCanvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!drawIsDown) return;
+  const pos = getDrawPos(e);
+  if (drawTool === 'red') {
+    drawCtx.strokeStyle = '#e03030';
+    drawCtx.lineWidth = 4;
+    drawCtx.lineCap = 'round';
+    drawCtx.lineJoin = 'round';
+    drawCtx.globalAlpha = 1;
+    drawCtx.beginPath();
+    drawCtx.moveTo(drawLastPos.x, drawLastPos.y);
+    drawCtx.lineTo(pos.x, pos.y);
+    drawCtx.stroke();
+  } else if (drawTool === 'yellow') {
+    drawCtx.strokeStyle = '#FFFF99';
+    drawCtx.lineWidth = 16;
+    drawCtx.lineCap = 'square';
+    drawCtx.lineJoin = 'round';
+    drawCtx.globalAlpha = 0.35;
+    drawCtx.beginPath();
+    drawCtx.moveTo(drawLastPos.x, drawLastPos.y);
+    drawCtx.lineTo(pos.x, pos.y);
+    drawCtx.stroke();
+    drawCtx.globalAlpha = 1;
+  }
+  drawLastPos = pos;
+}, { passive: false });
+
+drawCanvas.addEventListener('touchend', () => {
+  drawIsDown = false;
+  clearInterval(sprayInterval);
+  drawLastPos = null;
+  drawCtx.globalAlpha = 1;
+});
 
 </script>
 
