@@ -173,6 +173,10 @@ body {
   }
 }
 
+@media (max-width: 768px) {
+  #draw-tools { display: none; }
+}
+
 .draw-dot, .draw-clear {
   width: 24px;
   height: 24px;
@@ -203,10 +207,13 @@ body {
 
 .draw-clear {
   border-color: transparent;
-  font-size: 20px;
+  font-size: 17px;
   color: #aaa;
   line-height: 1;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
   </style>
 
@@ -222,6 +229,20 @@ body {
 
 <!-- DRAWING CANVAS -->
 <canvas id="drawing-canvas" aria-hidden="true"></canvas>
+
+<!-- DRAWING TOOLS -->
+<div id="draw-tools" role="toolbar" aria-label="drawing tools">
+  <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
+    <div class="draw-dot-inner"></div>
+  </button>
+  <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
+    <div class="draw-dot-inner"></div>
+  </button>
+  <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
+    <div class="draw-dot-inner"></div>
+  </button>
+  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">⊘</button>
+</div>
 
 <!-- INTRO -->
 
@@ -336,18 +357,6 @@ body {
 <div class="portfolio-footer">
   <hr>
   <p class="note">Last updated in May 2026, this website is always becoming, as am I.</p>
-  <div id="draw-tools" role="toolbar" aria-label="drawing tools">
-    <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
-      <div class="draw-dot-inner"></div>
-    </button>
-    <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
-      <div class="draw-dot-inner"></div>
-    </button>
-    <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
-      <div class="draw-dot-inner"></div>
-    </button>
-    <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">⊘</button>
-  </div>
 </div>
 
 <script>
