@@ -157,11 +157,6 @@ body {
   pointer-events: none;
 }
 
-#drawing-canvas.active {
-  pointer-events: auto;
-  cursor: crosshair;
-}
-
 #draw-tools {
   position: fixed;
   top: 14px;
@@ -184,10 +179,7 @@ body {
   justify-content: center;
   background: transparent;
   padding: 0;
-  transition: transform 0.1s;
 }
-
-.draw-dot:hover { transform: scale(1.2); }
 
 .draw-dot-inner {
   width: 10px;
@@ -196,22 +188,17 @@ body {
 }
 
 .draw-dot.selected {
-  border-color: currentColor;
+  border-color: #111;
 }
 
 .draw-dot.selected .draw-dot-inner {
-  width: 4px;
-  height: 4px;
+  width: 0;
+  height: 0;
 }
 
-.draw-dot-black { color: #222; }
 .draw-dot-black .draw-dot-inner { background: #222; }
-
-.draw-dot-red { color: #e03030; }
 .draw-dot-red .draw-dot-inner { background: #e03030; }
-
-.draw-dot-yellow { color: #c8a000; }
-.draw-dot-yellow .draw-dot-inner { background: #FFFF99; }
+.draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; }
 
 .draw-clear {
   width: 18px;
@@ -224,10 +211,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 0;
-  transition: transform 0.1s;
 }
-
-.draw-clear:hover { transform: scale(1.2); }
 
 .draw-clear svg {
   width: 10px;
@@ -284,7 +268,7 @@ body {
     <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often building visual frameworks that organize collaborative thinking. </div></a>
   </div>
   <br>
-  Previously at Salesforce in San Francisco — see some of the work in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="left">this overview</a>. 
+  Previously at Salesforce in San Francisco — see some of my work in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="left">this overview</a>. 
   Trained in graphic design, I've also built 
   <a href="https://singh.work/logofolio" data-preview="images/hover4.jpg" data-side="right">brands</a> out of businesses in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank" data-preview="images/hover3.jpg" data-side="left">corner of the internet</a>.
   <br>
@@ -522,9 +506,9 @@ let drawIsDown = false;
 let sprayInterval = null;
 let drawLastPos = null;
 
-const GRID = 4;
+const GRID = 2;
 const SPRAY_R = 18;
-const SPRAY_DENSITY = 6;
+const SPRAY_DENSITY = 8;
 
 const drawBtns = {
   black: document.getElementById('draw-btn-black'),
@@ -534,13 +518,7 @@ const drawBtns = {
 
 function setDrawTool(t) {
   drawTool = t;
-  drawCanvas.classList.add('active');
-  Object.entries(drawBtns).forEach(([k, b]) => {
-    b.classList.toggle('selected', k === t);
-    if (k !== 'black') {
-      b.querySelector('.draw-dot-inner') && null;
-    }
-  });
+  Object.entries(drawBtns).forEach(([k, b]) => b.classList.toggle('selected', k === t));
 }
 
 Object.entries(drawBtns).forEach(([k, b]) => {
@@ -563,11 +541,19 @@ function sprayDither(x, y) {
     const rx = Math.round((x + Math.cos(angle) * dist) / GRID) * GRID;
     const ry = Math.round((y + Math.sin(angle) * dist) / GRID) * GRID;
     drawCtx.fillStyle = '#111';
-    drawCtx.fillRect(rx, ry, GRID - 1, GRID - 1);
+    drawCtx.fillRect(rx, ry, GRID, GRID);
   }
 }
 
-drawCanvas.addEventListener('mousedown', e => {
+function stopDrawing() {
+  drawIsDown = false;
+  clearInterval(sprayInterval);
+  drawLastPos = null;
+  drawCtx.globalAlpha = 1;
+}
+
+window.addEventListener('mousedown', e => {
+  if (!drawTool || e.target.closest('#draw-tools')) return;
   drawIsDown = true;
   drawLastPos = getDrawPos(e);
   if (drawTool === 'black') {
@@ -576,8 +562,8 @@ drawCanvas.addEventListener('mousedown', e => {
   }
 });
 
-drawCanvas.addEventListener('mousemove', e => {
-  if (!drawIsDown) return;
+window.addEventListener('mousemove', e => {
+  if (!drawIsDown || !drawTool) return;
   const pos = getDrawPos(e);
   if (drawTool === 'red') {
     drawCtx.strokeStyle = '#e03030';
@@ -607,33 +593,20 @@ drawCanvas.addEventListener('mousemove', e => {
   drawLastPos = pos;
 });
 
-drawCanvas.addEventListener('mouseup', () => {
-  drawIsDown = false;
-  clearInterval(sprayInterval);
-  drawLastPos = null;
-  drawCtx.globalAlpha = 1;
-});
+window.addEventListener('mouseup', stopDrawing);
 
-drawCanvas.addEventListener('mouseleave', () => {
-  drawIsDown = false;
-  clearInterval(sprayInterval);
-  drawLastPos = null;
-  drawCtx.globalAlpha = 1;
-});
-
-drawCanvas.addEventListener('touchstart', e => {
-  e.preventDefault();
+window.addEventListener('touchstart', e => {
+  if (!drawTool || e.target.closest('#draw-tools')) return;
   drawIsDown = true;
   drawLastPos = getDrawPos(e);
   if (drawTool === 'black') {
     sprayDither(drawLastPos.x, drawLastPos.y);
     sprayInterval = setInterval(() => sprayDither(drawLastPos.x, drawLastPos.y), 40);
   }
-}, { passive: false });
+}, { passive: true });
 
-drawCanvas.addEventListener('touchmove', e => {
-  e.preventDefault();
-  if (!drawIsDown) return;
+window.addEventListener('touchmove', e => {
+  if (!drawIsDown || !drawTool) return;
   const pos = getDrawPos(e);
   if (drawTool === 'red') {
     drawCtx.strokeStyle = '#e03030';
@@ -658,14 +631,9 @@ drawCanvas.addEventListener('touchmove', e => {
     drawCtx.globalAlpha = 1;
   }
   drawLastPos = pos;
-}, { passive: false });
+}, { passive: true });
 
-drawCanvas.addEventListener('touchend', () => {
-  drawIsDown = false;
-  clearInterval(sprayInterval);
-  drawLastPos = null;
-  drawCtx.globalAlpha = 1;
-});
+window.addEventListener('touchend', stopDrawing);
 
 </script>
 
