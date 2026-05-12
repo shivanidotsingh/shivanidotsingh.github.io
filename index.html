@@ -192,8 +192,8 @@ body {
 }
 
 .draw-dot.selected .draw-dot-inner {
-  width: 0;
-  height: 0;
+  width: 10px;
+  height: 10px;
 }
 
 .draw-dot-black .draw-dot-inner { background: #222; }
@@ -201,24 +201,14 @@ body {
 .draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; }
 
 .draw-clear {
-  width: 18px;
-  height: 18px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   border: 1.5px solid #aaa;
   background: transparent;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 0;
-}
-
-.draw-clear svg {
-  width: 10px;
-  height: 10px;
-  stroke: #888;
-  stroke-width: 2;
-  fill: none;
+  box-sizing: border-box;
 }
   </style>
 
@@ -246,9 +236,7 @@ body {
   <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
     <div class="draw-dot-inner"></div>
   </button>
-  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">
-    <svg viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/><line x1="2" y1="2" x2="8" y2="8"/></svg>
-  </button>
+  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear"></button>
 </div>
 
 <!-- INTRO -->
@@ -554,6 +542,7 @@ function stopDrawing() {
 
 window.addEventListener('mousedown', e => {
   if (!drawTool || e.target.closest('#draw-tools')) return;
+  e.preventDefault();
   drawIsDown = true;
   drawLastPos = getDrawPos(e);
   if (drawTool === 'black') {
@@ -597,13 +586,14 @@ window.addEventListener('mouseup', stopDrawing);
 
 window.addEventListener('touchstart', e => {
   if (!drawTool || e.target.closest('#draw-tools')) return;
+  e.preventDefault();
   drawIsDown = true;
   drawLastPos = getDrawPos(e);
   if (drawTool === 'black') {
     sprayDither(drawLastPos.x, drawLastPos.y);
     sprayInterval = setInterval(() => sprayDither(drawLastPos.x, drawLastPos.y), 40);
   }
-}, { passive: true });
+}, { passive: false });
 
 window.addEventListener('touchmove', e => {
   if (!drawIsDown || !drawTool) return;
