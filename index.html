@@ -168,9 +168,9 @@ body {
   align-items: center;
 }
 
-.draw-dot {
-  width: 18px;
-  height: 18px;
+.draw-dot, .draw-clear {
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 1.5px solid transparent;
   cursor: pointer;
@@ -179,21 +179,19 @@ body {
   justify-content: center;
   background: transparent;
   padding: 0;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
 
 .draw-dot-inner {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .draw-dot.selected {
   border-color: #111;
-}
-
-.draw-dot.selected .draw-dot-inner {
-  width: 10px;
-  height: 10px;
 }
 
 .draw-dot-black .draw-dot-inner { background: #222; }
@@ -201,13 +199,30 @@ body {
 .draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; }
 
 .draw-clear {
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-size: 13px;
+  border-color: transparent;
+  font-size: 15px;
   color: #aaa;
   line-height: 1;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  #draw-tools {
+    top: auto;
+    right: auto;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    gap: 20px;
+    background: rgba(255,255,255,0.85);
+    padding: 10px 18px;
+    border-radius: 40px;
+  }
+
+  .draw-dot, .draw-clear {
+    padding: 10px;
+    margin: -10px;
+  }
 }
   </style>
 
@@ -235,7 +250,7 @@ body {
   <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
     <div class="draw-dot-inner"></div>
   </button>
-  <button class="draw-clear" id="draw-btn-clear" aria-label="exit drawing" title="exit">×</button>
+  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">∅</button>
 </div>
 
 <!-- INTRO -->
@@ -495,7 +510,7 @@ let drawLastPos = null;
 
 const GRID = 1;
 const SPRAY_R = 25;
-const SPRAY_DENSITY = 12;
+const SPRAY_DENSITY = 15;
 
 const drawBtns = {
   black: document.getElementById('draw-btn-black'),
