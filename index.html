@@ -586,6 +586,8 @@ window.addEventListener('keydown', e => {
 });
 
 window.addEventListener('mouseup', stopDrawing);
+
+window.addEventListener('touchstart', e => {
   if (!drawTool || e.target.closest('#draw-tools')) return;
   e.preventDefault();
   drawIsDown = true;
