@@ -158,14 +158,19 @@ body {
 }
 
 #draw-tools {
-  position: fixed;
-  top: 14px;
-  right: 18px;
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
-  gap: 8px;
-  z-index: 60;
+  gap: 4px;
   align-items: center;
+}
+
+@media (min-width: 769px) {
+  #draw-tools {
+    position: fixed;
+    top: 14px;
+    right: 18px;
+    z-index: 60;
+  }
 }
 
 .draw-dot, .draw-clear {
@@ -190,9 +195,7 @@ body {
   flex-shrink: 0;
 }
 
-.draw-dot.selected {
-  border-color: #111;
-}
+.draw-dot.selected { border-color: #111; }
 
 .draw-dot-black .draw-dot-inner { background: #222; }
 .draw-dot-red .draw-dot-inner { background: #e03030; }
@@ -200,29 +203,10 @@ body {
 
 .draw-clear {
   border-color: transparent;
-  font-size: 15px;
+  font-size: 20px;
   color: #aaa;
   line-height: 1;
   font-weight: bold;
-}
-
-@media (max-width: 768px) {
-  #draw-tools {
-    top: auto;
-    right: auto;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    gap: 20px;
-    background: rgba(255,255,255,0.85);
-    padding: 10px 18px;
-    border-radius: 40px;
-  }
-
-  .draw-dot, .draw-clear {
-    padding: 10px;
-    margin: -10px;
-  }
 }
   </style>
 
@@ -238,20 +222,6 @@ body {
 
 <!-- DRAWING CANVAS -->
 <canvas id="drawing-canvas" aria-hidden="true"></canvas>
-
-<!-- DRAWING TOOLS -->
-<div id="draw-tools" role="toolbar" aria-label="drawing tools">
-  <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
-    <div class="draw-dot-inner"></div>
-  </button>
-  <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
-    <div class="draw-dot-inner"></div>
-  </button>
-  <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
-    <div class="draw-dot-inner"></div>
-  </button>
-  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">∅</button>
-</div>
 
 <!-- INTRO -->
 
@@ -366,6 +336,18 @@ body {
 <div class="portfolio-footer">
   <hr>
   <p class="note">Last updated in May 2026, this website is always becoming, as am I.</p>
+  <div id="draw-tools" role="toolbar" aria-label="drawing tools">
+    <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
+      <div class="draw-dot-inner"></div>
+    </button>
+    <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
+      <div class="draw-dot-inner"></div>
+    </button>
+    <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
+      <div class="draw-dot-inner"></div>
+    </button>
+    <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">⊘</button>
+  </div>
 </div>
 
 <script>
@@ -510,7 +492,7 @@ let drawLastPos = null;
 
 const GRID = 1;
 const SPRAY_R = 25;
-const SPRAY_DENSITY = 15;
+const SPRAY_DENSITY = 30;
 
 const drawBtns = {
   black: document.getElementById('draw-btn-black'),
