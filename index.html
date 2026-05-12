@@ -201,14 +201,13 @@ body {
 .draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; }
 
 .draw-clear {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  border: 1.5px solid #aaa;
   background: transparent;
+  border: none;
   cursor: pointer;
   padding: 0;
-  box-sizing: border-box;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1;
 }
   </style>
 
@@ -236,7 +235,7 @@ body {
   <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
     <div class="draw-dot-inner"></div>
   </button>
-  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear"></button>
+  <button class="draw-clear" id="draw-btn-clear" aria-label="exit drawing" title="exit">×</button>
 </div>
 
 <!-- INTRO -->
@@ -256,7 +255,7 @@ body {
     <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> often building visual frameworks that organize collaborative thinking. </div></a>
   </div>
   <br>
-  Previously at Salesforce in San Francisco — see some of my work in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="left">this overview</a>. 
+  Previously at Salesforce in San Francisco — see some of the work in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank" data-preview="images/hover2.jpg" data-side="left">this overview</a>. 
   Trained in graphic design, I've also built 
   <a href="https://singh.work/logofolio" data-preview="images/hover4.jpg" data-side="right">brands</a> out of businesses in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank" data-preview="images/hover3.jpg" data-side="left">corner of the internet</a>.
   <br>
@@ -514,6 +513,8 @@ Object.entries(drawBtns).forEach(([k, b]) => {
 });
 
 document.getElementById('draw-btn-clear').addEventListener('click', () => {
+  drawTool = null;
+  Object.values(drawBtns).forEach(b => b.classList.remove('selected'));
   drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
 });
 
