@@ -177,7 +177,7 @@ body {
   #draw-tools { display: none; }
 }
 
-.draw-dot, .draw-clear {
+.draw-dot {
   width: 24px;
   height: 24px;
   border-radius: 50%;
@@ -205,16 +205,6 @@ body {
 .draw-dot-red .draw-dot-inner { background: #e03030; }
 .draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; }
 
-.draw-clear {
-  border-color: transparent;
-  font-size: 17px;
-  color: #aaa;
-  line-height: 1;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
   </style>
 
 </head>
@@ -241,7 +231,7 @@ body {
   <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
     <div class="draw-dot-inner"></div>
   </button>
-  <button class="draw-clear" id="draw-btn-clear" aria-label="clear drawing" title="clear">⊘</button>
+  <a id="draw-btn-clear" style="color:#aaa; font-size:18px; cursor:pointer; text-decoration:none; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">⊘</a>
 </div>
 
 <!-- INTRO -->
