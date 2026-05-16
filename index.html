@@ -156,6 +156,17 @@ body {
   font-size: 0.8em;
 }
 
+.portfolio-footer {
+  position: relative;
+  display: block !important;
+}
+
+.portfolio-footer .footer-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 /* ——— DRAWING CANVAS ——— */
 #drawing-canvas {
   position: fixed;
@@ -171,15 +182,6 @@ body {
   flex-direction: row;
   gap: 4px;
   align-items: center;
-}
-
-@media (min-width: 769px) {
-  #draw-tools {
-    position: fixed;
-    top: 14px;
-    right: 18px;
-    z-index: 60;
-  }
 }
 
 @media (max-width: 768px) {
@@ -221,29 +223,12 @@ body {
 <body>
 
 <!-- HOVER PREVIEW ELEMENT -->
-
 <div id="link-preview" aria-hidden="true">
   <img src="" alt="">
 </div>
 
 <!-- DRAWING CANVAS -->
 <canvas id="drawing-canvas" aria-hidden="true"></canvas>
-
-<!-- DRAWING TOOLS -->
-<div id="draw-tools" role="toolbar" aria-label="drawing tools">
-  <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
-    <div class="draw-dot-inner"></div>
-  </button>
-  <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
-    <div class="draw-dot-inner"></div>
-  </button>
-  <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
-    <div class="draw-dot-inner"></div>
-  </button>
-  <button class="draw-dot" id="draw-btn-clear" aria-label="clear drawing" title="clear">
-    <div class="draw-dot-inner" style="background: repeating-linear-gradient(-45deg, #ccc, #ccc 1px, transparent 1px, transparent 4px); border: 1px solid #ccc;"></div>
-  </button>
-</div>
 
 <!-- INTRO -->
 
@@ -357,7 +342,23 @@ body {
 
 <div class="portfolio-footer">
   <hr>
-  <p class="note">Last updated in May 2026, this website is always becoming, as am I.</p>
+  <div class="footer-note">
+    <p class="note">Last updated in May 2026, this website is always becoming, as am I.</p>
+    <div id="draw-tools" role="toolbar" aria-label="drawing tools">
+      <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
+        <div class="draw-dot-inner"></div>
+      </button>
+      <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
+        <div class="draw-dot-inner"></div>
+      </button>
+      <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
+        <div class="draw-dot-inner"></div>
+      </button>
+      <button class="draw-dot" id="draw-btn-clear" aria-label="clear drawing" title="clear">
+        <div class="draw-dot-inner" style="background: repeating-linear-gradient(-45deg, #ccc, #ccc 1px, transparent 1px, transparent 4px); border: 1px solid #ccc;"></div>
+      </button>
+    </div>
+  </div>
 </div>
 
 <script>
