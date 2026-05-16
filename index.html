@@ -167,7 +167,7 @@ body {
   align-items: center;
 }
 
-/* ——— DRAWING CANVAS ——— */
+/* ——— DRAWING CANVAS 
 #drawing-canvas {
   position: fixed;
   inset: 0;
@@ -214,7 +214,7 @@ body {
 
 .draw-dot-black .draw-dot-inner { background: #222; }
 .draw-dot-red .draw-dot-inner { background: #e03030; }
-.draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; }
+.draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; } ——— */
 
   </style>
 
@@ -344,20 +344,7 @@ body {
   <hr>
   <div class="footer-note">
     <p class="note">Last updated in May 2026, this website is always becoming, as am I.</p>
-    <div id="draw-tools" role="toolbar" aria-label="drawing tools">
-      <button class="draw-dot draw-dot-black" id="draw-btn-black" aria-label="black dither spray" title="dither spray">
-        <div class="draw-dot-inner"></div>
-      </button>
-      <button class="draw-dot draw-dot-red" id="draw-btn-red" aria-label="red brush" title="red brush">
-        <div class="draw-dot-inner"></div>
-      </button>
-      <button class="draw-dot draw-dot-yellow" id="draw-btn-yellow" aria-label="yellow highlighter" title="highlighter">
-        <div class="draw-dot-inner"></div>
-      </button>
-      <button class="draw-dot" id="draw-btn-clear" aria-label="clear drawing" title="clear">
-        <div class="draw-dot-inner" style="background: repeating-linear-gradient(-45deg, #ccc, #ccc 1px, transparent 1px, transparent 4px); border: 1px solid #ccc;"></div>
-      </button>
-    </div>
+
   </div>
 </div>
 
@@ -467,7 +454,7 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   })
   .catch(() => {});
 
-/* ---------- DRAWING CANVAS ---------- */
+/* ---------- DRAWING CANVAS 
 
 const drawCanvas = document.getElementById('drawing-canvas');
 const drawCtx = drawCanvas.getContext('2d');
@@ -633,7 +620,7 @@ window.addEventListener('touchmove', e => {
   drawLastPos = pos;
 }, { passive: true });
 
-window.addEventListener('touchend', stopDrawing);
+window.addEventListener('touchend', stopDrawing); ---------- */
 
 </script>
 
