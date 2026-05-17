@@ -13,38 +13,19 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-
   gtag('config', 'G-JVKB5DDZ82');
 </script>
   <style>
-:root { --page-gutter: 40px; }
-body {
-  padding: 0 var(--page-gutter) !important;
-}
+body { padding: 0 var(--page-gutter) 60px !important; }
 
-.h1-img {
-  height: var(--h1-size);
-  width: auto;
-  display: inline-block;
-  vertical-align: baseline;
-}
+.h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
 
-.intro-wrap {
-  position: relative;
-}
+.intro-wrap { position: relative; }
+.intro-inner { padding: 40px 0; }
 
-
-/* ----- LINKS ------*/
-
-.photo-postit a {
-  text-decoration: underline;
-  text-decoration-style: dotted;
-}
-
-.photo-postit a:hover {
-  text-decoration-style: dotted;
-  color: inherit;
-}
+/* ——— PHOTO POSTITS ——— */
+.photo-postit a { text-decoration: underline; text-decoration-style: dotted; }
+.photo-postit a:hover { text-decoration-style: dotted; color: inherit; }
 
 .photo-postit {
   position: absolute;
@@ -59,57 +40,23 @@ body {
   z-index: 5;
 }
 
-.photo-postit.top-left {
-  top: -20px;
-  left: -30px;
-}
+.photo-postit.top-left { top: -20px; left: -30px; }
+.photo-postit.bottom-right { bottom: -20px; right: -30px; transform: rotate(2deg); }
+.photo-postit:hover { pointer-events: auto; }
 
-.photo-postit.bottom-right {
-  bottom: -20px;
-  right: -30px;
-  transform: rotate(2deg);
-}
+.intro-inner img { position: relative; display: inline-block; }
 
-.intro-inner img {
-  position: relative;
-  display: inline-block;
-}
-
-.photo-wrapper {
-  position: relative;
-  display: inline-block;
-  margin: 20px 0;
-}
-
-.photo-wrapper img {
-  transition: opacity 0.4s ease;
-}
-
-.photo-wrapper .photo-color {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-}
-
-.photo-wrapper:hover .photo-color {
-  opacity: 1;
-}
-
-.photo-postit:hover {
-  pointer-events: auto;
-}
-
-.photo-wrapper:has(.photo-postit:hover) .photo-color {
-  opacity: 0;
-}
+.photo-wrapper { position: relative; display: inline-block; margin: 20px 0; }
+.photo-wrapper img { transition: opacity 0.4s ease; }
+.photo-wrapper .photo-color { position: absolute; top: 0; left: 0; opacity: 0; }
+.photo-wrapper:hover .photo-color { opacity: 1; }
+.photo-wrapper:has(.photo-postit:hover) .photo-color { opacity: 0; }
 
 @media (max-width: 768px) {
   .photo-postit { display: none; }
   .photo-wrapper .photo-bw { display: none; }
   .photo-wrapper .photo-color { position: static; opacity: 1; }
 }
-
 
 /* ——— HOVER PREVIEW ——— */
 #link-preview {
@@ -120,99 +67,13 @@ body {
   transition: opacity 0.15s ease;
   z-index: 100;
 }
+#link-preview.visible { opacity: 1; }
+#link-preview img { width: 100%; display: block; margin: 0; }
 
-#link-preview.visible {
-  opacity: 1;
-}
+@media (max-width: 900px) { #link-preview { display: none; } }
 
-#link-preview img {
-  width: 100%;
-  display: block;
-  margin: 0;
-}
-
-@media (max-width: 900px) {
-  #link-preview { display: none; }
-}
-
-.project-title a:hover { color: inherit; background: #FFFF99; }
-
-.highlight-static {
-  background: #FFFF99;
-  text-decoration: none;
-}
-.highlight-static:hover {
-  background: #FFFF99;
-  text-decoration: none;
-  text-decoration-style: unset;
-}
-
-/* ——— FOOTER ——— */
-#weather-footer {
-  color: #808080;
-  font-size: 0.8em;
-}
-
-.portfolio-footer {
-  position: relative;
-  display: block !important;
-}
-
-.portfolio-footer .footer-note {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* ——— DRAWING CANVAS 
-#drawing-canvas {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 50;
-  pointer-events: none;
-}
-
-#draw-tools {
-  display: inline-flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: center;
-}
-
-@media (max-width: 768px) {
-  #draw-tools { display: none; }
-}
-
-.draw-dot {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 1.5px solid transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  padding: 0;
-  box-sizing: border-box;
-  flex-shrink: 0;
-}
-
-.draw-dot-inner {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.draw-dot.selected { border-color: #111; }
-
-.draw-dot-black .draw-dot-inner { background: #222; }
-.draw-dot-red .draw-dot-inner { background: #e03030; }
-.draw-dot-yellow .draw-dot-inner { background: #FFFF99; border: 1px solid #ccc; } ——— */
-
+.highlight-static { background: #FFFF99; text-decoration: none; }
+.highlight-static:hover { background: #FFFF99; text-decoration: none; text-decoration-style: unset; }
   </style>
 
 </head>
@@ -225,7 +86,6 @@ body {
 </div>
 
 <!-- INTRO -->
-
 <section class="intro-wrap">
   <main id="page" class="intro-inner">
     <h1>
@@ -256,7 +116,6 @@ body {
 </section>
 
 <!-- PORTFOLIO -->
-
 <section id="portfolio-appendix" hidden aria-hidden="true" class="portfolio-section">
   <div class="portfolio-grid">
 
@@ -265,9 +124,7 @@ body {
     <img src="images/juniper dashboard.png" alt="">
   </a>
   <div class="project-title">
-    <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">
-      Interface to the CryptoFund
-    </a>
+    <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">Interface to the CryptoFund</a>
   </div>
   <p>Designing the dashboard for tracking Cryptofund transactions [UNICEF Office of Innovation, 2024]</p>
 </div>
@@ -277,9 +134,7 @@ body {
     <img src="images/project2.jpg" alt="">
   </a>
   <div class="project-title">
-    <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
-      The Hungry Venturer
-    </a>
+    <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">The Hungry Venturer</a>
   </div>
   <p>Design sprint to improve a core point of interaction with the Fund [UNICEF Office of Innovation, 2023]</p>
 </div>
@@ -289,9 +144,7 @@ body {
     <img src="images/project1.jpg" alt="">
   </a>
   <div class="project-title">
-    <a class="project-link" href="https://singh.work/case-study.html">
-      A West Oakland Story
-    </a>
+    <a class="project-link" href="https://singh.work/case-study.html">A West Oakland Story</a>
   </div>
   <p>Building a data-informed narrative about the future of a neighbourhood [Student Project, 2020]</p>
 </div>
@@ -301,9 +154,7 @@ body {
     <img src="images/project3.png" alt="">
   </a>
   <div class="project-title">
-    <a class="project-link" href="https://singh.work/dropin">
-      The Art, Artist and Context
-    </a>
+    <a class="project-link" href="https://singh.work/dropin">The Art, Artist and Context</a>
   </div>
   <p>Reimagining online networking for creative professionals [Student Project, 2020]</p>
 </div>
@@ -313,9 +164,7 @@ body {
     <img src="images/project6.png" alt="">
   </a>
   <div class="project-title">
-    <a class="project-link" href="https://singh.work/sprint.html">
-      Value of Influence
-    </a>
+    <a class="project-link" href="https://singh.work/sprint.html">Value of Influence</a>
   </div>
   <p>Defining the exchange between influencers and venues through a design sprint [Parallel HQ, 2018]</p>
 </div>
@@ -325,12 +174,11 @@ body {
     <img src="images/project7.png" alt="">
   </a>
   <div class="project-title">
-    <a class="project-link" href="https://singh.work/lmnop">
-      ABC's of Branding a Preschool
-    </a>
+    <a class="project-link" href="https://singh.work/lmnop">ABC's of Branding a Preschool</a>
   </div>
   <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
 </div>
+
   </div>
 </section>
 
@@ -338,7 +186,6 @@ body {
   <hr>
   <div class="footer-note">
     <p class="note">Last updated in May 2026, this website is always becoming, as am I.</p>
-
   </div>
 </div>
 
@@ -387,7 +234,6 @@ document.querySelectorAll('a[data-preview]').forEach(link => {
   });
 });
 
-
 /* ---------- PRELOAD PREVIEW IMAGES ---------- */
 ['hover1.jpg','hover2.jpg','hover3.jpg','hover4.jpg','hover5.png','hover6.png'].forEach(f => {
   new Image().src = 'images/' + f;
@@ -421,7 +267,6 @@ if (localStorage.getItem('portfolioOpen')) {
 }
 
 /* ---------- WEATHER INLINE ---------- */
-
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
@@ -431,7 +276,6 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   .then(res => res.json())
   .then(data => {
     const id = data.weather[0].id;
-
     let condition = 'mild';
     if (id >= 200 && id < 300) condition = 'unexpectedly stormy';
     else if (id >= 300 && id < 400) condition = 'predictably drizzly';
@@ -442,179 +286,10 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
     else if (id === 801 || id === 802) condition = 'partly cloudy';
     else if (id === 803) condition = 'mostly cloudy';
     else if (id === 804) condition = 'cloudy';
-
     const feelsLike = Math.round(data.main.feels_like);
     weatherInline.textContent = `It's ${condition} here today and feels like ${feelsLike}ºC outside.`;
   })
   .catch(() => {});
-
-/* ---------- DRAWING CANVAS 
-
-const drawCanvas = document.getElementById('drawing-canvas');
-const drawCtx = drawCanvas.getContext('2d');
-
-const DPR = window.devicePixelRatio || 1;
-
-function resizeCanvas() {
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  if (drawCanvas.width > 0 && drawCanvas.height > 0) {
-    const imageData = drawCtx.getImageData(0, 0, drawCanvas.width, drawCanvas.height);
-    drawCanvas.width = w * DPR;
-    drawCanvas.height = h * DPR;
-    drawCanvas.style.width = w + 'px';
-    drawCanvas.style.height = h + 'px';
-    drawCtx.scale(DPR, DPR);
-    drawCtx.putImageData(imageData, 0, 0);
-  } else {
-    drawCanvas.width = w * DPR;
-    drawCanvas.height = h * DPR;
-    drawCanvas.style.width = w + 'px';
-    drawCanvas.style.height = h + 'px';
-    drawCtx.scale(DPR, DPR);
-  }
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-let drawTool = null;
-let drawIsDown = false;
-let sprayInterval = null;
-let drawLastPos = null;
-
-const GRID = 1;
-const SPRAY_R = 25;
-const SPRAY_DENSITY = 30;
-
-const drawBtns = {
-  black: document.getElementById('draw-btn-black'),
-  red: document.getElementById('draw-btn-red'),
-  yellow: document.getElementById('draw-btn-yellow')
-};
-
-function setDrawTool(t) {
-  drawTool = t;
-  Object.entries(drawBtns).forEach(([k, b]) => b.classList.toggle('selected', k === t));
-}
-
-Object.entries(drawBtns).forEach(([k, b]) => {
-  b.addEventListener('click', () => setDrawTool(k));
-});
-
-document.getElementById('draw-btn-clear').addEventListener('click', () => {
-  drawTool = null;
-  Object.values(drawBtns).forEach(b => b.classList.remove('selected'));
-  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-});
-
-function getDrawPos(e) {
-  const src = e.touches ? e.touches[0] : e;
-  return { x: src.clientX, y: src.clientY };
-}
-
-function sprayDither(x, y) {
-  for (let i = 0; i < SPRAY_DENSITY; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const dist = Math.random() * SPRAY_R;
-    const rx = Math.round((x + Math.cos(angle) * dist) / GRID) * GRID;
-    const ry = Math.round((y + Math.sin(angle) * dist) / GRID) * GRID;
-    drawCtx.fillStyle = '#111';
-    drawCtx.fillRect(rx, ry, GRID, GRID);
-  }
-}
-
-function stopDrawing() {
-  drawIsDown = false;
-  clearInterval(sprayInterval);
-  drawLastPos = null;
-  drawCtx.globalAlpha = 1;
-}
-
-window.addEventListener('mousedown', e => {
-  if (!drawTool || e.target.closest('#draw-tools')) return;
-  e.preventDefault();
-  drawIsDown = true;
-  drawLastPos = getDrawPos(e);
-  if (drawTool === 'black') {
-    sprayDither(drawLastPos.x, drawLastPos.y);
-    sprayInterval = setInterval(() => sprayDither(drawLastPos.x, drawLastPos.y), 40);
-  } else if (drawTool === 'red') {
-    const { x, y } = drawLastPos;
-    drawCtx.beginPath();
-    drawCtx.arc(x, y, 8, 0, Math.PI * 2);
-    drawCtx.fillStyle = '#e03030';
-    drawCtx.globalAlpha = 1;
-    drawCtx.fill();
-  }
-});
-
-window.addEventListener('mousemove', e => {
-  if (!drawIsDown || !drawTool) return;
-  const pos = getDrawPos(e);
-  if (drawTool === 'yellow') {
-    drawCtx.strokeStyle = '#FFFF99';
-    drawCtx.lineWidth = 16;
-    drawCtx.lineCap = 'square';
-    drawCtx.lineJoin = 'round';
-    drawCtx.globalAlpha = 0.35;
-    drawCtx.beginPath();
-    drawCtx.moveTo(drawLastPos.x, drawLastPos.y);
-    drawCtx.lineTo(pos.x, pos.y);
-    drawCtx.stroke();
-    drawCtx.globalAlpha = 1;
-  } else if (drawTool === 'black') {
-    drawLastPos = pos;
-  }
-  drawLastPos = pos;
-});
-
-window.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    drawTool = null;
-    Object.values(drawBtns).forEach(b => b.classList.remove('selected'));
-    drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-  }
-});
-
-window.addEventListener('mouseup', stopDrawing);
-
-window.addEventListener('touchstart', e => {
-  if (!drawTool || e.target.closest('#draw-tools')) return;
-  e.preventDefault();
-  drawIsDown = true;
-  drawLastPos = getDrawPos(e);
-  if (drawTool === 'black') {
-    sprayDither(drawLastPos.x, drawLastPos.y);
-    sprayInterval = setInterval(() => sprayDither(drawLastPos.x, drawLastPos.y), 40);
-  } else if (drawTool === 'red') {
-    const { x, y } = drawLastPos;
-    drawCtx.beginPath();
-    drawCtx.arc(x, y, 8, 0, Math.PI * 2);
-    drawCtx.fillStyle = '#e03030';
-    drawCtx.globalAlpha = 1;
-    drawCtx.fill();
-  }
-}, { passive: false });
-
-window.addEventListener('touchmove', e => {
-  if (!drawIsDown || !drawTool) return;
-  const pos = getDrawPos(e);
-  if (drawTool === 'yellow') {
-    drawCtx.strokeStyle = '#FFFF99';
-    drawCtx.lineWidth = 16;
-    drawCtx.lineCap = 'square';
-    drawCtx.lineJoin = 'round';
-    drawCtx.globalAlpha = 0.35;
-    drawCtx.beginPath();
-    drawCtx.moveTo(drawLastPos.x, drawLastPos.y);
-    drawCtx.lineTo(pos.x, pos.y);
-    drawCtx.stroke();
-    drawCtx.globalAlpha = 1;
-  }
-  drawLastPos = pos;
-}, { passive: true });
-
-window.addEventListener('touchend', stopDrawing); ---------- */
 
 </script>
 
