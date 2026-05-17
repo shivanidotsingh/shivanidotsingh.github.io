@@ -1,5 +1,10 @@
 :root {
   --h1-size: clamp(30px, 3vw, 32px);
+  --page-gutter: 40px;
+  --portfolio-pad-desktop: 60px;
+  --portfolio-pad-mobile: 20px;
+  --project-title-size: clamp(18px, 1.6vw, 22px);
+  --project-img-h: 320px;
 }
 
 body {
@@ -7,14 +12,12 @@ body {
   font-weight: 400;
   max-width: 570px;
   margin: 0 auto;
-  padding: 40px 40px 0;
+  padding: 40px 40px 60px;
   font-size: 1.1em;
   line-height: 150%;
   color: #000;
   background: #fff;
 }
-
-
 
 h1 {
   font-size: var(--h1-size);
@@ -40,7 +43,7 @@ a {
   text-underline-offset: 0.25em;
 }
 
-a:hover { 
+a:hover {
   text-decoration-style: wavy;
   text-decoration-thickness: 0.75px;
 }
@@ -54,7 +57,7 @@ a:hover {
   z-index: 60;
 }
 
-.note {  font-size: 0.8em; color: #808080; }
+.note { font-size: 0.8em; color: #808080; }
 
 
 /* ——— VIDEO EMBEDS ——— */
@@ -62,7 +65,7 @@ a:hover {
   position: relative;
   width: 100%;
   margin: 1.5em 0;
-  padding-bottom: 56.25%; /* 16:9 */
+  padding-bottom: 56.25%;
   background: #000;
   border-radius: 4px;
   overflow: hidden;
@@ -93,8 +96,6 @@ a:hover {
 
 
 /* ——— UNIFIED GALLERY ——— */
-
-/* Default: page-width gallery */
 .gallery-grid,
 .full-width-gallery,
 .gallery-grid-circles {
@@ -103,7 +104,6 @@ a:hover {
   margin: 20px 0;
 }
 
-/* Page-width gallery */
 .gallery-grid {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }
@@ -113,7 +113,6 @@ a:hover {
   object-fit: cover;
 }
 
-/* Full-width gallery (bleeds edge to edge) */
 .full-width-gallery {
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   width: 100vw;
@@ -127,7 +126,6 @@ a:hover {
   object-fit: cover;
 }
 
-/* Circular gallery */
 .gallery-grid-circles {
   grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
 }
@@ -151,81 +149,65 @@ a:hover {
 
 /* ——— RESPONSIVE ——— */
 @media (max-width: 768px) {
-  
-
   .full-width-image,
   .full-width-gallery {
     width: 100%;
     margin: 0;
     grid-template-columns: 1fr;
   }
-
 }
 
 
-/* ---------- PORTFOLIO---------- */
+/* ——— PORTFOLIO ——— */
+#portfolio-appendix[hidden] { display: none; }
 
-:root{
-  --page-gutter: 40px;
-  --portfolio-pad-desktop: 60px;
-  --portfolio-pad-mobile: 20px;
-  --project-title-size: clamp(18px, 1.6vw, 22px); /* h2/h3-ish */
-  --project-img-h: 320px;
-}
+.portfolio-footer { margin: 1em 0; }
 
-#portfolio-appendix[hidden]{ display:none; }
-
-.portfolio-footer{
-  margin: 1em 0;
-}
-
-.portfolio-footer hr{
+.portfolio-footer hr {
   border: none;
   border-top: 0.75px solid #111;
   margin: 0 0 0.75em 0;
 }
 
-/* when portfolio is open */
-#portfolio-appendix:not([hidden]) ~ .portfolio-footer{
+.portfolio-footer .footer-note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#portfolio-appendix:not([hidden]) ~ .portfolio-footer {
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-
   padding-left: var(--page-gutter);
   padding-right: var(--page-gutter);
   box-sizing: border-box;
 }
 
-
-/* full-bleed portfolio section */
-.portfolio-section{
+.portfolio-section {
   width: 100vw;
   position: relative;
   left: 50%;
   margin-left: -50vw;
-
   padding: 40px var(--portfolio-pad-desktop);
   box-sizing: border-box;
 }
 
-/* grid */
-.portfolio-grid{
+.portfolio-grid {
   max-width: 1500px;
   margin: 0 auto;
-
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 80px 100px;
 }
 
-@media (min-width: 1400px){
-  .portfolio-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (min-width: 1400px) {
+  .portfolio-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-.project{ margin: 0; }
+.project { margin: 0; }
 
-/* image */
-.project img{
+.project img {
   width: 100%;
   height: var(--project-img-h);
   object-fit: contain;
@@ -233,49 +215,40 @@ a:hover {
   margin: 0 0 16px 0;
 }
 
-/* title */
-.project-title{
+.project-title {
   margin: 0 0 8px 0;
   font-size: var(--project-title-size);
   font-weight: 600;
   line-height: 1.25;
 }
 
-.project-title a {
-  color: inherit;
-  text-decoration: none;
-}
+.project-title a { color: inherit; text-decoration: none; }
+.project-title a:hover { color: inherit; background: #FFFF99; }
 
-.project-title a:hover {
-   color: inherit; background: #FFFF99; 
-}
+.project p { margin: 8px 0 0 0; }
 
-/* description spacing */
-.project p{ margin: 8px 0 0 0; }
-
-/* mobile */
-@media (max-width: 700px){
-  .portfolio-section{
+@media (max-width: 700px) {
+  .portfolio-section {
     padding: var(--portfolio-pad-mobile) var(--page-gutter);
   }
 
-  .portfolio-grid{
+  .portfolio-grid {
     grid-template-columns: 1fr;
     gap: 40px;
     max-width: 570px;
   }
 
-  /* crisp separators on mobile */
-  .project{
+  .project {
     border-top: 1px solid #000;
     padding-top: 16px;
   }
-  .project:first-child{
+
+  .project:first-child {
     border-top: none;
     padding-top: 0;
   }
 
-  .project img{
+  .project img {
     height: auto;
     max-height: 420px;
   }
