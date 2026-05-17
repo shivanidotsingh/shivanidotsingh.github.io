@@ -14,6 +14,8 @@ body {
   background: #fff;
 }
 
+
+
 h1 {
   font-size: var(--h1-size);
   display: inline-block;
@@ -43,7 +45,14 @@ a:hover {
   text-decoration-thickness: 0.75px;
 }
 
-.blue-link { color: #0000EE; text-decoration: none; }
+.blue-link {
+  color: #0000EE;
+  text-decoration: none;
+  position: fixed;
+  top: 14px;
+  left: 18px;
+  z-index: 60;
+}
 
 .note {  font-size: 0.8em; color: #808080; }
 
