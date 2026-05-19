@@ -59,6 +59,7 @@ a:hover {
 
 .note { font-size: 0.8em; color: #808080; }
 
+.item { margin-bottom: 1em; }
 
 /* ——— VIDEO EMBEDS ——— */
 .video-container {
