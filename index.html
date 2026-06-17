@@ -92,18 +92,22 @@ body { padding: 0 var(--page-gutter) 60px !important; }
 
 .col-right {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  padding: 40px 40px 60px 60px;
-  box-sizing: border-box;
   background: #fff;
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 40px 0 60px 0; 
+}
+
+#panel-portfolio { 
+  margin-top: 0; 
+  padding: 0 40px; 
+  box-sizing: border-box;
 }
 
 .project-frame {
   width: 100%;
-  flex: 1; /* Automatically stretches the frame down the full height of the column */
-  min-height: 85vh; /* Acts as a structural safety floor so it never collapses */
+  height: calc(100vh - 100px);
   border: none;
   display: none;
 }
