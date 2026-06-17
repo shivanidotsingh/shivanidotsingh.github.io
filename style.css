@@ -254,3 +254,7 @@ a:hover {
     max-height: 420px;
   }
 }
+
+@media (min-width: 1100px) {
+  .blue-link { display: none; }
+}
