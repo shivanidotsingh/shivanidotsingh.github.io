@@ -71,7 +71,7 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
   }
 
   .col-intro {
-    width: 360px;
+    width: 33.333%;
     flex-shrink: 0;
     background: #f5f5f0;
     padding: 40px 32px 60px 40px;
@@ -91,6 +91,10 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
     height: 100vh;
   }
 
+  #panel-portfolio, #panel-resume {
+    margin-top: 0;
+  }
+
   /* hide old portfolio section and footer on desktop */
   .portfolio-section-legacy { display: none; }
   .portfolio-footer-legacy { display: none; }
@@ -98,7 +102,7 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
   .toggle {
     display: inline-flex;
     gap: 2px;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
     background: #e8e8e4;
     padding: 2px;
     border-radius: 4px;
@@ -130,9 +134,8 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
     object-fit: contain;
     display: block;
     margin: 0 0 10px 0;
-    background: #f0ede8;
   }
-  .project-grid .project-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .project-grid .project-title { margin-bottom: 4px; }
   .project-grid .project-title a { text-decoration: none; color: inherit; }
   .project-grid .project p { font-size: 11px; color: #888; margin: 0; }
   .project-grid .project.ext-project { cursor: alias; }
