@@ -198,9 +198,9 @@ body { padding: 0 var(--page-gutter) 60px !important; }
       
     </p>
     <div class="folder-tabs">
-      <div class="folder-tab active" id="tab-portfolio" onclick="showTab('portfolio')">portfolio</div>
-      <div class="folder-tab" id="tab-resume" onclick="openProject('https://singh.work/resume')">resume</div>
-    </div>
+  <div class="folder-tab active" id="tab-portfolio" onclick="showGrid()">portfolio</div>
+  <div class="folder-tab" id="tab-resume" onclick="openResume('https://singh.work/resume')">resume</div>
+</div>
   </div>
 
   <div class="col-right">
@@ -320,31 +320,31 @@ body { padding: 0 var(--page-gutter) 60px !important; }
 <script>
 
 /* ---------- PORTFOLIO TOGGLE (desktop) ---------- */
-function showTab(name) {
-  document.getElementById('panel-portfolio').style.display = name === 'portfolio' ? 'block' : 'none';
-  document.getElementById('panel-resume').style.display = name === 'resume' ? 'block' : 'none';
-  document.getElementById('tab-portfolio').className = 'folder-tab' + (name === 'portfolio' ? ' active' : '');
-  document.getElementById('tab-resume').className = 'folder-tab' + (name === 'resume' ? ' active' : '');
-  if (name === 'portfolio') {
-    document.getElementById('project-grid').style.display = 'grid';
-    const frame = document.getElementById('project-frame');
-    frame.style.display = 'none';
-    frame.src = '';
-  }
+function showGrid() {
+  document.getElementById('tab-portfolio').classList.add('active');
+  document.getElementById('tab-resume').classList.remove('active');
+  const frame = document.getElementById('project-frame');
+  frame.style.display = 'none';
+  frame.src = '';
+  document.getElementById('project-grid').style.display = 'grid';
 }
 
 function openProject(url) {
-  showTab('portfolio');
+  document.getElementById('tab-portfolio').classList.add('active');
+  document.getElementById('tab-resume').classList.remove('active');
   const frame = document.getElementById('project-frame');
   frame.src = url;
   frame.style.display = 'block';
   document.getElementById('project-grid').style.display = 'none';
 }
 
-function showGrid() {
-  document.getElementById('project-frame').style.display = 'none';
-  document.getElementById('project-frame').src = '';
-  document.getElementById('project-grid').style.display = 'grid';
+function openResume(url) {
+  document.getElementById('tab-portfolio').classList.remove('active');
+  document.getElementById('tab-resume').classList.add('active');
+  const frame = document.getElementById('project-frame');
+  frame.src = url;
+  frame.style.display = 'block';
+  document.getElementById('project-grid').style.display = 'none';
 }
 
 /* ---------- WEATHER ---------- */
