@@ -74,7 +74,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
     width: 38%;
     flex-shrink: 0;
     background: #f5f5f0;
-    padding: 40px 40px 60px 40px;
+    padding: 40px 60px 60px 60px;
     box-sizing: border-box;
     position: sticky;
     top: 0;
@@ -152,19 +152,27 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
   }
 
   /* resume panel */
-  .resume-panel { display: none; max-width: 570px; }
+  .resume-panel { display: none; max-width: 600px; margin: 0 auto; }
   .resume-panel .section-label {
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: 600;
-    margin: 1.5em 0 0.5em;
+    margin: 2em 0 0.75em;
     color: #000;
+    border-top: 0.75px solid #111;
+    padding-top: 0.75em;
   }
-  .resume-panel .section-label:first-child { margin-top: 0; }
-  .resume-panel .item { margin-bottom: 0.75em; }
-  .resume-panel .item-header { display: flex; flex-wrap: wrap; gap: .5em; align-items: baseline; }
-  .resume-panel .item-date { opacity: .5; white-space: nowrap; font-size: 1.2em; }
-  .resume-panel .item-role { font-weight: 600; font-size: 1.2em; }
-  .resume-panel .note { font-size: 1em; color: #808080; }
+  .resume-panel .section-label:first-child { margin-top: 0; border-top: none; padding-top: 0; }
+  .resume-panel .item { margin-bottom: 1.25em; }
+  .resume-panel .item-header { 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 0 .4em; 
+    align-items: baseline;
+    font-size: 1em;
+  }
+  .resume-panel .item-date { opacity: .5; white-space: nowrap; }
+  .resume-panel .item-role { font-weight: 600; }
+  .resume-panel .note { font-size: 0.85em; color: #808080; margin-top: 0.3em; }
 
   .footer-desktop {
     margin-top: 40px;
@@ -205,9 +213,9 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
     </div>
     <p>
       Trained in graphic design, I've also designed 
-      <a href="https://singh.work/logofolio">brand identities</a> in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
+      <a href="javascript:void(0)" onclick="openProject('https://singh.work/logofolio'); showTab('portfolio');">brand identities</a> in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
       <br><br>
-      Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>. An alumnus of National Institute of Design and California College of the Arts — read more in my <a href="resume.html">resume</a>.
+      Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>. An alumnus of National Institute of Design and California College of the Arts — read more in my <a href="javascript:void(0)" onclick="showTab('resume')">resume</a>.
     </p>
     <p class="footer-desktop">Last updated in May 2026, this website is always becoming, as am I.</p>
   </div>
