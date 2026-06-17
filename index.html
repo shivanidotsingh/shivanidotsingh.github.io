@@ -74,7 +74,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
     width: 38%;
     flex-shrink: 0;
     background: #f5f5f0;
-    padding: 40px 32px 60px 40px;
+    padding: 40px 40px 60px 40px;
     box-sizing: border-box;
     position: sticky;
     top: 0;
@@ -89,7 +89,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
 
   .col-right {
     flex: 1;
-    padding: 40px 40px 60px 40px;
+    padding: 40px 40px 60px 60px;
     box-sizing: border-box;
     background: #fff;
     overflow-y: auto;
@@ -143,15 +143,6 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
   .project-grid .project-title a { text-decoration: none; color: inherit; }
   .project-grid .project p { margin: 8px 0 0 0; }
   .project-grid .project.ext-project { cursor: alias; }
-
-  .back-link {
-    font-size: 12px;
-    color: #0000EE;
-    cursor: pointer;
-    text-decoration: underline;
-    margin-bottom: 16px;
-    display: none;
-  }
 
   .project-frame {
     width: 100%;
@@ -229,8 +220,19 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
 
     <!-- portfolio panel -->
     <div id="panel-portfolio">
-      <span class="back-link" id="back-btn" onclick="showGrid()">←</span>
       <div class="project-grid" id="project-grid">
+
+        <div class="project ext-project" onclick="window.open('https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1', '_blank')">
+          <img src="images/juniper dashboard.png" alt="">
+          <div class="project-title">Interface to the CryptoFund</div>
+          <p>Designing the dashboard for tracking Cryptofund transactions [UNICEF Office of Innovation, 2024]</p>
+        </div>
+
+        <div class="project ext-project" onclick="window.open('https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub', '_blank')">
+          <img src="images/project2.jpg" alt="">
+          <div class="project-title">The Hungry Venturer</div>
+          <p>Design sprint to improve a core point of interaction with the Fund [UNICEF Office of Innovation, 2023]</p>
+        </div>
 
         <div class="project" onclick="openProject('https://singh.work/case-study.html')">
           <img src="images/project1.jpg" alt="">
@@ -254,18 +256,6 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
           <img src="images/project7.png" alt="">
           <div class="project-title">ABC's of Branding a Preschool</div>
           <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
-        </div>
-
-        <div class="project ext-project" onclick="window.open('https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1', '_blank')">
-          <img src="images/juniper dashboard.png" alt="">
-          <div class="project-title">Interface to the CryptoFund</div>
-          <p>Designing the dashboard for tracking Cryptofund transactions [UNICEF Office of Innovation, 2024]</p>
-        </div>
-
-        <div class="project ext-project" onclick="window.open('https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub', '_blank')">
-          <img src="images/project2.jpg" alt="">
-          <div class="project-title">The Hungry Venturer</div>
-          <p>Design sprint to improve a core point of interaction with the Fund [UNICEF Office of Innovation, 2023]</p>
         </div>
 
       </div>
@@ -350,7 +340,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
 </div>
 
 <!-- MOBILE/TABLET LAYOUT (unchanged) -->
-<section class="intro-wrap portfolio-section-legacy" style="display:block;">
+<section class="intro-wrap portfolio-section-legacy">
   <main id="page" class="intro-inner">
     <h1><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
     <p>
@@ -422,6 +412,12 @@ function showTab(name) {
   document.getElementById('panel-resume').style.display = name === 'resume' ? 'block' : 'none';
   document.getElementById('tab-portfolio').className = 'toggle-item' + (name === 'portfolio' ? ' active' : '');
   document.getElementById('tab-resume').className = 'toggle-item' + (name === 'resume' ? ' active' : '');
+  if (name === 'portfolio') {
+    document.getElementById('project-grid').style.display = 'grid';
+    const frame = document.getElementById('project-frame');
+    frame.style.display = 'none';
+    frame.src = '';
+  }
 }
 
 function openProject(url) {
@@ -429,14 +425,12 @@ function openProject(url) {
   frame.src = url;
   frame.style.display = 'block';
   document.getElementById('project-grid').style.display = 'none';
-  document.getElementById('back-btn').style.display = 'block';
 }
 
 function showGrid() {
   document.getElementById('project-frame').style.display = 'none';
   document.getElementById('project-frame').src = '';
   document.getElementById('project-grid').style.display = 'grid';
-  document.getElementById('back-btn').style.display = 'none';
 }
 
 /* ---------- WEATHER ---------- */
