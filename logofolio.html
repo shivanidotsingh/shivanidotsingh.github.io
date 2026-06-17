@@ -3,23 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script>
-document.querySelectorAll('a[href*="singh.work"], a[href^="/"], a[href^="ambassador"]').forEach(a => {
-  if (!a.target || a.target !== '_blank') {
-    a.addEventListener('click', function(e) {
-      e.preventDefault();
-      if (window.parent !== window) {
-        window.parent.openProject(this.href.startsWith('http') ? this.href : 'https://singh.work/' + this.getAttribute('href'));
-      } else {
-        window.location = this.href;
-      }
-    });
-  }
-});
-</script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-<script>if (window !== window.top) document.querySelectorAll('.blue-link').forEach(a => a.target = '_top');</script>
-    
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">    
     <title>Logofolio ⚘</title>
     
     <link rel="stylesheet" href="style.css">
@@ -48,8 +33,6 @@ document.querySelectorAll('a[href*="singh.work"], a[href^="/"], a[href^="ambassa
     </style>
 </head>
 <body>
-    <a href="index.html" class="blue-link">~</a>
-
     <h1>Logofolio </h1>
     <p> Assorted selection of logos, symbols and wordmarks designed by me. </p>
     <div class="logo-grid">
