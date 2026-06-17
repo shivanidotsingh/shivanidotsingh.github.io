@@ -87,8 +87,6 @@ body { padding: 0 var(--page-gutter) 60px !important; }
 
   .col-intro h1 { margin: 0; padding: 0; line-height: 1; display: block; }
   .col-intro h1 .h1-img { margin-top: 0; }
-  .col-right > .toggle { margin-top: 0; }
-  .col-intro h1, .col-right .toggle { vertical-align: top; }
 
 .col-right {
   flex: 1;
@@ -151,12 +149,12 @@ body { padding: 0 var(--page-gutter) 60px !important; }
   }
 
   .project-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px 60px;
-  max-width: 800px;
-  margin: 0 auto; /* This centers the grid horizontally */
-}
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px 60px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
   .project-grid .project { margin: 0; cursor: pointer; }
   .project-grid .project img {
@@ -171,7 +169,13 @@ body { padding: 0 var(--page-gutter) 60px !important; }
   .project-grid .project p { margin: 8px 0 0 0; }
   .project-grid .project.ext-project { cursor: alias; }
 
-
+  .footer-desktop {
+    margin-top: 40px;
+    padding-top: 12px;
+    border-top: 0.75px solid #111;
+    font-size: 0.8em;
+    color: #808080;
+  }
 }
 
 /* hide desktop-only elements on mobile/tablet */
@@ -193,25 +197,26 @@ body { padding: 0 var(--page-gutter) 60px !important; }
   <div class="col-intro">
     <h1><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
     <p style="margin-top: 40px;">
-      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a> in Stockholm. <span id="weather-inline-desktop"></span>
+      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>.
       Previously at Salesforce in San Francisco — see some of the work I supported in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">this overview</a>.
+      I think of my practice as a way to bridge intention and outcome.
     </p>
     <div class="photo-wrapper" style="margin: 20px 0;">
       <img src="images/moi.jpg" class="photo-bw">
       <img src="images/red.jpg" class="photo-color" title="RGB girl in a CMYK world">
-      <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
+      <div class="photo-postit top-left"> Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>. </div>
       <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> avid notetaker and visual mapper of collaborative thinking. </div></a>
     </div>
     <p>
       An alumnus of National Institute of Design and California College of the Arts, I've also designed ads and 
       <a href="javascript:void(0)" onclick="openProject('https://singh.work/logofolio')">brand identities</a> in the past.
-      Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>. 
-      
+      Find other curiosities and half-baked ideas <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a>.
     </p>
+    <p class="footer-desktop"><span id="weather-inline-desktop"></span></p>
     <div class="folder-tabs">
-  <div class="folder-tab active" id="tab-portfolio" onclick="showGrid()">portfolio</div>
-  <div class="folder-tab" id="tab-resume" onclick="openResume('https://singh.work/resume')">resume</div>
-</div>
+      <div class="folder-tab active" id="tab-portfolio" onclick="showGrid()">portfolio</div>
+      <div class="folder-tab" id="tab-resume" onclick="openResume('https://singh.work/resume')">resume</div>
+    </div>
   </div>
 
   <div class="col-right">
@@ -380,7 +385,7 @@ function setWeather(el) {
       else if (id === 803) condition = 'mostly cloudy';
       else if (id === 804) condition = 'cloudy';
       const feelsLike = Math.round(data.main.feels_like);
-      el.textContent = `It's ${condition} here today and feels like ${feelsLike}ºC outside.`;
+      el.textContent = `It's ${condition} in Stockholm today and feels like ${feelsLike}ºC outside.`;
     })
     .catch(() => {});
 }
