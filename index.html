@@ -71,7 +71,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
   }
 
   .col-intro {
-    width: 33.333%;
+    width: 38%;
     flex-shrink: 0;
     background: #f5f5f0;
     padding: 40px 32px 60px 40px;
@@ -163,18 +163,17 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
   /* resume panel */
   .resume-panel { display: none; max-width: 570px; }
   .resume-panel .section-label {
-    font-size: 10px;
+    font-size: 1.2em;
     font-weight: 600;
-    letter-spacing: 0.06em;
-    color: #aaa;
-    text-transform: uppercase;
-    margin: 20px 0 10px;
+    margin: 1.5em 0 0.5em;
+    color: #000;
   }
   .resume-panel .section-label:first-child { margin-top: 0; }
-  .resume-panel .item { margin-bottom: 14px; }
+  .resume-panel .item { margin-bottom: 0.75em; }
   .resume-panel .item-header { display: flex; flex-wrap: wrap; gap: .5em; align-items: baseline; }
-  .resume-panel .item-date { opacity: .6; white-space: nowrap; font-size: 0.9em; }
-  .resume-panel .item-role { font-weight: 600; }
+  .resume-panel .item-date { opacity: .5; white-space: nowrap; font-size: 1.2em; }
+  .resume-panel .item-role { font-weight: 600; font-size: 1.2em; }
+  .resume-panel .note { font-size: 1em; color: #808080; }
 
   .footer-desktop {
     margin-top: 40px;
@@ -203,7 +202,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
 <div class="site-layout">
   <div class="col-intro">
     <h1><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
-    <p style="line-height: 1.7; margin-top: 16px;">
+    <p style="margin-top: 40px;">
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a> in Stockholm. <span id="weather-inline-desktop"></span>
       Previously at Salesforce in San Francisco — see some of the projects I supported in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">this overview</a>.
     </p>
@@ -213,7 +212,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
       <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
       <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> avid notetaker and visual mapper of collaborative thinking. </div></a>
     </div>
-    <p style="line-height: 1.7;">
+    <p>
       Trained in graphic design, I've also designed 
       <a href="https://singh.work/logofolio">brand identities</a> in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
       <br><br>
@@ -251,7 +250,7 @@ body { padding: 0 var(--page-gutter) 60px !important;  }
           <p>Defining the exchange between influencers and venues through a design sprint [Parallel HQ, 2018]</p>
         </div>
 
-        <div class="project" onclick="openProject('https://singh.work/lmnop')">
+        <div class="project" onclick="openProject('https://singh.work/logofolio')">
           <img src="images/project7.png" alt="">
           <div class="project-title">ABC's of Branding a Preschool</div>
           <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
