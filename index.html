@@ -16,7 +16,7 @@
   gtag('config', 'G-JVKB5DDZ82');
 </script>
   <style>
-body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
+body { padding: 0 var(--page-gutter) 60px !important;  }
 
 .h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
 
@@ -82,18 +82,18 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
     overflow-y: auto;
   }
 
+  .col-intro h1 { margin: 0; padding: 0; line-height: 1; }
+
   .col-right {
     flex: 1;
     padding: 40px 40px 60px 40px;
     box-sizing: border-box;
-    background: #fafafa;
+    background: #fff;
     overflow-y: auto;
     height: 100vh;
   }
 
-  #panel-portfolio, #panel-resume {
-    margin-top: 0;
-  }
+  #panel-portfolio, #panel-resume { margin-top: 0; }
 
   /* hide old portfolio section and footer on desktop */
   .portfolio-section-legacy { display: none; }
@@ -102,8 +102,8 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
   .toggle {
     display: inline-flex;
     gap: 2px;
-    margin-bottom: 20px;
-    background: #e8e8e4;
+    margin: 0 0 28px 0;
+    background: #eee;
     padding: 2px;
     border-radius: 4px;
     width: fit-content;
@@ -124,20 +124,21 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
   .project-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px 48px;
+    gap: 60px 60px;
+    max-width: 900px;
   }
 
   .project-grid .project { margin: 0; cursor: pointer; }
   .project-grid .project img {
     width: 100%;
-    height: 200px;
+    height: var(--project-img-h);
     object-fit: contain;
     display: block;
-    margin: 0 0 10px 0;
+    margin: 0 0 16px 0;
   }
-  .project-grid .project-title { margin-bottom: 4px; }
+  .project-grid .project-title { margin-bottom: 8px; }
   .project-grid .project-title a { text-decoration: none; color: inherit; }
-  .project-grid .project p { font-size: 11px; color: #888; margin: 0; }
+  .project-grid .project p { margin: 8px 0 0 0; }
   .project-grid .project.ext-project { cursor: alias; }
 
   .back-link {
@@ -154,11 +155,10 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
     height: calc(100vh - 160px);
     border: none;
     display: none;
-    background: #f0ede8;
   }
 
   /* resume panel */
-  .resume-panel { display: none; }
+  .resume-panel { display: none; max-width: 570px; }
   .resume-panel .section-label {
     font-size: 10px;
     font-weight: 600;
@@ -200,18 +200,21 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
 <div class="site-layout">
   <div class="col-intro">
     <h1><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
+    <p style="line-height: 1.7; margin-top: 16px;">
+      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a> in Stockholm. <span id="weather-inline-desktop"></span>
+      Previously I worked at Salesforce in San Francisco — see some of the projects I supported in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">this overview</a>.
+    </p>
     <div class="photo-wrapper" style="margin: 20px 0;">
       <img src="images/moi.jpg" class="photo-bw">
       <img src="images/red.jpg" class="photo-color" title="RGB girl in a CMYK world">
       <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
       <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> avid notetaker and visual mapper of collaborative thinking. </div></a>
     </div>
-    <p style="font-size: 1em; line-height: 1.7; margin-top: 20px;">
-      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at UNICEF Innovation in Stockholm. <span id="weather-inline-desktop"></span>
+    <p style="line-height: 1.7;">
+      Trained in graphic design, I've also designed 
+      <a href="https://singh.work/logofolio">brand identities</a> in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
       <br><br>
-      Previously at Salesforce in San Francisco. Trained in graphic design, I've also designed brand identities in the past. Find the margin drawings on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
-      <br><br>
-      Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>.
+      Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>. An alumnus of National Institute of Design and California College of the Arts — read more in my <a href="resume.html">resume</a>.
     </p>
     <p class="footer-desktop">Last updated in May 2026, this website is always becoming, as am I.</p>
   </div>
@@ -224,7 +227,7 @@ body { padding: 0 var(--page-gutter) 60px !important; background: #fafafa; }
 
     <!-- portfolio panel -->
     <div id="panel-portfolio">
-      <span class="back-link" id="back-btn" onclick="showGrid()">← back to portfolio</span>
+      <span class="back-link" id="back-btn" onclick="showGrid()">←</span>
       <div class="project-grid" id="project-grid">
 
         <div class="project" onclick="openProject('https://singh.work/case-study.html')">
