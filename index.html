@@ -287,12 +287,16 @@ const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
 function makeDraggable(el) {
   let startX, startY, origX, origY, dragging = false;
   const onDown = (e) => {
-    if (el.isContentEditable && document.activeElement === el) return;
-    dragging = true;
-    el.classList.add('dragging');
-    const pt = e.touches ? e.touches[0] : e;
-    startX = pt.clientX;
-    startY = pt.clientY;
+  if (el.isContentEditable && document.activeElement === el) return;
+  dragging = true;
+  el.classList.add('dragging');
+  const pt = e.touches ? e.touches[0] : e;
+  startX = pt.clientX;
+  startY = pt.clientY;
+  if (el.style.left && el.style.top) {
+    origX = parseFloat(el.style.left);
+    origY = parseFloat(el.style.top);
+  } else {
     const rect = el.getBoundingClientRect();
     const parentRect = el.offsetParent.getBoundingClientRect();
     origX = rect.left - parentRect.left;
@@ -301,8 +305,9 @@ function makeDraggable(el) {
     el.style.top = origY + 'px';
     el.style.right = 'auto';
     el.style.bottom = 'auto';
-    e.preventDefault();
-  };
+  }
+  e.preventDefault();
+};
   const onMove = (e) => {
     if (!dragging) return;
     const pt = e.touches ? e.touches[0] : e;
@@ -336,7 +341,7 @@ document.addEventListener('dblclick', (e) => {
   postit.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
   postit.style.left = (e.pageX - 60) + 'px';
   postit.style.top = (e.pageY - 60) + 'px';
-  if (Math.random() < 0.1) {
+  if (Math.random() < 0.2) {
     postit.style.transform = `rotate(${(Math.random() * 6 - 3).toFixed(1)}deg)`;
   }
   document.body.appendChild(postit);
