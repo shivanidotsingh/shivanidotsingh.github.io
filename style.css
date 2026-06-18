@@ -30,6 +30,16 @@ h2 {
   border-top: 1px solid #111;
 }
 
+h4 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #111;
+  border-top: 1px solid #111;
+  margin-top: 2em;
+  padding-top: 1em;
+}
+
 img {
   width: 100%;
   display: block;
