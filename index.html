@@ -16,7 +16,7 @@
   gtag('config', 'G-JVKB5DDZ82');
 </script>
   <style>
-body { padding: 0 var(--page-gutter) 60px !important; }
+body { padding: 0 var(--page-gutter) 60px !important; background:#fafafa;}
 
 .h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
 
@@ -57,144 +57,36 @@ body { padding: 0 var(--page-gutter) 60px !important; }
   .photo-wrapper .photo-color { position: static; opacity: 1; }
 }
 
-/* ——— TWO COLUMN LAYOUT ——— */
-@media (min-width: 1200px) {
-  body {
-    max-width: none !important;
-    padding: 0 !important;
-  }
-
-  .site-layout {
-    display: flex;
-    min-height: 100vh;
-    align-items: stretch;
-  }
-
-  .col-intro {
-    width: 38%;
-    flex-shrink: 0;
-    background: #f5f1f0;
-    padding: 80px 60px 60px 60px;
-    box-sizing: border-box;
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow-y: auto;
-    scrollbar-width: none;
-  }
-
-  .col-intro::-webkit-scrollbar { display: none; }
-
-  .col-intro h1 { margin: 0; padding: 0; line-height: 1; display: block; }
-  .col-intro h1 .h1-img { margin-top: 0; }
-
-.col-right {
-  flex: 1;
-  background: #fff;
-  height: 100vh;
-  overflow-y: auto;
-  box-sizing: border-box;
-  padding: 40px 0 60px 0; 
+/* ——— HOVER PREVIEW ——— */
+#link-preview {
+  position: fixed;
+  width: 380px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 100;
 }
+#link-preview.visible { opacity: 1; }
+#link-preview img { width: 100%; display: block; margin: 0; }
 
-#panel-portfolio { 
-  margin-top: 0; 
-  padding: 0 40px; 
-  box-sizing: border-box;
-}
+@media (max-width: 900px) { #link-preview { display: none; } }
 
-.project-frame {
-  width: 100%;
-  height: 100vh;
-  border: none;
-  display: none;
-}
-
-  #panel-portfolio, #panel-resume { margin-top: 0; }
-
-  /* hide old portfolio section and footer on desktop */
-  .portfolio-section-legacy { display: none; }
-  .portfolio-footer-legacy { display: none; }
-
-  .folder-tabs {
-    position: absolute;
-    right: 0;
-    top: 60px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-
-  .folder-tab {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    transform: rotate(180deg);
-    padding: 10px 3px;
-    font-size: 10px;
-    font-family: 'Courier New', monospace;
-    cursor: pointer;
-    background: #dedad4;
-    color: #888;
-    border-radius: 0 6px 6px 0;
-    letter-spacing: 0.1em;
-    user-select: none;
-    border: none;
-  }
-
-  .folder-tab.active {
-    background: #fff;
-    color: #111;
-    font-weight: 500;
-    margin-right: -1px;
-  }
-
-  .project-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 60px 60px;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .project-grid .project { margin: 0; cursor: pointer; }
-  .project-grid .project img {
-    width: 100%;
-    height: var(--project-img-h);
-    object-fit: contain;
-    display: block;
-    margin: 0 0 16px 0;
-  }
-  .project-grid .project-title { margin-bottom: 8px; }
-  .project-grid .project-title a { text-decoration: none; color: inherit; }
-  .project-grid .project p { margin: 8px 0 0 0; }
-  .project-grid .project.ext-project { cursor: alias; }
-
-  .footer-desktop {
-    margin-top: 40px;
-    padding-top: 12px;
-    border-top: 0.75px solid #111;
-    font-size: 0.8em;
-    color: #808080;
-  }
-}
-
-/* hide desktop-only elements on mobile/tablet */
-@media (max-width: 1199px) {
-  .site-layout { display: block; }
-  .col-intro { display: none; }
-  .col-right { display: none; }
-  .portfolio-section-legacy { display: block; }
-  .portfolio-footer-legacy { display: block; }
-}
+.highlight-static { background: #FFFF99; text-decoration: none; }
+.highlight-static:hover { background: #FFFF99; text-decoration: none; text-decoration-style: unset; }
   </style>
 
 </head>
 
 <body>
 
-<!-- DESKTOP TWO-COLUMN LAYOUT -->
-<div class="site-layout">
-  <div class="col-intro">
+<!-- HOVER PREVIEW ELEMENT -->
+<div id="link-preview" aria-hidden="true">
+  <img src="" alt="">
+</div>
+
+<!-- INTRO -->
+<section class="intro-wrap">
+  <main id="page" class="intro-inner">
     <h1><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
     <p style="margin-top: 40px;">
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>.
@@ -209,188 +101,160 @@ body { padding: 0 var(--page-gutter) 60px !important; }
     </div>
     <p>
       An alumnus of National Institute of Design and California College of the Arts, I've also designed 
-      <a href="javascript:void(0)" onclick="openProject('https://singh.work/logofolio')">brand identities</a> in the past.
+      <a href="https://singh.work/logofolio">brand identities</a> in the past.
       Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
     </p>
-    <p class="footer-desktop"><span id="weather-inline-desktop"></span></p>
-    <div class="folder-tabs">
-      <div class="folder-tab active" id="tab-portfolio" onclick="showGrid()">portfolio</div>
-      <div class="folder-tab" id="tab-resume" onclick="openResume('https://singh.work/resume')">resume</div>
-    </div>
-  </div>
-
-  <div class="col-right">
-
-    <!-- portfolio panel -->
-    <div id="panel-portfolio">
-      <div class="project-grid" id="project-grid">
-
-        <div class="project ext-project" onclick="window.open('https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1', '_blank')">
-          <img src="images/juniper dashboard.png" alt="">
-          <div class="project-title">Interface to the CryptoFund</div>
-          <p>Designing the dashboard for tracking Cryptofund transactions [UNICEF Office of Innovation, 2024]</p>
-        </div>
-
-        <div class="project ext-project" onclick="window.open('https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub', '_blank')">
-          <img src="images/project2.jpg" alt="">
-          <div class="project-title">The Hungry Venturer</div>
-          <p>Design sprint to improve a core point of interaction with the Fund [UNICEF Office of Innovation, 2023]</p>
-        </div>
-
-        <div class="project" onclick="openProject('https://singh.work/case-study.html')">
-          <img src="images/project1.jpg" alt="">
-          <div class="project-title">A West Oakland Story</div>
-          <p>Building a data-informed narrative about the future of a neighbourhood [Student Project, 2020]</p>
-        </div>
-
-        <div class="project" onclick="openProject('https://singh.work/dropin')">
-          <img src="images/project3.png" alt="">
-          <div class="project-title">The Art, Artist and Context</div>
-          <p>Reimagining online networking for creative professionals [Student Project, 2020]</p>
-        </div>
-
-        <div class="project" onclick="openProject('https://singh.work/sprint.html')">
-          <img src="images/project6.png" alt="">
-          <div class="project-title">Value of Influence</div>
-          <p>Defining the exchange between influencers and venues through a design sprint [Parallel HQ, 2018]</p>
-        </div>
-
-        <div class="project" onclick="openProject('https://singh.work/lmnop')">
-          <img src="images/project7.png" alt="">
-          <div class="project-title">ABC's of Branding a Preschool</div>
-          <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
-        </div>
-
-      </div>
-      <iframe class="project-frame" id="project-frame" src="" title="Project"></iframe>
-    </div>
-
-  </div>
-</div>
-
-<!-- MOBILE/TABLET LAYOUT (unchanged) -->
-<section class="intro-wrap portfolio-section-legacy">
-  <main id="page" class="intro-inner">
-    <h1><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
-    <p>
-      I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>. <span id="weather-inline"></span>
-      <div class="photo-wrapper">
-        <img src="images/moi.jpg" class="photo-bw">
-        <img src="images/red.jpg" class="photo-color" title="RGB girl in a CMYK world">
-        <div class="photo-postit top-left"> i think of my practice as a way to bridge intention and outcome. </div>
-        <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> avid notetaker and visual mapper of collaborative thinking. </div></a>
-      </div>
-      <br>
-      Previously, I worked at Salesforce in San Francisco — see some of the projects I supported in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">this overview</a>.
-    Trained in graphic design, I've also designed <a href="https://singh.work/logofolio">brand identities</a> in the past. Find other curiosities and half-baked ideas on my <a href="https://shivaniest.com/tagged/highlights" target="_blank">corner of the internet</a>.
-      <br><br>
-      Born in India and based in Sweden, I'm graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>.
-      An alumnus of National Institute of Design and California College of the Arts — more about my background in my <a href="resume.html">resume</a>.
-    </p>
+    
   </main>
 </section>
 
-<section id="portfolio-appendix" class="portfolio-section portfolio-section-legacy">
+<!-- PORTFOLIO -->
+<section id="portfolio-appendix" class="portfolio-section">
   <div class="portfolio-grid">
-    <div class="project">
-      <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank"><img src="images/juniper dashboard.png" alt=""></a>
-      <div class="project-title"><a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">Interface to the CryptoFund</a></div>
-      <p>Designing the dashboard for tracking Cryptofund transactions [UNICEF Office of Innovation, 2024]</p>
-    </div>
-    <div class="project">
-      <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank"><img src="images/project2.jpg" alt=""></a>
-      <div class="project-title"><a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">The Hungry Venturer</a></div>
-      <p>Design sprint to improve a core point of interaction with the Fund [UNICEF Office of Innovation, 2023]</p>
-    </div>
-    <div class="project">
-      <a href="https://singh.work/case-study.html"><img src="images/project1.jpg" alt=""></a>
-      <div class="project-title"><a href="https://singh.work/case-study.html">A West Oakland Story</a></div>
-      <p>Building a data-informed narrative about the future of a neighbourhood [Student Project, 2020]</p>
-    </div>
-    <div class="project">
-      <a href="https://singh.work/dropin"><img src="images/project3.png" alt=""></a>
-      <div class="project-title"><a href="https://singh.work/dropin">The Art, Artist and Context</a></div>
-      <p>Reimagining online networking for creative professionals [Student Project, 2020]</p>
-    </div>
-    <div class="project">
-      <a href="https://singh.work/sprint.html"><img src="images/project6.png" alt=""></a>
-      <div class="project-title"><a href="https://singh.work/sprint.html">Value of Influence</a></div>
-      <p>Defining the exchange between influencers and venues through a design sprint [Parallel HQ, 2018]</p>
-    </div>
-    <div class="project">
-      <a href="https://singh.work/lmnop"><img src="images/project7.png" alt=""></a>
-      <div class="project-title"><a href="https://singh.work/lmnop">ABC's of Branding a Preschool</a></div>
-      <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
-    </div>
+
+<div class="project">
+  <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">
+    <img src="images/juniper dashboard.png" alt="">
+  </a>
+  <div class="project-title">
+    <a href="https://www.figma.com/deck/pHVoKWfLWugEEzSGsIU0A1" target="_blank">Interface to the CryptoFund</a>
+  </div>
+  <p>Designing the dashboard for tracking Cryptofund transactions [UNICEF Office of Innovation, 2024]</p>
+</div>
+
+<div class="project">
+  <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">
+    <img src="images/project2.jpg" alt="">
+  </a>
+  <div class="project-title">
+    <a href="https://docs.google.com/presentation/d/e/2PACX-1vQlLTQlfvFx2dAqkBc4L7SoIxsV97rL5pg7tHB_gHclwawwWI400lErSsE3TWydCVhdCnXbkJTfBuS9/pub" target="_blank">The Hungry Venturer</a>
+  </div>
+  <p>Design sprint to improve a core point of interaction with the Fund [UNICEF Office of Innovation, 2023]</p>
+</div>
+
+<div class="project">
+  <a class="project-link" href="https://singh.work/case-study.html">
+    <img src="images/project1.jpg" alt="">
+  </a>
+  <div class="project-title">
+    <a class="project-link" href="https://singh.work/case-study.html">A West Oakland Story</a>
+  </div>
+  <p>Building a data-informed narrative about the future of a neighbourhood [Student Project, 2020]</p>
+</div>
+
+<div class="project">
+  <a class="project-link" href="https://singh.work/dropin">
+    <img src="images/project3.png" alt="">
+  </a>
+  <div class="project-title">
+    <a class="project-link" href="https://singh.work/dropin">The Art, Artist and Context</a>
+  </div>
+  <p>Reimagining online networking for creative professionals [Student Project, 2020]</p>
+</div>
+
+<div class="project">
+  <a class="project-link" href="https://singh.work/sprint.html">
+    <img src="images/project6.png" alt="">
+  </a>
+  <div class="project-title">
+    <a class="project-link" href="https://singh.work/sprint.html">Value of Influence</a>
+  </div>
+  <p>Defining the exchange between influencers and venues through a design sprint [Parallel HQ, 2018]</p>
+</div>
+
+<div class="project">
+  <a class="project-link" href="https://singh.work/lmnop">
+    <img src="images/project7.png" alt="">
+  </a>
+  <div class="project-title">
+    <a class="project-link" href="https://singh.work/lmnop">ABC's of Branding a Preschool</a>
+  </div>
+  <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
+</div>
+
   </div>
 </section>
 
-<div class="portfolio-footer portfolio-footer-legacy">
+<div class="portfolio-footer">
   <hr>
-  <div class="footer-note">
-    <p class="note">Last updated in May 2026, this website is always becoming, as am I.</p>
-  </div>
+<p class="footer-desktop"><span id="weather-inline"></span></p>
 </div>
 
 <script>
 
-/* ---------- PORTFOLIO TOGGLE (desktop) ---------- */
-function showGrid() {
-  document.getElementById('tab-portfolio').classList.add('active');
-  document.getElementById('tab-resume').classList.remove('active');
-  const frame = document.getElementById('project-frame');
-  frame.style.display = 'none';
-  frame.src = '';
-  document.getElementById('project-grid').style.display = 'grid';
-}
+/* ---------- HOVER PREVIEWS ---------- */
+const preview = document.getElementById('link-preview');
+const previewImg = preview.querySelector('img');
 
-function openProject(url) {
-  document.getElementById('tab-portfolio').classList.add('active');
-  document.getElementById('tab-resume').classList.remove('active');
-  const frame = document.getElementById('project-frame');
-  frame.src = url;
-  frame.style.display = 'block';
-  document.getElementById('project-grid').style.display = 'none';
-}
+document.querySelectorAll('a[data-preview]').forEach(link => {
+  const side = link.dataset.side || 'right';
 
-function openResume(url) {
-  document.getElementById('tab-portfolio').classList.remove('active');
-  document.getElementById('tab-resume').classList.add('active');
-  const frame = document.getElementById('project-frame');
-  frame.src = url;
-  frame.style.display = 'block';
-  document.getElementById('project-grid').style.display = 'none';
-}
+  link.addEventListener('mouseenter', () => {
+    previewImg.src = link.dataset.preview;
 
-/* ---------- WEATHER ---------- */
+    const introRect = document.getElementById('page').getBoundingClientRect();
+    const pw = preview.offsetWidth;
+    const gutter = introRect.left;
+
+    let x;
+    if (side === 'right') {
+      const rightGapCentre = introRect.right + gutter / 2;
+      x = rightGapCentre - pw / 2;
+      x = Math.min(x, window.innerWidth - pw - 8);
+    } else {
+      const leftGapCentre = introRect.left / 2;
+      x = leftGapCentre - pw / 2;
+      x = Math.max(8, x);
+    }
+
+    preview.style.left = x + 'px';
+    preview.classList.add('visible');
+  });
+
+  link.addEventListener('mousemove', (e) => {
+    const vpH = window.innerHeight;
+    const ph  = preview.offsetHeight;
+    let y = e.clientY - ph / 2;
+    y = Math.max(16, Math.min(vpH - ph - 16, y));
+    preview.style.top = y + 'px';
+  });
+
+  link.addEventListener('mouseleave', () => {
+    preview.classList.remove('visible');
+    previewImg.src = '';
+  });
+});
+
+/* ---------- PRELOAD PREVIEW IMAGES ---------- */
+['hover1.jpg','hover2.jpg','hover3.jpg','hover4.jpg','hover5.png','hover6.png'].forEach(f => {
+  new Image().src = 'images/' + f;
+});
+
+
+/* ---------- WEATHER INLINE ---------- */
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
+const weatherInline = document.getElementById('weather-inline');
 
-function setWeather(el) {
-  if (!el) return;
-  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
-    .then(res => res.json())
-    .then(data => {
-      const id = data.weather[0].id;
-      let condition = 'mild';
-      if (id >= 200 && id < 300) condition = 'unexpectedly stormy';
-      else if (id >= 300 && id < 400) condition = 'predictably drizzly';
-      else if (id >= 500 && id < 600) condition = 'raining';
-      else if (id >= 600 && id < 700) condition = 'snowing';
-      else if (id >= 700 && id < 800) condition = 'misty';
-      else if (id === 800) condition = 'clear skies';
-      else if (id === 801 || id === 802) condition = 'partly cloudy';
-      else if (id === 803) condition = 'mostly cloudy';
-      else if (id === 804) condition = 'cloudy';
-      const feelsLike = Math.round(data.main.feels_like);
-      el.textContent = `It's ${condition} in Stockholm today and feels like ${feelsLike}ºC outside.`;
-    })
-    .catch(() => {});
-}
-
-setWeather(document.getElementById('weather-inline'));
-setWeather(document.getElementById('weather-inline-desktop'));
+fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
+  .then(res => res.json())
+  .then(data => {
+    const id = data.weather[0].id;
+    let condition = 'mild';
+    if (id >= 200 && id < 300) condition = 'unexpectedly stormy';
+    else if (id >= 300 && id < 400) condition = 'predictably drizzly';
+    else if (id >= 500 && id < 600) condition = 'raining';
+    else if (id >= 600 && id < 700) condition = 'snowing';
+    else if (id >= 700 && id < 800) condition = 'misty';
+    else if (id === 800) condition = 'clear skies';
+    else if (id === 801 || id === 802) condition = 'partly cloudy';
+    else if (id === 803) condition = 'mostly cloudy';
+    else if (id === 804) condition = 'cloudy';
+    const feelsLike = Math.round(data.main.feels_like);
+    weatherInline.textContent = `It's ${condition} here today and feels like ${feelsLike}ºC outside.`;
+  })
+  .catch(() => {});
 
 </script>
 
