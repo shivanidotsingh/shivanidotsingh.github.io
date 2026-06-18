@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>shivani's work experience</title>
   <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     .info h1 { margin-bottom: 4px; }
-    .info .note { margin-top: 0; }
     
     .resume-header {
       display: flex;
@@ -18,7 +18,6 @@
     }
 
     .photo-container { position: relative; flex: 0 0 auto; }
-
     .photo { width: 110px; height: 110px; border-radius: 50%; overflow: hidden; }
     .photo img { width: 100%; height: 100%; object-fit: cover; display: block; margin: 0; }
 
@@ -30,18 +29,36 @@
     }
     .linkedin-badge svg { width: 24px; height: 24px; display: block; }
 
-    .item-header { display: flex; flex-wrap: wrap; gap: .5em; align-items: baseline; }
-    .item-date { opacity: .6; white-space: nowrap; }
-    .item-role { font-weight: 600; }
-    
     .info .h1-img {
       height: var(--h1-size);
       width: auto;
     }  
 
-h2 + hr {
-  display: none;
-}    
+    /* Structural fix for the job title layout */
+    .item-header { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 4px 8px; 
+      align-items: baseline; 
+    }
+
+    /* Force the br tag to clear a full row within flex layout */
+    .item-header br {
+      display: block;
+      content: "";
+      width: 100%;
+    }
+
+    /* Remove lines and background accents loaded from style.css */
+    .item-header h2 {
+      border: none !important;
+      background: none !important;
+      margin: 0;
+      padding: 0;
+    }
+
+    .item-date { opacity: .6; white-space: nowrap; }
+    
     @media (max-width: 480px) {
       .resume-header { flex-direction: column-reverse; align-items: center; text-align: center; }
     }
@@ -53,7 +70,7 @@ h2 + hr {
     <header class="resume-header">
       <div class="info">
         <h1><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
-        <p >25.shivanisingh@gmail.com · +46&nbsp;76&nbsp;885&nbsp;66&nbsp;09</p>
+        <p>25.shivanisingh@gmail.com · +46&nbsp;76&nbsp;885&nbsp;66&nbsp;09</p>
       </div>
       <div class="photo-container">
         <div class="photo">
@@ -70,56 +87,56 @@ h2 + hr {
 
     <div class="item">
       <div class="item-header">
-        <h2>Design Specialist,<a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF</a> · Stockholm</h2>
+        <h2>Design Specialist, <a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF</a> · Stockholm</h2>
         <br><span class="item-date">2023—Present</span>
       </div>
-      <p >I guide the <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">design of digital products and services</a> we build, and invest in. I also facilitate cross-functional workshops, and contribute to the visual design of brand communication.</p>
+      <p>I guide the <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">design of digital products and services</a> we build, and invest in. I also facilitate cross-functional workshops, and contribute to the visual design of brand communication.</p>
     </div>
 
     <div class="item">
       <div class="item-header">
         <h2>Designer, Salesforce · San Francisco</h2>
-        <br>        <span class="item-date">2021—2023</span>
+        <br><span class="item-date">2021—2023</span>
       </div>
-      <p >Combined strategy, storytelling and technology to create compelling narratives and visions for digital transformation with clients. Notable clients — 3M, Verizon, HBS, HPE, Amazon.</p>
+      <p>Combined strategy, storytelling and technology to create compelling narratives and visions for digital transformation with clients. Notable clients — 3M, Verizon, HBS, HPE, Amazon.</p>
     </div>
 
     <div class="item">
       <div class="item-header">
         <h2>UX Designer, <a href="https://parallelhq.com" target="_blank">Parallel Labs</a> · Bangalore</h2>
-        <br>        <span class="item-date">2018—2019</span>
+        <br><span class="item-date">2018—2019</span>
       </div>
-      <p >Applied design sprints to align business goals with consumer needs. Co-facilitated workshops and design jams with Facebook's TTC Labs in Singapore and Hyderabad.</p>
+      <p>Applied design sprints to align business goals with consumer needs. Co-facilitated workshops and design jams with Facebook's TTC Labs in Singapore and Hyderabad.</p>
     </div>
 
     <div class="item">
       <div class="item-header">
         <h2>Graphic Designer, <a href="https://www.instagram.com/happydesignworks/" target="_blank">mcgarrybowen</a> · Bangalore</h2>
-        <br>        <span class="item-date">2016—2018</span>
+        <br><span class="item-date">2016—2018</span>
       </div>
-      <p >Developed brand communication strategies and visual identities for Cultfit, Chaipoint, Marine Kingdom, and NSRCEL.</p>
+      <p>Developed brand communication strategies and visual identities for Cultfit, Chaipoint, Marine Kingdom, and NSRCEL.</p>
     </div>
 
     <div class="item">
       <div class="item-header">
         <h2>Brand Designer, Brand Union · Bangalore</h2>
-        <br>        <span class="item-date">2015—2016</span>
+        <br><span class="item-date">2015—2016</span>
       </div>
-      <p >Part of a small design team, ideating and implementing brand systems and packaging for Yardley, Team Indus and Airtel.</p>
+      <p>Part of a small design team, ideating and implementing brand systems and packaging for Yardley, Team Indus and Airtel.</p>
     </div>
 
     <div class="item">
       <div class="item-header">
         <h2>Art Director, DDB Mudra · Mumbai</h2>
-        <br>        <span class="item-date">2015</span>
+        <br><span class="item-date">2015</span>
       </div>
-      <p >Represented India as a Young Lion at Cannes Lions. Designed advertisements and brand collaterals for HBO India, Volkswagen among others.</p>
+      <p>Represented India as a Young Lion at Cannes Lions. Designed advertisements and brand collaterals for HBO India, Volkswagen among others.</p>
     </div>
 
     <div class="item">
       <div class="item-header">
         <h2>Graphic Design Intern, Wolff Olins · Dubai</h2>
-        <br>        <span class="item-date">2015</span>
+        <br><span class="item-date">2015</span>
       </div>
     </div>
 
@@ -128,7 +145,7 @@ h2 + hr {
     <div class="item">
       <div class="item-header">
         <h2>M. Des, Interaction Design</h2>
-        <br>        <span class="item-date">2019—2020</span>
+        <br><span class="item-date">2019—2020</span>
         <span><a href="https://cca.edu/design/interaction-design/" target="_blank">California College of the Arts</a> · San Francisco</span>
       </div>
     </div>
@@ -136,7 +153,7 @@ h2 + hr {
     <div class="item">
       <div class="item-header">
         <h2>B. Des, Graphic Design</h2>
-        <br>        <span class="item-date">2010—2014</span>
+        <br><span class="item-date">2010—2014</span>
         <span><a href="https://www.nid.edu/" target="_blank">National Institute of Design</a> · Ahmedabad</span>
       </div>
     </div>
