@@ -38,12 +38,30 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
   line-height: 1.5;
   color: #333;
   z-index: 5;
+  cursor: grab;
 }
+.photo-postit.dragging, .user-postit.dragging { cursor: grabbing; z-index: 1000; }
 
 .photo-postit.top-left { top: -20px; left: -30px; }
 .photo-postit.bottom-right { bottom: -20px; right: -30px; transform: rotate(2deg); }
 .photo-postit:hover { pointer-events: auto; }
 
+.user-postit {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  padding: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #333;
+  z-index: 5;
+  cursor: grab;
+  outline: none;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+    
 .intro-inner img { position: relative; display: inline-block; }
 
 .photo-wrapper { position: relative; display: inline-block; margin: 20px 0; }
@@ -97,7 +115,7 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
       <img src="images/moi.jpg" class="photo-bw">
       <img src="images/red.jpg" class="photo-color" title="RGB girl in a CMYK world">
       <div class="photo-postit top-left"> I think of my practice as a way to bridge intention and outcome.</div>
-      <a href="https://singh.work/processlab.html" target="_blank"><div class="photo-postit bottom-right"> avid notetaker and visual mapper of collaborative thinking. </div></a>
+      <div class="photo-postit bottom-right"> avid notetaker and visual mapper of collaborative thinking. </div>
     </div>
     <p>
   Trained in graphic design, I've also designed 
@@ -262,6 +280,69 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   })
   .catch(() => {});
 
+  
+/* ---------- POSTIT INTERACTIONS ---------- */
+const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
+
+function makeDraggable(el) {
+  let startX, startY, origX, origY, dragging = false;
+  const onDown = (e) => {
+    if (el.isContentEditable && document.activeElement === el) return;
+    dragging = true;
+    el.classList.add('dragging');
+    const pt = e.touches ? e.touches[0] : e;
+    startX = pt.clientX;
+    startY = pt.clientY;
+    const rect = el.getBoundingClientRect();
+    const parentRect = el.offsetParent.getBoundingClientRect();
+    origX = rect.left - parentRect.left;
+    origY = rect.top - parentRect.top;
+    el.style.left = origX + 'px';
+    el.style.top = origY + 'px';
+    el.style.right = 'auto';
+    el.style.bottom = 'auto';
+    e.preventDefault();
+  };
+  const onMove = (e) => {
+    if (!dragging) return;
+    const pt = e.touches ? e.touches[0] : e;
+    el.style.left = (origX + pt.clientX - startX) + 'px';
+    el.style.top = (origY + pt.clientY - startY) + 'px';
+  };
+  const onUp = () => {
+    if (!dragging) return;
+    dragging = false;
+    el.classList.remove('dragging');
+    const rect = el.getBoundingClientRect();
+    if (rect.right < 0 || rect.left > window.innerWidth || rect.bottom < 0 || rect.top > window.innerHeight) {
+      el.remove();
+    }
+  };
+  el.addEventListener('mousedown', onDown);
+  el.addEventListener('touchstart', onDown, { passive: false });
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchend', onUp);
+}
+
+document.querySelectorAll('.photo-postit').forEach(makeDraggable);
+
+document.addEventListener('dblclick', (e) => {
+  if (e.target.closest('.photo-postit, .user-postit, a, button, input, textarea')) return;
+  const postit = document.createElement('div');
+  postit.className = 'user-postit';
+  postit.contentEditable = 'true';
+  postit.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
+  postit.style.left = (e.pageX - 60) + 'px';
+  postit.style.top = (e.pageY - 60) + 'px';
+  if (Math.random() < 0.1) {
+    postit.style.transform = `rotate(${(Math.random() * 6 - 3).toFixed(1)}deg)`;
+  }
+  document.body.appendChild(postit);
+  makeDraggable(postit);
+  setTimeout(() => postit.focus(), 0);
+});
 </script>
 
 </body>
