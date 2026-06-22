@@ -79,6 +79,35 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
 .photo-wrapper:hover .photo-color { opacity: 1; }
 .photo-wrapper:has(.photo-postit:hover) .photo-color { opacity: 0; }
 
+.highlight-static { background: #FFFF99; text-decoration: none; }
+.highlight-static:hover { background: #FFFF99; text-decoration: none; text-decoration-style: unset; }
+
+/* ——— GUTTER POSTITS ——— */
+.gutter-postit {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  padding: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #333;
+  z-index: 4;
+  cursor: grab;
+}
+.gutter-postit.dragging { cursor: grabbing; z-index: 1000; }
+.gutter-postit a { color: inherit; text-decoration: underline; text-decoration-style: dotted; }
+.gutter-postits-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.gutter-postit { pointer-events: auto; }
+
+
 @media (max-width: 768px) {
   .photo-postit { display: none; }
   .photo-wrapper .photo-bw { display: none; }
@@ -89,30 +118,13 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
 @media (max-width: 1100px) {
   .intro-desktop { display: none; }
   .intro-mobile { display: block; }
+  .gutter-postits-container { display: none; }
+
 }
-
-.highlight-static { background: #FFFF99; text-decoration: none; }
-.highlight-static:hover { background: #FFFF99; text-decoration: none; text-decoration-style: unset; }
-
-/* ——— GUTTER POSTITS ——— */
-.gutter-postit {
-  position: absolute;
-  width: 140px;
-  height: 140px;
-  padding: 12px;
-  font-family: 'Courier New', monospace;
-  font-size: 12px;
-  line-height: 1.5;
-  color: #333;
-  z-index: 4;
-  cursor: grab;
-}
-.gutter-postit.dragging { cursor: grabbing; z-index: 1000; }
-.gutter-postit a { color: inherit; text-decoration: underline; text-decoration-style: dotted; }
-
+    
 .gp-1 { top: 80px; left: calc(50% - 500px); background: #FFB3D9; transform: rotate(-2deg); }
 .gp-2 { top: 320px; left: calc(50% - 470px); background: #B3D9FF; transform: rotate(2deg); }
-.gp-3 { top: 100px; right: calc(50% - 500px); background: #B3FFB3; transform: rotate(1.5deg); }
+.gp-3 { top: 180px; right: calc(50% - 560px); background: #B3FFB3; transform: rotate(1.5deg); }
 .gp-4 { top: 360px; right: calc(50% - 470px); background: #D9B3FF; transform: rotate(-1.5deg); }
     
 </style>
@@ -121,15 +133,11 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
 
 <body>
 <!-- GUTTER POSTITS -->
+<div class="gutter-postits-container">
 <div class="gutter-postit gp-1">Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>.</div>
 <div class="gutter-postit gp-2">Previously at Salesforce in San Francisco — see some of the work I supported in <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">this overview</a>.</div>
-<div class="gutter-postit gp-3">With a background in graphic design, I've also designed <a href="https://singh.work/logofolio">brand identities</a>.</div>
+<div class="gutter-postit gp-3">With a background in graphic design, I've also designed <a href="https://singh.work/logofolio">brand identities</a> in the past.</div>
 <div class="gutter-postit gp-4">Find other curiosities and half-baked ideas <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a>.</div>
-
-  
-<!-- HOVER PREVIEW ELEMENT -->
-<div id="link-preview" aria-hidden="true">
-  <img src="" alt="">
 </div>
 
 <!-- INTRO -->
@@ -309,14 +317,6 @@ function makeDraggable(el) {
   document.addEventListener('touchend', onUp);
 }
 
-// Lock gutter postits to pixel coords so first drag doesn't jump
-document.querySelectorAll('.gutter-postit').forEach(el => {
-  const rect = el.getBoundingClientRect();
-  el.style.left = (rect.left + window.scrollX) + 'px';
-  el.style.top = (rect.top + window.scrollY) + 'px';
-  el.style.right = 'auto';
-  el.style.bottom = 'auto';
-});
 document.querySelectorAll('.photo-postit, .gutter-postit').forEach(makeDraggable);
   
 document.addEventListener('dblclick', (e) => {
