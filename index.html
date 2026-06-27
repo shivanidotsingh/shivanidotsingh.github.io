@@ -268,7 +268,9 @@ const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
 
 function makeDraggable(el) {
   let startX, startY, origX, origY, dragging = false;
-  const onDown = (e) => {
+const onDown = (e) => {
+  // Let link taps through — don't capture them as drags
+  if (e.target.tagName === 'A') return;
   if (el.isContentEditable && document.activeElement === el) return;
   dragging = true;
   el.classList.add('dragging');
