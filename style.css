@@ -21,7 +21,9 @@ body {
 
 h1 {
   font-size: var(--h1-size);
-  display: inline-block;
+  display: block;
+  margin: 0;
+  padding: 0;
 }
 
 h2 {
