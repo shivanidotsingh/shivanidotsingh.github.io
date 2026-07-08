@@ -122,7 +122,14 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
 .gp-2 { top: 320px; left: calc(50% - 470px); background: #B3D9FF; transform: rotate(2deg); }
 .gp-3 { top: 180px; right: calc(50% - 470px); background: #B3FFB3; transform: rotate(1.5deg); }
 .gp-4 { top: 300px; right: calc(50% - 510px); background: #D9B3FF; transform: rotate(-1.5deg); }
-    
+
+.link-arrow .arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+.link-arrow:hover .arrow {
+  transform: translate(2px, -2px) rotate(-45deg); /* Animates smoothly up and right */
+}
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -144,7 +151,8 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
   <main id="page">
     <h1 style="padding-top:10px;"><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
     <p class="intro-desktop">
-    I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>. An alumnus of NID, Ahmedabad and California College of the Arts — details in <a href="resume.html" data-preview="images/hover6.png" data-side="right">resume</a> and select projects below.
+    A designer with an aptitude for analytical thinking and an appetite for play, I'm currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>.
+    I learned my craft at NID, Ahmedabad and California College of the Arts — more in my <a href="resume.html" class="link-arrow">resume <span class="arrow">→</span></a> and select projects below.
     </p>
     <p class="intro-mobile">
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF</a>, I think of my practice as a way to bridge intention and outcome.
