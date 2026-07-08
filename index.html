@@ -138,7 +138,7 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
 <section class="intro-wrap">
   <main id="page">
     <h1 style="padding-top:10px;"><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
-    <p class="intro-desktop" style="font-size: clamp(18px, 1.6vw, 22px);">
+    <p class="intro-desktop" style="font-size: clamp(18px, 1.6vw, 22px); line-height: 1.25;">
     I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping technology for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>. An alumnus of NID, Ahmedabad and California College of the Arts — details in <a href="resume.html" data-preview="images/hover6.png" data-side="right">resume</a> and select projects below.
     </p>
     <p class="intro-mobile">
@@ -266,6 +266,34 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
 /* ---------- POSTIT INTERACTIONS ---------- */
 const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
 
+function savePostits() {
+  const postits = Array.from(document.querySelectorAll('.user-postit')).map(el => ({
+    text: el.textContent,
+    left: el.style.left,
+    top: el.style.top,
+    background: el.style.background,
+    transform: el.style.transform
+  }));
+  localStorage.setItem('userPostits', JSON.stringify(postits));
+}
+
+function loadSavedPostits() {
+  const saved = JSON.parse(localStorage.getItem('userPostits'));
+  if (saved) {
+    saved.forEach(data => {
+      const postit = document.createElement('div');
+      postit.className = 'user-postit';
+      postit.textContent = data.text;
+      postit.style.left = data.left;
+      postit.style.top = data.top;
+      postit.style.background = data.background;
+      postit.style.transform = data.transform;
+      document.body.appendChild(postit);
+      makeDraggable(postit);
+    });
+  }
+}
+  
 function makeDraggable(el) {
   let startX, startY, origX, origY, dragging = false;
 const onDown = (e) => {
@@ -297,6 +325,7 @@ const onDown = (e) => {
     const pt = e.touches ? e.touches[0] : e;
     el.style.left = (origX + pt.clientX - startX) + 'px';
     el.style.top = (origY + pt.clientY - startY) + 'px';
+    savePostits();
   };
   const onUp = () => {
     if (!dragging) return;
@@ -305,6 +334,7 @@ const onDown = (e) => {
     const rect = el.getBoundingClientRect();
     if (rect.right < 0 || rect.left > window.innerWidth || rect.bottom < 0 || rect.top > window.innerHeight) {
       el.remove();
+      savePostits();
     }
   };
   el.addEventListener('mousedown', onDown);
@@ -330,8 +360,11 @@ document.addEventListener('dblclick', (e) => {
   }
   document.body.appendChild(postit);
   makeDraggable(postit);
+  postit.addEventListener('blur', savePostits);
   setTimeout(() => postit.focus(), 0);
 });
+
+  loadSavedPostits();
 </script>
 
 </body>
