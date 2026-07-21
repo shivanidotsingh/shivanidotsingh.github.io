@@ -145,7 +145,7 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
     <h1 style="padding-top:10px;"><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
     <p class="intro-desktop">
     A designer with an aptitude for analytical thinking and an appetite for play, I'm currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>.
-    I learned my craft at NID, Ahmedabad and California College of the Arts — more in my <a href="resume.html">resume</a> and select projects below.
+    I learned my craft at NID, Ahmedabad and California College of the Arts — more in my <a href="resume.html">resume</a> and select projects below.
     </p>
     <p class="intro-mobile">
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF</a>, I think of my practice as a way to bridge intention and outcome.
@@ -157,7 +157,7 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
       <div class="photo-postit bottom-right"> Find other curiosities and half-baked ideas <a href="https://shivaniest.com/tagged/highlights" target="_blank">on my blog</a> ✿ </div>
     </div>
     <p class="intro-mobile">
-      An alumnus of NID, Ahmedabad and California College of the Arts, I previously worked at Salesforce in San Francisco — highlights from that chapter in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>.
+      An alumnus of NID, Ahmedabad and California College of the Arts, I previously worked at Salesforce in San Francisco — highlights from that chapter in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>.
       Born in India and based in Sweden, I'm graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>.
       
       <br><br>Trained in graphic design, I've also crafted 
@@ -271,6 +271,7 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   
 /* ---------- POSTIT INTERACTIONS ---------- */
 const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
+const IS_DESKTOP = window.matchMedia('(min-width: 1101px)').matches;
 
 function savePostits() {
   const postits = Array.from(document.querySelectorAll('.user-postit')).map(el => ({
@@ -284,6 +285,7 @@ function savePostits() {
 }
 
 function loadSavedPostits() {
+  if (!IS_DESKTOP) return;
   const saved = JSON.parse(localStorage.getItem('userPostits'));
   if (saved) {
     saved.forEach(data => {
@@ -354,6 +356,7 @@ const onDown = (e) => {
 document.querySelectorAll('.photo-postit, .gutter-postit').forEach(makeDraggable);
   
 document.addEventListener('dblclick', (e) => {
+  if (!IS_DESKTOP) return;
   if (e.target.closest('.photo-postit, .user-postit, .gutter-postit, a, button, input, textarea')) return;
   const postit = document.createElement('div');
   postit.className = 'user-postit';
