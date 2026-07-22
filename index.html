@@ -123,6 +123,94 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
 .gp-3 { top: 180px; right: calc(50% - 470px); background: #B3FFB3; transform: rotate(1.5deg); }
 .gp-4 { top: 300px; right: calc(50% - 510px); background: #D9B3FF; transform: rotate(-1.5deg); }
 
+    .resume-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.15);
+  z-index: 90;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.resume-panel-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.resume-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 38vw;
+  min-width: 420px;
+  max-width: 620px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -4px 0 24px rgba(0,0,0,0.08);
+  z-index: 91;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: 60px 50px;
+  box-sizing: border-box;
+}
+.resume-panel.open {
+  transform: translateX(0);
+}
+
+.resume-panel-close {
+  position: absolute;
+  top: 24px;
+  right: 30px;
+  font-family: 'Courier New', monospace;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  background: none;
+  border: none;
+}
+.resume-panel-close:hover { color: #111; }
+
+@media (max-width: 1100px) {
+  .resume-panel, .resume-panel-overlay { display: none; }
+}
+
+    .resume-panel .item {
+  margin-bottom: 28px;
+}
+
+.resume-panel .item-header { 
+  display: flex; 
+  flex-direction: column; 
+  margin-bottom: 8px; 
+}
+
+.resume-panel .item-date { 
+  display: block;
+  font-size: 13px; 
+  letter-spacing: 0.05em;
+  text-transform: uppercase; 
+  color: #888; 
+  margin-bottom: 4px; 
+}
+
+.resume-panel .item-header h3 {
+  font-size: 18px; 
+  font-weight: 600;
+  line-height: 1.3; 
+  margin: 0; 
+  padding: 0;
+  border: none !important;
+  background: none !important;
+  color: #111;
+}
+
+.resume-panel .item p {
+  color: #555;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 0;
+}
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -152,7 +240,7 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
     <div class="photo-wrapper" style="margin: 20px 0;" title="RGB girl in a CMYK world.">
       <img src="images/moi.jpg" class="photo-bw">
       <img src="images/red.jpg" class="photo-color">
-    <div class="photo-postit top-left"> An alumnus of NID, Ahmedabad and California College of the Arts. more in <a href="resume.html">resume</a> </div>
+    <div class="photo-postit top-left"> An alumnus of NID, Ahmedabad and California College of the Arts. more in <a href="resume.html" onclick="openResumePanel(event)">resume</a> </div>
     <div class="photo-postit bottom-right"> Drawing in the margins and playing with ideas on <a href="https://shivaniest.com/tagged/highlights" target="_blank">shivaniest.com</a> ✿ </div>
     </div>
     <p class="intro-mobile">
@@ -236,7 +324,73 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
   </div>
 </section>
 
-
+<div class="resume-panel-overlay" id="resume-overlay"></div>
+<div class="resume-panel" id="resume-panel">
+  <button class="resume-panel-close" id="resume-close"> >> </button>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2023—Present</span>
+      <h3>Design Specialist, <a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF Innovation</a> · Stockholm</h3>
+    </div>
+    <p>I guide the <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">design of digital products and services</a> we build, and invest in. I also facilitate workshops, and contribute to the visual communication of the brand.</p>
+  </div>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2021—2023</span>
+      <h3>Designer, Salesforce · San Francisco</h3>
+    </div>
+    <p>Combined strategy, storytelling and technology to create compelling narratives and visions for digital transformation with clients. Notable clients — 3M, Verizon, HBS, HPE, Amazon.</p>
+  </div>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2018—2019</span>
+      <h3>UX Designer, <a href="https://parallelhq.com" target="_blank">Parallel Labs</a> · Bangalore</h3>
+    </div>
+    <p>Applied design sprints to align business goals with consumer needs. Co-facilitated workshops and design jams with Facebook's TTC Labs in Singapore and Hyderabad.</p>
+  </div>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2016—2018</span>
+      <h3>Graphic Designer, <a href="https://www.instagram.com/happydesignworks/" target="_blank">mcgarrybowen</a> · Bangalore</h3>
+    </div>
+    <p>Developed brand communication strategies and visual identities for Cultfit, Chaipoint, Marine Kingdom, and NSRCEL.</p>
+  </div>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2015—2016</span>
+      <h3>Brand Designer, Brand Union · Bangalore</h3>
+    </div>
+    <p>Part of a small design team, ideating and implementing brand systems and packaging for Yardley, Team Indus and Airtel.</p>
+  </div>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2015</span>
+      <h3>Art Director, DDB Mudra · Mumbai</h3>
+    </div>
+    <p>Represented India as a Young Lion at Cannes Lions. Designed advertisements and brand collaterals for HBO India, Volkswagen among others.</p>
+  </div>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2015</span>
+      <h3>Graphic Design Intern, Wolff Olins · Dubai</h3>
+    </div>
+  </div>
+  <h4>Education</h4>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2019—2020</span>
+      <h3>M. Des, Interaction Design</h3>
+      <p style="margin: 4px 0 0 0; font-size: 14px;"><a href="https://cca.edu/design/interaction-design/" target="_blank">California College of the Arts</a> · San Francisco</p>
+    </div>
+  </div>
+  <div class="item">
+    <div class="item-header">
+      <span class="item-date">2010—2014</span>
+      <h3>B. Des, Graphic Design</h3>
+      <p style="margin: 4px 0 0 0; font-size: 14px;"><a href="https://www.nid.edu/" target="_blank">National Institute of Design</a> · Ahmedabad</p>
+    </div>
+  </div>
+</div>
 
 <script>
 
@@ -373,6 +527,19 @@ document.addEventListener('dblclick', (e) => {
 });
 
   loadSavedPostits();
+
+  function openResumePanel(e) {
+  e.preventDefault();
+  document.getElementById('resume-panel').classList.add('open');
+  document.getElementById('resume-overlay').classList.add('open');
+}
+function closeResumePanel() {
+  document.getElementById('resume-panel').classList.remove('open');
+  document.getElementById('resume-overlay').classList.remove('open');
+}
+document.getElementById('resume-close').addEventListener('click', closeResumePanel);
+document.getElementById('resume-overlay').addEventListener('click', closeResumePanel);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeResumePanel(); });
 </script>
 
 </body>
