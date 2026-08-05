@@ -8,28 +8,47 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <style>
+    .full-width-image {
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      max-width: 1023px;
+      margin-bottom: 2em;
+      padding: 0 5px;
+      box-sizing: border-box;
+    }
+
+    .full-width-image img {
+      width: 100%;
+      display: block;
+    }
+
+    .full-width-gallery {
+      position: relative;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90vw;
+      max-width: 1023px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      padding: 0 5px;
+      box-sizing: border-box;
+    }
+
+    @media (max-width: 768px) {
+      .full-width-image,
+      .full-width-gallery {
+        position: static;
+        left: auto;
+        transform: none;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+      }
+    }
+    </style>
 </head>
-
-<style>
-.full-width-image {
-  width: auto;
-  max-width: 1023px;
-  margin: 0 auto 2em auto;
-  padding: 0 5px;
-}
-
-.full-width-image img {
-  width: 100%;
-  display: block;
-}
-
-.full-width-gallery {
-  max-width: 1023px;
-  margin: 0 auto;
-  padding: 0 5px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-</style>
 
 <body>
      <a href="index.html#portfolio-appendix" class="blue-link">🟨</a>
