@@ -19,10 +19,6 @@ body {
   background: #fff;
 }
 
-html {
-  background: #FFFF99;
-}
-
 .overscroll-note {
   position: fixed;
   bottom: 0;
