@@ -182,7 +182,6 @@ a:hover {
 
 
 /* ——— PORTFOLIO ——— */
-
 .portfolio-section {
   width: 100vw;
   position: relative;
@@ -225,6 +224,42 @@ a:hover {
 .project-title a:hover { color: inherit; background: #FFFF99; }
 
 .project p { margin: 8px 0 0 0; }
+
+/* ——— POST ITS——— */
+.user-postit {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  padding: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #333;
+  z-index: 5;
+  cursor: grab;
+  outline: none;
+  word-wrap: break-word;
+  overflow: hidden;
+}
+.user-postit:focus {
+  cursor: text;
+}
+.user-postit.dragging { cursor: grabbing; z-index: 1000; }
+    
+ #cursor-dot {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 200;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+@media (max-width: 1100px) {
+  #cursor-dot { display: none; }
+}
 
 @media (max-width: 700px) {
   .portfolio-section {
