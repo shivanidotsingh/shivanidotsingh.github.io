@@ -48,7 +48,7 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
   z-index: 5;
   cursor: grab;
 }
-.photo-postit.dragging, { cursor: grabbing; z-index: 1000; }
+.photo-postit.dragging { cursor: grabbing; z-index: 1000; }
 
 .photo-postit.top-left { top: -20px; left: -30px; }
 .photo-postit.bottom-right { bottom: -20px; right: -30px; transform: rotate(2deg); }
@@ -410,8 +410,10 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   .catch(() => {});
 
   
-document.querySelectorAll('.photo-postit, .gutter-postit').forEach(makeDraggable);
-
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.photo-postit, .gutter-postit').forEach(makeDraggable);
+});
+  
 function openResumePanel(e) {
   e.preventDefault();
   document.getElementById('resume-panel').classList.add('open');
