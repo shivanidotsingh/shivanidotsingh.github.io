@@ -532,7 +532,8 @@ document.addEventListener('dblclick', (e) => {
   const postit = document.createElement('div');
   postit.className = 'user-postit';
   postit.contentEditable = 'true';
-  postit.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
+  postit.style.background = currentPreviewColor;
+  
   postit.style.left = (e.pageX - 60) + 'px';
   postit.style.top = (e.pageY - 60) + 'px';
   if (Math.random() < 0.2) {
@@ -560,6 +561,8 @@ document.getElementById('resume-overlay').addEventListener('click', closeResumeP
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeResumePanel(); });
 
   
+let currentPreviewColor = POSTIT_COLORS[0];
+
 if (IS_DESKTOP) {
   const cursorDot = document.getElementById('cursor-dot');
   let wasInteractive = true;
@@ -572,7 +575,8 @@ if (IS_DESKTOP) {
     cursorDot.style.opacity = isInteractive ? '0' : '1';
 
     if (!isInteractive && wasInteractive) {
-      cursorDot.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
+      currentPreviewColor = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
+      cursorDot.style.background = currentPreviewColor;
     }
     wasInteractive = isInteractive;
   });
