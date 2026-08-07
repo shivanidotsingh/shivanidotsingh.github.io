@@ -3,7 +3,7 @@ const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
 const IS_DESKTOP = window.matchMedia('(min-width: 1101px)').matches;
 let currentPreviewColor = POSTIT_COLORS[0];
 
-/* ---------- POSTIT PERSISTENCE ---------- */
+/* ---------- POSTIT PERSISTENCE (page-specific) ---------- */
 function savePostits() {
   const postits = Array.from(document.querySelectorAll('.user-postit')).map(el => ({
     text: el.textContent,
@@ -12,12 +12,12 @@ function savePostits() {
     background: el.style.background,
     transform: el.style.transform
   }));
-  localStorage.setItem('userPostits', JSON.stringify(postits));
+  localStorage.setItem('userPostits_' + location.pathname, JSON.stringify(postits));
 }
 
 function loadSavedPostits() {
   if (!IS_DESKTOP) return;
-  const saved = JSON.parse(localStorage.getItem('userPostits'));
+  const saved = JSON.parse(localStorage.getItem('userPostits_' + location.pathname));
   if (saved) {
     saved.forEach(data => {
       const postit = document.createElement('div');
