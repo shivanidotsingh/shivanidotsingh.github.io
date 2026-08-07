@@ -211,6 +211,21 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
   line-height: 1.6;
   margin-top: 0;
 }
+
+ #cursor-dot {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  z-index: 200;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+@media (max-width: 1100px) {
+  #cursor-dot { display: none; }
+}
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -219,6 +234,9 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
 </head>
 
 <body>
+
+<div id="cursor-dot"></div>
+  
 <!-- GUTTER POSTITS -->
 <div class="gutter-postits-container">
 <div class="gutter-postit gp-1">Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a></div>
@@ -237,7 +255,7 @@ body { padding: 0 var(--page-gutter) 30px !important; background:#fafafa;}
     <p class="intro-mobile">
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF</a>, I think of my practice as a way to bridge intention and outcome.
     </p>
-    <div class="photo-wrapper" style="margin: 20px 0;" title="double click anywhere to post-it.">
+    <div class="photo-wrapper" style="margin: 20px 0;" title="updated in july 2026, this website is always becoming, as am i.">
       <img src="images/moi.jpg" class="photo-bw">
       <img src="images/red.jpg" class="photo-color">
     <div class="photo-postit top-left"> An alumnus of NID, Ahmedabad and California College of the Arts. more in <a href="resume.html" onclick="openResumePanel(event)">resume</a> </div>
@@ -540,6 +558,25 @@ function closeResumePanel() {
 document.getElementById('resume-close').addEventListener('click', closeResumePanel);
 document.getElementById('resume-overlay').addEventListener('click', closeResumePanel);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeResumePanel(); });
+
+  
+if (IS_DESKTOP) {
+  const cursorDot = document.getElementById('cursor-dot');
+  let wasInteractive = true;
+
+  document.addEventListener('mousemove', (e) => {
+    cursorDot.style.left = e.clientX + 'px';
+    cursorDot.style.top = e.clientY + 'px';
+
+    const isInteractive = e.target.closest('a, .photo-postit, .user-postit, .gutter-postit, button, input, textarea');
+    cursorDot.style.opacity = isInteractive ? '0' : '1';
+
+    if (!isInteractive && wasInteractive) {
+      cursorDot.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
+    }
+    wasInteractive = isInteractive;
+  });
+}
 </script>
 
 </body>
