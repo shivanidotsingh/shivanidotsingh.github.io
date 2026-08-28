@@ -83,14 +83,13 @@ a:hover {
 }
 
 .home-link {
-  color: #0000EE;
   text-decoration: none;
   position: fixed;
   top: 14px;
   left: 18px;
   z-index: 60;
   font-family: 'Tac One', sans-serif;
-  font-size: 34px;
+  font-size: 38px;
   line-height: 1;
 }
 .note { font-size: 0.8em; color: #808080; }
