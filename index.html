@@ -28,8 +28,45 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
 
 .h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
 
-.intro-wrap { position: relative; }
+.intro-wrap { min-height: 100vh; position: relative; }
 
+.intro-card {
+  position: relative;
+  background: #ffffff;
+  width: 370px;
+  padding: 30px 28px 26px;
+  box-sizing: border-box;
+  transform: rotate(-1.2deg);
+  margin: 24px 0 40px;
+}
+
+.intro-card::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 22px;
+  right: 22px;
+  height: 8px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #fafafa 0px, #fafafa 8px,
+    transparent 8px, transparent 78px
+  );
+}
+
+.intro-card p {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  font-size: 15px;
+  line-height: 30px;
+  color: #222;
+  margin: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 29px,
+    rgba(0,0,0,0.09) 29px, rgba(0,0,0,0.09) 30px
+  );
+}
 /* ——— PHOTO POSTITS ——— */
 .photo-postit {
   position: absolute;
@@ -215,8 +252,8 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
 <section class="intro-wrap">
   <main id="page">
     <h1 style="padding-top:10px;"><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
-<p class="intro-desktop">
-    I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>, I think of my practice as a way to bridge intention and outcome. 
+<p class="intro-card intro-desktop">
+    I'm a designer with an aptitude for analytical thinking and an appetite for play. 
 </p>
     <p class="intro-mobile">
       I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF</a>, I think of my practice as a way to bridge intention and outcome.
