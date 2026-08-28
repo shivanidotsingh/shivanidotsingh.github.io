@@ -228,7 +228,7 @@ a:hover {
 
 .project-title {
   margin: 0 0 8px 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: var(--project-title-size);
   font-weight: 600;
   line-height: 1.25;
