@@ -28,6 +28,16 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
 
 .h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
 
+.intro-wrap {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ——— INTRO CARD (desktop only) ——— */
+@media (min-width: 769px) {
   .intro-card {
     position: relative;
     background: #ffffff;
@@ -65,9 +75,11 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
       rgba(0,0,0,0.09) 29px, rgba(0,0,0,0.09) 30px
     );
   }
+}
 
 .intro-card p a {  text-decoration: none; }
 .intro-card p a:hover {  background: #FFFF99; text-decoration: none; }
+
 /* ——— PHOTO POSTITS ——— */
 .photo-postit {
   position: absolute;
