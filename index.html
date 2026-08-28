@@ -28,50 +28,44 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
 
 .h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
 
-.intro-wrap {
-  min-height: 100vh;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-    
-.intro-card {
-  position: relative;
-  background: #ffffff;
-  width: 400px;
-  padding: 10px 28px 18px;
-  box-sizing: border-box;
-  transform: rotate(-1.2deg);
-  margin: 24px auto -40px;
-}    
-.intro-card::before {
-  content: '';
-  position: absolute;
-  top: 8px;
-  left: 22px;
-  right: 22px;
-  height: 14px;
-  background-image: repeating-linear-gradient(
-    to right,
-    #fafafa 0px, #fafafa 14px,
-    transparent 14px, transparent 78px
-  );
-}
+  .intro-card {
+    position: relative;
+    background: #ffffff;
+    width: 400px;
+    padding: 10px 28px 18px;
+    box-sizing: border-box;
+    transform: rotate(-1.2deg);
+    margin: 24px auto -40px;
+  }
 
-.intro-card p {
-  font-family: var(--font-mono);
-  font-weight: 300;
-  font-size: 18px;
-  line-height: 30px;
-  color: #222;
-  margin: 0;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    transparent 0px, transparent 29px,
-    rgba(0,0,0,0.09) 29px, rgba(0,0,0,0.09) 30px
-  );
-}
+  .intro-card::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 22px;
+    right: 22px;
+    height: 14px;
+    background-image: repeating-linear-gradient(
+      to right,
+      #fafafa 0px, #fafafa 14px,
+      transparent 14px, transparent 78px
+    );
+  }
+
+  .intro-card p {
+    font-family: var(--font-sans);
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 30px;
+    color: #222;
+    margin: 0;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 29px,
+      rgba(0,0,0,0.09) 29px, rgba(0,0,0,0.09) 30px
+    );
+  }
+
 .intro-card p a {  text-decoration: none; }
 .intro-card p a:hover {  background: #FFFF99; text-decoration: none; }
 /* ——— PHOTO POSTITS ——— */
@@ -131,14 +125,7 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
 
 @media (max-width: 768px) {
   .photo-postit { display: none; }
-  .intro-card { width: 90%; }
-  .intro-card p {
-    font-size: 13px;
-    line-height: 22px;
-  }
-  .intro-card::before { height: 10px; }
-  
-  .photo-wrapper .photo-front { display: none; }
+  .photo-wrapper { display: none; }
   .photo-wrapper img {
     aspect-ratio: 6 / 4;
     object-fit: cover;
