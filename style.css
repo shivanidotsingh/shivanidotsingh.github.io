@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Tac+One&display=swap');
 
 :root {
   --h1-size: clamp(30px, 3vw, 32px);
@@ -82,15 +82,17 @@ a:hover {
   text-decoration-style: wavy;
 }
 
-.blue-link {
+.home-link {
   color: #0000EE;
   text-decoration: none;
   position: fixed;
   top: 14px;
   left: 18px;
   z-index: 60;
+  font-family: 'Tac One', sans-serif;
+  font-size: 34px;
+  line-height: 1;
 }
-
 .note { font-size: 0.8em; color: #808080; }
 
 .item { margin-bottom: 1em; }
