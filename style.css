@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300;1,300&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Tac+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Syne:wght@400&family=Tac+One&display=swap');
 
 :root {
   --h1-size: clamp(30px, 3vw, 32px);
@@ -7,7 +7,7 @@
   --portfolio-pad-mobile: 20px;
   --project-title-size: clamp(18px, 1.6vw, 22px);
   --project-img-h: 320px;
-  --font-mono: 'Google Sans Code', monospace;
+  --font-mono: 'Syne', sans-serif;
   --font-sans: 'IBM Plex Sans', sans-serif;
 }
 
