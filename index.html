@@ -28,8 +28,13 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
 
 .h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
 
-.intro-wrap { min-height: 100vh; position: relative; }
-
+.intro-wrap {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .intro-card {
   position: relative;
   background: #ffffff;
@@ -37,7 +42,7 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#fafafa;}
   padding: 30px 28px 18px;
   box-sizing: border-box;
   transform: rotate(-1.2deg);
-  margin: 24px 0 -40px;
+  margin: 24px auto -40px;
 }
 
 .intro-card::before {
