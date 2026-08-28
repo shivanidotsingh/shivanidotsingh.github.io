@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Tac+One&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@200;300&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Tac+One&display=swap');
 :root {
   --h1-size: clamp(30px, 3vw, 32px);
   --page-gutter: 40px;
