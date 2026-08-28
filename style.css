@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap');
+
 :root {
   --h1-size: clamp(30px, 3vw, 32px);
   --page-gutter: 40px;
@@ -5,6 +7,8 @@
   --portfolio-pad-mobile: 20px;
   --project-title-size: clamp(18px, 1.6vw, 22px);
   --project-img-h: 320px;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-sans: 'IBM Plex Sans', sans-serif;
 }
 
 body {
