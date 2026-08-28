@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Syne:wght@400&family=Tac+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&family=Syne:wght@400;600&family=Tac+One&display=swap');
 
 :root {
   --h1-size: clamp(30px, 3vw, 32px);
@@ -230,7 +230,7 @@ a:hover {
   margin: 0 0 8px 0;
   font-family: var(--font-mono);
   font-size: var(--project-title-size);
-  font-weight: 400;
+  font-weight: 600;
   line-height: 1.25;
 }
 
