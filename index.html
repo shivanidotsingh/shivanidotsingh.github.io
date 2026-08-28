@@ -83,8 +83,8 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 /* ——— PHOTO POSTITS ——— */
 .photo-postit {
   position: absolute;
-  width: 130px;
-  height: 130px;
+  width: 132px;
+  height: 132px;
   padding: 10px;
   background: #FFFF99;
   font-family: var(--font-sans);
@@ -109,8 +109,8 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 /* ——— GUTTER POSTITS ——— */
 .gutter-postit {
   position: absolute;
-  width: 130px;
-  height: 130px;
+  width: 132px;
+  height: 132px;
   padding: 10px;
   font-family: var(--font-sans);
   font-size: 15px;
@@ -132,6 +132,7 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 }
 .gutter-postit { pointer-events: auto; }
 
+.intro-mobile { display: none; }
 
 @media (max-width: 768px) {
   .photo-postit, .photo-wrapper, .intro-desktop { display: none; }
@@ -142,8 +143,6 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
   .gutter-postits-container { display: none; }
   .resume-panel, .resume-panel-overlay { display: none; }
 }
-
-.intro-mobile { display: none; }
     
 .gp-1 { top: 75px; left: calc(50% - 505px); background: #FFB3D9; transform: rotate(-2deg); }
 .gp-2 { top: 315px; left: calc(50% - 475px); background: #B3D9FF; transform: rotate(2deg); }
@@ -252,7 +251,7 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 <div class="gutter-postit gp-1">Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a></div>
 <div class="gutter-postit gp-2">Previously at Salesforce in San Francisco — <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">highlights</a> from that chapter</div>
 <div class="gutter-postit gp-3">Trained in graphic design, I've also crafted ads and <a href="https://singh.work/logofolio">logos</a> in the past</div>
-<div class="gutter-postit gp-4">An alumnus of NID, Ahmedabad and California College of the Arts, see more in my <a href="resume.html" onclick="openResumePanel(event)">resume</a></div>
+<div class="gutter-postit gp-4">An alumnus of NID Ahmedabad and California College of the Arts, see more in my <a href="resume.html" onclick="openResumePanel(event)">resume</a></div>
 </div>
 
 <!-- INTRO -->
