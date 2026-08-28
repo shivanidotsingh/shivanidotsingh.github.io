@@ -242,11 +242,11 @@ a:hover {
 /* ——— POST ITS——— */
 .user-postit {
   position: absolute;
-  width: 120px;
-  height: 120px;
+  width: 130px;
+  height: 130px;
   padding: 10px;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   color: #333;
   z-index: 5;
