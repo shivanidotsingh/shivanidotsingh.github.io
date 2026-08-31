@@ -80,47 +80,31 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 .intro-card p a {  text-decoration: none; }
 .intro-card p a:hover {  background: #FFFF99; text-decoration: none; }
 
-/* ——— PHOTO POSTITS ——— */
-.photo-postit {
+/* ——— POSTITS ——— */
+.photo-postit, .gutter-postit {
   position: absolute;
   width: 132px;
   height: 132px;
   padding: 10px;
-  background: #FFFF99;
   font-family: var(--font-sans);
   font-size: 15px;
   font-weight: 345;
   line-height: 1.5;
   color: #333;
-  z-index: 5;
   cursor: grab;
 }
-.photo-postit.dragging { cursor: grabbing; z-index: 1000; }
+.photo-postit { background: #FFFF99; z-index: 5; }
+.gutter-postit { z-index: 4; pointer-events: auto; }
+.photo-postit.dragging, .gutter-postit.dragging { cursor: grabbing; z-index: 1000; }
 
 .photo-postit.top-left { top: -20px; left: -30px; }
 .photo-postit.bottom-right { bottom: -20px; right: -30px; transform: rotate(2deg); }
-
 
 .photo-wrapper { position: relative; display: inline-block; margin: 20px 0; }
 .photo-wrapper .photo-front { position: absolute; top: 0; left: 0; opacity: 0; }
 .photo-wrapper:hover .photo-front { opacity: 1; }
 .photo-wrapper:has(.photo-postit:hover) .photo-front { opacity: 0; }
 
-/* ——— GUTTER POSTITS ——— */
-.gutter-postit {
-  position: absolute;
-  width: 132px;
-  height: 132px;
-  padding: 10px;
-  font-family: var(--font-sans);
-  font-size: 15px;
-  font-weight: 345;
-  line-height: 1.5;
-  color: #333;
-  z-index: 4;
-  cursor: grab;
-}
-.gutter-postit.dragging { cursor: grabbing; z-index: 1000; }
 .gutter-postits-container {
   position: absolute;
   top: 50%;
@@ -130,7 +114,6 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
   margin-top: -220px;
   pointer-events: none;
 }
-.gutter-postit { pointer-events: auto; }
 
 .intro-mobile { display: none; }
 
@@ -149,7 +132,8 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 .gp-3 { top: 175px; right: calc(50% - 475px); background: #B3FFB3; transform: rotate(1.5deg); }
 .gp-4 { top: 295px; right: calc(50% - 515px); background: #FFFF99; transform: rotate(-1.5deg); }
 
-    .resume-panel-overlay {
+/* ——— SIDE PANELS ——— */
+.resume-panel-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.15);
@@ -177,7 +161,7 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
   transform: translateX(100%);
   transition: transform 0.3s ease;
   overflow-y: auto;
-  padding: 60px 50px;
+  padding: 0;
   box-sizing: border-box;
 }
 .resume-panel.open {
@@ -194,45 +178,9 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
   color: #888;
   background: none;
   border: none;
+  z-index: 2;
 }
 .resume-panel-close:hover { color: #111; }
-
-.resume-panel .item {
-  margin-bottom: 28px;
-}
-
-.resume-panel .item-header { 
-  display: flex; 
-  flex-direction: column; 
-  margin-bottom: 8px; 
-}
-
-.resume-panel .item-date { 
-  display: block;
-  font-size: 13px; 
-  letter-spacing: 0.05em;
-  text-transform: uppercase; 
-  color: #888; 
-  margin-bottom: 4px; 
-}
-
-.resume-panel .item-header h3 {
-  font-size: 18px; 
-  font-weight: 600;
-  line-height: 1.3; 
-  margin: 0; 
-  padding: 0;
-  border: none !important;
-  background: none !important;
-  color: #111;
-}
-
-.resume-panel .item p {
-  color: #555;
-  font-size: 15px;
-  line-height: 1.6;
-  margin-top: 0;
-}
 
 .panel-frame {
   width: 100%;
@@ -241,7 +189,6 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
   display: block;
 }
 
-    
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -257,8 +204,8 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 <div class="gutter-postits-container">
 <div class="gutter-postit gp-1">Born in India and based in Sweden, I've been graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a></div>
 <div class="gutter-postit gp-2">Previously at Salesforce in San Francisco — <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">highlights</a> from that chapter</div>
-<div class="gutter-postit gp-3">Trained in graphic design, I've also crafted ads and <a href="logofolio.html" onclick="openLogoPanel(event)">logos</a> in the past</div>
-<div class="gutter-postit gp-4">An alumnus of NID Ahmedabad and California College of the Arts, see more in my <a href="resume.html" onclick="openResumePanel(event)">resume</a></div>
+<div class="gutter-postit gp-3">Trained in graphic design, I've also crafted ads and <a href="logofolio.html" onclick="openPanel(event, 'logo', 'logofolio.html')">logos</a> in the past</div>
+<div class="gutter-postit gp-4">An alumnus of NID Ahmedabad and California College of the Arts, see more in my <a href="resume.html" onclick="openPanel(event, 'resume', 'resume.html')">resume</a></div>
 </div>
 
 <!-- INTRO -->
@@ -359,87 +306,26 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 <div class="overscroll-note">
   <p class="note">updated in aug 2026, this website is always becoming, as am I. </p>
 </div>
-  
+
+<!-- SIDE PANELS -->
 <div class="resume-panel-overlay" id="resume-overlay"></div>
 <div class="resume-panel" id="resume-panel">
-  <button class="resume-panel-close" id="resume-close"> ✕ </button>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2023—Present</span>
-      <h3>Design Specialist, <a href="https://www.unicefventurefund.org/team" target="_blank">UNICEF Innovation</a> · Stockholm</h3>
-    </div>
-    <p>I guide the design of digital products and services we build, and invest in. Curerntly building <a href="https://unicef-office-of-innovation-1.gitbook.io/unicef-toolkits/HlT4xFWyVhjMRNHG534K/product-design" target="_blank">this toolkit</a> to onboard early-stage cohort of companies invested in by the Venture Fund. I also facilitate cross-functional workshops, and contribute to the visual design of brand communication.</p>
-  </div>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2021—2023</span>
-      <h3>Designer, Salesforce · San Francisco</h3>
-    </div>
-    <p>Combined strategy, storytelling and technology to create compelling narratives and visions for digital transformation with clients. Notable clients — 3M, Verizon, HBS, HPE, Amazon.</p>
-  </div>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2018—2019</span>
-      <h3>UX Designer, <a href="https://parallelhq.com" target="_blank">Parallel Labs</a> · Bangalore</h3>
-    </div>
-    <p>Applied design sprints to align business goals with consumer needs. Co-facilitated workshops and design jams with Facebook's TTC Labs in Singapore and Hyderabad.</p>
-  </div>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2016—2018</span>
-      <h3>Graphic Designer, <a href="https://www.instagram.com/happydesignworks/" target="_blank">mcgarrybowen</a> · Bangalore</h3>
-    </div>
-    <p>Developed brand communication strategies and visual identities for Cultfit, Chaipoint, Marine Kingdom, and NSRCEL.</p>
-  </div>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2015—2016</span>
-      <h3>Brand Designer, Brand Union · Bangalore</h3>
-    </div>
-    <p>Part of a small design team, ideating and implementing brand systems and packaging for Yardley, Team Indus and Airtel.</p>
-  </div>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2015</span>
-      <h3>Art Director, DDB Mudra · Mumbai</h3>
-    </div>
-    <p>Represented India as a Young Lion at Cannes Lions. Designed advertisements and brand collaterals for HBO India, Volkswagen among others.</p>
-  </div>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2015</span>
-      <h3>Graphic Design Intern, Wolff Olins · Dubai</h3>
-    </div>
-  </div>
-  <h4>Education</h4>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2019—2020</span>
-      <h3>M. Des, Interaction Design</h3>
-      <p style="margin: 4px 0 0 0; font-size: 14px;"><a href="https://cca.edu/design/interaction-design/" target="_blank">California College of the Arts</a> · San Francisco</p>
-    </div>
-  </div>
-  <div class="item">
-    <div class="item-header">
-      <span class="item-date">2010—2014</span>
-      <h3>B. Des, Graphic Design</h3>
-      <p style="margin: 4px 0 0 0; font-size: 14px;"><a href="https://www.nid.edu/" target="_blank">National Institute of Design</a> · Ahmedabad</p>
-    </div>
-  </div>
+  <button class="resume-panel-close" data-close> ✕ </button>
+  <iframe class="panel-frame" id="resume-frame" src="" title="Resume"></iframe>
 </div>
 
-  <div class="resume-panel-overlay" id="logo-overlay"></div>
-<div class="resume-panel" id="logo-panel" style="padding: 0;">
-  <button class="resume-panel-close" id="logo-close"> ✕ </button>
+<div class="resume-panel-overlay" id="logo-overlay"></div>
+<div class="resume-panel" id="logo-panel">
+  <button class="resume-panel-close" data-close> ✕ </button>
   <iframe class="panel-frame" id="logo-frame" src="" title="Logofolio"></iframe>
 </div>
 
-  
 <script>
 
-
-
 /* ---------- WEATHER INLINE ---------- */
+/* Parked — needs a <span id="weather-inline"></span> somewhere to write into.
+   Uncomment the block below and add that span to bring it back.
+
 const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
 const lat = 59.3293;
 const lon = 18.0686;
@@ -464,38 +350,30 @@ fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&uni
   })
   .catch(() => {});
 
-  
+*/
+
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.photo-postit, .gutter-postit').forEach(makeDraggable);
 });
-  
-function openResumePanel(e) {
-  e.preventDefault();
-  document.getElementById('resume-panel').classList.add('open');
-  document.getElementById('resume-overlay').classList.add('open');
-}
-function closeResumePanel() {
-  document.getElementById('resume-panel').classList.remove('open');
-  document.getElementById('resume-overlay').classList.remove('open');
-}
-document.getElementById('resume-close').addEventListener('click', closeResumePanel);
-document.getElementById('resume-overlay').addEventListener('click', closeResumePanel);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeResumePanel(); });
 
-  function openLogoPanel(e) {
+/* ---------- SIDE PANELS ---------- */
+function openPanel(e, name, src) {
   e.preventDefault();
-  document.getElementById('logo-frame').src = 'logofolio.html';
-  document.getElementById('logo-panel').classList.add('open');
-  document.getElementById('logo-overlay').classList.add('open');
+  document.getElementById(name + '-frame').src = src;
+  document.getElementById(name + '-panel').classList.add('open');
+  document.getElementById(name + '-overlay').classList.add('open');
 }
-function closeLogoPanel() {
-  document.getElementById('logo-panel').classList.remove('open');
-  document.getElementById('logo-overlay').classList.remove('open');
-  document.getElementById('logo-frame').src = '';
+
+function closePanels() {
+  document.querySelectorAll('.resume-panel, .resume-panel-overlay')
+    .forEach(el => el.classList.remove('open'));
+  document.querySelectorAll('.panel-frame').forEach(f => f.src = '');
 }
-document.getElementById('logo-close').addEventListener('click', closeLogoPanel);
-document.getElementById('logo-overlay').addEventListener('click', closeLogoPanel);
-  
+
+document.querySelectorAll('[data-close], .resume-panel-overlay')
+  .forEach(el => el.addEventListener('click', closePanels));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePanels(); });
+
 </script>
 
 </body>
