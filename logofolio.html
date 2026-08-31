@@ -130,6 +130,10 @@
         </div>
     </div>
 
-
+<script>
+if (window !== window.top) {
+  document.querySelectorAll('a').forEach(a => { if (!a.target) a.target = '_top'; });
+}
+</script>
 </body>
 </html>
