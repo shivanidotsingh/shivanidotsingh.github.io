@@ -1,5 +1,5 @@
 /* ---------- SHARED CONFIG ---------- */
-const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
+const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF'];
 const IS_DESKTOP = window.matchMedia('(min-width: 1101px)').matches;
 
 /* ---------- POSTIT PERSISTENCE (page-specific) ---------- */
