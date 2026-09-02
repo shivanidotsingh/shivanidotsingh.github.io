@@ -347,12 +347,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const strip = document.querySelector('.overscroll-note');
   if (!note) return;
 
-  strip.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
-
   const fallback = 'updated in aug 2026, this website is always becoming, as am I.';
   const lines = [
     () => fallback,
-    () => 'offline, I enjoy playing the ukulele, trying new wine bars, or being competitive at padel.',
+    () => 'offline, you can find me playing the ukulele, trying small plates in the city, or being competitive at padel.',
     weatherLine
   ];
 
@@ -360,8 +358,18 @@ document.addEventListener('DOMContentLoaded', () => {
     lines.push(() => 'double click anywhere to leave a note, visible only to you.');
   }
 
-  const pick = lines[Math.floor(Math.random() * lines.length)];
-  Promise.resolve(pick()).then(text => { note.textContent = text || fallback; });
+  let last = -1;
+  function shuffle() {
+    let i;
+    do { i = Math.floor(Math.random() * lines.length); } while (lines.length > 1 && i === last);
+    last = i;
+    strip.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
+    Promise.resolve(lines[i]()).then(text => { note.textContent = text || fallback; });
+  }
+
+  shuffle();
+  strip.style.cursor = 'pointer';
+  strip.addEventListener('click', shuffle);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
