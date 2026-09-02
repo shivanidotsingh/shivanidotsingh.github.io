@@ -352,10 +352,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const fallback = 'updated in aug 2026, this website is always becoming, as am I.';
   const lines = [
     () => fallback,
-    () => 'double click anywhere to leave a note, visible only to you.',
     () => 'offline, I enjoy playing the ukulele, trying new wine bars, or being competitive at padel.',
     weatherLine
   ];
+
+  if (IS_DESKTOP) {
+    lines.push(() => 'double click anywhere to leave a note, visible only to you.');
+  }
 
   const pick = lines[Math.floor(Math.random() * lines.length)];
   Promise.resolve(pick()).then(text => { note.textContent = text || fallback; });
