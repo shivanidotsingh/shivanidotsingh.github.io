@@ -1,7 +1,6 @@
 /* ---------- SHARED CONFIG ---------- */
 const POSTIT_COLORS = ['#FFFF99', '#FFB3D9', '#B3FFB3', '#B3D9FF', '#D9B3FF'];
 const IS_DESKTOP = window.matchMedia('(min-width: 1101px)').matches;
-let currentPreviewColor = POSTIT_COLORS[0];
 
 /* ---------- POSTIT PERSISTENCE (page-specific) ---------- */
 function savePostits() {
@@ -84,29 +83,6 @@ function makeDraggable(el) {
   document.addEventListener('touchend', onUp);
 }
 
-/* ---------- CURSOR DOT ---------- */
-if (IS_DESKTOP) {
-  document.addEventListener('DOMContentLoaded', () => {
-    const cursorDot = document.getElementById('cursor-dot');
-    if (!cursorDot) return;
-    let wasInteractive = true;
-
-    document.addEventListener('mousemove', (e) => {
-      cursorDot.style.left = e.clientX + 'px';
-      cursorDot.style.top = e.clientY + 'px';
-
-      const isInteractive = e.target.closest('a, .photo-postit, .user-postit, .gutter-postit, button, input, textarea');
-      cursorDot.style.opacity = isInteractive ? '0' : '1';
-
-      if (!isInteractive && wasInteractive) {
-        currentPreviewColor = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
-        cursorDot.style.background = currentPreviewColor;
-      }
-      wasInteractive = isInteractive;
-    });
-  });
-}
-
 /* ---------- CREATE NEW POSTIT ---------- */
 document.addEventListener('dblclick', (e) => {
   if (!IS_DESKTOP) return;
@@ -114,7 +90,7 @@ document.addEventListener('dblclick', (e) => {
   const postit = document.createElement('div');
   postit.className = 'user-postit';
   postit.contentEditable = 'true';
-  postit.style.background = currentPreviewColor;
+  postit.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
   postit.style.left = (e.pageX - 60) + 'px';
   postit.style.top = (e.pageY - 60) + 'px';
   if (Math.random() < 0.2) {
