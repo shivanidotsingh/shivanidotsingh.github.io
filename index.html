@@ -290,11 +290,11 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 </div>
 
 <div class="project">
-  <a class="project-link" href="https://singh.work/lmnop">
+  <a class="project-link" href="lmnop.html">
     <img src="images/project7.png" alt="">
   </a>
   <div class="project-title">
-    <a class="project-link" href="https://singh.work/lmnop">ABC's of Branding a Preschool</a>
+    <a class="project-link" href="lmnop.html">ABC's of Branding a Preschool</a>
   </div>
   <p>Designing a playful brand identity for early childhood learning [Elemenopy Preschool, 2017]</p>
 </div>
@@ -302,7 +302,7 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
   </div> 
 </section>
 <div class="overscroll-note">
-  <p class="note">updated in aug 2026, this website is always becoming, as am I. </p>
+  <p class="note" id="footer-note"></p>
 </div>
 
 <!-- SIDE PANELS -->
@@ -320,35 +320,46 @@ body { padding: 0 var(--page-gutter) 0px !important; background:#f5f5f5;}
 
 <script>
 
-/* ---------- WEATHER INLINE ---------- */
-/* Parked — needs a <span id="weather-inline"></span> somewhere to write into.
-   Uncomment the block below and add that span to bring it back.
+/* ---------- FOOTER LINE ---------- */
+function weatherLine() {
+  const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
+  return fetch(`https://api.openweathermap.org/data/2.5/weather?lat=59.3293&lon=18.0686&units=metric&appid=${apiKey}`)
+    .then(res => res.json())
+    .then(data => {
+      const id = data.weather[0].id;
+      let condition = 'mild';
+      if (id >= 200 && id < 300) condition = 'unexpectedly stormy';
+      else if (id >= 300 && id < 400) condition = 'predictably drizzly';
+      else if (id >= 500 && id < 600) condition = 'raining';
+      else if (id >= 600 && id < 700) condition = 'snowing';
+      else if (id >= 700 && id < 800) condition = 'misty';
+      else if (id === 800) condition = 'clear skies';
+      else if (id === 801 || id === 802) condition = 'partly cloudy';
+      else if (id === 803) condition = 'mostly cloudy';
+      else if (id === 804) condition = 'cloudy';
+      return `it's ${condition} in Stockholm today and feels like ${Math.round(data.main.feels_like)}ºC outside.`;
+    })
+    .catch(() => null);
+}
 
-const apiKey = "90e9ebf020c5099c68c76c60da6b80a6";
-const lat = 59.3293;
-const lon = 18.0686;
-const weatherInline = document.getElementById('weather-inline');
+document.addEventListener('DOMContentLoaded', () => {
+  const note = document.getElementById('footer-note');
+  const strip = document.querySelector('.overscroll-note');
+  if (!note) return;
 
-fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${apiKey}`)
-  .then(res => res.json())
-  .then(data => {
-    const id = data.weather[0].id;
-    let condition = 'mild';
-    if (id >= 200 && id < 300) condition = 'unexpectedly stormy';
-    else if (id >= 300 && id < 400) condition = 'predictably drizzly';
-    else if (id >= 500 && id < 600) condition = 'raining';
-    else if (id >= 600 && id < 700) condition = 'snowing';
-    else if (id >= 700 && id < 800) condition = 'misty';
-    else if (id === 800) condition = 'clear skies';
-    else if (id === 801 || id === 802) condition = 'partly cloudy';
-    else if (id === 803) condition = 'mostly cloudy';
-    else if (id === 804) condition = 'cloudy';
-    const feelsLike = Math.round(data.main.feels_like);
-    weatherInline.textContent = `It's ${condition} here in Stockholm today and feels like ${feelsLike}ºC outside.`;
-  })
-  .catch(() => {});
+  strip.style.background = POSTIT_COLORS[Math.floor(Math.random() * POSTIT_COLORS.length)];
 
-*/
+  const fallback = 'updated in aug 2026, this website is always becoming, as am I.';
+  const lines = [
+    () => fallback,
+    () => 'double click anywhere to leave a note, visible only to you.',
+    () => 'offline, I enjoy playing the ukulele, trying new wine bars, or being competitive at padel.',
+    weatherLine
+  ];
+
+  const pick = lines[Math.floor(Math.random() * lines.length)];
+  Promise.resolve(pick()).then(text => { note.textContent = text || fallback; });
+});
 
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.photo-postit, .gutter-postit').forEach(makeDraggable);
