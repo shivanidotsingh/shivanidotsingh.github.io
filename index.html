@@ -337,7 +337,7 @@ function weatherLine() {
       else if (id === 801 || id === 802) condition = 'partly cloudy';
       else if (id === 803) condition = 'mostly cloudy';
       else if (id === 804) condition = 'cloudy';
-      return `it's ${condition} in Stockholm today and feels like ${Math.round(data.main.feels_like)}ºC outside.`;
+      return `It's ${condition} in Stockholm today and feels like ${Math.round(data.main.feels_like)}ºC outside.`;
     })
     .catch(() => null);
 }
@@ -347,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const strip = document.querySelector('.overscroll-note');
   if (!note) return;
 
-  const fallback = 'updated in aug 2026, this website is always becoming, as am I.';
+  const fallback = 'Last updated in august 2026, this website is always becoming, as am I.';
   const lines = [
     () => fallback,
     () => 'Offline, I am a devoted amateur at the ukulele and a worthy opponent at padel.',
@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   if (IS_DESKTOP) {
-    lines.push(() => 'double click anywhere to leave a note, visible only to you.');
+    lines.push(() => 'Double click anywhere to leave a note, visible only to you.');
   }
 
   let last = -1;
