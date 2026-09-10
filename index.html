@@ -118,12 +118,12 @@ body { padding: 0 var(--page-gutter) 0px !important; }
 .photo-postit.dragging, .gutter-postit.dragging { cursor: grabbing; z-index: 1000; }
 
 .photo-postit.top-left { top: -20px; left: -30px; }
-.photo-postit.bottom-right { bottom: -20px; right: -30px; transform: rotate(2deg); }
+.photo-postit.bottom-right { bottom: 10px; right: -50px; transform: rotate(2deg); }
 
 .photo-wrapper { position: relative; display: inline-block; margin: 20px 0; }
+
 .photo-wrapper .photo-front { position: absolute; top: 0; left: 0; opacity: 0; }
-.photo-wrapper:hover .photo-front { opacity: 1; }
-.photo-wrapper:has(.photo-postit:hover) .photo-front { opacity: 0; }
+.photo-wrapper:has(.photo-side:hover) .photo-front { opacity: 1; }
     
 .gutter-postits-container {
   position: absolute;
