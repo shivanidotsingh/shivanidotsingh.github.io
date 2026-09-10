@@ -86,6 +86,17 @@ body { padding: 0 var(--page-gutter) 0px !important; }
 .intro-card p a {  text-decoration: none; }
 .intro-card p a:hover {  background: #FFFF99; text-decoration: none; }
 
+.photo-caption {
+  position: absolute;
+  bottom: -28px;
+  left: 0;
+  margin: 0;
+  font-style: italic;
+  font-size: 0.85em;
+  color: #888;
+  display: none;
+}
+.photo-wrapper:hover .photo-caption { display: block; }
 /* ——— POSTITS ——— */
 .photo-postit, .gutter-postit {
   position: absolute;
@@ -225,6 +236,7 @@ body { padding: 0 var(--page-gutter) 0px !important; }
     <div class="photo-wrapper" style="margin: 20px 0;">
       <img src="images/moi.jpg" class="photo-side">
       <img src="images/red.jpg" class="photo-front">
+      <p class="photo-caption">oh, hello. I was just lamenting the death of the em dash.</p>
     <div class="photo-postit top-left"> I think of my practice as a way to bridge intention and outcome. </div>
     <div class="photo-postit bottom-right"> Drawing in the margins and playing with ideas on <a href="https://shivaniest.com/tagged/highlights" target="_blank">shivaniest.com</a></div>
     </div>
