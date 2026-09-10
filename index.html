@@ -85,17 +85,20 @@ body { padding: 0 var(--page-gutter) 0px !important; }
 
 .intro-card p a {  text-decoration: none; }
 .intro-card p a:hover {  background: #FFFF99; text-decoration: none; }
-
+    
 .photo-caption {
   position: absolute;
   bottom: -28px;
   left: 0;
+  right: 0;
   margin: 0;
-  font-style: italic;
+  font-family: var(--font-mono);
   font-size: 0.85em;
   color: #888;
+  text-align: center;
   display: none;
 }
+    
 .photo-wrapper:hover .photo-caption { display: block; }
 /* ——— POSTITS ——— */
 .photo-postit, .gutter-postit {
