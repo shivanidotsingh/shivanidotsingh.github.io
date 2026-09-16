@@ -10,9 +10,6 @@
   --font-mono: 'Syne', sans-serif;
   --font-sans: 'IBM Plex Sans', sans-serif;
 }
-
-
-
 body {
   font-family: "IBM Plex Sans", sans-serif;
   font-weight: 400;
@@ -47,16 +44,9 @@ body {
   padding: 0;
 }
 
-h1 {
-  font-size: var(--h1-size);
-  display: inline-block;
-}
+h1 { font-size: var(--h1-size); display: inline-block; }
 
-h2 {
-  margin-top: 2em;
-  padding-top: 1em;
-  border-top: 0.5px solid #111;
-}
+h2 { margin-top: 2em; padding-top: 1em; border-top: 0.5px solid #111; }
 
 h4 {
   font-size: 14px;
@@ -68,17 +58,9 @@ h4 {
   padding-top: 1em;
 }
 
-img {
-  width: 100%;
-  display: block;
-  margin-top: 1em;
-}
+img { width: 100%; display: block; margin-top: 1em; }
 
-a {
-  color: inherit;
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
-}
+a { color: inherit; text-decoration: underline; text-underline-offset: 0.25em; }
 
 a:hover {
   text-decoration-style: wavy;
@@ -261,6 +243,34 @@ a:hover {
   cursor: text;
 }
 .user-postit.dragging { cursor: grabbing; z-index: 1000; }
+
+/* ——— CREDIT POSTITS (project pages) ——— */
+.credit-postit {
+  position: absolute;
+  width: 150px;
+  min-height: 150px;
+  padding: 12px;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 345;
+  line-height: 1.5;
+  color: #333;
+  z-index: 4;
+}
+.credit-postit strong { display: block; font-weight: 600; margin-bottom: 2px; }
+.credit-postit a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.25); }
+
+.cp-1 { top: 150px; right: calc(50% - 480px); background: #FFFF99; transform: rotate(1.5deg); }
+.cp-2 { top: 330px; right: calc(50% - 455px); background: #B3D9FF; transform: rotate(-2deg); }
+.cp-3 { top: 510px; right: calc(50% - 490px); background: #B3FFB3; transform: rotate(1deg); }
+
+.credits-inline { display: none; }
+
+@media (max-width: 1100px) {
+  .credit-postit { display: none; }
+  .credits-inline { display: block; }
+}
 
 @media (max-width: 700px) {
   .portfolio-section {
