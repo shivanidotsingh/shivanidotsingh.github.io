@@ -262,8 +262,8 @@ a:hover {
 .credit-postit a { text-decoration: none; border-bottom: 1px solid rgba(0,0,0,.25); }
 
 .cp-1 { top: 150px; left: calc(50% - 480px); background: #FFFF99; transform: rotate(1.5deg); }
-.cp-2 { top: 330px; right: calc(50% - 455px); background: #B3D9FF; transform: rotate(-2deg); }
-.cp-3 { top: 510px; left: calc(50% - 495px); background: #B3FFB3; transform: rotate(1deg); }
+.cp-3 { top: 290px; left: calc(50% - 520px); background: #B3FFB3; transform: rotate(-2deg); }
+.cp-2 { top: 150px; right: calc(50% - 455px); background: #B3D9FF; transform: rotate(-2deg); }
 
 .credits-inline { display: none; }
 
