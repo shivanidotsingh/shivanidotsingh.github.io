@@ -80,7 +80,7 @@ body { background: transparent; }
 
 .intro-card p a {  text-decoration: none; }
 .intro-card p a:hover {  background: #FFFF99; text-decoration: none; }
-    
+
 .photo-caption {
   position: absolute;
   bottom: -28px;
@@ -93,9 +93,7 @@ body { background: transparent; }
   text-align: center;
   display: none;
 }
-    
-.photo-wrapper:has(.photo-side:hover) .photo-caption { display: block; }
-    
+
 /* ——— POSTITS ——— */
 .photo-postit, .gutter-postit {
   position: absolute;
@@ -118,8 +116,13 @@ body { background: transparent; }
 
 .photo-wrapper { position: relative; display: inline-block; margin: 20px 0; }
 .photo-wrapper .photo-front { position: absolute; top: 0; left: 0; opacity: 0; pointer-events: none; }
-.photo-wrapper:has(.photo-side:hover) .photo-front { opacity: 1; }
-    
+
+/* hover-only reveals — gated so a tap doesn't trigger them */
+@media (hover: hover) and (pointer: fine) {
+  .photo-wrapper:has(.photo-side:hover) .photo-front { opacity: 1; }
+  .photo-wrapper:has(.photo-side:hover) .photo-caption { display: block; }
+}
+
 .gutter-postits-container {
   position: absolute;
   top: 50%;
@@ -132,28 +135,46 @@ body { background: transparent; }
 
 .intro-mobile { display: none; }
 @media (max-width: 480px) {
+  :root { --page-gutter: 20px; }
   .intro-mobile { display: block; }
 
-  .photo-wrapper { display: block; }
-  .photo-wrapper img { aspect-ratio: 1 / 1; object-fit: cover; height: auto; }
+  .intro-card {
+    width: 100%;
+    margin: 16px auto 0;
+    padding: 10px 20px 28px;
+  }
+  .intro-card p {
+    font-size: 16px;
+    line-height: 26px;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0px, transparent 25px,
+      rgba(0,0,0,0.09) 25px, rgba(0,0,0,0.09) 26px
+    );
+  }
+
+  .photo-wrapper { display: block; margin: 28px 0 0; }
+  .photo-wrapper img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; height: auto; }
   .photo-wrapper .photo-front, .photo-caption { display: none; }
 
   .photo-postit {
-    width: 110px;
+    position: static;
+    width: 160px;
     height: auto;
-    min-height: 110px;
-    font-size: 11px;
-    padding: 9px;
+    min-height: 0;
+    font-size: 14px;
+    padding: 12px;
+    margin: -44px 14px 0 auto;
+    transform: rotate(-2deg);
   }
-  .photo-postit.top-left { top: -14px; left: -22px; }
-  .photo-postit.bottom-right { bottom: -14px; right: -22px; }
+  .photo-postit.bottom-right { display: none; }
 }
 
 @media (max-width: 1100px) {
   .gutter-postits-container { display: none; }
   .resume-panel, .resume-panel-overlay { display: none; }
 }
-    
+
 .gp-1 { top: 75px; left: calc(50% - 505px); background: #FFB3D9; transform: rotate(-2deg); }
 .gp-2 { top: 315px; left: calc(50% - 475px); background: #B3D9FF; transform: rotate(2deg); }
 .gp-3 { top: 175px; right: calc(50% - 475px); background: #B3FFB3; transform: rotate(1.5deg); }
@@ -215,7 +236,6 @@ body { background: transparent; }
   border: none;
   display: block;
 }
-
 </style>
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
