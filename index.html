@@ -36,51 +36,46 @@ body { padding: 0 var(--page-gutter) 0px !important; }
   justify-content: center;
 }
 
-/* ——— GRID + INTRO CARD ——— */
-@media (min-width: 481px) {
-  html {
-    background-color: #f5f5f5;
-  }
+/* ——— INTRO CARD ——— */
+html { background-color: #f5f5f5; }
+body { background: transparent; }
 
-  body { background: transparent; }
+.intro-card {
+  position: relative;
+  background: #ffffff;
+  width: min(388px, calc(100% - 10px));
+  padding: 10px clamp(18px, 5vw, 28px) clamp(30px, 8vw, 60px);
+  box-sizing: border-box;
+  transform: rotate(-1.2deg);
+  margin: 24px auto -40px;
+}
 
-  .intro-card {
-    position: relative;
-    background: #ffffff;
-    width: min(388px, 100%);
-    padding: 10px clamp(18px, 5vw, 28px) clamp(30px, 8vw, 60px);
-    box-sizing: border-box;
-    transform: rotate(-1.2deg);
-    margin: 24px auto -40px;
-  }
+.intro-card::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 22px;
+  right: 22px;
+  height: 14px;
+  background-image: repeating-linear-gradient(
+    to right,
+    #f5f5f5 0px, #f5f5f5 14px,
+    transparent 14px, transparent 78px
+  );
+}
 
-  .intro-card::before {
-    content: '';
-    position: absolute;
-    top: 8px;
-    left: 22px;
-    right: 22px;
-    height: 14px;
-    background-image: repeating-linear-gradient(
-      to right,
-      #f5f5f5 0px, #f5f5f5 14px,
-      transparent 14px, transparent 78px
-    );
-  }
-
-  .intro-card p {
-    font-family: var(--font-mono);
-    font-weight: 300;
-    font-size: clamp(15px, 3.4vw, 18px);
-    line-height: 30px;
-    color: #222;
-    margin: 0;
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0px, transparent 29px,
-      rgba(0,0,0,0.09) 29px, rgba(0,0,0,0.09) 30px
-    );
-  }
+.intro-card p {
+  font-family: var(--font-mono);
+  font-weight: 300;
+  font-size: clamp(15px, 3.4vw, 18px);
+  line-height: 30px;
+  color: #222;
+  margin: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px, transparent 29px,
+    rgba(0,0,0,0.09) 29px, rgba(0,0,0,0.09) 30px
+  );
 }
 
 .intro-card p a {  text-decoration: none; }
@@ -136,11 +131,22 @@ body { padding: 0 var(--page-gutter) 0px !important; }
 }
 
 .intro-mobile { display: none; }
-
 @media (max-width: 480px) {
-  body { background: #fff; }
-  .photo-postit, .photo-wrapper, .intro-desktop { display: none; }
   .intro-mobile { display: block; }
+
+  .photo-wrapper { display: block; }
+  .photo-wrapper img { aspect-ratio: 1 / 1; object-fit: cover; height: auto; }
+  .photo-wrapper .photo-front, .photo-caption { display: none; }
+
+  .photo-postit {
+    width: 110px;
+    height: auto;
+    min-height: 110px;
+    font-size: 11px;
+    padding: 9px;
+  }
+  .photo-postit.top-left { top: -14px; left: -22px; }
+  .photo-postit.bottom-right { bottom: -14px; right: -22px; }
 }
 
 @media (max-width: 1100px) {
@@ -235,7 +241,6 @@ body { padding: 0 var(--page-gutter) 0px !important; }
   <h1 style="margin-top: 10px; padding-top: 0;"><img class="h1-img" src="images/header.png" alt="Shivani Singh"></h1>
   <p class="intro-desktop">a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF Innovation</a>.</p>
 </div>
-<p class="intro-mobile">I'm a designer with an aptitude for analytical thinking and an appetite for play. Currently shaping tech for social impact at <a href="https://www.unicefventurefund.org" target="_blank">UNICEF</a>, I think of my practice as a way to bridge intention and outcome.</p>
     <div class="photo-wrapper" style="margin: 20px 0;">
       <img src="images/moi.jpg" class="photo-side">
       <img src="images/red.jpg" class="photo-front">
