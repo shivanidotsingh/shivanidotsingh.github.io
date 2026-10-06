@@ -23,7 +23,8 @@
   gtag('js', new Date());
   gtag('config', 'G-JVKB5DDZ82');
 </script>
-  <style>
+
+<style>
 body { padding: 0 var(--page-gutter) 0px !important; }
 
 .h1-img { height: var(--h1-size); width: auto; display: inline-block; vertical-align: baseline; }
@@ -48,6 +49,12 @@ body { background: transparent; }
   box-sizing: border-box;
   transform: rotate(-1.2deg);
   margin: 24px auto -40px;
+  -webkit-mask:
+    radial-gradient(7px at 50% 100%, #0000 98%, #000) 3px 100%/52px 100% repeat-x,
+    linear-gradient(#000,#000) 0 0/100% calc(100% - 7px) no-repeat;
+  mask:
+    radial-gradient(7px at 50% 100%, #0000 98%, #000) 3px 100%/52px 100% repeat-x,
+    linear-gradient(#000,#000) 0 0/100% calc(100% - 7px) no-repeat;
 }
 
 .intro-card::before {
@@ -57,11 +64,9 @@ body { background: transparent; }
   left: 22px;
   right: 22px;
   height: 14px;
-  background-image: repeating-linear-gradient(
-    to right,
-    #f5f5f5 0px, #f5f5f5 14px,
-    transparent 14px, transparent 78px
-  );
+  background-image: radial-gradient(7px at 7px 7px, #f5f5f5 98%, transparent 100%);
+  background-size: 52px 14px;
+  background-repeat: repeat-x;
 }
 
 .intro-card p {
@@ -136,7 +141,7 @@ body { background: transparent; }
 .intro-mobile { display: none; }
 @media (max-width: 480px) {
   :root { --page-gutter: 20px; }
-  .intro-mobile { display: block; margin-top: 40px; }
+  .intro-mobile { display: block; margin-top: 36px; }
 
   .intro-card {
     width: 88%;
@@ -154,24 +159,40 @@ body { background: transparent; }
   }
 
   .photo-wrapper {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    width: 100%;
+    margin: -14px 0 0;
+  }
+  .photo-wrapper .photo-side, .photo-caption { display: none; }
+  .photo-wrapper .photo-front {
+    position: static;
     display: block;
-    width: 108px;
-    margin: -26px 12% 0 auto;
+    opacity: 1;
+    width: 110px;
+    flex: 0 0 auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     background: #fff;
-    padding: 7px 7px 20px;
+    padding: 9px 9px 30px;
     box-shadow: 0 1px 4px rgba(0,0,0,0.12);
     transform: rotate(2.5deg);
-    z-index: 6;
   }
-  .photo-wrapper img.photo-side {
-    display: block;
-    width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
+
+  .photo-postit.top-left {
+    position: static;
+    width: auto;
+    flex: 1 1 auto;
     height: auto;
+    min-height: 124px;
+    font-size: 13px;
+    padding: 12px;
+    margin: 16px 0 0;
+    transform: rotate(-2deg);
+    box-sizing: border-box;
   }
-  .photo-wrapper .photo-front, .photo-caption { display: none; }
-  .photo-postit { display: none; }
+  .photo-postit.bottom-right { display: none; }
 }
 
 @media (max-width: 1100px) {
