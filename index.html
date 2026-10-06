@@ -141,7 +141,7 @@ body { background: transparent; }
 .intro-mobile { display: none; }
 @media (max-width: 480px) {
   :root { --page-gutter: 20px; }
-  .intro-mobile { display: block; margin-top: 36px; }
+  .intro-mobile { display: block; margin-top: 34px; }
 
   .intro-card {
     width: 88%;
@@ -158,38 +158,47 @@ body { background: transparent; }
     );
   }
 
+  /* polaroid: wrapper is the white frame, centered */
   .photo-wrapper {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    width: 100%;
-    margin: -14px 0 0;
+    display: block;
+    width: 62%;
+    max-width: 210px;
+    margin: -6px auto 0;
+    background: #fff;
+    padding: 10px 10px 0;
+    box-sizing: border-box;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.13);
+    transform: rotate(2deg);
+    z-index: 6;
   }
   .photo-wrapper .photo-side, .photo-caption { display: none; }
   .photo-wrapper .photo-front {
     position: static;
     display: block;
     opacity: 1;
-    width: 110px;
-    flex: 0 0 auto;
+    width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
-    background: #fff;
-    padding: 9px 9px 30px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-    transform: rotate(2.5deg);
   }
 
+  /* the practice line, written in the chin */
   .photo-postit.top-left {
     position: static;
+    display: block;
     width: auto;
-    flex: 1 1 auto;
     height: auto;
-    min-height: 124px;
-    font-size: 13px;
-    padding: 12px;
-    margin: 16px 0 0;
-    transform: rotate(-2deg);
+    min-height: 0;
+    background: none;
+    box-shadow: none;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #555;
+    text-align: center;
+    padding: 11px 2px 14px;
+    margin: 0;
+    transform: none;
+    cursor: default;
     box-sizing: border-box;
   }
   .photo-postit.bottom-right { display: none; }
