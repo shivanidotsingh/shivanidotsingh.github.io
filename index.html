@@ -136,7 +136,7 @@ body { background: transparent; }
 .intro-mobile { display: none; }
 @media (max-width: 480px) {
   :root { --page-gutter: 20px; }
-  .intro-mobile { display: block; margin-top: 56px; }
+  .intro-mobile { display: block; margin-top: 40px; }
 
   .intro-card {
     width: 88%;
@@ -153,22 +153,25 @@ body { background: transparent; }
     );
   }
 
-  .photo-wrapper { display: block; margin: 0; }
-  .photo-wrapper img, .photo-caption { display: none; }
-  .photo-postit.top-left {
+  .photo-wrapper {
     display: block;
-    position: static;
-    width: 128px;
-    min-height: 128px;
-    height: auto;
-    font-size: 13px;
-    padding: 12px;
-    margin: -28px 0 0 14%;
-    transform: rotate(-3deg);
-    box-sizing: border-box;
-    z-index: 5;
+    width: 108px;
+    margin: -26px 12% 0 auto;
+    background: #fff;
+    padding: 7px 7px 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+    transform: rotate(2.5deg);
+    z-index: 6;
   }
-  .photo-postit.bottom-right { display: none; }
+  .photo-wrapper img.photo-side {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    height: auto;
+  }
+  .photo-wrapper .photo-front, .photo-caption { display: none; }
+  .photo-postit { display: none; }
 }
 
 @media (max-width: 1100px) {
