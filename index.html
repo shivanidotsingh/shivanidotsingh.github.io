@@ -234,7 +234,7 @@ body { background: transparent; }
     color: #333;
     padding: 12px;
     box-sizing: border-box;
-    transform: rotate(-4deg) translate(22px, 30px);
+    transform: rotate(-4deg) translate(22px, 14px);
     z-index: 7;
   }
   .mobile-postit a {
@@ -242,7 +242,17 @@ body { background: transparent; }
     border-bottom: 1px solid rgba(0,0,0,0.3);
   }
 
-  .note-card { display: block; margin-top: 56px; }
+  .photo-wrapper { position: relative; z-index: 6; }
+  .note-card {
+    display: block;
+    position: relative;
+    z-index: 1;
+    width: 88%;
+    margin: -12px auto 0;
+    padding-top: 30px;
+    box-shadow: none;
+  }
+
 }
   
 @media (max-width: 1100px) {
