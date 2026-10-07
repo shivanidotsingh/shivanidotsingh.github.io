@@ -141,7 +141,7 @@ body { background: transparent; }
 .intro-mobile { display: none; }
 @media (max-width: 480px) {
   :root { --page-gutter: 20px; }
-  .intro-mobile { display: block; margin-top: 34px; }
+  .intro-mobile { display: block; margin-top: 44px; }
 
   .intro-card {
     width: 88%;
@@ -158,14 +158,15 @@ body { background: transparent; }
     );
   }
 
-  /* polaroid: wrapper is the white frame, centered */
+  /* photo: white frame, equal on all four sides, set to the right */
   .photo-wrapper {
     display: block;
-    width: 62%;
-    max-width: 210px;
-    margin: -6px auto 0;
+    position: relative;
+    width: 54%;
+    max-width: 190px;
+    margin: -10px 6% 0 auto;
     background: #fff;
-    padding: 10px 10px 0;
+    padding: 10px;
     box-sizing: border-box;
     box-shadow: 0 1px 5px rgba(0,0,0,0.13);
     transform: rotate(2deg);
@@ -181,29 +182,24 @@ body { background: transparent; }
     object-fit: cover;
   }
 
-  /* the practice line, written in the chin */
+  /* post-it hangs off the photo's lower-left */
   .photo-postit.top-left {
-    position: static;
-    display: block;
-    width: auto;
+    top: auto;
+    bottom: -26px;
+    left: -72px;
+    width: 124px;
     height: auto;
-    min-height: 0;
-    background: none;
-    box-shadow: none;
-    font-family: var(--font-mono);
-    font-size: 11.5px;
+    min-height: 124px;
+    font-size: 12px;
     line-height: 1.45;
-    color: #555;
-    text-align: center;
-    padding: 11px 2px 14px;
-    margin: 0;
-    transform: none;
-    cursor: default;
+    padding: 11px;
+    transform: rotate(-4deg);
     box-sizing: border-box;
+    z-index: 7;
   }
   .photo-postit.bottom-right { display: none; }
 }
-
+  
 @media (max-width: 1100px) {
   .gutter-postits-container { display: none; }
   .resume-panel, .resume-panel-overlay { display: none; }
@@ -303,7 +299,6 @@ body { background: transparent; }
     <div class="photo-postit bottom-right"> Drawing in the margins and playing with ideas on <a href="https://shivaniest.com/" target="_blank">shivaniest.com</a></div>
     </div>
     <p class="intro-mobile">
-      An alumnus of NID, Ahmedabad and California College of the Arts, I previously worked at Salesforce in San Francisco — highlights from that chapter in this <a href="https://docs.google.com/presentation/d/e/2PACX-1vSIAnrA-YdMMIYAmLWARmflhZkR6fjkmb--3mA7UqHA36ywzY6SGtTjLynAr35MLmpYWI_fdFcazv4S/pub" target="_blank">overview</a>.
       Born in India and based in Sweden, I'm graphing the cities in between <a href="https://singh.work/fromness" target="_blank">here</a>.
       
       <br><br>Trained in graphic design, I've also crafted 
