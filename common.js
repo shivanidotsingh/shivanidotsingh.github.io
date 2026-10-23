@@ -86,7 +86,7 @@ function makeDraggable(el) {
 /* ---------- CREATE NEW POSTIT ---------- */
 document.addEventListener('dblclick', (e) => {
   if (!IS_DESKTOP) return;
-  if (e.target.closest('.photo-postit, .user-postit, .gutter-postit, a, button, input, textarea')) return;
+  if (e.target.closest('a, .overscroll-note, .photo-postit, .gutter-postit, .user-postit, .note-card, .mobile-postit, button')) return;
   const postit = document.createElement('div');
   postit.className = 'user-postit';
   postit.contentEditable = 'true';
