@@ -22,6 +22,20 @@ body {
 
 }
 
+@keyframes simple-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.intro-card {
+  animation: simple-fade 0.45s ease;
+}
+
+.project img {
+  background: #eceae4;
+  transition: opacity 0.3s ease;
+}
+
 .overscroll-note {
   width: 100vw;
   margin-left: calc(50% - 50vw);
