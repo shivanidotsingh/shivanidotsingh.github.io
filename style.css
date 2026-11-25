@@ -32,7 +32,7 @@ body {
 }
 
 .project img {
-  background: #eceae4;
+  background: transparent;
   transition: opacity 0.3s ease;
 }
 
